@@ -1,14 +1,9 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
-import {
-  ArrowUpRightIcon,
-  PaperclipIcon,
-  PaletteIcon,
-  XIcon,
-} from "lucide-react";
+import { useState } from "react";
+import { PaletteIcon } from "lucide-react";
 import Link from "next/link";
-
+import Chat from "../Chat";
 const RecordIcon = () => (
   <svg
     width="16"
@@ -73,31 +68,7 @@ const MobileLogo = () => (
 );
 
 export default function LandingPage() {
-  const [inputValue, setInputValue] = useState("");
-  const [isChatboxFocused, setIsChatboxFocused] = useState(false);
-  const [isDragging, setIsDragging] = useState(false);
-  const [attachedFiles, setAttachedFiles] = useState<File[]>([]);
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-
-  useEffect(() => {
-    if (textareaRef.current) {
-      textareaRef.current.style.height = "auto";
-      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
-    }
-  }, [inputValue]);
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setInputValue(e.target.value);
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log("Submitted:", inputValue);
-    console.log("Attached files:", attachedFiles);
-    setInputValue("");
-    setAttachedFiles([]);
-  };
 
   const handleMouseMove = (e: React.MouseEvent) => {
     setMousePosition({ x: e.clientX, y: e.clientY });
@@ -109,43 +80,6 @@ export default function LandingPage() {
         {char === " " ? "\u00A0" : char}
       </span>
     ));
-  };
-
-  const handleDragEnter = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsDragging(true);
-  };
-
-  const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsDragging(false);
-  };
-
-  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-  };
-
-  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsDragging(false);
-
-    const files = Array.from(e.dataTransfer.files);
-    setAttachedFiles((prevFiles) => [...prevFiles, ...files]);
-  };
-
-  const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      const files = Array.from(e.target.files);
-      setAttachedFiles((prevFiles) => [...prevFiles, ...files]);
-    }
-  };
-
-  const removeFile = (index: number) => {
-    setAttachedFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
   };
 
   return (
@@ -247,103 +181,8 @@ export default function LandingPage() {
                 "Meet your new assistant for engagement, strategy, and growth."
               )}
             </p>
-
-            <form
-              onSubmit={handleSubmit}
-              className="w-full max-w-xl bg-white rounded-md p-1.5 mb-3 transition-all duration-150 ease-in-out relative shadow-lg hover:shadow-xl hover:scale-[1.02] group"
-            >
-              <div
-                className={`relative ${isDragging ? "bg-gray-100" : ""}`}
-                onDragEnter={handleDragEnter}
-                onDragLeave={handleDragLeave}
-                onDragOver={handleDragOver}
-                onDrop={handleDrop}
-              >
-                <textarea
-                  ref={textareaRef}
-                  value={inputValue}
-                  onChange={handleInputChange}
-                  onFocus={() => setIsChatboxFocused(true)}
-                  onBlur={() => setIsChatboxFocused(false)}
-                  placeholder="Ask me anything about the music industry..."
-                  className="w-full bg-transparent text-black outline-none text-xs py-2 px-2 resize-none min-h-[60px] pr-10 font-normal transition-colors duration-150 ease-in-out focus:bg-gray-50"
-                  aria-label="Chat input"
-                />
-                <button
-                  type="submit"
-                  className={`absolute bottom-1.5 right-1.5 p-1.5 rounded-md transition-all duration-150 ease-in-out ${
-                    isChatboxFocused
-                      ? "bg-[#00309A] text-white hover:bg-[#002277]"
-                      : "bg-white text-[#00309A] border border-[#00309A] hover:bg-gray-100"
-                  } hover:shadow-md group-hover:scale-105`}
-                  aria-label="Send message"
-                >
-                  <ArrowUpRightIcon className="w-3 h-3" />
-                </button>
-                <label htmlFor="file-input" className="cursor-pointer">
-                  <input
-                    id="file-input"
-                    type="file"
-                    multiple
-                    className="hidden"
-                    onChange={handleFileInput}
-                  />
-                  <button
-                    type="button"
-                    className="absolute bottom-1.5 left-1.5 text-gray-400 p-1.5 transition-colors duration-150 ease-in-out hover:text-gray-600 group-hover:scale-105"
-                    aria-label="Attach file"
-                  >
-                    <PaperclipIcon className="w-3 h-3" />
-                  </button>
-                </label>
-                {isDragging && (
-                  <div className="absolute inset-0 bg-gray-100 bg-opacity-50 flex items-center justify-center">
-                    <p className="text-gray-500 text-sm">Drop files here</p>
-                  </div>
-                )}
-              </div>
-              {attachedFiles.length > 0 && (
-                <div className="mt-2 space-y-1">
-                  {attachedFiles.map((file, index) => (
-                    <div
-                      key={index}
-                      className="flex items-center justify-between bg-gray-100 rounded px-2 py-1"
-                    >
-                      <span className="text-xs text-gray-600 truncate">
-                        {file.name}
-                      </span>
-                      <button
-                        type="button"
-                        onClick={() => removeFile(index)}
-                        className="text-red-500 hover:text-red-700"
-                        aria-label={`Remove ${file.name}`}
-                      >
-                        <XIcon className="w-3 h-3" />
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </form>
-
-            <div className="flex flex-wrap justify-center gap-2">
-              <button
-                className="bubble-prompt px-3 py-1 bg-[#00309A] border border-white rounded-full text-[10px] sm:text-xs transition-all duration-150 ease-in-out flex items-center font-normal"
-                aria-label="Ask about Billboard #1 song"
-              >
-                What is the Billboard #1 song?
-                <ArrowUpRightIcon className="w-2 h-2 ml-1" aria-hidden="true" />
-              </button>
-              <button
-                className="bubble-prompt px-3 py-1 bg-[#00309A] border border-white rounded-full text-[10px] sm:text-xs transition-all duration-150 ease-in-out flex items-center font-normal"
-                aria-label="Ask about TikTok trends"
-              >
-                What&apos;s trending with fans on TikTok?
-                <ArrowUpRightIcon className="w-2 h-2 ml-1" aria-hidden="true" />
-              </button>
-            </div>
+            <Chat />
           </main>
-
           <footer className="p-3 sm:p-4 flex flex-col items-center">
             <div className="flex flex-wrap justify-center items-center text-[8px] mb-2">
               <Link
