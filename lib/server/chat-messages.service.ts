@@ -4,7 +4,7 @@ import { SupabaseClient } from '@supabase/supabase-js';
 import { z } from 'zod';
 import { ChatSettingsSchema } from './chat-settings.schema';
 import { Database } from '../database.types';
-
+import getWaterAndMusicReportContext from '../getWaterAndMusicReportContext';
 export function createChatMessagesService(client: SupabaseClient<Database>) {
   return new ChatMessagesService(client);
 }
@@ -164,23 +164,16 @@ Please use this information to provide accurate and relevant responses and don't
       temperature: settings.temperature ?? 0.7,
     };
   }
+
   private async fetchRelevantContext(): Promise<string> {
-    const context: string[] = [];
+    try {
+      const context = await getWaterAndMusicReportContext();
 
-    // const { data: fans } = await this.client
-    //   .from('fans')
-    //   .select('country, city, product, playlist, recommendations, recentlyPlayed, saved_podcasts, saved_audiobooks, saved_shows, top_artists_long_term')
-    //   .limit(100);
-
-    // if (fans?.length && fans[0]) {
-    //   const columns = Object.keys(fans[0]);
-    //   const rows = fans.map((fan) => Object.values(fan).join(', '));
-    //   const fanContext = `The following is the data about fans in the format (${columns.join(', ')})
-    //   ${rows.join('\n')}`;
-    //   context.push(fanContext);
-    // }
-
-    return context.join('\n');
+      return JSON.stringify(context, null, 2);
+    } catch (error) {
+      console.error('Error reading or parsing JSON files:', error);
+      return '{}';
+    }
   }
 
   async updateChat(
@@ -215,3 +208,5 @@ Please use this information to provide accurate and relevant responses and don't
     }
   }
 }
+
+
