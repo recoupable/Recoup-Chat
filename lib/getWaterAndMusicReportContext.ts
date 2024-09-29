@@ -6,7 +6,6 @@ interface Section {
 }
 
 const getWaterAndMusicReportContext = async () => {
-  try {
     const BASE_PATH = 'https://chatbot-olive-five.vercel.app/data/';
     const additionalAnalysis = await fs.readFile(`${BASE_PATH}additional_analysis.json`, 'utf-8');
     const stateOfMusicData = await fs.readFile(`${BASE_PATH}state_of_music_data_2024.json`, 'utf-8');
