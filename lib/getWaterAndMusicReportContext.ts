@@ -1,5 +1,3 @@
-import { promises as fs } from 'fs';
-
 interface Section {
     title: string;
     key_findings: string[];
