@@ -6,24 +6,25 @@ interface Section {
 }
 
 const getWaterAndMusicReportContext = async () => {
-    const additionalAnalysis = await fs.readFile(`data/additional_analysis.json`, 'utf-8');
-    const stateOfMusicData = await fs.readFile(`data/state_of_music_data_2024.json`, 'utf-8');
+    const BASE_PATH = 'https://ipfs.decentralized-content.com/ipfs/';
+    const additionalAnalysisResponse = await fetch(`${BASE_PATH}QmNsgeitiuZyLF735xAXLHAzMoEy8ayQFsg3bK3Had5Y3z`);
+    const stateOfMusicDataResponse = await fetch(`${BASE_PATH}Qmcjsns4RBm2yU7quLcJN949DQZds27iumtX7tDtchxkZk`);
 
-    const parsedAdditionalAnalysis = JSON.parse(additionalAnalysis);
-    const parsedStateOfMusicData = JSON.parse(stateOfMusicData);
+    const additionalAnalysis = await additionalAnalysisResponse.json();
+    const stateOfMusicData = await stateOfMusicDataResponse.json();
 
     const context = {
-      additional_analysis: parsedAdditionalAnalysis.additional_analysis.map((item: { topic: string; key_findings: string[] }) => ({
+      additional_analysis: additionalAnalysis.additional_analysis.map((item: { topic: string; key_findings: string[] }) => ({
         topic: item.topic,
         key_findings: item.key_findings
       })),
       state_of_music_data: {
-        report_title: parsedStateOfMusicData.report_title,
+        report_title: stateOfMusicData.report_title,
         prologue: {
-          title: parsedStateOfMusicData.prologue.title,
-          key_points: parsedStateOfMusicData.prologue.key_points
+          title: stateOfMusicData.prologue.title,
+          key_points: stateOfMusicData.prologue.key_points
         },
-        sections: parsedStateOfMusicData.sections.map((section: Section) => ({
+        sections: stateOfMusicData.sections.map((section: Section) => ({
           title: section.title,
           key_findings: section.key_findings
         }))
