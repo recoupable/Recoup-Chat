@@ -168,6 +168,7 @@ Please use this information to provide accurate and relevant responses and don't
   private async fetchRelevantContext(): Promise<string> {
     try {
       const context = getChatContext(this.client)
+      
       return context
     } catch (error) {
       console.error('Error reading or parsing JSON files:', error);
