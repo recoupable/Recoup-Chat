@@ -7,7 +7,7 @@ const getChatContext = async (client: SupabaseClient<Database>) => {
     const { data: chats } = await client
         .from('chats')
         .select('name')
-        .limit(10);
+        .limit(20);
 
     if (chats?.length && chats[0]) {
         const columns = Object.keys(chats[0]);
@@ -21,7 +21,7 @@ const getChatContext = async (client: SupabaseClient<Database>) => {
     const { data: messages } = await client
         .from('chat_messages')
         .select('content')
-        .limit(10);
+        .limit(20);
 
     if (messages?.length && messages[0]) {
         const columns = Object.keys(messages[0]);
