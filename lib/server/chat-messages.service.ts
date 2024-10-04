@@ -4,13 +4,13 @@ import { SupabaseClient } from '@supabase/supabase-js';
 import { z } from 'zod';
 import { ChatSettingsSchema } from './chat-settings.schema';
 import { Database } from '../database.types';
-import getWaterAndMusicReportContext from '../getWaterAndMusicReportContext';
+import getChatContext from '../getChatContext';
 export function createChatMessagesService(client: SupabaseClient<Database>) {
   return new ChatMessagesService(client);
 }
 
 class ChatMessagesService {
-  constructor(private readonly client: SupabaseClient<Database>) {}
+  constructor(private readonly client: SupabaseClient<Database>) { }
 
   async getMessages(params: { chatReferenceId: string; page: number }) {
     const perPage = 35;
@@ -167,9 +167,8 @@ Please use this information to provide accurate and relevant responses and don't
 
   private async fetchRelevantContext(): Promise<string> {
     try {
-      const context = await getWaterAndMusicReportContext();
-
-      return JSON.stringify(context, null, 2);
+      const context = getChatContext(this.client)
+      return context
     } catch (error) {
       console.error('Error reading or parsing JSON files:', error);
       return '{}';
