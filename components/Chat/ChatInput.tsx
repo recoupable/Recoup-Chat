@@ -22,7 +22,7 @@ const ChatInput: React.FC = () => {
             value={input}
             onChange={handleInputChange}
             onKeyDown={handleKeyDown}
-            placeholder="Ask me anything about the music industry..."
+            placeholder="Ask recoupable a question..."
             className="bg-transparent w-full p-2 text-sm !border-none !outline-none rounded-md h-auto"
             aria-label="Chat input"
           />
