@@ -4,7 +4,7 @@ const SubmitButton = ({ canSubmit }: { canSubmit: boolean }) => {
   return (
     <button
       type="submit"
-      className={`p-1.5 rounded-md border-[1px] border-gray-700 text-gray-700 ${canSubmit ? "bg-white" : "bg-black"}`}
+      className={`p-1.5 rounded-md border-[1px] border-gray-700 text-gray-700 ${canSubmit ? "bg-white" : "bg-background"}`}
       aria-label="Send message"
     >
       <ArrowUpRightIcon className="w-3 h-3" />
