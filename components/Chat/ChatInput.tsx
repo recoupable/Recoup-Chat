@@ -1,18 +1,9 @@
-import { useEffect, useRef, useState } from "react";
 import SubmitButton from "./SubmitButton";
 import { useChatProvider } from "@/providers/ChatProvider";
 
 const ChatInput: React.FC = () => {
-  const { input, handleInputChange, handleSubmit } = useChatProvider();
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const [isChatboxFocused, setIsChatboxFocused] = useState(false);
-
-  useEffect(() => {
-    if (textareaRef.current) {
-      textareaRef.current.style.height = "auto";
-      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
-    }
-  }, [input]);
+  const { input, handleInputChange, handleSubmit, messages } =
+    useChatProvider();
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -22,25 +13,25 @@ const ChatInput: React.FC = () => {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="w-full max-w-xl bg-white rounded-md p-1.5 mb-3 transition-all duration-150 ease-in-out relative shadow-lg hover:shadow-xl hover:scale-[1.02] group"
+    <div
+      className={`w-full px-2 z-[10] bg-background ${messages.length ? "fixed bottom-2 left-0" : "relative"}`}
     >
-      <div className="relative">
-        <textarea
-          ref={textareaRef}
-          value={input}
-          onChange={handleInputChange}
-          onKeyDown={handleKeyDown}
-          onFocus={() => setIsChatboxFocused(true)}
-          onBlur={() => setIsChatboxFocused(false)}
-          placeholder="Ask me anything about the music industry..."
-          className="w-full bg-transparent text-black outline-none text-xs py-2 px-2 resize-none min-h-[60px] pr-10 font-normal transition-colors duration-150 ease-in-out focus:bg-gray-50"
-          aria-label="Chat input"
-        />
-        <SubmitButton isChatboxFocused={isChatboxFocused} />
+      <div className="border-gray-700 border-[1px] rounded-md p-2">
+        <form onSubmit={handleSubmit} className="w-full">
+          <textarea
+            value={input}
+            onChange={handleInputChange}
+            onKeyDown={handleKeyDown}
+            placeholder="Ask recoupable a question..."
+            className="bg-transparent w-full p-2 text-sm !border-none !outline-none rounded-md h-auto"
+            aria-label="Chat input"
+          />
+          <div className="w-full flex justify-end">
+            <SubmitButton canSubmit={Boolean(input)} />
+          </div>
+        </form>
       </div>
-    </form>
+    </div>
   );
 };
 

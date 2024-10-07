@@ -15,7 +15,7 @@ export const ChatMessagesSchema = z.object({
     z.object({
       content: z.string(),
       role: z.enum(["user", "assistant"]),
-    })
+    }),
   ),
 });
 

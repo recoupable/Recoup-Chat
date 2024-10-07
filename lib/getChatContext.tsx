@@ -14,7 +14,7 @@ const getChatContext = async () => {
     });
 
     const fanContext = `The following is the data about fans in the format (${columns.join(
-      ", "
+      ", ",
     )})
     ${rows.join("\n")}`;
     context.push(fanContext);

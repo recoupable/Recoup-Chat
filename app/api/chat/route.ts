@@ -21,5 +21,5 @@ export const POST = enhanceRouteHandler(
   },
   {
     schema: StreamResponseSchema,
-  }
+  },
 );
