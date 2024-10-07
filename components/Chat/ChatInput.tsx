@@ -1,17 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import SubmitButton from "./SubmitButton";
+import { useChatProvider } from "@/providers/ChatProvider";
 
-interface ChatInputProps {
-  handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
-  handleInputChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
-  input: string;
-}
-
-const ChatInput: React.FC<ChatInputProps> = ({
-  handleSubmit,
-  handleInputChange,
-  input,
-}) => {
+const ChatInput: React.FC = () => {
+  const { input, handleInputChange, handleSubmit } = useChatProvider();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [isChatboxFocused, setIsChatboxFocused] = useState(false);
 
@@ -21,6 +13,13 @@ const ChatInput: React.FC<ChatInputProps> = ({
       textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
     }
   }, [input]);
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSubmit(e as unknown as React.FormEvent<HTMLFormElement>);
+    }
+  };
 
   return (
     <form
@@ -32,6 +31,7 @@ const ChatInput: React.FC<ChatInputProps> = ({
           ref={textareaRef}
           value={input}
           onChange={handleInputChange}
+          onKeyDown={handleKeyDown}
           onFocus={() => setIsChatboxFocused(true)}
           onBlur={() => setIsChatboxFocused(false)}
           placeholder="Ask me anything about the music industry..."

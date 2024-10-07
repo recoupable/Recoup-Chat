@@ -4,6 +4,7 @@ import { useState } from "react";
 import { PaletteIcon } from "lucide-react";
 import Link from "next/link";
 import Chat from "../Chat";
+import Header from "./Header";
 const RecordIcon = () => (
   <svg
     width="16"
@@ -156,15 +157,7 @@ export default function LandingPage() {
         ></div>
 
         <div className="flex flex-col min-h-screen w-full z-10">
-          <header className="flex justify-end items-center p-3 sm:p-4">
-            <button
-              className="bg-white text-[#00309A] px-2 py-1 rounded-md text-[10px] font-medium hover:bg-opacity-90 transition-all duration-150 ease-in-out hover:shadow-sm"
-              aria-label="Sign In"
-            >
-              Sign In
-            </button>
-          </header>
-
+          <Header />
           <main className="flex-grow flex flex-col items-center justify-center text-center p-3 sm:p-4">
             <h1 className="mb-2 tracking-tight">
               <div className="font-['Joyride_Std'] text-xl sm:text-2xl md:text-3xl leading-tight hover-outline-container">

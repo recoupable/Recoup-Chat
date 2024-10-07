@@ -393,6 +393,17 @@ export type Database = {
           },
         ];
       };
+      fans: {
+        Row: {
+          display_name: string;
+          id: string;
+          image_url: string;
+          username: string;
+          };
+        Insert: {
+          display_name: string;
+        }
+      };
       invitations: {
         Row: {
           account_id: string;

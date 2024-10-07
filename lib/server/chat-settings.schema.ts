@@ -1,6 +1,7 @@
-import { z } from 'zod';
+import { z } from "zod";
+import { AI_MODEL } from "../consts";
 
-const ChatModelsSchema = z.enum([`gpt-3.5-turbo`, `gpt-4o`]);
+const ChatModelsSchema = z.enum([`gpt-3.5-turbo`, `gpt-4o`, AI_MODEL]);
 
 export const ChatSettingsSchema = z.object({
   model: ChatModelsSchema,
