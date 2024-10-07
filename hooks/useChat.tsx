@@ -8,7 +8,7 @@ import useInitialMessages from "./useInitialMessages";
 
 const useChat = () => {
   const { login, user } = usePrivy();
-  const address = user?.wallet?.address || (zeroAddress as Address);
+  const address = user?.wallet?.address as Address;
   const csrfToken = useCsrfToken();
   const accountId = "3664dcb4-164f-4566-8e7c-20b2c93f9951";
   const queryClient = useQueryClient();
