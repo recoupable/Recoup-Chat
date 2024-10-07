@@ -6,7 +6,7 @@ const Messages = () => {
   const { messages } = useChatProvider();
 
   return (
-    <div className="w-full mt-4">
+    <div className="w-full mt-4 max-w-3xl mx-auto">
       <div className="space-y-4">
         {messages.map((message: Message, index: number) => (
           <div key={index} className="p-3 rounded-lg flex w-full gap-2">
