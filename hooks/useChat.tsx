@@ -2,7 +2,7 @@ import { useCsrfToken } from "@/packages/shared/src/hooks";
 import { Message, useChat as useAiChat } from "ai/react";
 import { useQueryClient } from "@tanstack/react-query";
 import trackNewMessage from "@/lib/stack/trackNewMessage";
-import { Address, zeroAddress } from "viem";
+import { Address } from "viem";
 import { usePrivy } from "@privy-io/react-auth";
 import useInitialMessages from "./useInitialMessages";
 

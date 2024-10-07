@@ -8,7 +8,7 @@ const getFandata = (fan: FAN_TYPE) => {
   if (recommendations && typeof recommendations.matchAll === "function") {
     artistNames = Array.from(
       recommendations.matchAll(/artistName:([^,}]+)/g),
-      (match) => match?.[1]?.trim()
+      (match) => match?.[1]?.trim(),
     );
   }
   let playlist = typeof fan.playlist === "string" ? fan.playlist : "";
@@ -18,7 +18,7 @@ const getFandata = (fan: FAN_TYPE) => {
   if (playlist && typeof playlist.matchAll === "function") {
     userNames = Array.from(
       playlist.matchAll(/display_name:([^,}]+)/g),
-      (match) => match?.[1]?.trim()
+      (match) => match?.[1]?.trim(),
     );
   }
 
@@ -29,8 +29,8 @@ const getFandata = (fan: FAN_TYPE) => {
   if (recentlyPlayed && typeof recentlyPlayed.matchAll === "function") {
     artistNames = artistNames.concat(
       Array.from(recentlyPlayed.matchAll(/artistName:([^,}]+)/g), (match) =>
-        match?.[1]?.trim()
-      )
+        match?.[1]?.trim(),
+      ),
     );
   }
 
