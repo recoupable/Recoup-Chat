@@ -1,10 +1,10 @@
-# Music Business Chatbot
+# Luh Tyler's Mr. Skii 3D Video Game Chatbot
 
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Description
 
-This project is a chatbot application specifically designed for the music business. It uses advanced AI models to provide insights, answer questions, and assist with various aspects of the music industry.
+This project is a chatbot application specifically designed for Luh Tyler's 3D Video game promoting his new album Mr. Skii. It uses advanced AI models to provide insights, answer questions, and assist players with various aspects of the game and Luh Tyler's music.
 
 ## Features
 
