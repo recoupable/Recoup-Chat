@@ -16,7 +16,7 @@ const ChatInput: React.FC = () => {
     <div
       className={`w-full px-2 z-[10] bg-background ${messages.length ? "fixed bottom-2 left-0" : "relative"}`}
     >
-      <div className="border-gray-700 border-[1px] rounded-md p-2">
+      <div className="border-gray-700 border-[1px] rounded-md p-2 max-w-3xl mx-auto">
         <form onSubmit={handleSubmit} className="w-full">
           <textarea
             value={input}
