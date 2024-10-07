@@ -1,6 +1,6 @@
 import { ArrowUpRightIcon } from "lucide-react";
 
-const SubmitButton = ({ canSubmit }: { canSubmit: boolean }) => {
+const SubmitButton = ({ canSubmit }: { canSubmit: Boolean }) => {
   return (
     <button
       type="submit"
