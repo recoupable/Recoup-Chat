@@ -4,7 +4,6 @@ import { useState } from "react";
 import { PaletteIcon } from "lucide-react";
 import Link from "next/link";
 import Chat from "../Chat";
-import SignInButton from "./SignInButton";
 import Header from "./Header";
 const RecordIcon = () => (
   <svg
