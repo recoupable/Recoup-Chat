@@ -10,6 +10,8 @@
   },
   "dependencies": {
     "@ai-sdk/openai": "^0.0.28",
+    "@privy-io/react-auth": "^1.88.4",
+    "@stackso/js-core": "^0.4.16",
     "@supabase/ssr": "^0.5.1",
     "@supabase/supabase-js": "^2.45.1",
     "@tanstack/react-query": "^5.56.2",
