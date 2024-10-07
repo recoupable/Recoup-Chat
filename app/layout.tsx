@@ -2,11 +2,16 @@ import type { Metadata } from "next";
 import { GeistSans } from "geist/font/sans";
 import "./globals.css";
 import Providers from "@/providers/Providers";
+import { DESCRIPTION, TITLE } from "@/lib/consts";
 
 export const metadata: Metadata = {
-  title: "Luh Tyler Chat",
-  description:
-    "Chat with Recoupable. Generate insights with simple text prompts.",
+  title: TITLE,
+  description: DESCRIPTION,
+  openGraph: {
+    title: TITLE,
+    description: DESCRIPTION,
+    images: `/logo.jpg`,
+  },
 };
 
 export default function RootLayout({
