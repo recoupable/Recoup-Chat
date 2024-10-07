@@ -1,5 +1,3 @@
-import { getSupabaseServerClient } from "@/packages/supabase/src/clients/server-client";
-import { getSupabaseServerAdminClient } from "@/packages/supabase/src/clients/server-admin-client";
 import {
   createChatLLMService,
   StreamResponseSchema,
