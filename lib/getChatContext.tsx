@@ -1,37 +1,29 @@
-import { getSupabaseServerClient } from "@/packages/supabase/src/clients/server-client";
+import { getSupabaseServerAdminClient } from "@/packages/supabase/src/clients/server-admin-client";
+import getFandata from "./getFandata";
 
 const getChatContext = async () => {
   const context = [];
 
-  const client = getSupabaseServerClient();
-  const { data: chats } = await client.from("chats").select("name").limit(20);
+  const client = getSupabaseServerAdminClient();
+  console.log("SWEETS client", client);
+  const { data: fans } = await client.from("fans").select("*");
+  console.log("SWEETS FANS", fans);
 
-  if (chats?.length && chats[0]) {
-    const columns = Object.keys(chats[0]);
-    const rows = chats.map((chat) => Object.values(chat));
+  if (fans?.length && fans[0]) {
+    const columns = Object.keys(fans[0]);
+    const rows = fans.map((fan) => {
+      const data = getFandata(fan);
+      return Object.values(data);
+    });
 
-    const chatContext = `The following is the data about chats in the format (${columns.join(
+    const fanContext = `The following is the data about fans in the format (${columns.join(
       ", "
     )})
-  ${rows.join("\n")}`;
-    context.push(chatContext);
+    ${rows.join("\n")}`;
+    context.push(fanContext);
   }
 
-  const { data: messages } = await client
-    .from("chat_messages")
-    .select("content")
-    .limit(20);
-
-  if (messages?.length && messages[0]) {
-    const columns = Object.keys(messages[0]);
-    const rows = messages.map((message) => Object.values(message));
-
-    const chatContext = `The following is the data about chat messages in the format (${columns.join(
-      ", "
-    )})
-  ${rows.join("\n")}`;
-    context.push(chatContext);
-  }
+  console.log("SWEETS context", context);
 
   return context.join("\n");
 };

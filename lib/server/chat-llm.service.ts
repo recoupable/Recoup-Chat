@@ -43,10 +43,10 @@ class ChatLLMService {
    * @name streamResponse
    * @description Stream a response to the user and store the messages in the database.
    */
-  async streamResponse(
-    { messages, address }: z.infer<typeof StreamResponseSchema>,
-    referenceId: string
-  ) {
+  async streamResponse({
+    messages,
+    address,
+  }: z.infer<typeof StreamResponseSchema>) {
     // use a normal service instance using the current user RLS
     const chatMessagesService = createChatMessagesService();
 
@@ -61,14 +61,12 @@ class ChatLLMService {
     // await this.assertEnoughCredits(accountId);
 
     // retrieve the chat settings
-    const settings = await chatMessagesService.getChatSettings(
-      address as Address
-    );
+    const settings = await chatMessagesService.getChatSettings();
     const systemMessage = settings.systemMessage;
     const maxTokens = settings.maxTokens;
 
     // we need to limit the history length so not to exceed the max tokens of the model
-    // let's assume for simplicity that all models have a max tokens of 4096
+    // let's assume for simplicity that all models have a max tokens of 128000
     // so we need to make sure that the history doesn't exceed output length + system message length
     const maxModelTokens = 128000;
 

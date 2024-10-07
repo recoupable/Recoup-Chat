@@ -1,6 +1,7 @@
 import "server-only";
 
 import getChatContext from "../getChatContext";
+import { AI_MODEL } from "../consts";
 export function createChatMessagesService() {
   return new ChatMessagesService();
 }
@@ -20,7 +21,7 @@ Please use this information to provide accurate and relevant responses and don't
     return {
       maxTokens: 1111,
       systemMessage,
-      model: "gpt-4o-mini",
+      model: AI_MODEL,
       temperature: 0.7,
     };
   }
