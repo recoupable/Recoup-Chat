@@ -1,4 +1,19 @@
+# Luh Tyler's Mr. Skii 3D Video Game Chatbot
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+
+## Description
+
+This project is a chatbot application specifically designed for Luh Tyler's 3D Video game promoting his new album Mr. Skii. It uses advanced AI models to provide insights, answer questions, and assist players with various aspects of the game and Luh Tyler's music.
+
+## Features
+
+- AI-powered chatbot using GPT models
+- Real-time streaming responses
+- User authentication with Privy
+- Integration with Supabase for data storage
+- Tailwind CSS for styling
+- TypeScript for type safety
 
 ## Getting Started
 
@@ -18,16 +33,39 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Project Structure
+
+- `app/`: Contains the main application pages and layout
+- `components/`: Reusable React components
+- `lib/`: Utility functions and services
+- `providers/`: React context providers
+- `hooks/`: Custom React hooks
+- `types/`: TypeScript type definitions
+- `packages/`: Custom packages for shared functionality
+
+## Key Components
+
+- `LandingPage`: The main landing page component
+- `Chat`: The core chat interface component
+- `Suggestions`: Provides chat suggestions to users
+
+## Configuration
+
+This project uses various configuration files:
+
+- `next.config.mjs`: Next.js configuration
+- `tailwind.config.ts`: Tailwind CSS configuration
+- `tsconfig.json`: TypeScript configuration
+- `.eslintrc.json`: ESLint configuration
 
 ## Learn More
 
-To learn more about Next.js, take a look at the following resources:
+To learn more about the technologies used in this project, check out the following resources:
 
 - [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- [Supabase Documentation](https://supabase.io/docs) - learn about Supabase features and API.
+- [Tailwind CSS Documentation](https://tailwindcss.com/docs) - learn about Tailwind CSS features.
+- [TypeScript Documentation](https://www.typescriptlang.org/docs/) - learn about TypeScript.
 
 ## Deploy on Vercel
 

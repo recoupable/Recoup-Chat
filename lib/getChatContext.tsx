@@ -4,7 +4,7 @@ import getFandata from "./getFandata";
 const getChatContext = async () => {
   const context = [];
   const client = getSupabaseServerAdminClient();
-  const { data: fans } = await client.from("fans").select("*");
+  const { data: fans } = await client.from("fans").select("*").limit(1111);
 
   if (fans?.length && fans[0]) {
     const columns = Object.keys(fans[0]);
