@@ -3,11 +3,8 @@ import getFandata from "./getFandata";
 
 const getChatContext = async () => {
   const context = [];
-
   const client = getSupabaseServerAdminClient();
-  console.log("SWEETS client", client);
   const { data: fans } = await client.from("fans").select("*");
-  console.log("SWEETS FANS", fans);
 
   if (fans?.length && fans[0]) {
     const columns = Object.keys(fans[0]);
@@ -22,8 +19,6 @@ const getChatContext = async () => {
     ${rows.join("\n")}`;
     context.push(fanContext);
   }
-
-  console.log("SWEETS context", context);
 
   return context.join("\n");
 };
