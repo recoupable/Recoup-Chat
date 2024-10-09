@@ -1,6 +1,7 @@
 import { useChatProvider } from "@/providers/ChatProvider";
 import { Message } from "ai";
 import { UserIcon, TvMinimalPlay } from "lucide-react";
+import ReactMarkdown from "react-markdown";
 
 const Messages = () => {
   const { messages } = useChatProvider();
@@ -17,9 +18,9 @@ const Messages = () => {
                 <TvMinimalPlay className="h-6 w-6" />
               )}
             </div>
-            <p className="text-sm font-sans text-pretty break-all">
-              {message.content}
-            </p>
+            <div className="text-sm font-sans text-pretty break-words">
+              <ReactMarkdown>{message.content}</ReactMarkdown>
+            </div>
           </div>
         ))}
       </div>
