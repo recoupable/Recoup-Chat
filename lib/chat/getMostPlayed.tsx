@@ -5,8 +5,6 @@ const getMostPlayed = async (client: SupabaseClient<Database, "public">) => {
   const { data } = await client
     .from("spotify_play_button_clicked")
     .select("fanId, count()");
-  // .order("played_count", { ascending: false })
-  // .single();
 
   if (!data) return "";
   const fanId = data[0].fanId;

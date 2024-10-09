@@ -39,7 +39,6 @@ const getChatContext = async () => {
     context.push(`\n5. Streams Count: ${streamsCount}`);
   }
 
-  console.log("ZIAD", context.join("\n"));
   return context.join("\n");
 };
 
