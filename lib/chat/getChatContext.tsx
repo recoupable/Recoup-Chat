@@ -3,6 +3,7 @@ import getFandata from "./getFandata";
 import { INSTRUCTION } from "./const";
 import getFollows from "./getFollows";
 import getTopScore from "./getTopScore";
+import getMostPlayed from "./getMostPlayed";
 
 const getChatContext = async () => {
   const context = [];
@@ -29,6 +30,9 @@ const getChatContext = async () => {
 
     const topSoredName = await getTopScore(client);
     context.push(`\n3. Highest scoring fan: ${topSoredName}`);
+
+    const mostPlayedFan = await getMostPlayed(client);
+    context.push(`\n4. Most played fan: ${mostPlayedFan}`);
   }
 
   return context.join("\n");
