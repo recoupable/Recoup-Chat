@@ -5,10 +5,11 @@ const getTopScore = async (client: SupabaseClient<Database, "public">) => {
   const { data } = await client
     .from("leaderboard")
     .select("*")
-    .order("Score", { ascending: false })
-    .single();
+    .order("Score", { ascending: false });
 
-  return data;
+  if (!data) return "";
+
+  return data[0].Name;
 };
 
 export default getTopScore;

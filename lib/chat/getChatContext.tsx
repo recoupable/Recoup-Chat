@@ -4,6 +4,7 @@ import { INSTRUCTION } from "./const";
 import getFollows from "./getFollows";
 import getTopScore from "./getTopScore";
 import getMostPlayed from "./getMostPlayed";
+import getStreamsCount from "./getStreamsCount";
 
 const getChatContext = async () => {
   const context = [];
@@ -33,8 +34,12 @@ const getChatContext = async () => {
 
     const mostPlayedFan = await getMostPlayed(client);
     context.push(`\n4. Most played fan: ${mostPlayedFan}`);
+
+    const streamsCount = await getStreamsCount(client);
+    context.push(`\n5. Streams Count: ${streamsCount}`);
   }
 
+  console.log("ZIAD", context.join("\n"));
   return context.join("\n");
 };
 
