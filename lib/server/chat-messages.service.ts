@@ -1,6 +1,6 @@
 import "server-only";
 
-import getChatContext from "../getChatContext";
+import getChatContext from "../chat/getChatContext";
 import { AI_MODEL } from "../consts";
 export function createChatMessagesService() {
   return new ChatMessagesService();
