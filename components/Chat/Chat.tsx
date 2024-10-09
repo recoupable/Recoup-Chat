@@ -13,9 +13,8 @@ const Chat = () => {
       <p className="font-sans font-semibold text-2xl mb-2 text-center">
         {`How is Luh Tyler's 3D Game Performing?`}
       </p>
-      {messages.length === 0 && <ChatInput />}
       <ScrollTo>{({ scroll }) => <Messages scroll={scroll} />}</ScrollTo>
-      {messages.length > 0 && <ChatInput />}
+      <ChatInput />
     </div>
   );
 };
