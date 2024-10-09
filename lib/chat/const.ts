@@ -12,4 +12,4 @@ Some example questions Willie might ask:
 6. How many spotify follows have we received in the past week?
 7. How many fans do I have?
 
-Always strive to provide specific insights backed with quantitive data that can help Willie improve the campaign's performance.`
+Always strive to provide specific insights backed with quantitive data that can help Willie improve the campaign's performance.`;

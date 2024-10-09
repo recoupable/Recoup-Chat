@@ -18,16 +18,15 @@ const getChatContext = async () => {
     context.push(INSTRUCTION);
 
     const fanContext = `\n\n1. Fans for the latest campaign in the format (${columns.join(
-      ", "
+      ", ",
     )}):\n\t
     ${rows.join("\n\t")}`;
     context.push(fanContext);
 
-    const follows = await getFollows(client)
-    context.push(`\n2. Followers: ${follows}`)
+    const follows = await getFollows(client);
+    context.push(`\n2. Followers: ${follows}`);
   }
 
-  console.log("ZIAD", context.join("\n"))
   return context.join("\n");
 };
 
