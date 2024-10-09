@@ -1086,7 +1086,6 @@ export type Database = {
         };
         Update: {
           clientId: string | null;
-          fanId: string;
           timestamp: number | null;
           game: string | null;
           isPremium: boolean;
