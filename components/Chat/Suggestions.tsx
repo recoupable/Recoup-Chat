@@ -3,7 +3,7 @@ import { ArrowUpRightIcon } from "lucide-react";
 
 const Suggestions = () => {
   return (
-    <div className="w-full px-2 mt-2 flex gap-3 flex-wrap">
+    <div className="max-w-3xl mx-auto w-full px-2 mt-2 flex gap-3 flex-wrap">
       {SUGGESTIONS.map((suggestion: string) => (
         <button
           key={suggestion}
