@@ -2,6 +2,7 @@ import { getSupabaseServerAdminClient } from "@/packages/supabase/src/clients/se
 import getFandata from "./getFandata";
 import { INSTRUCTION } from "./const";
 import getFollows from "./getFollows";
+import getTopScore from "./getTopScore";
 
 const getChatContext = async () => {
   const context = [];
@@ -25,6 +26,9 @@ const getChatContext = async () => {
 
     const follows = await getFollows(client);
     context.push(`\n2. Followers: ${follows}`);
+
+    const topSoredName = await getTopScore(client);
+    context.push(`\n3. Most played fan: ${topSoredName}`);
   }
 
   return context.join("\n");

@@ -15,5 +15,4 @@ export const SUGGESTIONS = [
   "Who's scored the highest?",
   "How many streams did this team?",
   "How many followers did this gain?",
-  "What's the average listening time?",
 ];
