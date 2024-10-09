@@ -1,7 +1,7 @@
 import { useChatProvider } from "@/providers/ChatProvider";
 import ChatInput from "./ChatInput";
 import Messages from "./Messages";
-import { TvMinimalPlay, LoaderCircle } from "lucide-react";
+import Thinking from "./Thinking";
 
 const Chat = () => {
   const { messages, pending } = useChatProvider();
@@ -15,15 +15,7 @@ const Chat = () => {
       </p>
       <ChatInput />
       <Messages />
-      {pending && (
-        <div className="flex gap-2 w-full max-w-3xl mx-auto px-3 items-center">
-          <div className="size-fit">
-            <TvMinimalPlay className="h-6 w-6" />
-          </div>
-          <p>is thinking...</p>
-          <LoaderCircle className="h-4 w-4 animate-spin" />
-        </div>
-      )}
+      {pending && <Thinking />}
     </div>
   );
 };
