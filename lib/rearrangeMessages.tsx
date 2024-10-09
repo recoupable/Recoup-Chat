@@ -14,11 +14,9 @@ const rearrangesMessages = (messages: Message[]) => {
 
   for (let i = 0; i < maxCount * 2; i++) {
     if (i % 2 === 0 && userIndex < userCount) {
-      // Push user role
       flattenMessages.push(usersMessage[userIndex]);
       userIndex++;
     } else if (i % 2 !== 0 && assistantIndex < assistantCount) {
-      // Push assistant role
       flattenMessages.push(assistantMessages[assistantIndex]);
       assistantIndex++;
     }
