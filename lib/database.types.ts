@@ -1039,6 +1039,35 @@ export type Database = {
         };
         Relationships: [];
       };
+      spotify_play_button_clicked: {
+        Row: {
+          clientId: string | null;
+          fanId: string;
+          timestamp: number | null;
+          game: string | null;
+        };
+        Insert: {
+          clientId: string | null;
+          fanId: string;
+          timestamp: number | null;
+          game: string | null;
+        };
+        Update: {
+          clientId: string | null;
+          fanId: string;
+          timestamp: number | null;
+          game: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "spotify_play_button_clicked_fanId_fkey";
+            columns: ["fanId"];
+            isOneToOne: false;
+            referencedRelation: "fans";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       save_track: {
         Row: {
           game: string | null;
