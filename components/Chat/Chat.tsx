@@ -1,11 +1,10 @@
 import { useChatProvider } from "@/providers/ChatProvider";
 import ChatInput from "./ChatInput";
 import Messages from "./Messages";
-import Thinking from "./Thinking";
 import { ScrollTo } from "react-scroll-to";
 
 const Chat = () => {
-  const { messages, pending } = useChatProvider();
+  const { messages } = useChatProvider();
 
   return (
     <div
@@ -17,7 +16,6 @@ const Chat = () => {
       {messages.length === 0 && <ChatInput />}
       <ScrollTo>{({ scroll }) => <Messages scroll={scroll} />}</ScrollTo>
       {messages.length > 0 && <ChatInput />}
-      {pending && <Thinking />}
     </div>
   );
 };

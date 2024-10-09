@@ -4,18 +4,19 @@ import { UserIcon, TvMinimalPlay } from "lucide-react";
 import { useEffect } from "react";
 import ReactMarkdown from "react-markdown";
 import { ScrollArea } from "react-scroll-to";
+import Thinking from "./Thinking";
 
 const Messages = ({
   scroll,
 }: {
   scroll: ({ smooth, y }: { smooth: boolean; y: number }) => void;
 }) => {
-  const { messages } = useChatProvider();
+  const { messages, pending } = useChatProvider();
 
   useEffect(() => {
     scroll({ smooth: true, y: Number.MAX_SAFE_INTEGER });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [messages]);
+  }, [messages, pending]);
 
   return (
     <ScrollArea
@@ -35,6 +36,7 @@ const Messages = ({
           </div>
         </div>
       ))}
+      {pending && <Thinking />}
     </ScrollArea>
   );
 };
