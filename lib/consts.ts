@@ -13,6 +13,6 @@ export const DESCRIPTION =
 export const SUGGESTIONS = [
   "Who's played the most?",
   "Who's scored the highest?",
-  "How many streams did this team?",
-  "How many followers did this gain?",
+  "How many streams did this campaign earn?",
+  "How many followers did this campaign earn?",
 ];

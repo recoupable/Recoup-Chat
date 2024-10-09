@@ -62,7 +62,6 @@ const getChatContext = async () => {
     context.push(`\n8. New followers in past 24hrs: ${followersCount}`);
   }
 
-  console.log("ZIAD", context.join("\n"));
   return context.join("\n");
 };
 

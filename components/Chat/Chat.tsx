@@ -1,21 +1,20 @@
 import { useChatProvider } from "@/providers/ChatProvider";
 import ChatInput from "./ChatInput";
 import Messages from "./Messages";
-import Thinking from "./Thinking";
+import { ScrollTo } from "react-scroll-to";
 
 const Chat = () => {
-  const { messages, pending } = useChatProvider();
+  const { messages } = useChatProvider();
 
   return (
     <div
-      className={`overflow-hidden ${messages.length ? "w-screen px-4 pt-20 mb-[220px] overflow-y-auto h-[calc(100vh-220px)]" : "flex flex-col items-center justify-center h-screen mx-auto max-w-3xl"}`}
+      className={`w-screen h-screen overflow-hidden flex flex-col ${messages.length ? "px-4 pb-5 pt-20" : "items-center justify-center"}`}
     >
       <p className="font-sans font-semibold text-2xl mb-2 text-center">
         {`How is Luh Tyler's 3D Game Performing?`}
       </p>
+      <ScrollTo>{({ scroll }) => <Messages scroll={scroll} />}</ScrollTo>
       <ChatInput />
-      <Messages />
-      {pending && <Thinking />}
     </div>
   );
 };
