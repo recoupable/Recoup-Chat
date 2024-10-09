@@ -1045,18 +1045,21 @@ export type Database = {
           fanId: string;
           timestamp: number | null;
           game: string | null;
+          isPremium: boolean;
         };
         Insert: {
           clientId: string | null;
           fanId: string;
           timestamp: number | null;
           game: string | null;
+          isPremium: boolean;
         };
         Update: {
           clientId: string | null;
           fanId: string;
           timestamp: number | null;
           game: string | null;
+          isPremium: boolean;
         };
         Relationships: [
           {
@@ -1067,6 +1070,28 @@ export type Database = {
             referencedColumns: ["id"];
           },
         ];
+      };
+      spotify_login_button_clicked: {
+        Row: {
+          clientId: string | null;
+          timestamp: number | null;
+          game: string | null;
+          isPremium: boolean;
+        };
+        Insert: {
+          clientId: string | null;
+          timestamp: number | null;
+          game: string | null;
+          isPremium: boolean;
+        };
+        Update: {
+          clientId: string | null;
+          fanId: string;
+          timestamp: number | null;
+          game: string | null;
+          isPremium: boolean;
+        };
+        Relationships: [];
       };
       save_track: {
         Row: {

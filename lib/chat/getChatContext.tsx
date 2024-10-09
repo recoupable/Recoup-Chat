@@ -5,6 +5,9 @@ import getFollows from "./getFollows";
 import getTopScore from "./getTopScore";
 import getMostPlayed from "./getMostPlayed";
 import getStreamsCount from "./getStreamsCount";
+import getSpotifyFansPast7 from "./getSpotifyFansInPast";
+import getStartedFans from "./getStartedFans";
+import getFollowersInPast from "./getFollowersInPast";
 
 const getChatContext = async () => {
   const context = [];
@@ -37,6 +40,26 @@ const getChatContext = async () => {
 
     const streamsCount = await getStreamsCount(client);
     context.push(`\n5. Streams Count: ${streamsCount}`);
+
+    const usersInPast7 = await getSpotifyFansPast7(
+      client,
+      7 * 24 * 60 * 60 * 1000,
+    );
+    const userRows = usersInPast7.map((user) => Object.values(user));
+    const usersContext = `\n\n6. Users signed in with spotify in the past 7 days in the format ( Name, Country, Game, Timestamp ):\n\t
+    ${userRows.length ? userRows.join("\n\t") : "There are no users signed in in the past 7 days."}`;
+    context.push(usersContext);
+
+    const startedFansCount = await getStartedFans(client);
+    context.push(
+      `\n7. Users started signing in with spotify: ${startedFansCount}`,
+    );
+
+    const followersCount = await getFollowersInPast(
+      client,
+      24 * 60 * 60 * 1000,
+    );
+    context.push(`\n8. New followers in past 24hrs: ${followersCount}`);
   }
 
   console.log("ZIAD", context.join("\n"));
