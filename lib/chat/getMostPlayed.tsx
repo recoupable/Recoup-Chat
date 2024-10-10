@@ -1,21 +1,28 @@
-import { SupabaseClient } from "@supabase/supabase-js";
-import { Database } from "../database.types";
+import { SCORE_EVENT } from "@/types/score";
 
-const getMostPlayed = async (client: SupabaseClient<Database, "public">) => {
-  const { data } = await client
-    .from("spotify_play_button_clicked")
-    .select("fanId, count()");
+const getMostPlayed = (scores: SCORE_EVENT[]) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const usernameCount = {} as any;
 
-  if (!data) return "";
-  const fanId = data[0].fanId;
+  scores.forEach((score) => {
+    const username = score.metadata.username;
+    if (!usernameCount[username]) {
+      usernameCount[username] = 0;
+    }
+    usernameCount[username]++;
+  });
 
-  const { data: fan } = await client
-    .from("fans")
-    .select("*")
-    .eq("id", fanId)
-    .single();
+  let maxCount = 0;
+  let mostPlayedFan = "";
 
-  return fan?.display_name;
+  for (const username in usernameCount) {
+    if (usernameCount[username] > maxCount) {
+      maxCount = usernameCount[username];
+      mostPlayedFan = username;
+    }
+  }
+
+  return mostPlayedFan;
 };
 
 export default getMostPlayed;
