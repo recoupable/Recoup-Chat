@@ -17,7 +17,7 @@ const getChatContext = async () => {
   const context = [];
   const client = getSupabaseServerAdminClient();
   const { data: fans } = await client.from("fans").select("*");
-  const scores: SCORE_EVENT[] = await getUsersScore()
+  const scores: SCORE_EVENT[] = await getUsersScore();
 
   if (fans?.length && fans[0]) {
     const columns = Object.keys(fans[0]);
@@ -66,11 +66,15 @@ const getChatContext = async () => {
     );
     context.push(`\n8. New followers in past 24hrs: ${followersCount}`);
 
-    const recentScore = getRecentScore(scores)
-    context.push(`\n9. Fan who has the most recent score: ${recentScore.metadata.username}`);
+    const recentScore = getRecentScore(scores);
+    context.push(
+      `\n9. Fan who has the most recent score: ${recentScore.metadata.username}`,
+    );
 
-    const scoresInPast24 = getScoresInPast24(scores)
-    context.push(`\n10. Count of people scored in the past 24hrs: ${scoresInPast24}`);    
+    const scoresInPast24 = getScoresInPast24(scores);
+    context.push(
+      `\n10. Count of people scored in the past 24hrs: ${scoresInPast24}`,
+    );
   }
 
   return context.join("\n");
