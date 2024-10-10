@@ -5,7 +5,7 @@ import { Database } from "../database.types";
 const getFans = async (client: SupabaseClient<Database, "public">) => {
   const { data: fans } = await client.from("fans").select("*");
 
-  if (!fans?.length || !fans[0]) return [];
+  if (!fans?.length || !fans[0]) return "";
 
   const columns = Object.keys(fans[0]);
   const rows = fans.map((fan) => {
