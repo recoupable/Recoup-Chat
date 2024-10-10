@@ -1,17 +1,17 @@
 import { getSupabaseServerAdminClient } from "@/packages/supabase/src/clients/server-admin-client";
 import getFandata from "./getFandata";
 import { HABIT_INSTRUCTION, INSTRUCTION } from "./const";
-import getFollows from "./getFollows";
-import getTopScore from "./getTopScore";
-import getMostPlayed from "./getMostPlayed";
-import getStreamsCount from "./getStreamsCount";
-import getSpotifyFansPast7 from "./getSpotifyFansInPast";
-import getStartedFans from "./getStartedFans";
-import getFollowersInPast from "./getFollowersInPast";
+// import getFollows from "./getFollows";
+// import getTopScore from "./getTopScore";
+// import getMostPlayed from "./getMostPlayed";
+// import getStreamsCount from "./getStreamsCount";
+// import getSpotifyFansPast7 from "./getSpotifyFansInPast";
+// import getStartedFans from "./getStartedFans";
+// import getFollowersInPast from "./getFollowersInPast";
 import getUsersScore from "../stack/getUsersScore";
 import { SCORE_EVENT } from "@/types/score";
-import getRecentScore from "./getRecentScore";
-import getScoresInPast24 from "./getScoresInPast24";
+// import getRecentScore from "./getRecentScore";
+// import getScoresInPast24 from "./getScoresInPast24";
 
 const getChatContext = async (isHabitQuestion: boolean) => {
   const context = [];
