@@ -1,6 +1,6 @@
 import { getSupabaseServerAdminClient } from "@/packages/supabase/src/clients/server-admin-client";
 import getFandata from "./getFandata";
-import { INSTRUCTION } from "./const";
+import { HABIT_INSTRUCTION, INSTRUCTION } from "./const";
 import getFollows from "./getFollows";
 import getTopScore from "./getTopScore";
 import getMostPlayed from "./getMostPlayed";
@@ -20,17 +20,14 @@ const getChatContext = async (isHabitQuestion: boolean) => {
   const scores: SCORE_EVENT[] = await getUsersScore();
 
   if (fans?.length && fans[0]) {
-    const columns = Object.keys(fans[0]);
     const rows = fans.map((fan) => {
       const data = getFandata(fan);
       return Object.values(data);
     });
 
-    if (!isHabitQuestion) context.push(INSTRUCTION);
+    context.push(isHabitQuestion ? HABIT_INSTRUCTION : INSTRUCTION);
 
-    const fanContext = `\n\n1. Fans for the latest campaign in the format (${columns.join(
-      ", ",
-    )}):\n\t
+    const fanContext = `\n\n1. Fans for the latest campaign in the format (userNames, artistNames, country, city, user_type):\n\t
     ${rows.join("\n\t")}`;
     context.push(fanContext);
 
@@ -80,7 +77,6 @@ const getChatContext = async (isHabitQuestion: boolean) => {
       context.push(`\n11. Count of fans: ${fans.length}`);
     }
   }
-  console.log("ZIAD", context.join("\n"));
   return context.join("\n");
 };
 
