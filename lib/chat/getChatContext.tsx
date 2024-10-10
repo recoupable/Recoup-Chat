@@ -1,6 +1,6 @@
 import { getSupabaseServerAdminClient } from "@/packages/supabase/src/clients/server-admin-client";
 import getFandata from "./getFandata";
-import { HABIT_INSTRUCTION, INSTRUCTION } from "./const";
+import { HABIT_INSTRUCTION, INSTRUCTION, NOTES } from "./const";
 import getFollows from "./getFollows";
 import getTopScore from "./getTopScore";
 import getMostPlayed from "./getMostPlayed";
@@ -25,6 +25,7 @@ const getChatContext = async (isHabitQuestion: boolean) => {
       return Object.values(data);
     });
 
+    context.push(NOTES);
     context.push(isHabitQuestion ? HABIT_INSTRUCTION : INSTRUCTION);
 
     const fanContext = `\n\n1. Fans for the latest campaign in the format (userNames, artistNames, country, city, user_type):\n\t
