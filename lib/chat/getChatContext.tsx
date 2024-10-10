@@ -1,5 +1,4 @@
 import { getSupabaseServerAdminClient } from "@/packages/supabase/src/clients/server-admin-client";
-import { INSTRUCTION } from "./const";
 import getFollows from "./getFollows";
 import getTopScore from "./getTopScore";
 import getMostPlayed from "./getMostPlayed";
@@ -12,12 +11,14 @@ import { SCORE_EVENT } from "@/types/score";
 import getRecentScore from "./getRecentScore";
 import getScoresInPast24 from "./getScoresInPast24";
 import getFans from "./getFans";
+import { INSTRUCTION, NOTES } from "./const";
 
 const getChatContext = async () => {
   const context = [];
   const client = getSupabaseServerAdminClient();
   const scores: SCORE_EVENT[] = await getUsersScore();
 
+  context.push(NOTES);
   context.push(INSTRUCTION);
 
   context.push(
