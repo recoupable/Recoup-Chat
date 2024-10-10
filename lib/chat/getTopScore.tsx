@@ -1,15 +1,7 @@
-import { SupabaseClient } from "@supabase/supabase-js";
-import { Database } from "../database.types";
+import { SCORE_EVENT } from "@/types/score";
 
-const getTopScore = async (client: SupabaseClient<Database, "public">) => {
-  const { data } = await client
-    .from("leaderboard")
-    .select("*")
-    .order("Score", { ascending: false });
-
-  if (!data) return "";
-
-  return data[0].Name;
+const getTopScore = (scores: SCORE_EVENT[]) => {
+  return scores.sort((a, b) => a.points - b.points)[0]
 };
 
 export default getTopScore;
