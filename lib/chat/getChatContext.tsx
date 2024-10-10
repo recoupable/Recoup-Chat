@@ -1,6 +1,6 @@
 import { getSupabaseServerAdminClient } from "@/packages/supabase/src/clients/server-admin-client";
 import getFandata from "./getFandata";
-import { HABIT_INSTRUCTION, INSTRUCTION } from "./const";
+import { HABIT_INSTRUCTION } from "./const";
 // import getFollows from "./getFollows";
 // import getTopScore from "./getTopScore";
 // import getMostPlayed from "./getMostPlayed";
@@ -8,16 +8,17 @@ import { HABIT_INSTRUCTION, INSTRUCTION } from "./const";
 // import getSpotifyFansPast7 from "./getSpotifyFansInPast";
 // import getStartedFans from "./getStartedFans";
 // import getFollowersInPast from "./getFollowersInPast";
-import getUsersScore from "../stack/getUsersScore";
-import { SCORE_EVENT } from "@/types/score";
+// import getUsersScore from "../stack/getUsersScore";
+// import { SCORE_EVENT } from "@/types/score";
 // import getRecentScore from "./getRecentScore";
 // import getScoresInPast24 from "./getScoresInPast24";
 
 const getChatContext = async (isHabitQuestion: boolean) => {
+  console.log("ZIAD", isHabitQuestion)
   const context = [];
   const client = getSupabaseServerAdminClient();
   const { data: fans } = await client.from("fans").select("*");
-  const scores: SCORE_EVENT[] = await getUsersScore();
+  // const scores: SCORE_EVENT[] = await getUsersScore();
 
   if (fans?.length && fans[0]) {
     const rows = fans.map((fan) => {
@@ -25,7 +26,7 @@ const getChatContext = async (isHabitQuestion: boolean) => {
       return Object.values(data);
     });
 
-    context.push(isHabitQuestion ? HABIT_INSTRUCTION : INSTRUCTION);
+    context.push(HABIT_INSTRUCTION);
 
     const fanContext = `\n\n1. Fans for the latest campaign in the format (userNames, artistNames, country, city, user_type):\n\t
     ${rows.join("\n\t")}`;
