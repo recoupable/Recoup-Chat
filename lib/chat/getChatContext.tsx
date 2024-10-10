@@ -28,11 +28,17 @@ const getChatContext = async () => {
 
     context.push(INSTRUCTION);
 
+    context.push(
+      "//////////// If some ask about listening habit, please use only this data. - START //////////////",
+    );
     const fanContext = `\n\n1. Fans for the latest campaign in the format (${columns.join(
       ", ",
-    )}) - (If someone ask about listening habit, please use only this context for the answer.):\n\t
+    )}):\n\t
     ${rows.join("\n\t")}`;
     context.push(fanContext);
+    context.push(
+      "//////////// If someone ask about listening habit, please use only this data - END //////////////",
+    );
 
     const follows = await getFollows(client);
     context.push(`\n2. Followers: ${follows}`);
@@ -76,6 +82,7 @@ const getChatContext = async () => {
       `\n10. Count of people scored in the past 24hrs: ${scoresInPast24}`,
     );
   }
+  console.log("ZIAD", context.join("\n"));
   return context.join("\n");
 };
 
