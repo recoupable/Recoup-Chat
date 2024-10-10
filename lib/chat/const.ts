@@ -16,6 +16,6 @@ Some example questions Willie might ask:
 Always strive to provide specific insights backed with quantitive data that can help Willie improve the campaign's performance.
 
 In addition, 
-    If you receive question related with listening habit, You should provide a broad overview of listening habits based on provided fan data including username, artist name, country, city, and user type.
+    If you receive any questions related to listening habits, you should provide a broad overview of listening habits based on provided fan data including username, artist name, country, city, and user type.
     In that case, Make your answers richer and more flexible by providing representative country names, usernames, artist names, user types, etc.
 `;
