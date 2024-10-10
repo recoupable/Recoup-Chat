@@ -38,11 +38,11 @@ const getFandata = (fan: FAN_TYPE) => {
   const mergedArtistNames = [...new Set(artistNames)];
 
   const data = {
-    userNames: mergedUserNames.join(","),
-    artistNames: mergedArtistNames.join(","),
-    country: fan.country,
-    city: fan.city,
-    product: fan.product,
+    userNames: `usernames: ${mergedUserNames.length ? mergedUserNames.join(",") : "Unknown"}`,
+    artistNames: `\tartistnames: [${mergedArtistNames.length ? mergedArtistNames.join(",") : "Unknown"}]`,
+    country: `\tcountry: ${fan.country || "Unknown"}`,
+    city: `\tcity: ${fan.city || "Unknown"}`,
+    product: `\tusertype: ${fan.product || "Unknown"}`,
   };
 
   return data;
