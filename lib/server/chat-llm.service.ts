@@ -70,7 +70,7 @@ class ChatLLMService {
     // we need to limit the history length so not to exceed the max tokens of the model
     // let's assume for simplicity that all models have a max tokens of 128000
     // so we need to make sure that the history doesn't exceed output length + system message length
-    const maxModelTokens = 128000;
+    const maxModelTokens = 228000;
 
     const maxHistoryLength = maxModelTokens - systemMessage.length - maxTokens;
     let decodedHistory = encodeChat(messages, AI_MODEL);
