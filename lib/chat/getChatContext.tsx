@@ -1,6 +1,4 @@
 import { getSupabaseServerAdminClient } from "@/packages/supabase/src/clients/server-admin-client";
-import getFandata from "./getFandata";
-import { HABIT_INSTRUCTION, INSTRUCTION } from "./const";
 import getFollows from "./getFollows";
 import getTopScore from "./getTopScore";
 import getMostPlayed from "./getMostPlayed";
@@ -13,19 +11,15 @@ import { SCORE_EVENT } from "@/types/score";
 import getRecentScore from "./getRecentScore";
 import getScoresInPast24 from "./getScoresInPast24";
 import getFans from "./getFans";
+import { INSTRUCTION, NOTES } from "./const";
 
 const getChatContext = async () => {
   const context = [];
   const client = getSupabaseServerAdminClient();
   const scores: SCORE_EVENT[] = await getUsersScore();
 
-  if (fans?.length && fans[0]) {
-    const rows = fans.map((fan) => {
-      const data = getFandata(fan);
-      return Object.values(data);
-    });
-
-    context.push(isHabitQuestion ? HABIT_INSTRUCTION : INSTRUCTION);
+  context.push(NOTES);
+  context.push(INSTRUCTION);
 
   context.push(
     `\n\n1. Fans for the latest campaign in the format (userNames, artistNames, country, city, user_type):\n\t`,
