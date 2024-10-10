@@ -21,7 +21,7 @@ const Suggestions = () => {
             })
           }
         >
-          {suggestion}
+          <p className="text-left">{suggestion}</p>
           <ArrowUpRightIcon className="w-4 h-4" />
         </button>
       ))}
