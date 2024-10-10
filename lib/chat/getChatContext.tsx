@@ -30,7 +30,7 @@ const getChatContext = async () => {
 
     const fanContext = `\n\n1. Fans for the latest campaign in the format (${columns.join(
       ", ",
-    )}):\n\t
+    )}) - (If someone ask about listening habit, please use only this context for the answer.):\n\t
     ${rows.join("\n\t")}`;
     context.push(fanContext);
 
