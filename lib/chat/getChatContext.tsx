@@ -26,7 +26,7 @@ const getChatContext = async (isHabitQuestion: boolean) => {
       return Object.values(data);
     });
 
-    context.push(INSTRUCTION);
+    if (!isHabitQuestion) context.push(INSTRUCTION);
 
     const fanContext = `\n\n1. Fans for the latest campaign in the format (${columns.join(
       ", ",
@@ -76,8 +76,11 @@ const getChatContext = async (isHabitQuestion: boolean) => {
       context.push(
         `\n10. Count of people scored in the past 24hrs: ${scoresInPast24}`,
       );
+
+      context.push(`\n11. Count of fans: ${fans.length}`);
     }
   }
+  console.log("ZIAD", context.join("\n"));
   return context.join("\n");
 };
 
