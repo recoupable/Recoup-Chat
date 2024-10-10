@@ -26,7 +26,7 @@ const getChatContext = async () => {
   const follows = await getFollows(client);
   context.push(`\n2. Followers: ${follows}`);
 
-  let scoreContext = `\n3. Scores of fan ( please calculate a count for each username to indicate the number of times each player has played the game. ): \n`;
+  let scoreContext = `\n3. Scores of fan ( please calculate a count for each username to indicate the number of times each player get the score. You should get them based on username as unique value.): \n`;
   scores.map((score: SCORE_EVENT) => {
     scoreContext =
       scoreContext +
