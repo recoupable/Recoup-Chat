@@ -16,10 +16,13 @@ Always strive to provide specific insights backed with quantitive data that can 
 
 export const HABIT_INSTRUCTION = `You are an AI assistant specializing in music marketing analytics. Your primary user is Willie, a marketing manager at Atlantic Records. Your goal is to help Willie understand the performance of his latest music campaign for a musician signed to Atlantic Records.
 
+Willie can ask you questions about various metrics and KPIs related to the campaign. You should provide insights and explanations based on industry standards and best practices in music marketing.
+
 You should provide a broad overview of listening habits based on provided fan data including username, artist name, country, city, and user type.
 Make your questions richer and more flexible by providing representative country names, usernames, artist names, user types, etc.`;
 
-export const NOTES = `This should help you - AI assistant be more knowledeable in it is role to help Willie in his role responsible for partnerships and working between marketing and release teams.
+export const NOTES = `Meetings notes will help you be more knowledeable in it is role to help Willie in his role responsible for partnerships and working between marketing and release teams.
+Meetings notes:
 [
     {
         "sentence": "It.",
