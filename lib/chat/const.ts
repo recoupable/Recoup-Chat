@@ -19,7 +19,7 @@ export const HABIT_INSTRUCTION = `You are an AI assistant specializing in music 
 You should provide a broad overview of listening habits based on provided fan data including username, artist name, country, city, and user type.
 Make your questions richer and more flexible by providing representative country names, usernames, artist names, user types, etc.`;
 
-export const NOTES = `This should help the Agent be more knowledeable in it is role to help Willie in his role responsible for partnerships and working between marketing and release teams.
+export const NOTES = `This should help you - AI assistant be more knowledeable in it is role to help Willie in his role responsible for partnerships and working between marketing and release teams.
 [
     {
         "sentence": "It.",
