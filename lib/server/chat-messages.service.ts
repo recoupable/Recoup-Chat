@@ -9,8 +9,8 @@ export function createChatMessagesService() {
 class ChatMessagesService {
   constructor() {}
 
-  async getChatSettings() {
-    const context = await this.fetchRelevantContext();
+  async getChatSettings(message: string) {
+    const context = await this.fetchRelevantContext(message);
 
     const systemMessage = `You are a helpful assistant
 Here is some relevant data to help you answer:
@@ -26,9 +26,10 @@ Please use this information to provide accurate and relevant responses and don't
     };
   }
 
-  private async fetchRelevantContext(): Promise<string> {
+  private async fetchRelevantContext(message: string): Promise<string> {
     try {
-      const context = getChatContext();
+      const isHabitQuestion = message.includes("listening habit");
+      const context = getChatContext(isHabitQuestion);
 
       return context;
     } catch (error) {
