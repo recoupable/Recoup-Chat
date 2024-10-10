@@ -26,7 +26,7 @@ const getChatContext = async () => {
   const follows = await getFollows(client);
   context.push(`\n2. Followers: ${follows}`);
 
-  let scoreContext = `\n3. Scores of fan: \n`;
+  let scoreContext = `\n3. Scores of fan ( please calculate a count for each username to indicate the number of times each player has played the game.) \n`;
   scores.map((score: SCORE_EVENT) => {
     scoreContext =
       scoreContext +
@@ -39,7 +39,7 @@ const getChatContext = async () => {
     `\n4. Highest scoring fan: ${topScore.metadata.username}(score is ${topScore.points})`,
   );
 
-  const mostPlayedFan = await getMostPlayed(client);
+  const mostPlayedFan = getMostPlayed(scores);
   context.push(`\n5. Most played fan: ${mostPlayedFan}`);
 
   const streamsCount = await getStreamsCount(client);
