@@ -40,9 +40,9 @@ const getFandata = (fan: FAN_TYPE) => {
   const data = {
     userNames: `usernames: [${mergedUserNames.join(",")}]`,
     artistNames: `\tartistnames: [${mergedArtistNames.join(",")}]`,
-    country: `\tcountry: ${fan.country}`,
-    city: `\tcity: ${fan.city}`,
-    product: `usertype: ${fan.product}`,
+    country: `\tcountry: ${fan.country || "Unknown"}`,
+    city: `\tcity: ${fan.city || "Unknown"}`,
+    product: `\tusertype: ${fan.product || "Unknown"}`,
   };
 
   return data;
