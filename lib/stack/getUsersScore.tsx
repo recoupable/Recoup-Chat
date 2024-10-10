@@ -17,8 +17,8 @@ const getUsersScore = async () => {
 
   return events.map((event) => ({
     ...event,
-    timestamp: new Date(event.timestamp).getTime()
-  })) as SCORE_EVENT[]
+    timestamp: new Date(event.timestamp).getTime(),
+  })) as SCORE_EVENT[];
 };
 
 export default getUsersScore;
