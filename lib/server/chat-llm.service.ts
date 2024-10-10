@@ -61,9 +61,7 @@ class ChatLLMService {
     // await this.assertEnoughCredits(accountId);
 
     // retrieve the chat settings
-    const settings = await chatMessagesService.getChatSettings(
-      lastMessage.content,
-    );
+    const settings = await chatMessagesService.getChatSettings();
     const systemMessage = settings.systemMessage;
     const maxTokens = settings.maxTokens;
 
