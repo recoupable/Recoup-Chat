@@ -28,7 +28,7 @@ Please use this information to provide accurate and relevant responses and don't
 
   private async fetchRelevantContext(message: string): Promise<string> {
     try {
-      const isHabitQuestion = message.includes("listening habit");
+      const isHabitQuestion = message.includes("habit");
       const context = getChatContext(isHabitQuestion);
 
       return context;
