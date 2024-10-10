@@ -5,20 +5,14 @@ import { Database } from "../database.types";
 const getFans = async (client: SupabaseClient<Database, "public">) => {
   const { data: fans } = await client.from("fans").select("*");
 
-  if (!fans?.length || !fans[0]) return "";
+  if (!fans?.length) return "No fans.";
 
-  const columns = Object.keys(fans[0]);
   const rows = fans.map((fan) => {
     const data = getFandata(fan);
     return Object.values(data);
   });
 
-  const fanContext = `\n\n1. Fans for the latest campaign in the format (${columns.join(
-    ", ",
-  )}):\n\t
-    ${rows.join("\n\t")}`;
-
-  return fanContext;
+  return rows.join("\n\t");
 };
 
 export default getFans;

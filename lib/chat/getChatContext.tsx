@@ -20,6 +20,9 @@ const getChatContext = async (isHabitQuestion: boolean) => {
 
   context.push(isHabitQuestion ? HABIT_INSTRUCTION : INSTRUCTION);
 
+  context.push(
+    `\n\n1. Fans for the latest campaign in the format (userNames, artistNames, country, city, user_type):\n\t`,
+  );
   const fanContext = await getFans(client);
   context.push(fanContext);
 
@@ -60,7 +63,10 @@ const getChatContext = async (isHabitQuestion: boolean) => {
       `\n8. Users started signing in with spotify: ${startedFansCount}`,
     );
 
-    const followersCount = await getFollowersInPast(client, 24 * 60 * 60 * 1000);
+    const followersCount = await getFollowersInPast(
+      client,
+      24 * 60 * 60 * 1000,
+    );
     context.push(`\n9. New followers in past 24hrs: ${followersCount}`);
 
     const recentScore = getRecentScore(scores);
