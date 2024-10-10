@@ -38,7 +38,9 @@ const getChatContext = async () => {
     context.push(`\n2. Followers: ${follows}`);
 
     const topScore = getTopScore(scores);
-    context.push(`\n3. Highest scoring fan: ${topScore.metadata.username}`);
+    context.push(
+      `\n3. Highest scoring fan: ${topScore.metadata.username}(score is ${topScore.points})`,
+    );
 
     const mostPlayedFan = await getMostPlayed(client);
     context.push(`\n4. Most played fan: ${mostPlayedFan}`);
