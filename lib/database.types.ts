@@ -1071,6 +1071,27 @@ export type Database = {
           },
         ];
       };
+      apple_play_button_clicked: {
+        Row: {
+          clientId: string | null;
+          appleId: string;
+          timestamp: number | null;
+          game: string | null;
+        };
+        Insert: {
+          clientId: string | null;
+          appleId: string;
+          timestamp: number | null;
+          game: string | null;
+        };
+        Update: {
+          clientId: string | null;
+          appleId: string;
+          timestamp: number | null;
+          game: string | null;
+        };
+        Relationships: [];
+      };
       spotify_login_button_clicked: {
         Row: {
           clientId: string | null;
