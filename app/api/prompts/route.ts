@@ -15,7 +15,7 @@ export async function GET(req: NextRequest) {
           role: "user",
           content: `Based on answer, you should offer logical follow-up questions.
             For example:
-              Do you need assistance with campaign strategy or execution?
+              Could you give me recommendations for promotional tactics and platforms?
             Answer:
               ${answer}
           `,
