@@ -14,8 +14,11 @@ export async function GET(req: NextRequest) {
         {
           role: "user",
           content: `Based on answer, you should offer logical follow-up questions.
-            For example:
-              Could you give me recommendations for promotional tactics and platforms?
+          We're prompting you to help us do our job.
+
+          The question should be formatted as follows:
+          What is your budget for promotional activities? - Wrong.
+          What budget do you recommend for promotional activities? - Correct.
             Answer:
               ${answer}
           `,
