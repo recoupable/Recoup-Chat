@@ -13,11 +13,9 @@ export async function GET(req: NextRequest) {
       messages: [
         {
           role: "user",
-          content: `Based on answer, you should offer logical follow-up questions or actions, guiding Willie through a decision-making process based on the data.
-            Example:
-                "Would you like to explore potential actions to increase paid subscribers based on your free listener data?"
+          content: `Based on answer, you should offer logical follow-up questions."
             Answer:
-                ${answer}
+              ${answer}
           `,
         },
         {
