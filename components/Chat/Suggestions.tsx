@@ -1,14 +1,13 @@
-import { SUGGESTIONS } from "@/lib/consts";
 import { useChatProvider } from "@/providers/ChatProvider";
 import { ArrowUpRightIcon } from "lucide-react";
 import { v4 as uuidV4 } from "uuid";
 
 const Suggestions = () => {
-  const { append } = useChatProvider();
+  const { append, suggestions } = useChatProvider();
 
   return (
     <div className="max-w-3xl mx-auto w-full px-2 mt-2 flex gap-3 flex-wrap">
-      {SUGGESTIONS.map((suggestion: string) => (
+      {suggestions.map((suggestion: string) => (
         <button
           key={suggestion}
           type="button"
