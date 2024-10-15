@@ -5,6 +5,7 @@ import trackNewMessage from "@/lib/stack/trackNewMessage";
 import { Address } from "viem";
 import { usePrivy } from "@privy-io/react-auth";
 import useInitialMessages from "./useInitialMessages";
+import { useEffect } from "react";
 
 const useChat = () => {
   const { login, user } = usePrivy();
@@ -64,6 +65,20 @@ const useChat = () => {
     });
   };
 
+  useEffect(() => {
+    const init = async () => {
+      const lastAnswer = messages.filter(
+        (message) => message.role === "assistant",
+      )?.[0]?.content;
+      const response = await fetch(`/api/prompts?answer=${lastAnswer}`);
+      const data = await response.json();
+
+      console.log("ZIAD", data);
+    };
+
+    if (!messages.length) return;
+    init();
+  }, [messages]);
   return { messages, input, handleInputChange, handleSubmit, append, pending };
 };
 
