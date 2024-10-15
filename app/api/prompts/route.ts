@@ -13,7 +13,9 @@ export async function GET(req: NextRequest) {
       messages: [
         {
           role: "user",
-          content: `Based on answer, you should offer logical follow-up questions."
+          content: `Based on answer, you should offer logical follow-up questions.
+            For example:
+              Do you need assistance with campaign strategy or execution?
             Answer:
               ${answer}
           `,
