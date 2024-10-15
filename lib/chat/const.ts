@@ -16,11 +16,6 @@ Some example questions Willie might ask:
 6. How many spotify follows have we received in the past week?
 7. How many fans do I have?
 
-After providing an answer, you should offer logical follow-up questions or actions, guiding Willie through a decision-making process based on the data.
-
-Example:
-"Would you like to explore potential actions to increase paid subscribers based on your free listener data?"
-
 Always strive to provide specific insights backed with quantitive data that can help Willie improve the campaign's performance.
 `;
 

@@ -5,6 +5,8 @@ import trackNewMessage from "@/lib/stack/trackNewMessage";
 import { Address } from "viem";
 import { usePrivy } from "@privy-io/react-auth";
 import useInitialMessages from "./useInitialMessages";
+import { useEffect, useState } from "react";
+import { SUGGESTIONS } from "@/lib/consts";
 
 const useChat = () => {
   const { login, user } = usePrivy();
@@ -13,6 +15,7 @@ const useChat = () => {
   const accountId = "3664dcb4-164f-4566-8e7c-20b2c93f9951";
   const queryClient = useQueryClient();
   const { initialMessages } = useInitialMessages();
+  const [suggestions, setSuggestions] = useState(SUGGESTIONS);
 
   const {
     messages,
@@ -64,7 +67,30 @@ const useChat = () => {
     });
   };
 
-  return { messages, input, handleInputChange, handleSubmit, append, pending };
+  useEffect(() => {
+    const init = async () => {
+      const lastAnswer = messages.filter(
+        (message) => message.role === "assistant",
+      )?.[0]?.content;
+      const response = await fetch(`/api/prompts?answer=${lastAnswer}`);
+      const data = await response.json();
+
+      setSuggestions(data.questions);
+    };
+
+    if (!messages.length) return;
+    init();
+  }, [messages?.length]);
+
+  return {
+    suggestions,
+    messages,
+    input,
+    handleInputChange,
+    handleSubmit,
+    append,
+    pending,
+  };
 };
 
 export default useChat;
