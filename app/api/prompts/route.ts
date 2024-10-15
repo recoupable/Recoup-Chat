@@ -14,9 +14,9 @@ export async function GET(req: NextRequest) {
         {
           role: "user",
           content: `Based on answer, you should offer logical follow-up questions.
-          We're prompting you to help us do our job.
+          Questions should be in the form of a request for you to help us with our work..
 
-          The question should be formatted as follows:
+          For example, the question should be formatted as follows:
           What is your budget for promotional activities? - Wrong.
           What budget do you recommend for promotional activities? - Correct.
             Answer:
