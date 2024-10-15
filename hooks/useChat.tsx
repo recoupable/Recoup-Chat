@@ -80,7 +80,7 @@ const useChat = () => {
 
     if (!messages.length) return;
     init();
-  }, [messages]);
+  }, [messages?.length]);
 
   return {
     suggestions,
