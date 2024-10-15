@@ -13,9 +13,17 @@ export async function GET(req: NextRequest) {
       messages: [
         {
           role: "user",
-          content: `Based on answer, you should offer logical follow-up questions."
-            Answer:
-              ${answer}
+          content: `Based on the conversation context, generate helpful follow-up questions that encourage deeper exploration and analysis of the provided data. 
+          - Questions should be framed to help guide the user to actionable insights.
+          - Utilize the existing data context to craft relevant and engaging questions.
+          - Ensure that questions are forward-thinking, aimed at helping the user make informed decisions or identify key trends.
+          
+          For example:
+          "What should we do with this data?" - Too broad.
+          "How can we leverage the data on top-scoring fans to improve engagement?" - More specific and action-oriented.
+          
+          Answer:
+          ${answer}
           `,
         },
         {
