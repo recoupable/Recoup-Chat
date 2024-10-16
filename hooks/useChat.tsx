@@ -78,9 +78,9 @@ const useChat = () => {
       setSuggestions(data.questions);
     };
 
-    if (!messages.length) return;
+    if (!messages.length || pending) return;
     init();
-  }, [messages?.length]);
+  }, [messages, pending]);
 
   return {
     suggestions,
