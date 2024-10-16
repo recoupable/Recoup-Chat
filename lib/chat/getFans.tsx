@@ -20,7 +20,7 @@ const getFans = async (client: SupabaseClient<Database, "public">) => {
 
     return Object.values({
       ...data,
-      segment,
+      segmentType: segment,
     });
   });
 
