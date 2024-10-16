@@ -23,12 +23,10 @@ const getChatContext = async () => {
   context.push(INSTRUCTION);
 
   context.push(
-    `\n\n1. Fans for the latest campaign in the format (userNames, artistNames, country, city, user_type, segment):\n\t`,
+    `\n\n1. Fans for the latest campaign in the format (userNames, artistNames, country, city, user_type, segment_type):\n\t`,
   );
   const fanContext = await getFans(client);
   context.push(fanContext);
-
-  console.log("ZIAD", fanContext);
 
   await getFanSegments(client);
   const follows = await getFollows(client);
