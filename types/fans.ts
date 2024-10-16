@@ -5,4 +5,5 @@ export type FAN_TYPE = {
   playlist: string | null;
   recommendations: string | null;
   recentlyPlayed: string | null;
+  id: string;
 };

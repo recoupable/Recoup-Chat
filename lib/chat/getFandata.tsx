@@ -43,6 +43,7 @@ const getFandata = (fan: FAN_TYPE) => {
     country: `\tcountry: ${fan.country || "Unknown"}`,
     city: `\tcity: ${fan.city || "Unknown"}`,
     product: `\tusertype: ${fan.product || "Unknown"}`,
+    id: fan.id,
   };
 
   return data;

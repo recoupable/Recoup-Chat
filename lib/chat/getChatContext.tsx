@@ -12,6 +12,7 @@ import getRecentScore from "./getRecentScore";
 import getScoresInPast24 from "./getScoresInPast24";
 import getFans from "./getFans";
 import { INSTRUCTION, NOTES } from "./const";
+import getFanSegments from "./getFanSegments";
 
 const getChatContext = async () => {
   const context = [];
@@ -22,11 +23,14 @@ const getChatContext = async () => {
   context.push(INSTRUCTION);
 
   context.push(
-    `\n\n1. Fans for the latest campaign in the format (userNames, artistNames, country, city, user_type):\n\t`,
+    `\n\n1. Fans for the latest campaign in the format (userNames, artistNames, country, city, user_type, segment):\n\t`,
   );
   const fanContext = await getFans(client);
   context.push(fanContext);
 
+  console.log("ZIAD", fanContext);
+
+  await getFanSegments(client);
   const follows = await getFollows(client);
   context.push(`\n2. Followers: ${follows}`);
 
