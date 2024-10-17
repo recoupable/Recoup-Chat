@@ -15,6 +15,20 @@ This project is a chatbot application specifically designed for Luh Tyler's 3D V
 - Tailwind CSS for styling
 - TypeScript for type safety
 
+## Context
+
+This tool provides a comprehensive overview of data to empower marketing managers in optimizing campaign performance.
+It delivers context-driven insights through the aggregation of various metrics related to fan engagement and activity. 
+
+Below are the key functionalities offered:
+- **Fans Data**: Retrieves detailed user and artist information associated with the latest campaign, allowing for targeted marketing efforts.
+- **Followers**: Provides a thorough account of total followers, enabling a clear understanding of audience growth and engagement.
+- **Scores Overview**: Offers insights into user scores, showcasing the total scores achieved, the highest scoring fans, and the most recent score updates to identify top performers.
+- **Streams Count**: Counts and displays total streams gathered from the database, helping to assess content performance.
+- **Recent Activity**: Analyzes user engagement by displaying active users in the last 7 days and tracking new followers gained in the past 24 hours, which assists in evaluating campaign effectiveness.
+- **User Score Tracking**: Maintains an ongoing record of user scores, highlighting top performers to recognize and reward engagement.
+- **Data-Driven Insights**: Provides actionable insights based on quantitative data to assist in making informed marketing decisions that enhance campaign outcomes.
+
 ## Getting Started
 
 First, run the development server:
