@@ -21,10 +21,9 @@ const getChatContext = async () => {
   context.push(NOTES);
   context.push(INSTRUCTION);
 
-  context.push(
-    `\n\n1. Fans for the latest campaign in the format (userNames, artistNames, country, city, user_type):\n\t`,
-  );
+  context.push(`\n\n1. Fans' Information:\t`);
   const fanContext = await getFans(client);
+
   context.push(fanContext);
 
   const follows = await getFollows(client);
