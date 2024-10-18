@@ -79,7 +79,7 @@ const useChat = () => {
     };
 
     if (!messages.length) return;
-    init();
+    // init();
   }, [messages?.length]);
 
   return {
