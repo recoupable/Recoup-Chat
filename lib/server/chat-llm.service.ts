@@ -90,7 +90,7 @@ class ChatLLMService {
     });
 
     const stream = result.toAIStream({
-      onFinal: async (completion) => {
+      onCompletion: async (completion) => {
         await trackNewMessage(address as Address, {
           content: completion,
           role: "assistant",
