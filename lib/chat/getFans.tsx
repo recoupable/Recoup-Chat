@@ -2,9 +2,9 @@ import getFandata from "./getFandata";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { Database } from "../database.types";
 import { FAN_TYPE } from "@/types/fans";
-import { RecentlyPlayed } from "@/types/RecentlyPlayed";
 import { Artist } from "@/types/Artist";
 import { Album } from "@/types/Album";
+import { Track } from "@/types/Track";
 
 const getFans = async (client: SupabaseClient<Database, "public">) => {
   const { data: fans } = await client.from("fans").select("*");
@@ -13,27 +13,37 @@ const getFans = async (client: SupabaseClient<Database, "public">) => {
 
   let playlists: string[] = [];
   let episodes: string[] = [];
-  let recentlyPlayed: Array<RecentlyPlayed> = [];
   let artists: Array<Artist> = [];
   let albums: Array<Album> = [];
+  let audioBooks: Array<string> = [];
+  let shows: Array<string> = [];
+  let tracks: Array<Track> = [];
+  const premiumCount = (fans as unknown as FAN_TYPE[]).filter(
+    (fan) => fan.product === "premium",
+  ).length;
+  const freeCount = (fans as unknown as FAN_TYPE[]).filter(
+    (fan) => fan.product === "free",
+  ).length;
 
   const rows = fans.map((fan) => {
     const data = getFandata(fan as unknown as FAN_TYPE);
     playlists = playlists.concat(data.playlist);
     episodes = episodes.concat(data.episode);
-    recentlyPlayed = recentlyPlayed.concat(data.recentlyPlayed);
     artists = artists.concat(data.artists);
     albums = albums.concat(data.albums);
-    return {};
+    audioBooks = audioBooks.concat(data.audioBooks);
+    shows = shows.concat(data.shows);
+    tracks = tracks.concat(data.tracks);
+    return {
+      name: fan.display_name || "Unknown",
+      country: fan.country || "Unknown",
+      city: fan.city || "Unknown",
+    };
   });
 
   playlists = playlists.slice(0, 50);
   episodes = episodes.slice(0, 50);
-
-  const recentlyPlayedTracks = recentlyPlayed
-    .sort((a: RecentlyPlayed, b: RecentlyPlayed) => b.popularity - a.popularity)
-    .map((played: RecentlyPlayed) => played.name || "")
-    .slice(0, 50);
+  audioBooks = audioBooks.slice(0, 50);
 
   const artistNames = artists
     .sort((a: Artist, b: Artist) => b.popularity - a.popularity)
@@ -45,7 +55,31 @@ const getFans = async (client: SupabaseClient<Database, "public">) => {
     .map((played: Album) => played.name || "")
     .slice(0, 50);
 
-  return rows.join("\n\t");
+  const trackNames = albums
+    .sort((a: Track, b: Track) => b.popularity - a.popularity)
+    .map((played: Track) => played.name || "")
+    .slice(0, 50);
+
+  return `
+    \t- Track list sorted by popularity:
+    \t\t${JSON.stringify(trackNames)}
+    \t- Artist list sorted by popularity:
+    \t\t${JSON.stringify(artistNames)}
+    \t- Album list sorted by popularity:
+    \t\t${JSON.stringify(albumNames)}
+    \t- Episode list:
+    \t\t${JSON.stringify(episodes)}
+    \t- Play list:
+    \t\t${JSON.stringify(playlists)}
+    \t- Audio Book list:
+    \t\t${JSON.stringify(audioBooks)}
+    \t- Premium users count:
+    \t\t${premiumCount}
+    \t- Free users count:
+    \t\t${freeCount}
+    \t- Fan list:
+    \t\t${JSON.stringify(rows.slice(0, 50))}\r\n
+  `;
 };
 
 export default getFans;
