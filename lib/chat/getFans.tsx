@@ -55,7 +55,7 @@ const getFans = async (client: SupabaseClient<Database, "public">) => {
     .map((played: Album) => played.name || "")
     .slice(0, 50);
 
-  const trackNames = albums
+  const trackNames = tracks
     .sort((a: Track, b: Track) => b.popularity - a.popularity)
     .map((played: Track) => played.name || "")
     .slice(0, 50);
