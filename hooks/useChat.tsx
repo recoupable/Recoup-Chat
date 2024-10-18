@@ -36,6 +36,7 @@ const useChat = () => {
     initialMessages,
     onError: console.error,
     onFinish: () => {
+      console.log("ZIAD HERE")
       void queryClient.invalidateQueries({
         queryKey: ["credits", accountId],
       });
