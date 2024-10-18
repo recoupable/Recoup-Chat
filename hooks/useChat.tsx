@@ -5,7 +5,7 @@ import trackNewMessage from "@/lib/stack/trackNewMessage";
 import { Address } from "viem";
 import { usePrivy } from "@privy-io/react-auth";
 import useInitialMessages from "./useInitialMessages";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { SUGGESTIONS } from "@/lib/consts";
 
 const useChat = () => {
@@ -31,12 +31,19 @@ const useChat = () => {
     },
     body: {
       accountId,
-      address,
     },
     initialMessages,
     onError: console.error,
-    onFinish: (message) => {
-      console.log("ZIAD HERE", message);
+    onFinish: async (message) => {
+      await trackNewMessage(address as Address, {
+        content: message.content,
+        role: message.role,
+        id: `${address}-${Date.now().toLocaleString()}`,
+      });
+      const response = await fetch(`/api/prompts?answer=${message.content}`);
+      const data = await response.json();
+
+      setSuggestions(data.questions);
       void queryClient.invalidateQueries({
         queryKey: ["credits", accountId],
       });
@@ -67,21 +74,6 @@ const useChat = () => {
       id: `${address}-${Date.now().toLocaleString()}`,
     });
   };
-
-  useEffect(() => {
-    const init = async () => {
-      const lastAnswer = messages.filter(
-        (message) => message.role === "assistant",
-      )?.[0]?.content;
-      const response = await fetch(`/api/prompts?answer=${lastAnswer}`);
-      const data = await response.json();
-
-      setSuggestions(data.questions);
-    };
-
-    if (!messages.length) return;
-    init();
-  }, [messages?.length]);
 
   return {
     suggestions,

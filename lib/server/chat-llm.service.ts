@@ -6,8 +6,6 @@ import { encodeChat } from "gpt-tokenizer";
 import { z } from "zod";
 
 import { createChatMessagesService } from "./chat-messages.service";
-import { Address } from "viem";
-import trackNewMessage from "../stack/trackNewMessage";
 import { AI_MODEL } from "../consts";
 
 export const ChatMessagesSchema = z.object({
@@ -21,7 +19,6 @@ export const ChatMessagesSchema = z.object({
 
 export const StreamResponseSchema = ChatMessagesSchema.extend({
   accountId: z.string().uuid(),
-  address: z.string().optional(),
 });
 
 /**
@@ -43,10 +40,7 @@ class ChatLLMService {
    * @name streamResponse
    * @description Stream a response to the user and store the messages in the database.
    */
-  async streamResponse({
-    messages,
-    address,
-  }: z.infer<typeof StreamResponseSchema>) {
+  async streamResponse({ messages }: z.infer<typeof StreamResponseSchema>) {
     // use a normal service instance using the current user RLS
     const chatMessagesService = createChatMessagesService();
 
@@ -89,15 +83,7 @@ class ChatLLMService {
       messages,
     });
 
-    const stream = result.toAIStream({
-      onFinal: async (completion) => {
-        await trackNewMessage(address as Address, {
-          content: completion,
-          role: "assistant",
-          id: `${address}-${Date.now().toLocaleString()}`,
-        });
-      },
-    });
+    const stream = result.toAIStream();
 
     return new StreamingTextResponse(stream);
   }
