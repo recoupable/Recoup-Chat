@@ -17,10 +17,13 @@ export async function GET(req: NextRequest) {
           - Questions should be framed to help guide the user to actionable insights.
           - Utilize the existing data context to craft relevant and engaging questions.
           - Ensure that questions are forward-thinking, aimed at helping the user make informed decisions or identify key trends.
-          
+          - Keep questions to 10 words or less.
+          - Dumb it down to a 7th grade reading level.
+          - Limit number of questions to 4 max.
+
           For example:
           "What should we do with this data?" - Too broad.
-          "How can we leverage the data on top-scoring fans to improve engagement?" - More specific and action-oriented.
+          "How can we use data from top fans to boost engagement?" - More specific and action-oriented.
           
           Answer:
           ${answer}
