@@ -40,6 +40,7 @@ const useChat = () => {
         role: message.role,
         id: `${address}-${Date.now().toLocaleString()}`,
       });
+      console.log("ZIAD FINISHED TRACKING", address);
       const response = await fetch(`/api/prompts?answer=${message.content}`);
       const data = await response.json();
 
