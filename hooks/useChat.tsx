@@ -35,21 +35,25 @@ const useChat = () => {
     initialMessages,
     onError: console.error,
     onFinish: async (message) => {
-      await trackNewMessage(address as Address, {
-        content: message.content,
-        role: message.role,
-        id: `${address}-${Date.now().toLocaleString()}`,
-      });
-      const response = await fetch(`/api/prompts?answer=${message.content}`);
-      const data = await response.json();
-
-      setSuggestions(data.questions);
+      await finalCallback(message);
       void queryClient.invalidateQueries({
         queryKey: ["credits", accountId],
       });
     },
   });
 
+  const finalCallback = async (message: Message) => {
+    if (!message.content) return;
+    await trackNewMessage(address as Address, {
+      content: message.content,
+      role: message.role,
+      id: `${address}-${Date.now().toLocaleString()}`,
+    });
+    const response = await fetch(`/api/prompts?answer=${message.content}`);
+    const data = await response.json();
+
+    setSuggestions(data.questions);
+  };
   console.log("ZIAD", messages);
 
   const isPrepared = () => {
@@ -85,6 +89,7 @@ const useChat = () => {
     handleSubmit,
     append,
     pending,
+    finalCallback,
   };
 };
 

@@ -1,8 +1,10 @@
+import { useChatProvider } from "@/providers/ChatProvider";
 import { Message } from "ai";
 import { useEffect, useState } from "react";
 
 const useToolCall = (message: Message) => {
   const [loading, setLoading] = useState(true);
+  const { finalCallback } = useChatProvider();
 
   useEffect(() => {
     const init = async () => {
@@ -14,7 +16,12 @@ const useToolCall = (message: Message) => {
         }),
       });
       const data = await response.json();
-      console.log("ZIAD", data);
+
+      finalCallback({
+        role: "assistant",
+        content: data.answer,
+        id: "",
+      });
       setLoading(false);
     };
 

@@ -26,12 +26,13 @@ export async function POST(req: NextRequest) {
         },
         {
           role: "system",
-          content: `Let's just get a response in string format without any greeting or useless text.`,
+          content: `Let's just get a response in only string format without any greeting or useless text. Not JSON format!!!!!!!!!.`,
         },
       ],
     });
 
     const answer = response.choices[0].message!.content!.toString();
+
     return Response.json({
       message: "success",
       answer,
