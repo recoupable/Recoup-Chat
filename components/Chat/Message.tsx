@@ -20,6 +20,7 @@ const Message = ({ message }: { message: AIMessage }) => {
       setLoading(false);
     };
 
+    const isAssistant = message.role === "assistant";
     const question =
       message?.toolInvocations?.[0].state === "result"
         ? message.toolInvocations[0].result?.question
@@ -28,7 +29,7 @@ const Message = ({ message }: { message: AIMessage }) => {
       message?.toolInvocations?.[0].state === "result"
         ? message.toolInvocations[0].result?.context
         : "";
-    if (!question || !context) {
+    if (!question || !context || isAssistant) {
       setLoading(false);
       return;
     }
