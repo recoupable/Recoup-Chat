@@ -48,8 +48,9 @@ const useChat = () => {
         queryKey: ["credits", accountId],
       });
     },
-    async onToolCall({ toolCall }) {},
   });
+
+  console.log("ZIAD", messages)
 
   const isPrepared = () => {
     if (!address) {
