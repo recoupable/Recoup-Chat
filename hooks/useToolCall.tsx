@@ -10,6 +10,7 @@ const useToolCall = (message: Message) => {
 
   useEffect(() => {
     const init = async () => {
+      setLoading(true);
       const response = await fetch(`/api/tool_call`, {
         method: "POST",
         body: JSON.stringify({
