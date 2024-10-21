@@ -25,8 +25,7 @@ export async function POST(req: NextRequest) {
 
           You should focus on providing recommendations along with metrics while making answer.
           For example:
-          "Your fan engagement rate is 12%, which is solid.
-          To boost this further, consider running a limited-time exclusive content drop or fan contest"
+          "To boost this further, consider running a limited-time exclusive content drop or fan contest"
           `,
         },
         {
