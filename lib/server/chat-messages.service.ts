@@ -47,13 +47,21 @@ Please use this information to provide accurate and relevant responses and don't
     try {
       return {
         getCampaign: tool({
-          description: `Get the artists, albums, episodes, tracks, audio Books, fans, premium & free fans count, total fans count.
-          Call this if you get question which is related with listening habits, fans, artists, albums, episodes, tracks, audio book and insights.
-          For example, you can receive questions as follows:
-          What are the listening habits from Spotify and Apple?
-          How many fans are included in the campaign?
-          What are the listening habits from Luh Tyler's latest campaign?
-          What insights could we. draw from our latest campaign?`,
+          description: `Retrieve data about artists, albums, episodes, tracks, audio books, fans, premium & free fan counts, and total fan count.
+          Always call this tool when the question involves any of the following:
+          - Artists
+          - Albums
+          - Episodes
+          - Tracks
+          - Audio books
+          - Fans (including premium, free, or total counts)
+          - Listening habits
+          - Campaign insights
+          Examples of relevant questions:
+          - Who are the top artists in the campaign?
+          - How many audio books are included?
+          - What's the breakdown of premium vs free fans?
+          - Can you provide details about the tracks in the latest campaign?`,
           parameters: z.object({}),
           execute: async () => {
             const client = getSupabaseServerAdminClient();

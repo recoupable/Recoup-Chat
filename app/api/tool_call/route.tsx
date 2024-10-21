@@ -17,20 +17,39 @@ export async function POST(req: NextRequest) {
           role: "user",
           content: `Context: ${JSON.stringify(context)}
           Question: ${question}
-          Answer: ????
 
-          Based on provided data, let me know the only answer.
-          If question is related to listening habits, you should provide a broad overview of listening habits based on provided fans' information.
-          In this case, make answer richer and more flexible by providing information about the fans' names, countries, cities, and playlists, albums, episodes, audio books, shows, tracks, and artists that are related to fans.
+          Analyze the provided context and answer the question comprehensively. Follow these guidelines:
 
-          You should focus on providing recommendations along with metrics while making answer.
-          For example:
-          "To boost this further, consider running a limited-time exclusive content drop or fan contest"
-          `,
+          1. Listening Habits Overview:
+            - Provide a broad summary of listening trends.
+            - Include details on popular genres, artists, and content types.
+            - Mention specific fan names, countries, and cities when relevant.
+
+          2. Content Breakdown:
+            - Highlight popular playlists, albums, episodes, audiobooks, shows, and tracks.
+            - Identify standout artists and their impact on the fanbase.
+
+          3. User Segmentation:
+            - Distinguish between premium and free users if applicable.
+            - Note any significant demographic patterns.
+
+          4. Engagement Metrics:
+            - Report on key statistics like total fans, plays, or other relevant metrics.
+            - Identify top performers or outliers in the data.
+
+          5. Recommendations:
+            - Suggest 2-3 actionable strategies to improve engagement based on the data.
+            - Example: "To boost engagement, consider launching a personalized playlist campaign featuring top artists from each user's listening history."
+
+          6. Trends and Insights:
+            - Identify any emerging trends or unique insights from the data.
+            - Compare to broader industry trends if relevant.
+
+          Ensure your answer is data-driven, insightful, and provides clear value for understanding and acting on the fan base's behavior.`,
         },
         {
           role: "system",
-          content: `Let's just get a response in only string format without any greeting or useless text. Not JSON format!!!!!!!!!. Don't include any special characters.`,
+          content: `Respond with a plain text string. Do not include any markdown formatting, JSON structure, or special characters. Avoid greetings, closings, or any meta-commentary about the response format.`,
         },
       ],
     });

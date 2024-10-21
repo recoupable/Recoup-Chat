@@ -7,15 +7,13 @@ import ReactMarkdown from "react-markdown";
 const Message = ({ message }: { message: AIMessage }) => {
   const { loading, answer } = useToolCall(message);
   const { pending } = useChatProvider();
-  const shouldHidden =
+  const isHidden =
     pending &&
     message.role === "assistant" &&
     !message.content &&
     message?.toolInvocations;
   return (
-    <div
-      className={`p-3 rounded-lg flex w-full gap-2 ${shouldHidden && "hidden"}`}
-    >
+    <div className={`p-3 rounded-lg flex w-full gap-2 ${isHidden && "hidden"}`}>
       <div className="size-fit">
         {message.role === "user" ? (
           <UserIcon className="h-6 w-6" />

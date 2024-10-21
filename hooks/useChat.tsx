@@ -44,8 +44,6 @@ const useChat = () => {
     },
   });
 
-  console.log("ZIAD", messages);
-
   const clearQuery = async () => {
     const messages = await fetchInitialMessages(address);
     setMessages(messages);
