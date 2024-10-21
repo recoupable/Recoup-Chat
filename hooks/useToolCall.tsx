@@ -26,7 +26,7 @@ const useToolCall = (message: Message) => {
         }
         await finalCallback({
           role: "assistant",
-          content: answer || "Failed to get answer.",
+          content: answer,
           id: "",
         });
         clearQuery();
