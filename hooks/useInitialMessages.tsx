@@ -26,7 +26,7 @@ const useInitialMessages = () => {
     }
   };
 
-  return { initialMessages };
+  return { initialMessages, fetchInitialMessages };
 };
 
 export default useInitialMessages;

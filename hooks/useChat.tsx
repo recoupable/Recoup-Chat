@@ -14,7 +14,7 @@ const useChat = () => {
   const csrfToken = useCsrfToken();
   const accountId = "3664dcb4-164f-4566-8e7c-20b2c93f9951";
   const queryClient = useQueryClient();
-  const { initialMessages } = useInitialMessages();
+  const { initialMessages, fetchInitialMessages } = useInitialMessages();
   const [suggestions, setSuggestions] = useState(SUGGESTIONS);
 
   const {
@@ -24,6 +24,7 @@ const useChat = () => {
     handleSubmit: handleAiChatSubmit,
     append: appendAiChat,
     isLoading: pending,
+    setMessages,
   } = useAiChat({
     api: `/api/chat`,
     headers: {
@@ -41,6 +42,11 @@ const useChat = () => {
       });
     },
   });
+
+  const clearQuery = async () => {
+    setMessages([]);
+    await fetchInitialMessages(address);
+  };
 
   const finalCallback = async (message: Message) => {
     if (!message.content) return;
@@ -90,6 +96,7 @@ const useChat = () => {
     append,
     pending,
     finalCallback,
+    clearQuery,
   };
 };
 

@@ -6,6 +6,7 @@ const useToolCall = (message: Message) => {
   const [loading, setLoading] = useState(true);
   const { finalCallback } = useChatProvider();
   const [answer, setAnswer] = useState("");
+  const { clearQuery } = useChatProvider();
 
   useEffect(() => {
     const init = async () => {
@@ -24,6 +25,7 @@ const useToolCall = (message: Message) => {
         id: "",
       });
 
+      clearQuery();
       setAnswer(data.answer);
       setLoading(false);
     };
