@@ -1,12 +1,7 @@
 import "server-only";
 
 import { openai } from "@ai-sdk/openai";
-import {
-  CoreTool,
-  LanguageModelV1,
-  StreamingTextResponse,
-  streamText,
-} from "ai";
+import { CoreTool, LanguageModelV1, streamText } from "ai";
 import { encodeChat } from "gpt-tokenizer";
 import { z } from "zod";
 
@@ -90,8 +85,6 @@ class ChatLLMService {
       tools: tools as Record<string, CoreTool<any, any>> | undefined,
     });
 
-    const stream = result.toAIStream();
-
-    return new StreamingTextResponse(stream);
+    return result.toDataStreamResponse();
   }
 }

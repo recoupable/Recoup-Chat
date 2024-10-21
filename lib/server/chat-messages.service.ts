@@ -47,8 +47,7 @@ Please use this information to provide accurate and relevant responses and don't
     try {
       return {
         getCampaign: tool({
-          description: `If you receive any questions related to listening habits, you should provide a broad overview of listening habits based on provided fans' information.
-            In this case, make your answer richer and more flexible by providing information about the fans' names, countries, cities, and playlists, albums, episodes, audio books, shows, tracks, and artists that are related to fans.`,
+          description: `Get the artists, albums, episodes, tracks, audio Books, fans, premium & free fans count, total fans count.`,
           parameters: z.object({}),
           execute: async () => {
             const client = getSupabaseServerAdminClient();
