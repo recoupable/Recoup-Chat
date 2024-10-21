@@ -20,11 +20,13 @@ export async function POST(req: NextRequest) {
           Answer: ????
 
           Based on provided data, let me know the only answer.
+          If question is related to listening habits, you should provide a broad overview of listening habits based on provided fans' information.
+          In this case, make answer richer and more flexible by providing information about the fans' names, countries, cities, and playlists, albums, episodes, audio books, shows, tracks, and artists that are related to fans.
           `,
         },
         {
           role: "system",
-          content: `Let's just get a response without any greeting or useless text in string format.`,
+          content: `Let's just get a response in string format without any greeting or useless text.`,
         },
       ],
     });

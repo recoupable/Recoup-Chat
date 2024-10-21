@@ -8,7 +8,6 @@ const Message = ({ message }: { message: AIMessage }) => {
 
   useEffect(() => {
     const init = async () => {
-      setLoading(true);
       const response = await fetch(`/api/tool_call`, {
         method: "POST",
         body: JSON.stringify({
@@ -29,8 +28,10 @@ const Message = ({ message }: { message: AIMessage }) => {
       message?.toolInvocations?.[0].state === "result"
         ? message.toolInvocations[0].result?.context
         : "";
-    console.log("ZIAD", question, context);
-    if (!question) return;
+    if (!question || !context) {
+      setLoading(false);
+      return;
+    }
     init();
   }, [message]);
 
