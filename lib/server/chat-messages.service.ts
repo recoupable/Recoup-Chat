@@ -6,6 +6,7 @@ import { tool } from "ai";
 import { z } from "zod";
 import getFans from "../chat/getFans";
 import { getSupabaseServerAdminClient } from "@/packages/supabase/src/clients/server-admin-client";
+import { NOTES } from "../chat/const";
 
 export function createChatMessagesService() {
   return new ChatMessagesService();
@@ -81,6 +82,25 @@ Please use this information to provide accurate and relevant responses and don't
               context: fans,
               question,
               fanName: fanName || "",
+            };
+          },
+        }),
+        getMeetingNotes: tool({
+          description: `
+          IMPORTANT: Always call this tool for ANY question related to meeting:
+          Do NOT attempt to answer questions on these topics without calling this tool first.
+
+          For example: 
+            summarize the last meeting.
+            what are the problems willie mentioned during the last meeting?
+            how many meetings are there?
+            when did this meeting take place?
+            who was involved in every single meeting?`,
+          parameters: z.object({}),
+          execute: async ({}) => {
+            return {
+              context: NOTES,
+              question,
             };
           },
         }),

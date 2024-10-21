@@ -18,9 +18,7 @@ To boost this further, consider running a limited-time exclusive content drop or
 Always strive to provide specific insights backed with quantitive data that can help Willie improve the campaign's performance.
 `;
 
-export const NOTES = `Meetings notes will help you be more knowledeable in it is role to help Willie in his role responsible for partnerships and working between marketing and release teams.
-Meetings notes:
-[
+export const NOTES = `[
     {
         "sentence": "It.",
         "startTime": "00:00",
