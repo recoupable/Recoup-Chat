@@ -2,7 +2,7 @@ import { AI_MODEL } from "@/lib/consts";
 import { NextRequest } from "next/server";
 import OpenAI from "openai";
 
-export async function GET(req: NextRequest) {
+export async function POST(req: NextRequest) {
   const body = await req.json();
   const context = body.context;
   const question = body.question;
