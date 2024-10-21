@@ -9,11 +9,12 @@ import { Message } from "ai";
 
 const trackNewMessage = async (address: Address, message: Message) => {
   const stackClient = getStackClient(CHAT_POINT_SYSTEM_ID);
+  const uniqueId = `${address}-${Date.now()}`;
   const pointSystemId = MESSAGE_SENT_EVENT;
   await stackClient.track(pointSystemId, {
     points: MESSAGE_SENT_POINT,
     account: address,
-    uniqueId: `${address}-${Date.now()}`,
+    uniqueId,
     metadata: message,
   });
 };

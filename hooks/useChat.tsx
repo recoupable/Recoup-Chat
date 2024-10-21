@@ -7,6 +7,7 @@ import { usePrivy } from "@privy-io/react-auth";
 import useInitialMessages from "./useInitialMessages";
 import { useState } from "react";
 import { SUGGESTIONS } from "@/lib/consts";
+import { v4 as uuidV4 } from "uuid";
 
 const useChat = () => {
   const { login, user } = usePrivy();
@@ -53,7 +54,7 @@ const useChat = () => {
     await trackNewMessage(address as Address, {
       content: encodeURIComponent(message.content),
       role: message.role,
-      id: `${address}-${Date.now()}`,
+      id: uuidV4(),
     });
     const response = await fetch(`/api/prompts?answer=${message.content}`);
     const data = await response.json();
