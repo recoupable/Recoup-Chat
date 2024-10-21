@@ -50,7 +50,7 @@ const useChat = () => {
     },
   });
 
-  console.log("ZIAD", messages)
+  console.log("ZIAD", messages);
 
   const isPrepared = () => {
     if (!address) {

@@ -3,7 +3,9 @@ import { NextRequest } from "next/server";
 import OpenAI from "openai";
 
 export async function GET(req: NextRequest) {
-  const answer = req.nextUrl.searchParams.get("answer");
+  const body = await req.json();
+  const context = body.context;
+  const question = body.question;
 
   try {
     const openai = new OpenAI();
@@ -13,25 +15,16 @@ export async function GET(req: NextRequest) {
       messages: [
         {
           role: "user",
-          content: `Based on the conversation context, generate helpful follow-up questions that encourage deeper exploration and analysis of the provided data. 
-          - Questions should be framed to help guide the user to actionable insights.
-          - Utilize the existing data context to craft relevant and engaging questions.
-          - Ensure that questions are forward-thinking, aimed at helping the user make informed decisions or identify key trends.
-          - Keep questions to 10 words or less.
-          - Dumb it down to a 7th grade reading level.
-          - Limit number of questions to 4 max.
+          content: `Context: ${JSON.stringify(context)}
+          Question: ${question}
+          Answer: ????
 
-          For example:
-          "What should we do with this data?" - Too broad.
-          "How can we use data from top fans to boost engagement?" - More specific and action-oriented.
-          
-          Answer:
-          ${answer}
+          Based on provided data, let me know the only answer.
           `,
         },
         {
           role: "system",
-          content: `Let's get response with only this json format. {"data": [string]}`,
+          content: `Let's just get a response without any greeting or useless text in string format.`,
         },
       ],
     });
