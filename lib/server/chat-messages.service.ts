@@ -55,7 +55,7 @@ Please use this information to provide accurate and relevant responses and don't
           What are the listening habits from Luh Tyler's latest campaign?
           What insights could we. draw from our latest campaign?
           
-          In that case, please return string format answer in string format instead of json object.
+          In that case, please return answer in string format instead of json object.
           Make answer richer and more flexible by providing information about the fans' names, countries, cities, and playlists, albums, episodes, audio books, shows, tracks, and artists that are related to fans.
           `,
           parameters: z.object({}),
