@@ -47,8 +47,8 @@ Please use this information to provide accurate and relevant responses and don't
     try {
       return {
         getCampaign: tool({
-          description:
-            "Get the artists, playlists, albums, episodes, audio books, shows, tracks that are related to fans. Call this whenever you need to know the listening habits, fans count, insights. For example: 'what are the listening habits from Luh Tyler's latest campaign?', 'how many fans are included in the campaign?', 'what insights could we. draw from our latest campaign?'",
+          description: `If you receive any questions related to listening habits, you should provide a broad overview of listening habits based on provided fans' information.
+            In this case, make your answer richer and more flexible by providing information about the fans' names, countries, cities, and playlists, albums, episodes, audio books, shows, tracks, and artists that are related to fans.`,
           parameters: z.object({}),
           execute: async () => {
             const client = getSupabaseServerAdminClient();

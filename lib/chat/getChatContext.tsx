@@ -10,15 +10,15 @@ import getUsersScore from "../stack/getUsersScore";
 import { SCORE_EVENT } from "@/types/score";
 import getRecentScore from "./getRecentScore";
 import getScoresInPast24 from "./getScoresInPast24";
-import { NOTES } from "./const";
+import { INSTRUCTION } from "./const";
 
 const getChatContext = async () => {
   const context = [];
   const client = getSupabaseServerAdminClient();
   const scores: SCORE_EVENT[] = await getUsersScore();
 
-  context.push(NOTES);
-  // context.push(INSTRUCTION);
+  // context.push(NOTES);
+  context.push(INSTRUCTION);
 
   // context.push(`\n\n1. Fans' Information:\t`);
   // const fanContext = await getFans(client);
