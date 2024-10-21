@@ -29,6 +29,7 @@ const Message = ({ message }: { message: AIMessage }) => {
       message?.toolInvocations?.[0].state === "result"
         ? message.toolInvocations[0].result?.context
         : "";
+    console.log("ZIAD", question, context);
     if (!question) return;
     init();
   }, [message]);
