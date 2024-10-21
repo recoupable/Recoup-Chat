@@ -68,13 +68,19 @@ Please use this information to provide accurate and relevant responses and don't
           - "How many premium subscribers are there?"
 
           When in doubt, call this tool to ensure you have the most up-to-date and accurate information.`,
-          parameters: z.object({}),
-          execute: async () => {
+          parameters: z.object({
+            fanName: z
+              .string()
+              .optional()
+              .describe("The fan name to get the information. Optional."),
+          }),
+          execute: async ({ fanName }) => {
             const client = getSupabaseServerAdminClient();
-            const fans = await getFans(client);
+            const fans = await getFans(client, fanName || "");
             return {
               context: fans,
               question,
+              fanName: fanName || "",
             };
           },
         }),

@@ -7,9 +7,16 @@ import { Album } from "@/types/Album";
 import { Track } from "@/types/Track";
 import getFollows from "./getFollows";
 
-const getFans = async (client: SupabaseClient<Database, "public">) => {
-  const { data: fans } = await client.from("fans").select("*");
+const getFans = async (
+  client: SupabaseClient<Database, "public">,
+  fanName = "",
+) => {
+  const query = client.from("fans").select("*");
 
+  if (fanName) {
+    query.ilike("display_name", `%${fanName}%`);
+  }
+  const { data: fans } = await query;
   if (!fans?.length) return "No fans.";
 
   let playlists: string[] = [];
