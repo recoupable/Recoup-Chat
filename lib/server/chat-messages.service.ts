@@ -47,7 +47,8 @@ Please use this information to provide accurate and relevant responses and don't
     try {
       return {
         getCampaign: tool({
-          description: `Get the artists, albums, episodes, tracks, audio Books, fans, premium & free fans count, total fans count.`,
+          description: `Get the artists, albums, episodes, tracks, audio Books, fans, premium & free fans count, total fans count.
+          Call this if you get question which is related with listening habits, artists, albums, episods, tracks, audio book, fans.`,
           parameters: z.object({}),
           execute: async () => {
             const client = getSupabaseServerAdminClient();
