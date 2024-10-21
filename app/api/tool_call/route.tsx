@@ -29,10 +29,10 @@ export async function GET(req: NextRequest) {
       ],
     });
 
-    const questions = response.choices[0].message!.content!.toString();
+    const answer = response.choices[0].message!.content!.toString();
     return Response.json({
       message: "success",
-      questions: JSON.parse(questions).data,
+      answer,
     });
   } catch (error) {
     console.error(error);

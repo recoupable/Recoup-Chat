@@ -52,9 +52,9 @@ Please use this information to provide accurate and relevant responses and don't
           parameters: z.object({}),
           execute: async () => {
             const client = getSupabaseServerAdminClient();
-            const fans = getFans(client);
+            const fans = await getFans(client);
             return {
-              fans,
+              context: fans,
               question,
             };
           },
