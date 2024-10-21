@@ -1,9 +1,8 @@
 import useToolCall from "@/hooks/useToolCall";
 import { useChatProvider } from "@/providers/ChatProvider";
 import { Message as AIMessage } from "ai";
-import { UserIcon, TvMinimalPlay } from "lucide-react";
+import { UserIcon, TvMinimalPlay, LoaderCircle } from "lucide-react";
 import ReactMarkdown from "react-markdown";
-import Thinking from "./Thinking";
 
 const Message = ({ message }: { message: AIMessage }) => {
   const { loading, answer } = useToolCall(message);
@@ -26,8 +25,13 @@ const Message = ({ message }: { message: AIMessage }) => {
       </div>
       <div className="text-sm font-sans text-pretty break-words">
         <ReactMarkdown>{message.content || answer}</ReactMarkdown>
-        {loading ? <Thinking /> : ""}
       </div>
+      {loading && (
+        <div className="flex gap-2 items-center">
+          <p>is thinking...</p>
+          <LoaderCircle className="h-4 w-4 animate-spin" />
+        </div>
+      )}
     </div>
   );
 };

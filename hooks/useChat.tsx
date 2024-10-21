@@ -58,7 +58,6 @@ const useChat = () => {
 
     setSuggestions(data.questions);
   };
-  console.log("ZIAD", messages);
 
   const isPrepared = () => {
     if (!address) {
