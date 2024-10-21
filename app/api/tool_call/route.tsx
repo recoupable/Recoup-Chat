@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
         },
         {
           role: "system",
-          content: `Let's just get a response in only string format without any greeting or useless text. Not JSON format!!!!!!!!!.`,
+          content: `Let's just get a response in only string format without any greeting or useless text. Not JSON format!!!!!!!!!. Don't include any special characters.`,
         },
       ],
     });
