@@ -11,7 +11,7 @@ const Message = ({ message }: { message: AIMessage }) => {
 
   return (
     <div className="p-3 rounded-lg flex w-full gap-2">
-      {!pending && (
+      {!(pending && message.role === "assistant") && (
         <>
           <div className="size-fit">
             {message.role === "user" ? (
