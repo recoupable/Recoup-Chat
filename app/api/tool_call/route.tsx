@@ -22,6 +22,11 @@ export async function POST(req: NextRequest) {
           Based on provided data, let me know the only answer.
           If question is related to listening habits, you should provide a broad overview of listening habits based on provided fans' information.
           In this case, make answer richer and more flexible by providing information about the fans' names, countries, cities, and playlists, albums, episodes, audio books, shows, tracks, and artists that are related to fans.
+
+          You should focus on providing recommendations along with metrics while making answer.
+          For example:
+          "Your fan engagement rate is 12%, which is solid.
+          To boost this further, consider running a limited-time exclusive content drop or fan contest"
           `,
         },
         {
