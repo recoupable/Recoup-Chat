@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars*/
 import getFandata from "./getFandata";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { Database } from "../database.types";
@@ -18,6 +19,7 @@ const getFans = async (client: SupabaseClient<Database, "public">) => {
   let audioBooks: Array<string> = [];
   let shows: Array<string> = [];
   let tracks: Array<Track> = [];
+  // eslint-disable
   const premiumCount = (fans as unknown as FAN_TYPE[]).filter(
     (fan) => fan.product === "premium",
   ).length;
@@ -62,15 +64,15 @@ const getFans = async (client: SupabaseClient<Database, "public">) => {
 
   return {
     tracks: trackNames,
-    artists: artistNames,
-    playlists,
-    albums: albumNames,
-    episodes,
-    audioBooks,
-    premiumCount,
-    freeCount,
-    totalFansCount: premiumCount + freeCount,
-    fans: rows,
+    // artists: artistNames,
+    // playlists,
+    // albums: albumNames,
+    // audioBooks,
+    // episodes,
+    // fans: rows,
+    // premiumCount,
+    // freeCount,
+    // totalFansCount: premiumCount + freeCount,
   };
 };
 
