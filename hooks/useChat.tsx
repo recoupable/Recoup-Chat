@@ -24,7 +24,6 @@ const useChat = () => {
     handleSubmit: handleAiChatSubmit,
     append: appendAiChat,
     isLoading: pending,
-    data,
   } = useAiChat({
     api: `/api/chat`,
     headers: {
@@ -49,12 +48,9 @@ const useChat = () => {
         queryKey: ["credits", accountId],
       });
     },
-    async onToolCall({ toolCall }) {
-      console.log("ZIAD", toolCall);
-    },
+    async onToolCall({ toolCall }) {},
   });
 
-  console.log("ZIAD", messages, data);
   const isPrepared = () => {
     if (!address) {
       login();

@@ -14,9 +14,9 @@ export function createChatMessagesService() {
 class ChatMessagesService {
   constructor() {}
 
-  async getChatSettings() {
+  async getChatSettings(question: string) {
     const context = await this.fetchRelevantContext();
-    const tools = this.fetchRelevantTools();
+    const tools = this.fetchRelevantTools(question);
 
     const systemMessage = `You are a helpful assistant
 Here is some relevant data to help you answer:
@@ -43,17 +43,20 @@ Please use this information to provide accurate and relevant responses and don't
     }
   }
 
-  private fetchRelevantTools() {
+  private fetchRelevantTools(question: string) {
     try {
       return {
         getCampaign: tool({
           description: `Get the artists, albums, episodes, tracks, audio Books, fans, premium & free fans count, total fans count.
-          Call this if you get question which is related with listening habits, artists, albums, episods, tracks, audio book, fans.`,
+          Call this if you get question which is related with listening habits, fans, artists, albums, episodes, tracks, audio book and insights`,
           parameters: z.object({}),
           execute: async () => {
             const client = getSupabaseServerAdminClient();
             const fans = getFans(client);
-            return fans;
+            return {
+              fans,
+              question,
+            };
           },
         }),
       };

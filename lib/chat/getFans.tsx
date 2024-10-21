@@ -5,6 +5,7 @@ import { FAN_TYPE } from "@/types/fans";
 import { Artist } from "@/types/Artist";
 import { Album } from "@/types/Album";
 import { Track } from "@/types/Track";
+import getFollows from "./getFollows";
 
 const getFans = async (client: SupabaseClient<Database, "public">) => {
   const { data: fans } = await client.from("fans").select("*");
@@ -60,6 +61,8 @@ const getFans = async (client: SupabaseClient<Database, "public">) => {
     .map((played: Track) => played.name || "")
     .slice(0, 50);
 
+  const followers = await getFollows(client);
+
   return {
     tracks: trackNames,
     artists: artistNames,
@@ -71,6 +74,7 @@ const getFans = async (client: SupabaseClient<Database, "public">) => {
     premiumCount,
     freeCount,
     totalFansCount: premiumCount + freeCount,
+    totalFollowersCount: followers,
   };
 };
 

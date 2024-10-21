@@ -17,13 +17,7 @@ const getChatContext = async () => {
   const client = getSupabaseServerAdminClient();
   const scores: SCORE_EVENT[] = await getUsersScore();
 
-  // context.push(NOTES);
   context.push(INSTRUCTION);
-
-  // context.push(`\n\n1. Fans' Information:\t`);
-  // const fanContext = await getFans(client);
-
-  // context.push(fanContext);
 
   const follows = await getFollows(client);
   context.push(`\n2. Followers: ${follows}`);
