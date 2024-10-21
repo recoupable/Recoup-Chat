@@ -52,7 +52,7 @@ const useChat = () => {
   const finalCallback = async (message: Message) => {
     if (!message.content) return;
     await trackNewMessage(address as Address, {
-      content: "",
+      content: encodeURIComponent(message.content),
       role: message.role,
       id: uuidV4(),
     });
