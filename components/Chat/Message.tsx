@@ -26,7 +26,7 @@ const Message = ({ message }: { message: AIMessage }) => {
       <div className="text-sm font-sans text-pretty break-words">
         <ReactMarkdown>{message.content || answer}</ReactMarkdown>
       </div>
-      {loading && (
+      {loading && !message.content && !answer && (
         <div className="flex gap-2 items-center">
           <p>is thinking...</p>
           <LoaderCircle className="h-4 w-4 animate-spin" />
