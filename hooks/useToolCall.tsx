@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 const useToolCall = (message: Message) => {
   const [loading, setLoading] = useState(true);
   const { finalCallback } = useChatProvider();
+  const [answer, setAnswer] = useState("");
 
   useEffect(() => {
     const init = async () => {
@@ -17,11 +18,13 @@ const useToolCall = (message: Message) => {
       });
       const data = await response.json();
 
-      finalCallback({
+      await finalCallback({
         role: "assistant",
         content: data.answer,
         id: "",
       });
+
+      setAnswer(data.answer);
       setLoading(false);
     };
 
@@ -43,6 +46,7 @@ const useToolCall = (message: Message) => {
 
   return {
     loading,
+    answer,
   };
 };
 

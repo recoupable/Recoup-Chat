@@ -6,7 +6,7 @@ import ReactMarkdown from "react-markdown";
 import Thinking from "./Thinking";
 
 const Message = ({ message }: { message: AIMessage }) => {
-  const { loading } = useToolCall(message);
+  const { loading, answer } = useToolCall(message);
   const { pending } = useChatProvider();
   const shouldHidden =
     pending &&
@@ -25,7 +25,7 @@ const Message = ({ message }: { message: AIMessage }) => {
         )}
       </div>
       <div className="text-sm font-sans text-pretty break-words">
-        <ReactMarkdown>{message.content}</ReactMarkdown>
+        <ReactMarkdown>{message.content || answer}</ReactMarkdown>
         {loading ? <Thinking /> : ""}
       </div>
     </div>
