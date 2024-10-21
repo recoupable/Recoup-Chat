@@ -21,8 +21,10 @@ const useInitialMessages = () => {
       const messages = await getInitialMessages(walletAddress);
       const arrangedMessages = rearrangesMessages(messages);
       setInitialMessages(arrangedMessages);
+      return arrangedMessages;
     } catch (error) {
       console.error("Error fetching initial messages:", error);
+      return [];
     }
   };
 
