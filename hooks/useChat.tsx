@@ -47,7 +47,7 @@ const useChat = () => {
     await trackNewMessage(address as Address, {
       content: message.content,
       role: message.role,
-      id: `${address}-${Date.now().toLocaleString()}`,
+      id: `${address}-${Date.now()}`,
     });
     const response = await fetch(`/api/prompts?answer=${message.content}`);
     const data = await response.json();
