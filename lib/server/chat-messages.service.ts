@@ -47,21 +47,28 @@ Please use this information to provide accurate and relevant responses and don't
     try {
       return {
         getCampaign: tool({
-          description: `Retrieve data about artists, albums, episodes, tracks, audio books, fans, premium & free fan counts, and total fan count.
-          Always call this tool when the question involves any of the following:
-          - Artists
-          - Albums
-          - Episodes
-          - Tracks
-          - Audio books
-          - Fans (including premium, free, or total counts)
-          - Listening habits
-          - Campaign insights
-          Examples of relevant questions:
-          - Who are the top artists in the campaign?
-          - How many audio books are included?
-          - What's the breakdown of premium vs free fans?
-          - Can you provide details about the tracks in the latest campaign?`,
+          description: `IMPORTANT: Always call this tool for ANY question related to the following topics:
+          1. Artists
+          2. Albums
+          3. Episodes
+          4. Tracks
+          5. Audio books
+          6. Fans (including premium, free, or total counts)
+          7. Listening habits (from any platform, including Spotify and Apple)
+          8. Campaign insights or data
+          9. Any comparison or analysis of music consumption or fan behavior
+
+          Do NOT attempt to answer questions on these topics without calling this tool first.
+
+          Example questions that MUST trigger this tool:
+          - "What are the listening habits from Spotify and Apple?"
+          - "How many fans does the artist have?"
+          - "Can you compare the performance of different tracks?"
+          - "What insights can we draw from the latest campaign?"
+          - "How many premium subscribers are there?"
+          - "Which albums are included in the campaign?"
+
+          When in doubt, call this tool to ensure you have the most up-to-date and accurate information.`,
           parameters: z.object({}),
           execute: async () => {
             const client = getSupabaseServerAdminClient();
