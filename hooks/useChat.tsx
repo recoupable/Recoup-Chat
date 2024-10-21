@@ -45,7 +45,7 @@ const useChat = () => {
   const finalCallback = async (message: Message) => {
     if (!message.content) return;
     await trackNewMessage(address as Address, {
-      content: message.content,
+      content: "",
       role: message.role,
       id: `${address}-${Date.now()}`,
     });
