@@ -10,8 +10,7 @@ import getUsersScore from "../stack/getUsersScore";
 import { SCORE_EVENT } from "@/types/score";
 import getRecentScore from "./getRecentScore";
 import getScoresInPast24 from "./getScoresInPast24";
-import getFans from "./getFans";
-import { INSTRUCTION, NOTES } from "./const";
+import { NOTES } from "./const";
 
 const getChatContext = async () => {
   const context = [];
@@ -19,12 +18,12 @@ const getChatContext = async () => {
   const scores: SCORE_EVENT[] = await getUsersScore();
 
   context.push(NOTES);
-  context.push(INSTRUCTION);
+  // context.push(INSTRUCTION);
 
-  context.push(`\n\n1. Fans' Information:\t`);
-  const fanContext = await getFans(client);
+  // context.push(`\n\n1. Fans' Information:\t`);
+  // const fanContext = await getFans(client);
 
-  context.push(fanContext);
+  // context.push(fanContext);
 
   const follows = await getFollows(client);
   context.push(`\n2. Followers: ${follows}`);
