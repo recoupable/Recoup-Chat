@@ -3,6 +3,7 @@ import { useChatProvider } from "@/providers/ChatProvider";
 import { Message as AIMessage } from "ai";
 import { UserIcon, TvMinimalPlay } from "lucide-react";
 import ReactMarkdown from "react-markdown";
+import Thinking from "./Thinking";
 
 const Message = ({ message }: { message: AIMessage }) => {
   const { loading } = useToolCall(message);
@@ -21,7 +22,7 @@ const Message = ({ message }: { message: AIMessage }) => {
           </div>
           <div className="text-sm font-sans text-pretty break-words">
             <ReactMarkdown>{message.content}</ReactMarkdown>
-            {loading ? "is thinking..." : ""}
+            {loading ? <Thinking /> : ""}
           </div>
         </>
       )}
