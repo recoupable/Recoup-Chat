@@ -53,10 +53,11 @@ Please use this information to provide accurate and relevant responses and don't
           3. Episodes
           4. Tracks
           5. Audio books
-          6. Fans (including premium, free, or total counts)
-          7. Listening habits (from any platform, including Spotify and Apple)
-          8. Campaign insights or data
-          9. Any comparison or analysis of music consumption or fan behavior
+          6. Shows
+          7. Fans (including premium, free, or total counts)
+          8. Listening habits (from any platform, including Spotify and Apple)
+          9. Campaign insights or data
+          10. Any comparison or analysis of music consumption or fan behavior
 
           Do NOT attempt to answer questions on these topics without calling this tool first.
 
@@ -65,7 +66,6 @@ Please use this information to provide accurate and relevant responses and don't
           - "How many fans does the artist have?"
           - "What insights can we draw from the latest campaign?"
           - "How many premium subscribers are there?"
-          - "Which albums are included in the campaign?"
 
           When in doubt, call this tool to ensure you have the most up-to-date and accurate information.`,
           parameters: z.object({}),

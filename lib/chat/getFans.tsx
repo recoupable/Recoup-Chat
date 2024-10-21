@@ -70,6 +70,7 @@ const getFans = async (client: SupabaseClient<Database, "public">) => {
     albums: albumNames,
     audioBooks,
     episodes,
+    shows,
     fans: rows,
     premiumCount,
     freeCount,
