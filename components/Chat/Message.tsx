@@ -1,11 +1,14 @@
 import { Message as AIMessage } from "ai";
 import { UserIcon, TvMinimalPlay } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
 
 const Message = ({ message }: { message: AIMessage }) => {
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     const init = async () => {
+      setLoading(true);
       const response = await fetch(`/api/tool_call`, {
         method: "POST",
         body: JSON.stringify({
@@ -14,7 +17,8 @@ const Message = ({ message }: { message: AIMessage }) => {
         }),
       });
       const data = await response.json();
-      console.log("ZIAD", data);
+      console.log("ZIAD HERE", data);
+      setLoading(false);
     };
 
     const question =
@@ -40,6 +44,7 @@ const Message = ({ message }: { message: AIMessage }) => {
       </div>
       <div className="text-sm font-sans text-pretty break-words">
         <ReactMarkdown>{message.content}</ReactMarkdown>
+        {loading ? "is thinking..." : ""}
       </div>
     </div>
   );
