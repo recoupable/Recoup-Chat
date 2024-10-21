@@ -11,19 +11,23 @@ const useToolCall = (message: Message) => {
   useEffect(() => {
     const init = async () => {
       setLoading(true);
-      const response = await fetch(`/api/tool_call`, {
-        method: "POST",
-        body: JSON.stringify({
-          context,
-          question,
-        }),
-      });
-      const data = await response.json();
-      setAnswer(data.answer);
+      let answer = "";
+      if (question && context) {
+        const response = await fetch(`/api/tool_call`, {
+          method: "POST",
+          body: JSON.stringify({
+            context,
+            question,
+          }),
+        });
+        const data = await response.json();
+        answer = data.answer;
+      }
+      setAnswer(answer);
 
       await finalCallback({
         role: "assistant",
-        content: data.answer,
+        content: answer,
         id: "",
       });
 
@@ -40,7 +44,7 @@ const useToolCall = (message: Message) => {
       message?.toolInvocations?.[0].state === "result"
         ? message.toolInvocations[0].result?.context
         : "";
-    if (!question || !context || !isAssistant) {
+    if (!isAssistant) {
       setLoading(false);
       return;
     }
