@@ -14,6 +14,7 @@ const useToolCall = (message: Message) => {
         }),
       });
       const data = await response.json();
+      console.log("ZIAD", data);
       setLoading(false);
     };
 

@@ -8,24 +8,26 @@ import Thinking from "./Thinking";
 const Message = ({ message }: { message: AIMessage }) => {
   const { loading } = useToolCall(message);
   const { pending } = useChatProvider();
-
+  const shouldHidden =
+    pending &&
+    message.role === "assistant" &&
+    !message.content &&
+    message?.toolInvocations;
   return (
-    <div className="p-3 rounded-lg flex w-full gap-2">
-      {!(pending && message.role === "assistant") && (
-        <>
-          <div className="size-fit">
-            {message.role === "user" ? (
-              <UserIcon className="h-6 w-6" />
-            ) : (
-              <TvMinimalPlay className="h-6 w-6" />
-            )}
-          </div>
-          <div className="text-sm font-sans text-pretty break-words">
-            <ReactMarkdown>{message.content}</ReactMarkdown>
-            {loading ? <Thinking /> : ""}
-          </div>
-        </>
-      )}
+    <div
+      className={`p-3 rounded-lg flex w-full gap-2 ${shouldHidden && "hidden"}`}
+    >
+      <div className="size-fit">
+        {message.role === "user" ? (
+          <UserIcon className="h-6 w-6" />
+        ) : (
+          <TvMinimalPlay className="h-6 w-6" />
+        )}
+      </div>
+      <div className="text-sm font-sans text-pretty break-words">
+        <ReactMarkdown>{message.content}</ReactMarkdown>
+        {loading ? <Thinking /> : ""}
+      </div>
     </div>
   );
 };
