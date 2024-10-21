@@ -84,6 +84,7 @@ class ChatLLMService {
       model: openai(settings.model) as LanguageModelV1,
       system: settings.systemMessage,
       maxTokens: settings.maxTokens,
+      temperature: 0.7,
       messages,
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       tools: tools as Record<string, CoreTool<any, any>> | undefined,

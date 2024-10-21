@@ -24,6 +24,7 @@ const useChat = () => {
     handleSubmit: handleAiChatSubmit,
     append: appendAiChat,
     isLoading: pending,
+    data,
   } = useAiChat({
     api: `/api/chat`,
     headers: {
@@ -49,6 +50,8 @@ const useChat = () => {
       });
     },
   });
+
+  console.log("ZIAD", data);
 
   const isPrepared = () => {
     if (!address) {
