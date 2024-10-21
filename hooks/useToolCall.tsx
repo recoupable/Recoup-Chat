@@ -12,7 +12,7 @@ const useToolCall = (message: Message) => {
     const init = async () => {
       setLoading(true);
       let answer = "";
-      if (question && context) {
+      if (question & context) {
         const response = await fetch(`/api/tool_call`, {
           method: "POST",
           body: JSON.stringify({
@@ -22,16 +22,14 @@ const useToolCall = (message: Message) => {
         });
         const data = await response.json();
         answer = data.answer;
+        await finalCallback({
+          role: "assistant",
+          content: answer,
+          id: "",
+        });
+        clearQuery();
       }
       setAnswer(answer);
-
-      await finalCallback({
-        role: "assistant",
-        content: answer,
-        id: "",
-      });
-
-      clearQuery();
       setLoading(false);
     };
 
@@ -49,7 +47,7 @@ const useToolCall = (message: Message) => {
       return;
     }
     init();
-  }, [message]);
+  }, [message.toolInvocations, message.content]);
 
   return {
     loading,
