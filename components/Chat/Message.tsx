@@ -29,7 +29,7 @@ const Message = ({ message }: { message: AIMessage }) => {
       message?.toolInvocations?.[0].state === "result"
         ? message.toolInvocations[0].result?.context
         : "";
-    if (!question || !context || isAssistant) {
+    if (!question || !context || !isAssistant) {
       setLoading(false);
       return;
     }
