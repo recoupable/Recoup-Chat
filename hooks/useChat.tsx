@@ -24,7 +24,6 @@ const useChat = () => {
     handleSubmit: handleAiChatSubmit,
     append: appendAiChat,
     isLoading: pending,
-    setMessages,
   } = useAiChat({
     api: `/api/chat`,
     headers: {
@@ -44,7 +43,6 @@ const useChat = () => {
   });
 
   const clearQuery = async () => {
-    setMessages([]);
     await fetchInitialMessages(address);
   };
 
