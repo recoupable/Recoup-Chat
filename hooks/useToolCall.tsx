@@ -12,16 +12,18 @@ const useToolCall = (message: Message) => {
     const init = async () => {
       setLoading(true);
       let answer = "";
-      if (question & context) {
-        const response = await fetch(`/api/tool_call`, {
-          method: "POST",
-          body: JSON.stringify({
-            context,
-            question,
-          }),
-        });
-        const data = await response.json();
-        answer = data.answer;
+      if (message.toolInvocations) {
+        if (question & context) {
+          const response = await fetch(`/api/tool_call`, {
+            method: "POST",
+            body: JSON.stringify({
+              context,
+              question,
+            }),
+          });
+          const data = await response.json();
+          answer = data.answer;
+        }
         await finalCallback({
           role: "assistant",
           content: answer,
