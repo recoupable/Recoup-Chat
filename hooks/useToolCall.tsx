@@ -13,7 +13,7 @@ const useToolCall = (message: Message) => {
       setLoading(true);
       let answer = "";
       if (message.toolInvocations) {
-        if (question & context) {
+        if (question && context) {
           const response = await fetch(`/api/tool_call`, {
             method: "POST",
             body: JSON.stringify({
