@@ -4,6 +4,8 @@ import getChatContext from "../chat/getChatContext";
 import { AI_MODEL } from "../consts";
 import { tool } from "ai";
 import { z } from "zod";
+import getFans from "../chat/getFans";
+import { getSupabaseServerAdminClient } from "@/packages/supabase/src/clients/server-admin-client";
 
 export function createChatMessagesService() {
   return new ChatMessagesService();
@@ -49,7 +51,9 @@ Please use this information to provide accurate and relevant responses and don't
             "Get the artists, playlists, albums, episodes, audio books, shows, tracks that are related to fans. Call this whenever you need to know the listening habits, fans count, insights. For example: 'what are the listening habits from Luh Tyler's latest campaign?', 'how many fans are included in the campaign?', 'what insights could we. draw from our latest campaign?'",
           parameters: z.object({}),
           execute: async () => {
-            return "a";
+            const client = getSupabaseServerAdminClient();
+            const fans = getFans(client);
+            return fans;
           },
         }),
       };

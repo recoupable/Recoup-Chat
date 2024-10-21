@@ -60,26 +60,18 @@ const getFans = async (client: SupabaseClient<Database, "public">) => {
     .map((played: Track) => played.name || "")
     .slice(0, 50);
 
-  return `
-    \t- Track list sorted by popularity:
-    \t\t${JSON.stringify(trackNames)}
-    \t- Artist list sorted by popularity:
-    \t\t${JSON.stringify(artistNames)}
-    \t- Album list sorted by popularity:
-    \t\t${JSON.stringify(albumNames)}
-    \t- Episode list:
-    \t\t${JSON.stringify(episodes)}
-    \t- Play list:
-    \t\t${JSON.stringify(playlists)}
-    \t- Audio Book list:
-    \t\t${JSON.stringify(audioBooks)}
-    \t- Premium users count:
-    \t\t${premiumCount}
-    \t- Free users count:
-    \t\t${freeCount}
-    \t- Fan list:
-    \t\t${JSON.stringify(rows.slice(0, 50))}\r\n
-  `;
+  return {
+    tracks: trackNames,
+    artists: artistNames,
+    playlists,
+    albums: albumNames,
+    episodes,
+    audioBooks,
+    premiumCount,
+    freeCount,
+    totalFansCount: premiumCount + freeCount,
+    fans: rows,
+  };
 };
 
 export default getFans;
