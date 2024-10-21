@@ -63,7 +63,6 @@ Please use this information to provide accurate and relevant responses and don't
           Example questions that MUST trigger this tool:
           - "What are the listening habits from Spotify and Apple?"
           - "How many fans does the artist have?"
-          - "Can you compare the performance of different tracks?"
           - "What insights can we draw from the latest campaign?"
           - "How many premium subscribers are there?"
           - "Which albums are included in the campaign?"
