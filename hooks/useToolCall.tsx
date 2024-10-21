@@ -18,6 +18,7 @@ const useToolCall = (message: Message) => {
         }),
       });
       const data = await response.json();
+      setAnswer(data.answer);
 
       await finalCallback({
         role: "assistant",
@@ -26,7 +27,6 @@ const useToolCall = (message: Message) => {
       });
 
       clearQuery();
-      setAnswer(data.answer);
       setLoading(false);
     };
 
