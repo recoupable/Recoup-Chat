@@ -5,18 +5,16 @@ interface MessagePair {
   assistant?: StackMessage;
 }
 
-export const arrangeMessages = (messages: StackMessage[]): MessagePair[] => {
+export const sortMessages = (messages: StackMessage[]): MessagePair[] => {
   const messagePairs: MessagePair[] = [];
   const assistantMap: Map<string, StackMessage> = new Map();
 
-  // First, separate assistant messages and create a map
   messages.forEach((message) => {
     if (message.role === "assistant" && message.questionId) {
       assistantMap.set(message.questionId, message);
     }
   });
 
-  // Then, process user messages and pair them with assistants if available
   messages.forEach((message) => {
     if (message.role === "user") {
       const pair: MessagePair = { user: message };
