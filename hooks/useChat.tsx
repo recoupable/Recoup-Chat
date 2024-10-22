@@ -30,6 +30,8 @@ const useChat = () => {
     push(`/${newId}`);
   };
 
+  console.log("ZIAD HERE", initialMessages)
+
   const {
     messages,
     input,
