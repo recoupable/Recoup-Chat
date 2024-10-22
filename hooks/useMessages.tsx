@@ -27,6 +27,8 @@ const useMessages = () => {
     setSuggestions(data.questions);
   };
 
+  console.log("ZIAD CURRENT QUESTION", currentQuestion);
+
   return {
     finalCallback,
     suggestions,
