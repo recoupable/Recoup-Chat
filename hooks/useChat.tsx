@@ -30,6 +30,7 @@ const useChat = () => {
     push(`/${newId}`);
   };
 
+  console.log("ZIAD", conversationId);
   const {
     messages,
     input,

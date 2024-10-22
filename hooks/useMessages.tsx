@@ -14,6 +14,7 @@ const useMessages = (conversationId: string) => {
   const { conversation: pathId } = useParams();
 
   const finalCallback = async (message: Message, lastQuestion?: Message) => {
+    console.log("ZIAD finalCallback", (pathId as string) || conversationId);
     const question = lastQuestion || currentQuestion;
     if (!message.content || !question) return;
     await trackNewMessage(
