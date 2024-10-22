@@ -6,7 +6,7 @@ import useUser from "./useUser";
 import { StackMessage } from "@/types/Stack";
 import { useParams } from "next/navigation";
 
-const useInitialMessages = (conversationId: string) => {
+const useInitialMessages = () => {
   const [initialMessages, setInitialMessages] = useState<StackMessage[]>([]);
   const { address } = useUser();
   const { conversation: pathId } = useParams();
@@ -19,8 +19,8 @@ const useInitialMessages = (conversationId: string) => {
 
   const fetchInitialMessages = async (walletAddress: Address) => {
     try {
-      const convId = (pathId as string) || conversationId;
-      if (!convId) return null;
+      const convId = pathId as string;
+      if (!convId) return;
       const messages = await getInitialMessages(walletAddress, convId);
       const arrangedMessages = arrangeMessages(messages);
       const flattenedMessages = flattenMessagePairs(arrangedMessages);
@@ -28,7 +28,7 @@ const useInitialMessages = (conversationId: string) => {
       return flattenedMessages;
     } catch (error) {
       console.error("Error fetching initial messages:", error);
-      return null;
+      return;
     }
   };
 

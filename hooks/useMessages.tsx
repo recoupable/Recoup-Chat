@@ -7,7 +7,7 @@ import useUser from "./useUser";
 import { v4 as uuidV4 } from "uuid";
 import { useParams } from "next/navigation";
 
-const useMessages = (conversationId: string) => {
+const useMessages = () => {
   const { address } = useUser();
   const [suggestions, setSuggestions] = useState(SUGGESTIONS);
   const [currentQuestion, setCurrentQuestion] = useState<Message | null>(null);
@@ -18,7 +18,7 @@ const useMessages = (conversationId: string) => {
     lastQuestion?: Message,
     newConversationId?: string,
   ) => {
-    const convId = newConversationId || (pathId as string) || conversationId;
+    const convId = newConversationId || (pathId as string);
     const question = lastQuestion || currentQuestion;
     if (!message.content || !question) return;
     await trackNewMessage(address as Address, question, convId);

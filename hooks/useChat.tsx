@@ -14,11 +14,8 @@ const useChat = () => {
   const csrfToken = useCsrfToken();
   const accountId = "3664dcb4-164f-4566-8e7c-20b2c93f9951";
   const queryClient = useQueryClient();
-  const [conversationId, setConversationId] = useState("");
-  const { initialMessages, fetchInitialMessages } =
-    useInitialMessages(conversationId);
-  const { finalCallback, suggestions, setCurrentQuestion } =
-    useMessages(conversationId);
+  const { initialMessages, fetchInitialMessages } = useInitialMessages();
+  const { finalCallback, suggestions, setCurrentQuestion } = useMessages();
   const { push } = useRouter();
   const { conversation } = useParams();
   const pathname = usePathname();
@@ -28,7 +25,7 @@ const useChat = () => {
   const goToNewConversation = async (name: string) => {
     if (conversation) return;
     const newId = uuidV4();
-    setConversationId(newId);
+    conversationRef.current = newId;
     await trackNewConversation(address, newId, name);
     push(`/${newId}`);
   };
@@ -64,13 +61,7 @@ const useChat = () => {
   });
 
   const messagesRef = useRef(messages);
-  const conversationRef = useRef((conversation as string) || conversationId);
-
-  useEffect(() => {
-    if ((conversation as string) || conversationId) {
-      conversationRef.current = (conversation as string) || conversationId;
-    }
-  }, [conversation, conversationId]);
+  const conversationRef = useRef(conversation as string);
 
   useEffect(() => {
     if (messages.length) messagesRef.current = messages;
@@ -78,7 +69,7 @@ const useChat = () => {
 
   useEffect(() => {
     if (isNewChat) {
-      setConversationId("");
+      conversationRef.current = "";
       setMessages([]);
     }
   }, [isNewChat]);
