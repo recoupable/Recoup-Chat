@@ -8,7 +8,7 @@ const Chat = () => {
 
   return (
     <div
-      className={`w-screen h-screen overflow-hidden flex flex-col ${messages.length ? "px-4 pb-5 pt-20" : "items-center justify-center"}`}
+      className={`grow h-screen overflow-hidden flex flex-col ${messages.length ? "px-4 pb-5 pt-20" : "items-center justify-center"}`}
     >
       <p className="font-sans font-semibold text-2xl mb-2 text-center">
         {`How is Luh Tyler's 3D Game Performing?`}
