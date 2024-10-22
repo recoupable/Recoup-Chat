@@ -62,12 +62,12 @@ const useChat = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!isPrepared()) return;
-    handleAiChatSubmit(e);
     setCurrentQuestion({
       content: input,
       role: "user",
       id: uuidV4(),
     });
+    handleAiChatSubmit(e);
   };
 
   return {
