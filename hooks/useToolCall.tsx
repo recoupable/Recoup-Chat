@@ -37,10 +37,9 @@ const useToolCall = (message: Message) => {
           content: answer,
           id: "",
         });
-        clearQuery();
         setAnswer(answer);
       }
-
+      clearQuery();
       setLoading(false);
     };
 
