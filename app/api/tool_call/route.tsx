@@ -29,19 +29,21 @@ export async function POST(req: NextRequest) {
             - Highlight popular playlists, albums, episodes, audiobooks, shows, and tracks.
             - Identify standout artists and their impact on the fanbase.
 
-          3. User Segmentation:
-            - Distinguish between premium and free users if applicable.
-            - Note any significant demographic patterns.
+          3. Specific Focus:
+            - If the question asks for a count (e.g., total fans, premium users), respond with just the number.
 
-          4. Engagement Metrics:
+          4. User Segmentation:
+            - Distinguish between premium and free users if applicable.
+
+          5. Engagement Metrics:
             - Report on key statistics like total fans, plays, or other relevant metrics.
             - Identify top performers or outliers in the data.
 
-          5. Recommendations:
+          6. Recommendations:
             - Suggest 2-3 actionable strategies to improve engagement based on the data.
             - Example: "To boost engagement, consider launching a personalized playlist campaign featuring top artists from each user's listening history."
 
-          6. Trends and Insights:
+          7. Trends and Insights:
             - Identify any emerging trends or unique insights from the data.
             - Compare to broader industry trends if relevant.
 
