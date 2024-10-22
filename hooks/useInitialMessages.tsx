@@ -21,7 +21,7 @@ const useInitialMessages = (conversationId: string) => {
   }, [address, pathId]);
 
   useEffect(() => {
-    setInitialMessages([]);
+    if (isNewChat) setInitialMessages([]);
   }, [isNewChat]);
 
   const fetchInitialMessages = async (walletAddress: Address) => {
