@@ -45,13 +45,15 @@ const useToolCall = (message: Message) => {
 
     const toolInvocations = [...(message.toolInvocations || [])];
 
-    console.log("ZIAD toolInvocations", toolInvocations.length);
+    console.log("ZIAD toolInvocations", toolInvocations);
     const toolInvocationResult = toolInvocations?.filter(
       (toolInvocation) => toolInvocation.state === "result",
     );
-    const findIndex = toolInvocations.find((invocation) => invocation.state === 'result')
+    const findIndex = toolInvocations.find(
+      (invocation) => invocation.state === "result",
+    );
 
-    console.log("ZIAD findIndex", findIndex)
+    console.log("ZIAD findIndex", findIndex);
 
     console.log("ZIAD toolInvocationResult", toolInvocationResult);
     if (!toolInvocationResult?.length) return;
