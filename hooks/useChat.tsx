@@ -4,7 +4,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import useInitialMessages from "./useInitialMessages";
 import { v4 as uuidV4 } from "uuid";
 import useUser from "./useUser";
-import useMessages from "./useMessages";
+import useSuggestions from "./useSuggestions";
 import { useEffect, useRef } from "react";
 
 const useChat = () => {
@@ -13,7 +13,7 @@ const useChat = () => {
   const accountId = "3664dcb4-164f-4566-8e7c-20b2c93f9951";
   const queryClient = useQueryClient();
   const { initialMessages, fetchInitialMessages } = useInitialMessages();
-  const { finalCallback, suggestions, setCurrentQuestion } = useMessages();
+  const { finalCallback, suggestions, setCurrentQuestion } = useSuggestions();
 
   const {
     messages,
