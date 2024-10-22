@@ -46,6 +46,7 @@ const useToolCall = (message: Message) => {
     const toolInvocationResult = message.toolInvocations?.filter(
       (toolInvocation) => toolInvocation.state === "result",
     );
+    console.log("ZIAD toolInvocationResult", toolInvocationResult)
     if (!toolInvocationResult?.length) return;
 
     const question = toolInvocationResult[0].result?.question || "";
