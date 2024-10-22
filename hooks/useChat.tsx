@@ -47,7 +47,7 @@ const useChat = () => {
   const messagesRef = useRef(messages);
 
   useEffect(() => {
-    messagesRef.current = messages;
+    if (messages.length) messagesRef.current = messages;
   }, [messages]);
 
   const clearQuery = async () => {
@@ -82,7 +82,7 @@ const useChat = () => {
 
   return {
     suggestions,
-    messages,
+    messages: messagesRef.current,
     input,
     handleInputChange,
     handleSubmit,
