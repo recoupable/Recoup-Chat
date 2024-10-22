@@ -1,3 +1,4 @@
+import getToolCallUrl from "@/lib/getToolCallUrl";
 import { useChatProvider } from "@/providers/ChatProvider";
 import { Message } from "ai";
 import { useEffect, useState } from "react";
@@ -14,7 +15,10 @@ const useToolCall = (message: Message) => {
       let answer = "";
       if (message.toolInvocations) {
         if (question && context) {
-          const response = await fetch(`/api/tool_call`, {
+          const toolCallApi = getToolCallUrl(
+            message.toolInvocations[0].toolName,
+          );
+          const response = await fetch(toolCallApi, {
             method: "POST",
             body: JSON.stringify({
               context,
