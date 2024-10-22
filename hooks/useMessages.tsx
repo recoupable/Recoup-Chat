@@ -13,15 +13,15 @@ const useMessages = (conversationId: string) => {
   const [currentQuestion, setCurrentQuestion] = useState<Message | null>(null);
   const { conversation: pathId } = useParams();
 
-  const finalCallback = async (message: Message, lastQuestion?: Message) => {
-    console.log("ZIAD finalCallback", (pathId as string) || conversationId);
+  const finalCallback = async (
+    message: Message,
+    lastQuestion?: Message,
+    newConversationId?: string,
+  ) => {
+    const convId = newConversationId || (pathId as string) || conversationId;
     const question = lastQuestion || currentQuestion;
     if (!message.content || !question) return;
-    await trackNewMessage(
-      address as Address,
-      question,
-      (pathId as string) || conversationId,
-    );
+    await trackNewMessage(address as Address, question, convId);
     await trackNewMessage(
       address as Address,
       {
@@ -30,7 +30,7 @@ const useMessages = (conversationId: string) => {
         id: uuidV4(),
         questionId: question.id,
       },
-      (pathId as string) || conversationId,
+      convId,
     );
     setCurrentQuestion(null);
     const response = await fetch(`/api/prompts?answer=${message.content}`);

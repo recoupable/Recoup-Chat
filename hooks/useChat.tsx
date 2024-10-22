@@ -30,7 +30,6 @@ const useChat = () => {
     push(`/${newId}`);
   };
 
-  console.log("ZIAD", conversationId);
   const {
     messages,
     input,
@@ -53,6 +52,7 @@ const useChat = () => {
       await finalCallback(
         message,
         messagesRef.current[messagesRef.current.length - 2],
+        conversationRef.current,
       );
       void queryClient.invalidateQueries({
         queryKey: ["credits", accountId],
@@ -61,6 +61,13 @@ const useChat = () => {
   });
 
   const messagesRef = useRef(messages);
+  const conversationRef = useRef((conversation as string) || conversationId);
+
+  useEffect(() => {
+    if ((conversation as string) || conversationId) {
+      conversationRef.current = (conversation as string) || conversationId;
+    }
+  }, [conversation, conversationId]);
 
   useEffect(() => {
     if (messages.length) messagesRef.current = messages;
