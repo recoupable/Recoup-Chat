@@ -15,10 +15,14 @@ const useInitialMessages = (conversationId: string) => {
     if (address) {
       fetchInitialMessages(address);
     }
-  }, [address]);
+  }, [address, pathId]);
 
   const fetchInitialMessages = async (walletAddress: Address) => {
     try {
+      console.log(
+        "ZIAD fetchInitialMessages",
+        (pathId as string) || conversationId,
+      );
       const messages = await getInitialMessages(
         walletAddress,
         (pathId as string) || conversationId,
