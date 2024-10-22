@@ -7,8 +7,7 @@ const useToolCall = (message: Message) => {
   const { finalCallback } = useChatProvider();
   const [answer, setAnswer] = useState("");
   const { clearQuery } = useChatProvider();
-
-  console.log("ZIAD Message", message);
+  const [isCalled, setIsCalled] = useState(false);
 
   useEffect(() => {
     const init = async () => {
@@ -39,7 +38,6 @@ const useToolCall = (message: Message) => {
 
     const isAssistant = message.role === "assistant";
 
-    console.log("ZIAD", message);
     const toolInvocationResult = message.toolInvocations?.filter(
       (toolInvocation) => toolInvocation.state === "result",
     );
@@ -48,12 +46,13 @@ const useToolCall = (message: Message) => {
     const question = toolInvocationResult[0].result?.question || "";
     const context = toolInvocationResult[0].result?.context || "";
 
-    if (!isAssistant || loading) {
+    if (question && context) setIsCalled(true);
+    if (!isAssistant || loading || isCalled) {
       setLoading(false);
       return;
     }
     init();
-  }, [message.toolInvocations]);
+  }, [message, isCalled]);
 
   return {
     loading,
