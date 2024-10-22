@@ -19,10 +19,8 @@ const useInitialMessages = (conversationId: string) => {
 
   const fetchInitialMessages = async (walletAddress: Address) => {
     try {
-      console.log(
-        "ZIAD fetchInitialMessages",
-        (pathId as string) || conversationId,
-      );
+      const convId = (pathId as string) || conversationId;
+      if (!convId) return null;
       const messages = await getInitialMessages(
         walletAddress,
         (pathId as string) || conversationId,
@@ -33,7 +31,7 @@ const useInitialMessages = (conversationId: string) => {
       return flattenedMessages;
     } catch (error) {
       console.error("Error fetching initial messages:", error);
-      return [];
+      return null;
     }
   };
 

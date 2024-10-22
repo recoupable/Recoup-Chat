@@ -80,6 +80,7 @@ const useChat = () => {
 
   const clearQuery = async () => {
     const messages = await fetchInitialMessages(address);
+    if (!messages) return;
     setMessages(messages);
   };
 
