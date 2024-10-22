@@ -14,11 +14,7 @@ const useToolCall = (message: Message) => {
     (toolInvocation) => toolInvocation.state === "result",
   )?.[0];
 
-  console.log("ZIAD toolInvocationResult", toolInvocationResult);
-
   useEffect(() => {
-    console.log("ZIAD Message in useEffect", toolInvocationResult);
-
     const init = async () => {
       setLoading(true);
       let answer = "";
@@ -36,14 +32,15 @@ const useToolCall = (message: Message) => {
         });
         const data = await response.json();
         answer = data.answer;
+        await finalCallback({
+          role: "assistant",
+          content: answer,
+          id: "",
+        });
+        clearQuery();
+        setAnswer(answer);
       }
-      await finalCallback({
-        role: "assistant",
-        content: answer,
-        id: "",
-      });
-      clearQuery();
-      setAnswer(answer);
+
       setLoading(false);
     };
 
@@ -51,11 +48,11 @@ const useToolCall = (message: Message) => {
 
     const isAssistant = message.role === "assistant";
 
-    console.log("ZIAD", isAssistant, loading, isCalled);
-    if (!isAssistant || loading || isCalled) {
+    if (!isAssistant) {
       setLoading(false);
       return;
     }
+    if (isCalled || loading) return;
     init();
     console.log("ZIAD", message);
   }, [toolInvocationResult, isCalled]);
