@@ -9,7 +9,7 @@ const Conversation = ({ name, id }: { name: string; id: string }) => {
       type="button"
       onClick={() => push(`/${id}`)}
     >
-      <p className="text-sm">{name}</p>
+      <p className="text-sm truncate">{name}</p>
     </button>
   );
 };

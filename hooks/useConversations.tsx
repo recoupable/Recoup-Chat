@@ -1,12 +1,15 @@
 import { Address } from "viem";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import useUser from "./useUser";
-import { Conversation, StackMessage } from "@/types/Stack";
+import { Conversation } from "@/types/Stack";
 import getConversations from "@/lib/stack/getConversations";
+import { useParams } from "next/navigation";
 
 const useConversations = () => {
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const { address } = useUser();
+  const { conversation } = useParams();
+  const conversationRef = useRef(conversation as string);
 
   useEffect(() => {
     if (address) {
@@ -17,6 +20,7 @@ const useConversations = () => {
   const fetchConversations = async (walletAddress: Address) => {
     try {
       const data = await getConversations(walletAddress);
+      console.log("ZIAD", data);
       setConversations(data);
     } catch (error) {
       console.error("Error fetching initial messages:", error);
@@ -24,7 +28,12 @@ const useConversations = () => {
     }
   };
 
-  return { fetchConversations, conversations };
+  return {
+    fetchConversations,
+    conversations,
+    conversationRef,
+    conversationId: conversation,
+  };
 };
 
 export default useConversations;
