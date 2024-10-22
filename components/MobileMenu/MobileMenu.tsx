@@ -29,7 +29,13 @@ const MobileMenu = ({ toggleMenu }: { toggleMenu: () => void }) => {
     >
       <div className="flex justify-between mb-6">
         <button type="button" onClick={goToNewChat}>
-          <Image src="/logo.png" width={40} height={40} alt="not found icon" />
+          <Image
+            src="/logo.jpg"
+            width={40}
+            height={40}
+            alt="not found icon"
+            className="rounded-md overflow-hidden"
+          />
         </button>
         <button type="button" onClick={toggleMenu}>
           <X />

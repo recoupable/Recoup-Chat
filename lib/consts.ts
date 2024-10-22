@@ -1,6 +1,5 @@
 // STACK EVENTS
 export const MESSAGE_SENT_EVENT = "message_sent";
-export const CONVERSATION_CREAT_EVENT = "conversation_create";
 export const LUH_TYLER_3D_SCORE = "luh-tyler-3d-score";
 export const MESSAGE_SENT_POINT = 1;
 export const CHAT_POINT_SYSTEM_ID = 4172;
