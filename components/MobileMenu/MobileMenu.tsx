@@ -2,15 +2,12 @@ import { BookOpen, Plus, X } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { useChatProvider } from "@/providers/ChatProvider";
 
 const MobileMenu = ({ toggleMenu }: { toggleMenu: () => void }) => {
   const { push } = useRouter();
-  const { createNewConversation } = useChatProvider();
 
   const goToNewChat = () => {
     push("/");
-    createNewConversation();
     toggleMenu();
   };
 

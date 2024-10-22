@@ -5,8 +5,8 @@ import useInitialMessages from "./useInitialMessages";
 import { v4 as uuidV4 } from "uuid";
 import useUser from "./useUser";
 import useMessages from "./useMessages";
-import { useEffect, useRef, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useEffect, useRef } from "react";
+import { useParams, usePathname, useRouter } from "next/navigation";
 import trackNewConversation from "@/lib/stack/trackNewConversation";
 
 const useChat = () => {
@@ -14,18 +14,18 @@ const useChat = () => {
   const csrfToken = useCsrfToken();
   const accountId = "3664dcb4-164f-4566-8e7c-20b2c93f9951";
   const queryClient = useQueryClient();
-  const [conversationId, setConversationId] = useState("");
-  const { initialMessages, fetchInitialMessages } =
-    useInitialMessages(conversationId);
-  const { finalCallback, suggestions, setCurrentQuestion } =
-    useMessages(conversationId);
+  const { initialMessages, fetchInitialMessages } = useInitialMessages();
+  const { finalCallback, suggestions, setCurrentQuestion } = useMessages();
   const { push } = useRouter();
   const { conversation } = useParams();
+  const pathname = usePathname();
+
+  const isNewChat = pathname === "/";
 
   const goToNewConversation = async (name: string) => {
     if (conversation) return;
     const newId = uuidV4();
-    setConversationId(newId);
+    conversationRef.current = newId;
     await trackNewConversation(address, newId, name);
     push(`/${newId}`);
   };
@@ -61,26 +61,18 @@ const useChat = () => {
   });
 
   const messagesRef = useRef(messages);
-  const conversationRef = useRef((conversation as string) || conversationId);
-
-  useEffect(() => {
-    if ((conversation as string) || conversationId) {
-      conversationRef.current = (conversation as string) || conversationId;
-    }
-  }, [conversation, conversationId]);
+  const conversationRef = useRef(conversation as string);
 
   useEffect(() => {
     if (messages.length) messagesRef.current = messages;
   }, [messages]);
 
   useEffect(() => {
-    if (initialMessages.length) setMessages(initialMessages);
-  }, [initialMessages]);
-
-  const createNewConversation = () => {
-    const newId = uuidV4();
-    setConversationId(newId);
-  };
+    if (isNewChat) {
+      conversationRef.current = "";
+      setMessages([]);
+    }
+  }, [isNewChat]);
 
   const clearQuery = async () => {
     await fetchInitialMessages(address);
@@ -123,7 +115,6 @@ const useChat = () => {
     pending,
     finalCallback,
     clearQuery,
-    createNewConversation,
   };
 };
 

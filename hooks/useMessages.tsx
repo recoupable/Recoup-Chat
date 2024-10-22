@@ -1,24 +1,30 @@
 import { SUGGESTIONS } from "@/lib/consts";
 import trackNewMessage from "@/lib/stack/trackNewMessage";
 import { Message } from "ai";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Address } from "viem";
 import useUser from "./useUser";
 import { v4 as uuidV4 } from "uuid";
-import { useParams } from "next/navigation";
+import { useParams, usePathname } from "next/navigation";
 
-const useMessages = (conversationId: string) => {
+const useMessages = () => {
   const { address } = useUser();
   const [suggestions, setSuggestions] = useState(SUGGESTIONS);
   const [currentQuestion, setCurrentQuestion] = useState<Message | null>(null);
   const { conversation: pathId } = useParams();
+  const pathname = usePathname();
+  const isNewChat = pathname === "/";
+
+  useEffect(() => {
+    if (isNewChat) setSuggestions(SUGGESTIONS);
+  }, [isNewChat]);
 
   const finalCallback = async (
     message: Message,
     lastQuestion?: Message,
     newConversationId?: string,
   ) => {
-    const convId = newConversationId || (pathId as string) || conversationId;
+    const convId = newConversationId || (pathId as string);
     const question = lastQuestion || currentQuestion;
     if (!message.content || !question) return;
     await trackNewMessage(address as Address, question, convId);
