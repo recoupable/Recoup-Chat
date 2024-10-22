@@ -11,14 +11,16 @@ const useMessages = () => {
   const [suggestions, setSuggestions] = useState(SUGGESTIONS);
   const [currentQuestion, setCurrentQuestion] = useState<Message | null>(null);
 
-  const finalCallback = async (message: Message, question?: Message) => {
-    if (!message.content || !currentQuestion) return;
-    await trackNewMessage(address as Address, question || currentQuestion);
+  const finalCallback = async (message: Message, lastQuestion?: Message) => {
+    const question = lastQuestion || currentQuestion;
+
+    if (!message.content || !question) return;
+    await trackNewMessage(address as Address, question);
     await trackNewMessage(address as Address, {
       content: message.content.replace(/[^a-zA-Z0-9\s,\.]/g, ""),
       role: message.role,
       id: uuidV4(),
-      questionId: currentQuestion.id,
+      questionId: question.id,
     });
     setCurrentQuestion(null);
     const response = await fetch(`/api/prompts?answer=${message.content}`);
