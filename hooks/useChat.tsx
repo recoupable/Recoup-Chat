@@ -34,7 +34,7 @@ const useChat = () => {
     initialMessages,
     onError: console.error,
     onFinish: async (message) => {
-      console.log("ZIAD onFinish", currentQuestion);
+      console.log("ZIAD onFinish", currentQuestion, messages);
       await finalCallback(message);
       void queryClient.invalidateQueries({
         queryKey: ["credits", accountId],
