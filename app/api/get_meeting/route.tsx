@@ -15,9 +15,20 @@ export async function POST(req: NextRequest) {
       messages: [
         {
           role: "user",
-          content: `Context: ${JSON.stringify(context)}
-          Question: ${question}
-          Answer: ???.
+          content: `You are an AI trained to summarize meeting histories and answer questions about them.
+
+            Context: ${JSON.stringify(context)}
+
+            Here are some example questions you might be asked:
+            1. Summarize the last meeting.
+            2. What problems did Willie mention during the last meeting?
+            3. How many meetings have taken place?
+            4. When did the last meeting occur?
+            5. Who was involved in each meeting?
+
+            Question: ${question}
+
+            Answer: Please provide a concise and clear answer based on the provided context.
           `,
         },
         {
