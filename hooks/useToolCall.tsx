@@ -17,6 +17,7 @@ const useToolCall = (message: Message) => {
 
       if (message.toolInvocations) {
         if (question && context) {
+          setIsCalled(true);
           const response = await fetch(`/api/tool_call`, {
             method: "POST",
             body: JSON.stringify({
@@ -48,13 +49,11 @@ const useToolCall = (message: Message) => {
     const question = toolInvocationResult[0].result?.question || "";
     const context = toolInvocationResult[0].result?.context || "";
 
-    if (question && context) setIsCalled(true);
     if (!isAssistant || loading || isCalled) {
       setLoading(false);
       return;
     }
-    init();
-    console.log("ZIAD", message);
+    if (question && context) init();
   }, [message, isCalled]);
 
   return {
