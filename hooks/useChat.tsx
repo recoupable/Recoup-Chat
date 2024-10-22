@@ -5,7 +5,7 @@ import useInitialMessages from "./useInitialMessages";
 import { v4 as uuidV4 } from "uuid";
 import useUser from "./useUser";
 import useMessages from "./useMessages";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { useParams, usePathname, useRouter } from "next/navigation";
 import trackNewConversation from "@/lib/stack/trackNewConversation";
 
