@@ -7,7 +7,7 @@ import useUser from "./useUser";
 import { v4 as uuidV4 } from "uuid";
 import { useParams, usePathname } from "next/navigation";
 
-const useMessages = () => {
+const useSuggestions = () => {
   const { address } = useUser();
   const [suggestions, setSuggestions] = useState(SUGGESTIONS);
   const [currentQuestion, setCurrentQuestion] = useState<Message | null>(null);
@@ -53,4 +53,4 @@ const useMessages = () => {
   };
 };
 
-export default useMessages;
+export default useSuggestions;

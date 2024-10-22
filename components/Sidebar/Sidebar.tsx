@@ -15,7 +15,13 @@ const Sidebar = () => {
   return (
     <div className="border-r-[1px] border-r-gray-700 w-16 flex flex-col py-4 px-2 items-center gap-3 hidden md:block">
       <button type="button" onClick={goToNewChat}>
-        <Image src="/logo.png" width={90} height={90} alt="not found icon" />
+        <Image
+          src="/logo.png"
+          width={90}
+          height={90}
+          alt="not found icon"
+          className="rounded-md overflow-hidden"
+        />
       </button>
       <div className="flex flex-col gap-3">
         <Tooltip

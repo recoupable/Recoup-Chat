@@ -1,7 +1,7 @@
 import { Address } from "viem";
 import { useEffect, useState } from "react";
 import getInitialMessages from "@/lib/stack/getInitialMessages";
-import { arrangeMessages, flattenMessagePairs } from "@/lib/arrangeMessages";
+import { sortMessages, flattenMessagePairs } from "@/lib/sortMessages";
 import useUser from "./useUser";
 import { StackMessage } from "@/types/Stack";
 import { useParams } from "next/navigation";
@@ -22,8 +22,8 @@ const useInitialMessages = () => {
       const convId = pathId as string;
       if (!convId) return;
       const messages = await getInitialMessages(walletAddress, convId);
-      const arrangedMessages = arrangeMessages(messages);
-      const flattenedMessages = flattenMessagePairs(arrangedMessages);
+      const sortedMessages = sortMessages(messages);
+      const flattenedMessages = flattenMessagePairs(sortedMessages);
       setInitialMessages(flattenedMessages);
       return flattenedMessages;
     } catch (error) {
