@@ -10,6 +10,8 @@ const useToolCall = (message: Message) => {
   const [isCalled, setIsCalled] = useState(false);
 
   useEffect(() => {
+    console.log("ZIAD Message in useEffect", message);
+
     const init = async () => {
       setLoading(true);
       let answer = "";
@@ -56,6 +58,8 @@ const useToolCall = (message: Message) => {
     init();
     console.log("ZIAD", message);
   }, [message, isCalled]);
+
+  console.log("ZIAD Message", message);
 
   return {
     loading,
