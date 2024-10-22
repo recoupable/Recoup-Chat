@@ -34,8 +34,7 @@ const useChat = () => {
     initialMessages,
     onError: console.error,
     onFinish: async (message) => {
-      console.log("ZIAD onFinish", currentQuestion, messages);
-      await finalCallback(message);
+      await finalCallback(message, messages[messages.length - 2]);
       void queryClient.invalidateQueries({
         queryKey: ["credits", accountId],
       });
@@ -57,7 +56,6 @@ const useChat = () => {
 
   const append = async (message: Message) => {
     if (!isPrepared()) return;
-    console.log("ZIAD append");
     setCurrentQuestion(message);
     await appendAiChat(message);
   };
@@ -65,7 +63,6 @@ const useChat = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!isPrepared()) return;
-    console.log("ZIAD handleSubmit");
     setCurrentQuestion({
       content: input,
       role: "user",

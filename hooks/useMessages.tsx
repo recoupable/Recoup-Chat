@@ -11,10 +11,9 @@ const useMessages = () => {
   const [suggestions, setSuggestions] = useState(SUGGESTIONS);
   const [currentQuestion, setCurrentQuestion] = useState<Message | null>(null);
 
-  const finalCallback = async (message: Message) => {
-    console.log("ZIAD finalCallback", message, currentQuestion);
+  const finalCallback = async (message: Message, question?: Message) => {
     if (!message.content || !currentQuestion) return;
-    await trackNewMessage(address as Address, currentQuestion);
+    await trackNewMessage(address as Address, question || currentQuestion);
     await trackNewMessage(address as Address, {
       content: message.content.replace(/[^a-zA-Z0-9\s,\.]/g, ""),
       role: message.role,
@@ -27,8 +26,6 @@ const useMessages = () => {
 
     setSuggestions(data.questions);
   };
-
-  console.log("ZIAD CURRENT QUESTION", currentQuestion);
 
   return {
     finalCallback,
