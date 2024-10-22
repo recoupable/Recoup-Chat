@@ -1,10 +1,8 @@
 import { Message } from "ai/react";
-import useInitialMessages from "./useInitialMessages";
 import { v4 as uuidV4 } from "uuid";
 import useUser from "./useUser";
 import useSuggestions from "./useSuggestions";
 import { useRouter } from "next/navigation";
-import trackNewConversation from "@/lib/stack/trackNewConversation";
 import useConverstaion from "./useConversation";
 import useMessages from "./useMessages";
 
@@ -28,7 +26,6 @@ const useChat = () => {
     if (conversationId) return;
     const newId = uuidV4();
     conversationRef.current = newId;
-    await trackNewConversation(address, newId, name);
     push(`/${newId}`);
   };
 
