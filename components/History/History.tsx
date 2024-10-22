@@ -15,7 +15,7 @@ const History = () => {
           <Conversation
             key={conversation.metadata.id}
             name={conversation.metadata.content}
-            id={conversation.metadata.id}
+            id={conversation.metadata.conversationId}
           />
         ))}
       </div>
