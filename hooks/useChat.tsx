@@ -1,82 +1,36 @@
-import { useCsrfToken } from "@/packages/shared/src/hooks";
-import { Message, useChat as useAiChat } from "ai/react";
-import { useQueryClient } from "@tanstack/react-query";
+import { Message } from "ai/react";
 import useInitialMessages from "./useInitialMessages";
 import { v4 as uuidV4 } from "uuid";
 import useUser from "./useUser";
 import useSuggestions from "./useSuggestions";
-import { useEffect, useRef } from "react";
-import { useParams, usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import trackNewConversation from "@/lib/stack/trackNewConversation";
+import useConverstaion from "./useConversation";
+import useMessages from "./useMessages";
 
 const useChat = () => {
   const { login, address } = useUser();
-  const csrfToken = useCsrfToken();
-  const accountId = "3664dcb4-164f-4566-8e7c-20b2c93f9951";
-  const queryClient = useQueryClient();
-  const { initialMessages, fetchInitialMessages } = useInitialMessages();
+  const { fetchInitialMessages } = useInitialMessages();
   const { finalCallback, suggestions, setCurrentQuestion } = useSuggestions();
   const { push } = useRouter();
-  const { conversation } = useParams();
-  const pathname = usePathname();
-
-  const isNewChat = pathname === "/";
+  const { conversationId } = useConverstaion();
+  const {
+    conversationRef,
+    input,
+    appendAiChat,
+    handleAiChatSubmit,
+    handleInputChange,
+    messagesRef,
+    pending,
+  } = useMessages();
 
   const goToNewConversation = async (name: string) => {
-    if (conversation) return;
+    if (conversationId) return;
     const newId = uuidV4();
     conversationRef.current = newId;
     await trackNewConversation(address, newId, name);
     push(`/${newId}`);
   };
-
-  const {
-    messages,
-    input,
-    handleInputChange,
-    handleSubmit: handleAiChatSubmit,
-    append: appendAiChat,
-    isLoading: pending,
-    setMessages,
-  } = useAiChat({
-    api: `/api/chat`,
-    headers: {
-      "X-CSRF-Token": csrfToken,
-    },
-    body: {
-      accountId,
-    },
-    initialMessages,
-    onError: console.error,
-    onFinish: async (message) => {
-      await finalCallback(
-        message,
-        messagesRef.current[messagesRef.current.length - 2],
-        conversationRef.current,
-      );
-      void queryClient.invalidateQueries({
-        queryKey: ["credits", accountId],
-      });
-    },
-  });
-
-  const messagesRef = useRef(messages);
-  const conversationRef = useRef(conversation as string);
-
-  useEffect(() => {
-    if (messages.length) messagesRef.current = messages;
-  }, [messages]);
-
-  useEffect(() => {
-    if (initialMessages.length) setMessages(initialMessages);
-  }, [initialMessages]);
-
-  useEffect(() => {
-    if (isNewChat) {
-      conversationRef.current = "";
-      setMessages([]);
-    }
-  }, [isNewChat]);
 
   const clearQuery = async () => {
     await fetchInitialMessages(address);
