@@ -5,7 +5,7 @@ interface MessagePair {
   assistant?: StackMessage;
 }
 
-export const arrangeMessages = (messages: StackMessage[]): MessagePair[] => {
+export const sortMessages = (messages: StackMessage[]): MessagePair[] => {
   const messagePairs: MessagePair[] = [];
   const assistantMap: Map<string, StackMessage> = new Map();
 
