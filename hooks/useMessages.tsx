@@ -11,7 +11,7 @@ const useMessages = () => {
   const { finalCallback } = useSuggestions();
   const csrfToken = useCsrfToken();
   const accountId = "3664dcb4-164f-4566-8e7c-20b2c93f9951";
-  const { initialMessages } = useInitialMessages();
+  const { initialMessages, fetchInitialMessages } = useInitialMessages();
   const { conversationRef } = useConverstaion();
   const queryClient = useQueryClient();
 
@@ -74,6 +74,7 @@ const useMessages = () => {
     input,
     messagesRef,
     pending,
+    fetchInitialMessages,
   };
 };
 

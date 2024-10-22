@@ -10,7 +10,6 @@ import useMessages from "./useMessages";
 
 const useChat = () => {
   const { login, address } = useUser();
-  const { fetchInitialMessages } = useInitialMessages();
   const { finalCallback, suggestions, setCurrentQuestion } = useSuggestions();
   const { push } = useRouter();
   const { conversationId } = useConverstaion();
@@ -22,6 +21,7 @@ const useChat = () => {
     handleInputChange,
     messagesRef,
     pending,
+    fetchInitialMessages,
   } = useMessages();
 
   const goToNewConversation = async (name: string) => {
