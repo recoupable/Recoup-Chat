@@ -53,7 +53,8 @@ const useToolCall = (message: Message) => {
       setLoading(false);
       return;
     }
-    if (question && context) init();
+    init();
+    console.log("ZIAD", message);
   }, [message, isCalled]);
 
   return {
