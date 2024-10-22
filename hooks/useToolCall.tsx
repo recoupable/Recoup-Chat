@@ -10,6 +10,7 @@ const useToolCall = (message: Message) => {
 
   useEffect(() => {
     const init = async () => {
+      console.log("ZIAD HERE", message)
       setLoading(true);
       let answer = "";
       if (message.toolInvocations) {
