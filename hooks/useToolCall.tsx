@@ -43,15 +43,17 @@ const useToolCall = (message: Message) => {
 
     const isAssistant = message.role === "assistant";
 
+    console.log("ZIAD toolInvocations", message.toolInvocations)
     const toolInvocationResult = message.toolInvocations?.filter(
       (toolInvocation) => toolInvocation.state === "result",
     );
-    console.log("ZIAD toolInvocationResult", toolInvocationResult)
+    console.log("ZIAD toolInvocationResult", toolInvocationResult);
     if (!toolInvocationResult?.length) return;
 
     const question = toolInvocationResult[0].result?.question || "";
     const context = toolInvocationResult[0].result?.context || "";
 
+    console.log("ZIAD", isAssistant, loading, isCalled);
     if (!isAssistant || loading || isCalled) {
       setLoading(false);
       return;
