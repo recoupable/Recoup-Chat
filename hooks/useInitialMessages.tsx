@@ -21,10 +21,7 @@ const useInitialMessages = (conversationId: string) => {
     try {
       const convId = (pathId as string) || conversationId;
       if (!convId) return null;
-      const messages = await getInitialMessages(
-        walletAddress,
-        (pathId as string) || conversationId,
-      );
+      const messages = await getInitialMessages(walletAddress, convId);
       const arrangedMessages = arrangeMessages(messages);
       const flattenedMessages = flattenMessagePairs(arrangedMessages);
       setInitialMessages(flattenedMessages);
