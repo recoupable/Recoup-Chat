@@ -3,7 +3,7 @@ import useSuggestions from "./useSuggestions";
 import { useChat as useAiChat } from "ai/react";
 import { useCsrfToken } from "@/packages/shared/src/hooks";
 import useInitialMessages from "./useInitialMessages";
-import useConverstaion from "./useConversation";
+import useConversations from "./useConversations";
 import { usePathname } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -12,7 +12,7 @@ const useMessages = () => {
   const csrfToken = useCsrfToken();
   const accountId = "3664dcb4-164f-4566-8e7c-20b2c93f9951";
   const { initialMessages, fetchInitialMessages } = useInitialMessages();
-  const { conversationRef } = useConverstaion();
+  const { conversationRef } = useConversations();
   const queryClient = useQueryClient();
 
   const pathname = usePathname();
