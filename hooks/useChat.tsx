@@ -5,6 +5,7 @@ import useInitialMessages from "./useInitialMessages";
 import { v4 as uuidV4 } from "uuid";
 import useUser from "./useUser";
 import useMessages from "./useMessages";
+import { useEffect, useRef } from "react";
 
 const useChat = () => {
   const { login, address } = useUser();
@@ -12,8 +13,7 @@ const useChat = () => {
   const accountId = "3664dcb4-164f-4566-8e7c-20b2c93f9951";
   const queryClient = useQueryClient();
   const { initialMessages, fetchInitialMessages } = useInitialMessages();
-  const { finalCallback, suggestions, setCurrentQuestion, currentQuestion } =
-    useMessages();
+  const { finalCallback, suggestions, setCurrentQuestion } = useMessages();
 
   const {
     messages,
@@ -34,13 +34,19 @@ const useChat = () => {
     initialMessages,
     onError: console.error,
     onFinish: async (message) => {
-      console.log("ZIAD onFinish", messages);
+      console.log("ZIAD onFinish", messagesRef.current);
       await finalCallback(message, messages[messages.length - 2]);
       void queryClient.invalidateQueries({
         queryKey: ["credits", accountId],
       });
     },
   });
+
+  const messagesRef = useRef(messages);
+
+  useEffect(() => {
+    messagesRef.current = messages;
+  }, [messages]);
 
   const clearQuery = async () => {
     const messages = await fetchInitialMessages(address);
