@@ -54,10 +54,7 @@ const useToolCall = (message: Message) => {
     }
     if (isCalled || loading) return;
     init();
-    console.log("ZIAD", message);
   }, [toolInvocationResult, isCalled]);
-
-  console.log("ZIAD Message", message);
 
   return {
     loading,
