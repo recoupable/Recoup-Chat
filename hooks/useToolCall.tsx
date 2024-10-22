@@ -3,7 +3,7 @@ import { Message } from "ai";
 import { useEffect, useState } from "react";
 
 const useToolCall = (message: Message) => {
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const { finalCallback } = useChatProvider();
   const [answer, setAnswer] = useState("");
   const { clearQuery } = useChatProvider();
@@ -44,7 +44,7 @@ const useToolCall = (message: Message) => {
       message?.toolInvocations?.[0].state === "result"
         ? message.toolInvocations[0].result?.context
         : "";
-    if (!isAssistant) {
+    if (!isAssistant || loading) {
       setLoading(false);
       return;
     }

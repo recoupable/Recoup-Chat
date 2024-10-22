@@ -1,7 +1,7 @@
 "use client";
 
-import Chat from "@/components/Chat";
+import InitialChat from "@/components/Chat/InitialChat";
 
-const LandingPage = () => <Chat />;
+const LandingPage = () => <InitialChat />;
 
 export default LandingPage;

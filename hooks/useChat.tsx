@@ -5,15 +5,28 @@ import useInitialMessages from "./useInitialMessages";
 import { v4 as uuidV4 } from "uuid";
 import useUser from "./useUser";
 import useMessages from "./useMessages";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
+import trackNewConversation from "@/lib/stack/trackNewConversation";
 
 const useChat = () => {
   const { login, address } = useUser();
   const csrfToken = useCsrfToken();
   const accountId = "3664dcb4-164f-4566-8e7c-20b2c93f9951";
   const queryClient = useQueryClient();
-  const { initialMessages, fetchInitialMessages } = useInitialMessages();
-  const { finalCallback, suggestions, setCurrentQuestion } = useMessages();
+  const [conversationId, setConversationId] = useState(uuidV4());
+  const { initialMessages, fetchInitialMessages } =
+    useInitialMessages(conversationId);
+  const { finalCallback, suggestions, setCurrentQuestion } =
+    useMessages(conversationId);
+  const { push } = useRouter();
+  const { conversation } = useParams();
+
+  const goToNewConversation = async (name: string) => {
+    if (conversation) return;
+    await trackNewConversation(address, conversationId, name);
+    push(`/${conversationId}`);
+  };
 
   const {
     messages,
@@ -50,6 +63,11 @@ const useChat = () => {
     if (messages.length) messagesRef.current = messages;
   }, [messages]);
 
+  const createNewConversation = () => {
+    const newId = uuidV4();
+    setConversationId(newId);
+  };
+
   const clearQuery = async () => {
     const messages = await fetchInitialMessages(address);
     setMessages(messages);
@@ -66,7 +84,8 @@ const useChat = () => {
   const append = async (message: Message) => {
     if (!isPrepared()) return;
     setCurrentQuestion(message);
-    await appendAiChat(message);
+    appendAiChat(message);
+    await goToNewConversation(message.content);
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -78,6 +97,7 @@ const useChat = () => {
       id: uuidV4(),
     });
     handleAiChatSubmit(e);
+    await goToNewConversation(input);
   };
 
   return {
@@ -90,6 +110,7 @@ const useChat = () => {
     pending,
     finalCallback,
     clearQuery,
+    createNewConversation,
   };
 };
 

@@ -4,10 +4,12 @@ import getInitialMessages from "@/lib/stack/getInitialMessages";
 import { arrangeMessages, flattenMessagePairs } from "@/lib/arrangeMessages";
 import useUser from "./useUser";
 import { StackMessage } from "@/types/Stack";
+import { useParams } from "next/navigation";
 
-const useInitialMessages = () => {
+const useInitialMessages = (conversationId: string) => {
   const [initialMessages, setInitialMessages] = useState<StackMessage[]>([]);
   const { address } = useUser();
+  const { conversation: pathId } = useParams();
 
   useEffect(() => {
     if (address) {
@@ -17,7 +19,10 @@ const useInitialMessages = () => {
 
   const fetchInitialMessages = async (walletAddress: Address) => {
     try {
-      const messages = await getInitialMessages(walletAddress);
+      const messages = await getInitialMessages(
+        walletAddress,
+        (pathId as string) || conversationId,
+      );
       const arrangedMessages = arrangeMessages(messages);
       const flattenedMessages = flattenMessagePairs(arrangedMessages);
       setInitialMessages(flattenedMessages);

@@ -4,14 +4,17 @@ import { Message } from "ai";
 import { CHAT_POINT_SYSTEM_ID, MESSAGE_SENT_EVENT } from "../consts";
 import { StackMessage } from "@/types/Stack";
 
-const getInitialMessages = async (walletAddress: Address) => {
+const getInitialMessages = async (
+  walletAddress: Address,
+  conversationId: string,
+) => {
   const stackClient = getStackClient(CHAT_POINT_SYSTEM_ID);
 
   const events = await stackClient.getEvents({
     query: stackClient
       .eventsQuery()
       .where({
-        eventType: MESSAGE_SENT_EVENT,
+        eventType: `${MESSAGE_SENT_EVENT}-${conversationId}`,
         associatedAccount: getAddress(walletAddress),
       })
       .offset(0)
