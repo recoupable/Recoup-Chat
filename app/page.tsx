@@ -1,7 +1,7 @@
 "use client";
 
-import LandingPage from "@/components/LandingPage";
+import Chat from "@/components/Chat";
 
-const Home = () => <LandingPage />;
+const LandingPage = () => <Chat />;
 
-export default Home;
+export default LandingPage;

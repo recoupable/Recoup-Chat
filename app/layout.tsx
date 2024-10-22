@@ -3,6 +3,8 @@ import { GeistSans } from "geist/font/sans";
 import "./globals.css";
 import Providers from "@/providers/Providers";
 import { DESCRIPTION, TITLE } from "@/lib/consts";
+import Sidebar from "@/components/Sidebar";
+import Header from "@/components/Header";
 
 export const metadata: Metadata = {
   title: TITLE,
@@ -22,7 +24,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={GeistSans.className}>
-        <Providers>{children}</Providers>
+        <Providers>
+          <div className="flex flex-col md:flex-row">
+            <Sidebar />
+            <Header />
+            {children}
+          </div>
+        </Providers>
       </body>
     </html>
   );
