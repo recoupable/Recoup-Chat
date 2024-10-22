@@ -14,7 +14,7 @@ const useChat = () => {
   const csrfToken = useCsrfToken();
   const accountId = "3664dcb4-164f-4566-8e7c-20b2c93f9951";
   const queryClient = useQueryClient();
-  const [conversationId, setConversationId] = useState(uuidV4());
+  const [conversationId, setConversationId] = useState("");
   const { initialMessages, fetchInitialMessages } =
     useInitialMessages(conversationId);
   const { finalCallback, suggestions, setCurrentQuestion } =
@@ -52,6 +52,7 @@ const useChat = () => {
       await finalCallback(
         message,
         messagesRef.current[messagesRef.current.length - 2],
+        conversationRef.current,
       );
       void queryClient.invalidateQueries({
         queryKey: ["credits", accountId],
@@ -60,10 +61,21 @@ const useChat = () => {
   });
 
   const messagesRef = useRef(messages);
+  const conversationRef = useRef((conversation as string) || conversationId);
+
+  useEffect(() => {
+    if ((conversation as string) || conversationId) {
+      conversationRef.current = (conversation as string) || conversationId;
+    }
+  }, [conversation, conversationId]);
 
   useEffect(() => {
     if (messages.length) messagesRef.current = messages;
   }, [messages]);
+
+  useEffect(() => {
+    if (initialMessages.length) setMessages(initialMessages);
+  }, [initialMessages]);
 
   const createNewConversation = () => {
     const newId = uuidV4();
@@ -71,8 +83,7 @@ const useChat = () => {
   };
 
   const clearQuery = async () => {
-    const messages = await fetchInitialMessages(address);
-    setMessages(messages);
+    await fetchInitialMessages(address);
   };
 
   const isPrepared = () => {

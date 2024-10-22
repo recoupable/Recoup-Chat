@@ -15,21 +15,20 @@ const useInitialMessages = (conversationId: string) => {
     if (address) {
       fetchInitialMessages(address);
     }
-  }, [address]);
+  }, [address, pathId]);
 
   const fetchInitialMessages = async (walletAddress: Address) => {
     try {
-      const messages = await getInitialMessages(
-        walletAddress,
-        (pathId as string) || conversationId,
-      );
+      const convId = (pathId as string) || conversationId;
+      if (!convId) return null;
+      const messages = await getInitialMessages(walletAddress, convId);
       const arrangedMessages = arrangeMessages(messages);
       const flattenedMessages = flattenMessagePairs(arrangedMessages);
       setInitialMessages(flattenedMessages);
       return flattenedMessages;
     } catch (error) {
       console.error("Error fetching initial messages:", error);
-      return [];
+      return null;
     }
   };
 
