@@ -15,6 +15,7 @@ const useToolCall = (message: Message) => {
       let answer = "";
       if (message.toolInvocations) {
         if (question && context) {
+          console.log("ZIAD tool_call");
           const response = await fetch(`/api/tool_call`, {
             method: "POST",
             body: JSON.stringify({
