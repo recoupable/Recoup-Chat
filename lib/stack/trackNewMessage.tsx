@@ -7,7 +7,11 @@ import {
 } from "../consts";
 import { Message } from "ai";
 
-const trackNewMessage = async (address: Address, message: Message) => {
+type StackMessage = Message & {
+  questionId?: string;
+};
+
+const trackNewMessage = async (address: Address, message: StackMessage) => {
   const stackClient = getStackClient(CHAT_POINT_SYSTEM_ID);
   const uniqueId = `${address}-${Date.now()}`;
   const pointSystemId = MESSAGE_SENT_EVENT;
