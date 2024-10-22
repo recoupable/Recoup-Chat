@@ -30,7 +30,7 @@ const MobileMenu = ({ toggleMenu }: { toggleMenu: () => void }) => {
             toggleMenu();
           }}
         >
-          <Image src="/logo.png" width={40} height={40} alt="not found icon" />
+          <Image src="/logo.jpg" width={40} height={40} alt="not found icon" />
         </button>
         <button type="button" onClick={toggleMenu}>
           <X />
