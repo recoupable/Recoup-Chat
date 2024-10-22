@@ -24,8 +24,10 @@ const useChat = () => {
 
   const goToNewConversation = async (name: string) => {
     if (conversation) return;
-    await trackNewConversation(address, conversationId, name);
-    push(`/${conversationId}`);
+    const newId = uuidV4();
+    setConversationId(newId);
+    await trackNewConversation(address, newId, name);
+    push(`/${newId}`);
   };
 
   const {
