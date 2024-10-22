@@ -77,10 +77,6 @@ const useChat = () => {
   }, [messages]);
 
   useEffect(() => {
-    setMessages(initialMessages);
-  }, [initialMessages]);
-
-  useEffect(() => {
     if (isNewChat) {
       setConversationId("");
       setMessages([]);
