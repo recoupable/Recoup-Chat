@@ -3,14 +3,14 @@ import { v4 as uuidV4 } from "uuid";
 import useUser from "./useUser";
 import useSuggestions from "./useSuggestions";
 import { useRouter } from "next/navigation";
-import useConverstaion from "./useConversation";
+import useConversations from "./useConversations";
 import useMessages from "./useMessages";
 
 const useChat = () => {
   const { login, address } = useUser();
   const { finalCallback, suggestions, setCurrentQuestion } = useSuggestions();
   const { push } = useRouter();
-  const { conversationId } = useConverstaion();
+  const { conversationId } = useConversations();
   const {
     conversationRef,
     input,

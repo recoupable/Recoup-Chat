@@ -13,9 +13,9 @@ const History = () => {
       <div className="max-w-3xl mx-auto w-full space-y-3">
         {conversations.map((conversation) => (
           <Conversation
-            key={conversation.id}
-            name={conversation.name}
-            id={conversation.id}
+            key={conversation.metadata.id}
+            name={conversation.metadata.content}
+            id={conversation.metadata.id}
           />
         ))}
       </div>
