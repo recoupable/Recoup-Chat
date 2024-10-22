@@ -5,7 +5,6 @@ import { ScrollTo } from "react-scroll-to";
 
 const Chat = () => {
   const { messages } = useChatProvider();
-
   return (
     <div
       className={`grow h-screen overflow-hidden flex flex-col ${messages.length ? "px-4 pb-5 pt-20" : "items-center justify-center"}`}
