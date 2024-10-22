@@ -1,58 +1,36 @@
-import { useCsrfToken } from "@/packages/shared/src/hooks";
-import { Message, useChat as useAiChat } from "ai/react";
-import { useQueryClient } from "@tanstack/react-query";
-import useInitialMessages from "./useInitialMessages";
+import { Message } from "ai/react";
 import { v4 as uuidV4 } from "uuid";
 import useUser from "./useUser";
 import useSuggestions from "./useSuggestions";
-import { useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
+import useConverstaion from "./useConversation";
+import useMessages from "./useMessages";
 
 const useChat = () => {
   const { login, address } = useUser();
-  const csrfToken = useCsrfToken();
-  const accountId = "3664dcb4-164f-4566-8e7c-20b2c93f9951";
-  const queryClient = useQueryClient();
-  const { initialMessages, fetchInitialMessages } = useInitialMessages();
   const { finalCallback, suggestions, setCurrentQuestion } = useSuggestions();
-
+  const { push } = useRouter();
+  const { conversationId } = useConverstaion();
   const {
-    messages,
+    conversationRef,
     input,
+    appendAiChat,
+    handleAiChatSubmit,
     handleInputChange,
-    handleSubmit: handleAiChatSubmit,
-    append: appendAiChat,
-    isLoading: pending,
-    setMessages,
-  } = useAiChat({
-    api: `/api/chat`,
-    headers: {
-      "X-CSRF-Token": csrfToken,
-    },
-    body: {
-      accountId,
-    },
-    initialMessages,
-    onError: console.error,
-    onFinish: async (message) => {
-      await finalCallback(
-        message,
-        messagesRef.current[messagesRef.current.length - 2],
-      );
-      void queryClient.invalidateQueries({
-        queryKey: ["credits", accountId],
-      });
-    },
-  });
+    messagesRef,
+    pending,
+    fetchInitialMessages,
+  } = useMessages();
 
-  const messagesRef = useRef(messages);
-
-  useEffect(() => {
-    if (messages.length) messagesRef.current = messages;
-  }, [messages]);
+  const goToNewConversation = async (name: string) => {
+    if (conversationId) return;
+    const newId = uuidV4();
+    conversationRef.current = newId;
+    push(`/${newId}`);
+  };
 
   const clearQuery = async () => {
-    const messages = await fetchInitialMessages(address);
-    setMessages(messages);
+    await fetchInitialMessages(address);
   };
 
   const isPrepared = () => {
@@ -66,7 +44,8 @@ const useChat = () => {
   const append = async (message: Message) => {
     if (!isPrepared()) return;
     setCurrentQuestion(message);
-    await appendAiChat(message);
+    appendAiChat(message);
+    await goToNewConversation(message.content);
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -78,6 +57,7 @@ const useChat = () => {
       id: uuidV4(),
     });
     handleAiChatSubmit(e);
+    await goToNewConversation(input);
   };
 
   return {

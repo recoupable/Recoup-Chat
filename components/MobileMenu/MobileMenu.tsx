@@ -1,10 +1,15 @@
-import { BookOpen, X } from "lucide-react";
+import { BookOpen, Plus, X } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 
 const MobileMenu = ({ toggleMenu }: { toggleMenu: () => void }) => {
   const { push } = useRouter();
+
+  const goToNewChat = () => {
+    push("/");
+    toggleMenu();
+  };
 
   return (
     <motion.div
@@ -23,13 +28,7 @@ const MobileMenu = ({ toggleMenu }: { toggleMenu: () => void }) => {
       }}
     >
       <div className="flex justify-between mb-6">
-        <button
-          type="button"
-          onClick={() => {
-            push("/");
-            toggleMenu();
-          }}
-        >
+        <button type="button" onClick={goToNewChat}>
           <Image
             src="/logo.jpg"
             width={40}
@@ -42,17 +41,27 @@ const MobileMenu = ({ toggleMenu }: { toggleMenu: () => void }) => {
           <X />
         </button>
       </div>
-      <button
-        className="flex gap-2 items-center"
-        type="button"
-        onClick={() => {
-          push("/history");
-          toggleMenu();
-        }}
-      >
-        <BookOpen />
-        Chat History
-      </button>
+      <div className="flex flex-col gap-6">
+        <button
+          className="flex gap-2 justify-center items-center border-gray-700 border-[1px] p-2 rounded-md bg-gray-900 text-sm"
+          type="button"
+          onClick={goToNewChat}
+        >
+          <Plus />
+          New Chat
+        </button>
+        <button
+          className="flex gap-2 items-center"
+          type="button"
+          onClick={() => {
+            push("/history");
+            toggleMenu();
+          }}
+        >
+          <BookOpen />
+          Chat History
+        </button>
+      </div>
     </motion.div>
   );
 };

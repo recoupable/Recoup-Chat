@@ -7,15 +7,22 @@ import {
 } from "../consts";
 import { StackMessage } from "@/types/Stack";
 
-const trackNewMessage = async (address: Address, message: StackMessage) => {
+const trackNewMessage = async (
+  address: Address,
+  message: StackMessage,
+  conversationId: string,
+) => {
   const stackClient = getStackClient(CHAT_POINT_SYSTEM_ID);
   const uniqueId = `${address}-${Date.now()}`;
-  const pointSystemId = MESSAGE_SENT_EVENT;
-  await stackClient.track(pointSystemId, {
+  const eventName = `${MESSAGE_SENT_EVENT}-${conversationId}`;
+  await stackClient.track(eventName, {
     points: MESSAGE_SENT_POINT,
     account: address,
     uniqueId,
-    metadata: message,
+    metadata: {
+      ...message,
+      conversationId,
+    },
   });
 };
 

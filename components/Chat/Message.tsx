@@ -12,6 +12,7 @@ const Message = ({ message }: { message: AIMessage }) => {
     message.role === "assistant" &&
     !message.content &&
     message?.toolInvocations;
+
   return (
     <div className={`p-3 rounded-lg flex w-full gap-2 ${isHidden && "hidden"}`}>
       <div className="size-fit">
