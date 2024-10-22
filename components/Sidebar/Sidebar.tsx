@@ -4,15 +4,12 @@ import { BookOpen, Plus } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import Tooltip from "../Tooltip";
-import { useChatProvider } from "@/providers/ChatProvider";
 
 const Sidebar = () => {
   const { push } = useRouter();
-  const { createNewConversation } = useChatProvider();
 
   const goToNewChat = () => {
     push("/");
-    createNewConversation();
   };
 
   return (

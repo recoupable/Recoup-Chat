@@ -6,7 +6,7 @@ import { v4 as uuidV4 } from "uuid";
 import useUser from "./useUser";
 import useMessages from "./useMessages";
 import { useEffect, useRef, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
 import trackNewConversation from "@/lib/stack/trackNewConversation";
 
 const useChat = () => {
@@ -21,6 +21,9 @@ const useChat = () => {
     useMessages(conversationId);
   const { push } = useRouter();
   const { conversation } = useParams();
+  const pathname = usePathname();
+
+  const isNewChat = pathname === "/";
 
   const goToNewConversation = async (name: string) => {
     if (conversation) return;
@@ -77,10 +80,12 @@ const useChat = () => {
     if (initialMessages.length) setMessages(initialMessages);
   }, [initialMessages]);
 
-  const createNewConversation = () => {
-    const newId = uuidV4();
-    setConversationId(newId);
-  };
+  useEffect(() => {
+    if (isNewChat) {
+      setConversationId("");
+      setMessages([]);
+    }
+  }, [isNewChat]);
 
   const clearQuery = async () => {
     await fetchInitialMessages(address);
@@ -123,7 +128,6 @@ const useChat = () => {
     pending,
     finalCallback,
     clearQuery,
-    createNewConversation,
   };
 };
 
