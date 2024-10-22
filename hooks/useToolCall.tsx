@@ -49,6 +49,10 @@ const useToolCall = (message: Message) => {
     const toolInvocationResult = toolInvocations?.filter(
       (toolInvocation) => toolInvocation.state === "result",
     );
+    const findIndex = toolInvocations.find((invocation) => invocation.state === 'result')
+
+    console.log("ZIAD findIndex", findIndex)
+
     console.log("ZIAD toolInvocationResult", toolInvocationResult);
     if (!toolInvocationResult?.length) return;
 
