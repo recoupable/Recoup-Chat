@@ -37,6 +37,7 @@ const useToolCall = (message: Message) => {
 
     const isAssistant = message.role === "assistant";
 
+    console.log("ZIAD", message);
     const toolInvocationResult = message.toolInvocations?.filter(
       (toolInvocation) => toolInvocation.state === "result",
     );
