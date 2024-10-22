@@ -34,6 +34,7 @@ const useMessages = () => {
     finalCallback,
     suggestions,
     setCurrentQuestion,
+    currentQuestion,
   };
 };
 

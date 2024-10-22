@@ -12,7 +12,8 @@ const useChat = () => {
   const accountId = "3664dcb4-164f-4566-8e7c-20b2c93f9951";
   const queryClient = useQueryClient();
   const { initialMessages, fetchInitialMessages } = useInitialMessages();
-  const { finalCallback, suggestions, setCurrentQuestion } = useMessages();
+  const { finalCallback, suggestions, setCurrentQuestion, currentQuestion } =
+    useMessages();
 
   const {
     messages,
@@ -33,6 +34,7 @@ const useChat = () => {
     initialMessages,
     onError: console.error,
     onFinish: async (message) => {
+      console.log("ZIAD onFinish", currentQuestion);
       await finalCallback(message);
       void queryClient.invalidateQueries({
         queryKey: ["credits", accountId],
