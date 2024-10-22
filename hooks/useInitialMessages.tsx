@@ -4,18 +4,25 @@ import getInitialMessages from "@/lib/stack/getInitialMessages";
 import { arrangeMessages, flattenMessagePairs } from "@/lib/arrangeMessages";
 import useUser from "./useUser";
 import { StackMessage } from "@/types/Stack";
-import { useParams } from "next/navigation";
+import { useParams, usePathname } from "next/navigation";
 
 const useInitialMessages = (conversationId: string) => {
   const [initialMessages, setInitialMessages] = useState<StackMessage[]>([]);
   const { address } = useUser();
   const { conversation: pathId } = useParams();
+  const pathname = usePathname();
+
+  const isNewChat = pathname === "/";
 
   useEffect(() => {
     if (address) {
       fetchInitialMessages(address);
     }
   }, [address, pathId]);
+
+  useEffect(() => {
+    setInitialMessages([]);
+  }, [isNewChat]);
 
   const fetchInitialMessages = async (walletAddress: Address) => {
     try {
