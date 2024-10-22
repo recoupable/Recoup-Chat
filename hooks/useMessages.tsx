@@ -13,7 +13,6 @@ const useMessages = () => {
 
   const finalCallback = async (message: Message, lastQuestion?: Message) => {
     const question = lastQuestion || currentQuestion;
-    console.log("ZIAD finalCallback", message, question);
     if (!message.content || !question) return;
     await trackNewMessage(address as Address, question);
     await trackNewMessage(address as Address, {

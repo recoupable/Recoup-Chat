@@ -21,13 +21,14 @@ const Message = ({ message }: { message: AIMessage }) => {
           <TvMinimalPlay className="h-6 w-6" />
         )}
       </div>
-      <div className="text-sm font-sans text-pretty break-words">
-        <ReactMarkdown>{message.content || answer}</ReactMarkdown>
-      </div>
-      {loading && !message.content && !answer && (
+      {loading && !message.content && !answer ? (
         <div className="flex gap-2 items-center">
           <p>is thinking...</p>
           <LoaderCircle className="h-4 w-4 animate-spin" />
+        </div>
+      ) : (
+        <div className="text-sm font-sans text-pretty break-words">
+          <ReactMarkdown>{message.content || answer}</ReactMarkdown>
         </div>
       )}
     </div>

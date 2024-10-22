@@ -10,12 +10,12 @@ const Messages = ({
 }: {
   scroll: ({ smooth, y }: { smooth: boolean; y: number }) => void;
 }) => {
-  const { messages, pending } = useChatProvider();
+  const { messages, pending, suggestions } = useChatProvider();
 
   useEffect(() => {
     scroll({ smooth: true, y: Number.MAX_SAFE_INTEGER });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [messages, pending]);
+  }, [messages, pending, suggestions]);
 
   return (
     <ScrollArea
