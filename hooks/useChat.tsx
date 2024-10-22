@@ -58,7 +58,7 @@ const useChat = () => {
 
   const append = async (message: Message) => {
     if (!isPrepared()) return;
-    await trackNewMessage(address as Address, message);
+    setCurrentQuestion(message);
     await appendAiChat(message);
   };
 

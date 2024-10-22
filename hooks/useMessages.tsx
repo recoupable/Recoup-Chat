@@ -11,6 +11,8 @@ const useMessages = () => {
   const [suggestions, setSuggestions] = useState(SUGGESTIONS);
   const [currentQuestion, setCurrentQuestion] = useState<Message | null>(null);
 
+  console.log("ZIAD HERE", currentQuestion);
+
   const finalCallback = async (message: Message) => {
     if (!message.content || !currentQuestion) return;
     await trackNewMessage(address as Address, currentQuestion);
