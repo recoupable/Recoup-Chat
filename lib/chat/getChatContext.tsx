@@ -1,5 +1,4 @@
 import { getSupabaseServerAdminClient } from "@/packages/supabase/src/clients/server-admin-client";
-import getFollows from "./getFollows";
 import getTopScore from "./getTopScore";
 import getMostPlayed from "./getMostPlayed";
 import getStreamsCount from "./getStreamsCount";
@@ -10,24 +9,14 @@ import getUsersScore from "../stack/getUsersScore";
 import { SCORE_EVENT } from "@/types/score";
 import getRecentScore from "./getRecentScore";
 import getScoresInPast24 from "./getScoresInPast24";
-import getFans from "./getFans";
-import { INSTRUCTION, NOTES } from "./const";
+import { INSTRUCTION } from "./const";
 
 const getChatContext = async () => {
   const context = [];
   const client = getSupabaseServerAdminClient();
   const scores: SCORE_EVENT[] = await getUsersScore();
 
-  context.push(NOTES);
   context.push(INSTRUCTION);
-
-  context.push(`\n\n1. Fans' Information:\t`);
-  const fanContext = await getFans(client);
-
-  context.push(fanContext);
-
-  const follows = await getFollows(client);
-  context.push(`\n2. Followers: ${follows}`);
 
   let scoreContext = `\n3. Scores of fan ( please calculate a count for each username to indicate the number of times each player has played the game.) \n`;
   scores.map((score: SCORE_EVENT) => {

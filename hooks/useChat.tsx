@@ -1,21 +1,19 @@
 import { useCsrfToken } from "@/packages/shared/src/hooks";
 import { Message, useChat as useAiChat } from "ai/react";
 import { useQueryClient } from "@tanstack/react-query";
-import trackNewMessage from "@/lib/stack/trackNewMessage";
-import { Address } from "viem";
-import { usePrivy } from "@privy-io/react-auth";
 import useInitialMessages from "./useInitialMessages";
-import { useState } from "react";
-import { SUGGESTIONS } from "@/lib/consts";
+import { v4 as uuidV4 } from "uuid";
+import useUser from "./useUser";
+import useSuggestions from "./useSuggestions";
+import { useEffect, useRef } from "react";
 
 const useChat = () => {
-  const { login, user } = usePrivy();
-  const address = user?.wallet?.address as Address;
+  const { login, address } = useUser();
   const csrfToken = useCsrfToken();
   const accountId = "3664dcb4-164f-4566-8e7c-20b2c93f9951";
   const queryClient = useQueryClient();
-  const { initialMessages } = useInitialMessages();
-  const [suggestions, setSuggestions] = useState(SUGGESTIONS);
+  const { initialMessages, fetchInitialMessages } = useInitialMessages();
+  const { finalCallback, suggestions, setCurrentQuestion } = useSuggestions();
 
   const {
     messages,
@@ -24,6 +22,7 @@ const useChat = () => {
     handleSubmit: handleAiChatSubmit,
     append: appendAiChat,
     isLoading: pending,
+    setMessages,
   } = useAiChat({
     api: `/api/chat`,
     headers: {
@@ -35,20 +34,26 @@ const useChat = () => {
     initialMessages,
     onError: console.error,
     onFinish: async (message) => {
-      await trackNewMessage(address as Address, {
-        content: message.content,
-        role: message.role,
-        id: `${address}-${Date.now().toLocaleString()}`,
-      });
-      const response = await fetch(`/api/prompts?answer=${message.content}`);
-      const data = await response.json();
-
-      setSuggestions(data.questions);
+      await finalCallback(
+        message,
+        messagesRef.current[messagesRef.current.length - 2],
+      );
       void queryClient.invalidateQueries({
         queryKey: ["credits", accountId],
       });
     },
   });
+
+  const messagesRef = useRef(messages);
+
+  useEffect(() => {
+    if (messages.length) messagesRef.current = messages;
+  }, [messages]);
+
+  const clearQuery = async () => {
+    const messages = await fetchInitialMessages(address);
+    setMessages(messages);
+  };
 
   const isPrepared = () => {
     if (!address) {
@@ -60,29 +65,31 @@ const useChat = () => {
 
   const append = async (message: Message) => {
     if (!isPrepared()) return;
-    await trackNewMessage(address as Address, message);
+    setCurrentQuestion(message);
     await appendAiChat(message);
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!isPrepared()) return;
-    handleAiChatSubmit(e);
-    await trackNewMessage(address as Address, {
+    setCurrentQuestion({
       content: input,
       role: "user",
-      id: `${address}-${Date.now().toLocaleString()}`,
+      id: uuidV4(),
     });
+    handleAiChatSubmit(e);
   };
 
   return {
     suggestions,
-    messages,
+    messages: messagesRef.current,
     input,
     handleInputChange,
     handleSubmit,
     append,
     pending,
+    finalCallback,
+    clearQuery,
   };
 };
 

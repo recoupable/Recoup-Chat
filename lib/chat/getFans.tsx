@@ -5,6 +5,7 @@ import { FAN_TYPE } from "@/types/fans";
 import { Artist } from "@/types/Artist";
 import { Album } from "@/types/Album";
 import { Track } from "@/types/Track";
+import getFollows from "./getFollows";
 
 const getFans = async (client: SupabaseClient<Database, "public">) => {
   const { data: fans } = await client.from("fans").select("*");
@@ -60,26 +61,22 @@ const getFans = async (client: SupabaseClient<Database, "public">) => {
     .map((played: Track) => played.name || "")
     .slice(0, 50);
 
-  return `
-    \t- Track list sorted by popularity:
-    \t\t${JSON.stringify(trackNames)}
-    \t- Artist list sorted by popularity:
-    \t\t${JSON.stringify(artistNames)}
-    \t- Album list sorted by popularity:
-    \t\t${JSON.stringify(albumNames)}
-    \t- Episode list:
-    \t\t${JSON.stringify(episodes)}
-    \t- Play list:
-    \t\t${JSON.stringify(playlists)}
-    \t- Audio Book list:
-    \t\t${JSON.stringify(audioBooks)}
-    \t- Premium users count:
-    \t\t${premiumCount}
-    \t- Free users count:
-    \t\t${freeCount}
-    \t- Fan list:
-    \t\t${JSON.stringify(rows.slice(0, 50))}\r\n
-  `;
+  const followers = await getFollows(client);
+
+  return {
+    tracks: trackNames,
+    artists: artistNames,
+    playlists,
+    albums: albumNames,
+    audioBooks,
+    episodes,
+    shows,
+    fans: rows,
+    premiumCount,
+    freeCount,
+    totalFansCount: premiumCount + freeCount,
+    totalFollowersCount: followers,
+  };
 };
 
 export default getFans;

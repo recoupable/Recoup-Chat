@@ -1,7 +1,7 @@
 import "server-only";
 
 import { openai } from "@ai-sdk/openai";
-import { LanguageModelV1, StreamingTextResponse, streamText } from "ai";
+import { CoreTool, LanguageModelV1, streamText } from "ai";
 import { encodeChat } from "gpt-tokenizer";
 import { z } from "zod";
 
@@ -55,10 +55,12 @@ class ChatLLMService {
     // await this.assertEnoughCredits(accountId);
 
     // retrieve the chat settings
-    const settings = await chatMessagesService.getChatSettings();
+    const settings = await chatMessagesService.getChatSettings(
+      lastMessage.content,
+    );
     const systemMessage = settings.systemMessage;
     const maxTokens = settings.maxTokens;
-
+    const tools = settings.tools;
     // we need to limit the history length so not to exceed the max tokens of the model
     // let's assume for simplicity that all models have a max tokens of 128000
     // so we need to make sure that the history doesn't exceed output length + system message length
@@ -79,12 +81,12 @@ class ChatLLMService {
       model: openai(settings.model) as LanguageModelV1,
       system: settings.systemMessage,
       maxTokens: settings.maxTokens,
-      temperature: settings.temperature,
+      temperature: 0.7,
       messages,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      tools: tools as Record<string, CoreTool<any, any>> | undefined,
     });
 
-    const stream = result.toAIStream();
-
-    return new StreamingTextResponse(stream);
+    return result.toDataStreamResponse();
   }
 }
