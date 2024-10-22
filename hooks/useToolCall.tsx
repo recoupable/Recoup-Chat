@@ -9,57 +9,47 @@ const useToolCall = (message: Message) => {
   const { clearQuery } = useChatProvider();
   const [isCalled, setIsCalled] = useState(false);
 
+  const toolInvocations = [...(message.toolInvocations || [])];
+  const toolInvocationResult = toolInvocations?.filter(
+    (toolInvocation) => toolInvocation.state === "result",
+  )?.[0];
+
+  console.log("ZIAD toolInvocationResult", toolInvocationResult);
+
   useEffect(() => {
-    console.log("ZIAD Message in useEffect", message);
+    console.log("ZIAD Message in useEffect", toolInvocationResult);
 
     const init = async () => {
       setLoading(true);
       let answer = "";
-      console.log("ZIAD init", message);
+      const question = toolInvocationResult.result?.question || "";
+      const context = toolInvocationResult.result?.context || "";
 
-      if (message.toolInvocations) {
-        if (question && context) {
-          setIsCalled(true);
-          const response = await fetch(`/api/tool_call`, {
-            method: "POST",
-            body: JSON.stringify({
-              context,
-              question,
-            }),
-          });
-          const data = await response.json();
-          answer = data.answer;
-        }
-        await finalCallback({
-          role: "assistant",
-          content: answer,
-          id: "",
+      if (question && context) {
+        setIsCalled(true);
+        const response = await fetch(`/api/tool_call`, {
+          method: "POST",
+          body: JSON.stringify({
+            context,
+            question,
+          }),
         });
-        clearQuery();
+        const data = await response.json();
+        answer = data.answer;
       }
+      await finalCallback({
+        role: "assistant",
+        content: answer,
+        id: "",
+      });
+      clearQuery();
       setAnswer(answer);
       setLoading(false);
     };
 
+    if (!toolInvocationResult) return;
+
     const isAssistant = message.role === "assistant";
-
-    const toolInvocations = [...(message.toolInvocations || [])];
-
-    console.log("ZIAD toolInvocations", toolInvocations);
-    const toolInvocationResult = toolInvocations?.filter(
-      (toolInvocation) => toolInvocation.state === "result",
-    );
-    const findIndex = toolInvocations.find(
-      (invocation) => invocation.state === "result",
-    );
-
-    console.log("ZIAD findIndex", findIndex);
-
-    console.log("ZIAD toolInvocationResult", toolInvocationResult);
-    if (!toolInvocationResult?.length) return;
-
-    const question = toolInvocationResult[0].result?.question || "";
-    const context = toolInvocationResult[0].result?.context || "";
 
     console.log("ZIAD", isAssistant, loading, isCalled);
     if (!isAssistant || loading || isCalled) {
@@ -68,7 +58,7 @@ const useToolCall = (message: Message) => {
     }
     init();
     console.log("ZIAD", message);
-  }, [message, isCalled]);
+  }, [toolInvocationResult, isCalled]);
 
   console.log("ZIAD Message", message);
 
