@@ -35,6 +35,11 @@ const useChat = () => {
     onError: console.error,
     onFinish: async (message) => {
       console.log("ZIAD onFinish", messagesRef.current);
+      const latestMessages = await queryClient.getQueryData([
+        "credits",
+        accountId,
+      ]); // Fetch latest messages from query client
+      console.log("ZIAD Messages", latestMessages);
       await finalCallback(message, messages[messages.length - 2]);
       void queryClient.invalidateQueries({
         queryKey: ["credits", accountId],
