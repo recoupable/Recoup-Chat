@@ -20,7 +20,7 @@ const useInitialMessages = (conversationId: string) => {
   const fetchInitialMessages = async (walletAddress: Address) => {
     try {
       const convId = (pathId as string) || conversationId;
-      console.log("ZIAD OKAY", convId)
+      console.log("ZIAD OKAY", convId);
       if (!convId) return null;
       const messages = await getInitialMessages(walletAddress, convId);
       const arrangedMessages = arrangeMessages(messages);

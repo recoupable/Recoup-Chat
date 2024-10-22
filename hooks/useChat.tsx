@@ -30,7 +30,7 @@ const useChat = () => {
     push(`/${newId}`);
   };
 
-  console.log("ZIAD HERE", initialMessages)
+  const initialMessagesRef = useRef(initialMessages);
 
   const {
     messages,
@@ -48,7 +48,7 @@ const useChat = () => {
     body: {
       accountId,
     },
-    initialMessages,
+    initialMessages: initialMessagesRef.current,
     onError: console.error,
     onFinish: async (message) => {
       await finalCallback(
@@ -74,6 +74,10 @@ const useChat = () => {
   useEffect(() => {
     if (messages.length) messagesRef.current = messages;
   }, [messages]);
+
+  useEffect(() => {
+    if (initialMessages.length) initialMessagesRef.current = initialMessages;
+  }, [initialMessages]);
 
   const createNewConversation = () => {
     const newId = uuidV4();
