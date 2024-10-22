@@ -69,7 +69,7 @@ Please use this information to provide accurate and relevant responses and don't
 
           When in doubt, call this tool to ensure you have the most up-to-date and accurate information.`,
           parameters: z.object({}),
-          execute: async ({}) => {
+          execute: async () => {
             const client = getSupabaseServerAdminClient();
             const fans = await getFans(client);
             return {
