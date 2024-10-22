@@ -14,7 +14,7 @@ const Sidebar = () => {
 
   return (
     <div className="border-r-[1px] border-r-gray-700 w-16 flex flex-col py-4 px-2 items-center gap-3 hidden md:block">
-      <button type="button" onClick={goToNewChat}>
+      <button type="button" onClick={goToNewChat} className="mb-6">
         <Image
           src="/logo.jpg"
           width={90}
