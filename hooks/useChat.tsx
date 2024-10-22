@@ -30,8 +30,6 @@ const useChat = () => {
     push(`/${newId}`);
   };
 
-  const initialMessagesRef = useRef(initialMessages);
-
   const {
     messages,
     input,
@@ -48,7 +46,7 @@ const useChat = () => {
     body: {
       accountId,
     },
-    initialMessages: initialMessagesRef.current,
+    initialMessages,
     onError: console.error,
     onFinish: async (message) => {
       await finalCallback(
@@ -76,7 +74,7 @@ const useChat = () => {
   }, [messages]);
 
   useEffect(() => {
-    if (initialMessages.length) initialMessagesRef.current = initialMessages;
+    setMessages(initialMessages);
   }, [initialMessages]);
 
   const createNewConversation = () => {
@@ -85,9 +83,7 @@ const useChat = () => {
   };
 
   const clearQuery = async () => {
-    const messages = await fetchInitialMessages(address);
-    if (!messages) return;
-    setMessages(messages);
+    await fetchInitialMessages(address);
   };
 
   const isPrepared = () => {
