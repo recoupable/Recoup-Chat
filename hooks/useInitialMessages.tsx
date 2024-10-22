@@ -1,14 +1,13 @@
-import { Message } from "ai";
 import { Address } from "viem";
 import { useEffect, useState } from "react";
 import getInitialMessages from "@/lib/stack/getInitialMessages";
-import { usePrivy } from "@privy-io/react-auth";
-import rearrangesMessages from "@/lib/rearrangeMessages";
+import { arrangeMessages, flattenMessagePairs } from "@/lib/arrangeMessages";
+import useUser from "./useUser";
+import { StackMessage } from "@/types/Stack";
 
 const useInitialMessages = () => {
-  const [initialMessages, setInitialMessages] = useState<Message[]>([]);
-  const { user } = usePrivy();
-  const address = user?.wallet?.address as Address;
+  const [initialMessages, setInitialMessages] = useState<StackMessage[]>([]);
+  const { address } = useUser();
 
   useEffect(() => {
     if (address) {
@@ -19,9 +18,10 @@ const useInitialMessages = () => {
   const fetchInitialMessages = async (walletAddress: Address) => {
     try {
       const messages = await getInitialMessages(walletAddress);
-      const arrangedMessages = rearrangesMessages(messages);
-      setInitialMessages(arrangedMessages);
-      return arrangedMessages;
+      const arrangedMessages = arrangeMessages(messages);
+      const flattenedMessages = flattenMessagePairs(arrangedMessages);
+      setInitialMessages(flattenedMessages);
+      return flattenedMessages;
     } catch (error) {
       console.error("Error fetching initial messages:", error);
       return [];

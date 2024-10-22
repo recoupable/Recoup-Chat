@@ -1,8 +1,6 @@
 import { useCsrfToken } from "@/packages/shared/src/hooks";
 import { Message, useChat as useAiChat } from "ai/react";
 import { useQueryClient } from "@tanstack/react-query";
-import trackNewMessage from "@/lib/stack/trackNewMessage";
-import { Address } from "viem";
 import useInitialMessages from "./useInitialMessages";
 import { v4 as uuidV4 } from "uuid";
 import useUser from "./useUser";

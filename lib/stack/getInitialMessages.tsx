@@ -2,6 +2,7 @@ import { Address, getAddress } from "viem";
 import getStackClient from "./getStackClient";
 import { Message } from "ai";
 import { CHAT_POINT_SYSTEM_ID, MESSAGE_SENT_EVENT } from "../consts";
+import { StackMessage } from "@/types/Stack";
 
 const getInitialMessages = async (walletAddress: Address) => {
   const stackClient = getStackClient(CHAT_POINT_SYSTEM_ID);
@@ -16,12 +17,17 @@ const getInitialMessages = async (walletAddress: Address) => {
       .offset(0)
       .build(),
   });
-  const messages: Message[] = events.map((event) => ({
-    id: event.metadata.id,
-    content: event.metadata.content,
-    role: event.metadata.role as Message["role"],
-    createdAt: new Date(event.timestamp),
-  }));
+  const messages: StackMessage[] = events.map((event) => {
+    const data = {
+      id: event.metadata.id,
+      content: event.metadata.content,
+      role: event.metadata.role as Message["role"],
+      createdAt: new Date(event.timestamp),
+    } as StackMessage;
+    if (event.metadata.role === "assistant")
+      data.questionId = event.metadata.questionId;
+    return data;
+  });
   messages.sort((a, b) => a.createdAt!.getTime() - b.createdAt!.getTime());
   return messages;
 };
