@@ -68,6 +68,10 @@ const useChat = () => {
   }, [messages]);
 
   useEffect(() => {
+    if (initialMessages.length) setMessages(initialMessages);
+  }, [initialMessages]);
+
+  useEffect(() => {
     if (isNewChat) {
       conversationRef.current = "";
       setMessages([]);
