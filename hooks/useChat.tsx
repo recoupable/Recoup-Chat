@@ -74,7 +74,7 @@ const useChat = () => {
   }, [messages]);
 
   useEffect(() => {
-    setMessages(initialMessages);
+    if (initialMessages.length) setMessages(initialMessages);
   }, [initialMessages]);
 
   const createNewConversation = () => {
