@@ -13,6 +13,8 @@ const useToolCall = (message: Message) => {
     const init = async () => {
       setLoading(true);
       let answer = "";
+      console.log("ZIAD init", message);
+
       if (message.toolInvocations) {
         if (question && context) {
           const response = await fetch(`/api/tool_call`, {
@@ -36,7 +38,6 @@ const useToolCall = (message: Message) => {
       setLoading(false);
     };
 
-    console.log("ZIAD", message)
     const isAssistant = message.role === "assistant";
 
     const toolInvocationResult = message.toolInvocations?.filter(
@@ -53,6 +54,7 @@ const useToolCall = (message: Message) => {
       return;
     }
     init();
+    console.log("ZIAD", message);
   }, [message, isCalled]);
 
   return {
