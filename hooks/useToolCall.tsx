@@ -8,6 +8,8 @@ const useToolCall = (message: Message) => {
   const [answer, setAnswer] = useState("");
   const { clearQuery } = useChatProvider();
 
+  console.log("ZIAD Message", message);
+
   useEffect(() => {
     const init = async () => {
       setLoading(true);
