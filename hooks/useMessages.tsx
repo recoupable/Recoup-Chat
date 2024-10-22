@@ -12,6 +12,7 @@ const useMessages = () => {
   const [currentQuestion, setCurrentQuestion] = useState<Message | null>(null);
 
   const finalCallback = async (message: Message) => {
+    console.log("ZIAD OKAY HERE", message, currentQuestion);
     if (!message.content || !currentQuestion) return;
     await trackNewMessage(address as Address, currentQuestion);
     await trackNewMessage(address as Address, {
