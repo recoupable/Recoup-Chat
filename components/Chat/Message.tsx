@@ -28,7 +28,7 @@ const Message = ({ message }: { message: AIMessage }) => {
           <TvMinimalPlay className="h-6 w-6" />
         )}
       </div>
-      {toolName !== "getCampaign" && context && <Campaign context={context} />}
+      {toolName === "getCampaign" && context && <Campaign context={context} />}
       {loading && !message.content && !answer ? (
         <div className="flex gap-2 items-center">
           <p>is thinking...</p>
