@@ -20,7 +20,6 @@ const useConversations = () => {
   const fetchConversations = async (walletAddress: Address) => {
     try {
       const data = await getConversations(walletAddress);
-      console.log("ZIAD", data);
       setConversations(data);
     } catch (error) {
       console.error("Error fetching initial messages:", error);

@@ -4,17 +4,19 @@ import { BookOpen, Plus } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import Tooltip from "../Tooltip";
+import useUser from "@/hooks/useUser";
 
 const Sidebar = () => {
   const { push } = useRouter();
+  const { isPrepared } = useUser();
 
-  const goToNewChat = () => {
-    push("/");
+  const goToItem = (link?: string) => {
+    if (isPrepared()) push(`/${link || ""}`);
   };
 
   return (
     <div className="border-r-[1px] border-r-gray-700 w-16 flex flex-col py-4 px-2 items-center gap-3 hidden md:block">
-      <button type="button" onClick={goToNewChat} className="mb-6">
+      <button type="button" onClick={() => goToItem()} className="mb-6">
         <Image
           src="/logo.jpg"
           width={90}
@@ -32,7 +34,7 @@ const Sidebar = () => {
           <button
             type="button"
             className="border-gray-700 border-[1px] p-2 rounded-md"
-            onClick={goToNewChat}
+            onClick={() => goToItem()}
           >
             <Plus />
           </button>
@@ -45,7 +47,7 @@ const Sidebar = () => {
           <button
             type="button"
             className="border-gray-700 border-[1px] p-2 rounded-md"
-            onClick={() => push("/history")}
+            onClick={() => goToItem("history")}
           >
             <BookOpen />
           </button>
