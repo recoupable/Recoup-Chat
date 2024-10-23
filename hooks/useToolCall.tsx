@@ -58,6 +58,7 @@ const useToolCall = (message: Message) => {
   return {
     loading,
     answer,
+    toolInvocationResult,
   };
 };
 
