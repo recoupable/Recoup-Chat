@@ -2,13 +2,14 @@ import { BookOpen, Plus, X } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
+import useUser from "@/hooks/useUser";
 
 const MobileMenu = ({ toggleMenu }: { toggleMenu: () => void }) => {
   const { push } = useRouter();
+  const { isPrepared } = useUser();
 
-  const goToNewChat = () => {
-    push("/");
-    toggleMenu();
+  const goToItem = (link?: string) => {
+    if (isPrepared()) push(`/${link || ""}`);
   };
 
   return (
@@ -28,7 +29,7 @@ const MobileMenu = ({ toggleMenu }: { toggleMenu: () => void }) => {
       }}
     >
       <div className="flex justify-between mb-6">
-        <button type="button" onClick={goToNewChat}>
+        <button type="button" onClick={() => goToItem()}>
           <Image
             src="/logo.jpg"
             width={40}
@@ -45,7 +46,7 @@ const MobileMenu = ({ toggleMenu }: { toggleMenu: () => void }) => {
         <button
           className="flex gap-2 justify-center items-center border-gray-700 border-[1px] p-2 rounded-md bg-gray-900 text-sm"
           type="button"
-          onClick={goToNewChat}
+          onClick={() => goToItem()}
         >
           <Plus />
           New Chat
@@ -53,10 +54,7 @@ const MobileMenu = ({ toggleMenu }: { toggleMenu: () => void }) => {
         <button
           className="flex gap-2 items-center"
           type="button"
-          onClick={() => {
-            push("/history");
-            toggleMenu();
-          }}
+          onClick={() => goToItem("history")}
         >
           <BookOpen />
           Chat History
