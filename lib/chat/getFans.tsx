@@ -6,8 +6,12 @@ import { Artist } from "@/types/Artist";
 import { Album } from "@/types/Album";
 import { Track } from "@/types/Track";
 import getFollows from "./getFollows";
+import getFanSegments from "./getFanSegments";
+import getSortedLimitedNames from "../getSortedLimitedNames";
 
 const getFans = async (client: SupabaseClient<Database, "public">) => {
+  const { activeFans, casualFans, superFans } = await getFanSegments(client);
+
   const { data: fans } = await client.from("fans").select("*");
 
   if (!fans?.length) return "No fans.";
@@ -35,10 +39,16 @@ const getFans = async (client: SupabaseClient<Database, "public">) => {
     audioBooks = audioBooks.concat(data.audioBooks);
     shows = shows.concat(data.shows);
     tracks = tracks.concat(data.tracks);
+    let segment = "Unknown";
+    if (casualFans?.includes(fan.id)) segment = "Casual Listener";
+    if (activeFans?.includes(fan.id)) segment = "Active Listener";
+    if (superFans?.includes(fan.id)) segment = "Super Listener";
+
     return {
       name: fan.display_name || "Unknown",
       country: fan.country || "Unknown",
       city: fan.city || "Unknown",
+      segment,
     };
   });
 
@@ -46,20 +56,9 @@ const getFans = async (client: SupabaseClient<Database, "public">) => {
   episodes = episodes.slice(0, 50);
   audioBooks = audioBooks.slice(0, 50);
 
-  const artistNames = artists
-    .sort((a: Artist, b: Artist) => b.popularity - a.popularity)
-    .map((played: Artist) => played.name || "")
-    .slice(0, 50);
-
-  const albumNames = albums
-    .sort((a: Album, b: Album) => b.popularity - a.popularity)
-    .map((played: Album) => played.name || "")
-    .slice(0, 50);
-
-  const trackNames = tracks
-    .sort((a: Track, b: Track) => b.popularity - a.popularity)
-    .map((played: Track) => played.name || "")
-    .slice(0, 50);
+  const artistNames = getSortedLimitedNames(artists);
+  const albumNames = getSortedLimitedNames(albums);
+  const trackNames = getSortedLimitedNames(tracks);
 
   const followers = await getFollows(client);
 

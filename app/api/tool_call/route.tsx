@@ -20,30 +20,26 @@ export async function POST(req: NextRequest) {
 
           Analyze the provided context and answer the question comprehensively. Follow these guidelines:
 
-          1. Listening Habits Overview:
-            - Provide a broad summary of listening trends.
-            - Include details on popular genres, artists, and content types.
-            - Mention specific fan names, countries, and cities when relevant.
-
-          2. Content Breakdown:
-            - Highlight popular playlists, albums, episodes, audiobooks, shows, and tracks.
-            - Identify standout artists and their impact on the fanbase.
-
-          3. Specific Focus:
+          1. Specific Focus:
             - If the question asks for a count (e.g., total fans, premium users), respond with just the number.
+            - If the question asks for only artists, albums, episodes, playlists, audio books, tracks, shows, repond with just only their information.
+            - If the question asks for a listening habits:
+              ** Overview:
+                a. Provide a broad summary of listening trends.
+                b. Include details on popular genres, artists, and content types.
+                c. Mention specific fan names, countries, cities and segment.
+              ** Content Breakdown:
+                a. Highlight popular playlists, albums, episodes, audiobooks, shows, and tracks.
+                b. Identify standout artists and their impact on the fanbase.
+              ** Engagement Metrics:
+                a. Report on key statistics like total fans, plays, or other relevant metrics.
+                b. Identify top performers or outliers in the data.
 
-          4. User Segmentation:
-            - Distinguish between premium and free users if applicable.
-
-          5. Engagement Metrics:
-            - Report on key statistics like total fans, plays, or other relevant metrics.
-            - Identify top performers or outliers in the data.
-
-          6. Recommendations:
+          2. Recommendations:
             - Suggest 2-3 actionable strategies to improve engagement based on the data.
             - Example: "To boost engagement, consider launching a personalized playlist campaign featuring top artists from each user's listening history."
 
-          7. Trends and Insights:
+          3. Trends and Insights:
             - Identify any emerging trends or unique insights from the data.
             - Compare to broader industry trends if relevant.
 
