@@ -75,6 +75,9 @@ const getFans = async (client: SupabaseClient<Database, "public">) => {
     freeCount,
     totalFansCount: premiumCount + freeCount,
     totalFollowersCount: followers,
+    casualFansCount: casualFans?.length,
+    activeFansCount: activeFans?.length,
+    superFansCount: superFans?.length,
   };
 };
 
