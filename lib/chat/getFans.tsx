@@ -39,7 +39,7 @@ const getFans = async (client: SupabaseClient<Database, "public">) => {
     audioBooks = audioBooks.concat(data.audioBooks);
     shows = shows.concat(data.shows);
     tracks = tracks.concat(data.tracks);
-    let segment = "Casual Listener";
+    let segment = "No Listener";
     if (casualFans?.includes(fan.id)) segment = "Casual Listener";
     if (activeFans?.includes(fan.id)) segment = "Active Listener";
     if (superFans?.includes(fan.id)) segment = "Super Listener";
