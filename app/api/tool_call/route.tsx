@@ -22,8 +22,8 @@ export async function POST(req: NextRequest) {
 
           1. Specific Focus:
             - If the question asks for a count (e.g., total fans, premium users), respond with just the number.
-            - If the question asks for only artists, albums, episodes, playlists, audio books, tracks, shows, repond with just only their information.
-            - If the question asks for a listening habits:
+            - If the question asks for only artists, albums, episodes, playlists, audio books, tracks, shows, respond with only their information.
+            - If the question asks for listening habits:
               ** Overview:
                 a. Provide a broad summary of listening trends.
                 b. Include details on popular genres, artists, content types and segment.
