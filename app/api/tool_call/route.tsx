@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
             - If the question asks for a listening habits:
               ** Overview:
                 a. Provide a broad summary of listening trends.
-                b. Include details on popular genres, artists, and content types.
+                b. Include details on popular genres, artists, content types and segment.
                 c. Mention specific fan names, countries, cities and segment.
               ** Content Breakdown:
                 a. Highlight popular playlists, albums, episodes, audiobooks, shows, and tracks.
