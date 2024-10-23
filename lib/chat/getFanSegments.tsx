@@ -4,12 +4,12 @@ import { Database } from "../database.types";
 const getFanSegments = async (client: SupabaseClient<Database, "public">) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { data: maxdata }: any = await client
-    .from("spotify_login_button_clicked")
+    .from("spotify_play_button_clicked")
     .select("timestamp.max()");
   const maxTimestamp = parseInt(maxdata?.[0]?.max, 10);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { data: mindata }: any = await client
-    .from("spotify_login_button_clicked")
+    .from("spotify_play_button_clicked")
     .select("timestamp.min()");
   const minTimestamp = parseInt(mindata?.[0]?.min, 10);
 
