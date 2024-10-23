@@ -61,7 +61,7 @@ Please use this information to provide accurate and relevant responses and don't
 
           Do NOT attempt to answer questions on these topics without calling this tool first.
 
-          Example questions that MUST trigger this tool:
+          Example questions:
           - "What are the listening habits from Spotify and Apple?"
           - "How many fans does the artist have?"
           - "What insights can we draw from the latest campaign?"
