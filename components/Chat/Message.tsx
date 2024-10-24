@@ -29,7 +29,9 @@ const Message = ({
   }, [content]);
 
   return (
-    <div className={`p-3 rounded-lg flex w-full gap-2 ${isHidden && "hidden"}`}>
+    <div
+      className={`p-3 rounded-lg flex ${context && `flex-col`} w-full gap-2 ${isHidden && "hidden"}`}
+    >
       <div className="size-fit">
         {message.role === "user" ? (
           <UserIcon className="h-6 w-6" />
