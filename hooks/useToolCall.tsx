@@ -31,6 +31,7 @@ const useToolCall = (message: Message) => {
       // let answer = "";
       const question = toolInvocationResult.result?.question || "";
       const context = toolInvocationResult.result?.context || "";
+      console.log("ZIAD Submit")
       if (question && context) {
         handleSubmit();
       }
