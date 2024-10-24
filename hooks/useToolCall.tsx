@@ -29,10 +29,12 @@ const useToolCall = (message: Message) => {
     const init = async () => {
       setLoading(true);
       // let answer = "";
-      // const question = toolInvocationResult.result?.question || "";
-      // const context = toolInvocationResult.result?.context || "";
+      const question = toolInvocationResult.result?.question || "";
+      const context = toolInvocationResult.result?.context || "";
+      if (question && context) {
+        handleSubmit();
+      }
 
-      handleSubmit();
       // if (question && context) {
       //   setIsCalled(true);
       //   const response = await fetch(`/api/tool_call`, {
@@ -57,13 +59,18 @@ const useToolCall = (message: Message) => {
 
     if (!toolInvocationResult) return;
 
+    console.log("ZIAD isAssistant");
     const isAssistant = message.role === "assistant";
 
     if (!isAssistant) {
       setLoading(false);
       return;
     }
+
+    console.log("ZIAD isCalled");
     if (isCalled || loading) return;
+
+    console.log("ZIAD passed");
     init();
   }, [toolInvocationResult, isCalled]);
 
