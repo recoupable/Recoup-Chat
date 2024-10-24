@@ -2,6 +2,7 @@
 import { Message } from "ai";
 import { useChat } from "ai/react";
 import { useEffect, useState } from "react";
+import { v4 as uuidV4 } from "uuid";
 
 const useToolCall = (message: Message) => {
   const [loading, setLoading] = useState(false);
@@ -16,7 +17,7 @@ const useToolCall = (message: Message) => {
     (toolInvocation) => toolInvocation.state === "result",
   )?.[0];
 
-  const { handleSubmit, messages } = useChat({
+  const { handleSubmit, messages, append } = useChat({
     api: "/api/tool_call",
     body: {
       question: toolInvocationResult?.result?.question || "",
@@ -31,9 +32,13 @@ const useToolCall = (message: Message) => {
       // let answer = "";
       const question = toolInvocationResult.result?.question || "";
       const context = toolInvocationResult.result?.context || "";
-      console.log("ZIAD Submit")
+      console.log("ZIAD Submit");
       if (question && context) {
-        handleSubmit();
+        append({
+          id: uuidV4(),
+          content: "",
+          role: "user",
+        });
       }
 
       // if (question && context) {

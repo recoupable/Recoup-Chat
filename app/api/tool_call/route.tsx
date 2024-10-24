@@ -46,6 +46,7 @@ export async function POST(req: NextRequest) {
       system: systemMessage,
       maxTokens: 1111,
       temperature: 0.7,
+      messages: [],
     });
 
     return result.toDataStreamResponse();
