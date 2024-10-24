@@ -28,9 +28,17 @@ const campaignTool = (question: string) =>
     When in doubt, call this tool to ensure you have the most up-to-date and accurate information.`,
     parameters: z.object({
       specific_focus: z
-        .string()
-        .optional()
-        .describe("The fan name to get the information. Optional."),
+        .enum([
+          "listening_habits",
+          "artists",
+          "tracks",
+          "episodes",
+          "audio_books",
+          "shows",
+          "playlist",
+          "albums",
+        ])
+        .describe("Focus on either listening habits, artists, or tracks."),
     }),
     execute: async ({ specific_focus }) => {
       const client = getSupabaseServerAdminClient();
