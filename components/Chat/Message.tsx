@@ -5,6 +5,7 @@ import { UserIcon, TvMinimalPlay, LoaderCircle } from "lucide-react";
 import { useEffect } from "react";
 import ReactMarkdown from "react-markdown";
 import FanTable from "./FanTable";
+import { FAN_TYPE } from "@/types/fans";
 
 const Message = ({
   message,
@@ -22,6 +23,9 @@ const Message = ({
     message?.toolInvocations;
 
   const content = message.content || answer;
+  const fans = context?.fans
+    ?.filter((fan: FAN_TYPE) => fan.name !== "Unknown")
+    ?.slice(0, 25);
 
   useEffect(() => {
     scroll({ smooth: true, y: Number.MAX_SAFE_INTEGER });
@@ -39,9 +43,7 @@ const Message = ({
           <TvMinimalPlay className="h-6 w-6" />
         )}
       </div>
-      {toolName === "getCampaign" && context && (
-        <FanTable fans={context?.fans?.slice(0, 30)} />
-      )}
+      {toolName === "getCampaign" && context && <FanTable fans={fans} />}
       {loading && !message.content && !answer ? (
         <div className="flex gap-2 items-center">
           <p>is thinking...</p>
