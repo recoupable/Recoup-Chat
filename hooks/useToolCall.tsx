@@ -27,7 +27,15 @@ const useToolCall = (message: Message) => {
     },
     onError: console.error,
     onFinish: async (message) => {
-      await finalCallback(message, question, conversationId as string);
+      await finalCallback(
+        message,
+        {
+          id: uuidV4(),
+          content: question as string,
+          role: "user",
+        },
+        conversationId as string,
+      );
       await clearQuery();
     },
   });
