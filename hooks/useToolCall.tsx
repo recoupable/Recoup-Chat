@@ -17,6 +17,7 @@ const useToolCall = (message: Message) => {
   const context = toolInvocationResult?.result?.context || "";
   const toolName = toolInvocationResult?.toolName;
 
+  console.log("ZIAD", toolInvocationResult?.result);
   const {
     messages,
     append,

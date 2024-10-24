@@ -1,6 +1,6 @@
 import { tool } from "ai";
 import { z } from "zod";
-import getFans from "../chat/getFans";
+import getCampaign from "../chat/getCampaign";
 import { getSupabaseServerAdminClient } from "@/packages/supabase/src/clients/server-admin-client";
 
 const campaignTool = (question: string) =>
@@ -42,7 +42,7 @@ const campaignTool = (question: string) =>
     }),
     execute: async ({ specific_focus }) => {
       const client = getSupabaseServerAdminClient();
-      const fans = await getFans(client);
+      const fans = await getCampaign(client, specific_focus);
       return {
         context: fans,
         question,
