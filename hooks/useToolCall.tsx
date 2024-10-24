@@ -6,17 +6,14 @@ import { v4 as uuidV4 } from "uuid";
 
 const useToolCall = (message: Message) => {
   // const { finalCallback } = useChatProvider();
-  // const [answer, setAnswer] = useState("");
   // const { clearQuery } = useChatProvider();
   const [isCalled, setIsCalled] = useState(false);
-  const answer = "";
   const toolInvocations = [...(message.toolInvocations || [])];
   const toolInvocationResult = toolInvocations?.filter(
     (toolInvocation) => toolInvocation.state === "result",
   )?.[0];
   const question = toolInvocationResult?.result?.question || "";
   const context = toolInvocationResult?.result?.context || "";
-
   const {
     messages,
     append,
@@ -32,8 +29,10 @@ const useToolCall = (message: Message) => {
       console.log("ZIAD", message);
     },
   });
+  const answer = messages.filter(
+    (message: Message) => message.role === "assistant",
+  )?.[0]?.content;
 
-  console.log("ZIAD messages", messages);
   useEffect(() => {
     if (!question || !context) return;
     const isAssistant = message.role === "assistant";
