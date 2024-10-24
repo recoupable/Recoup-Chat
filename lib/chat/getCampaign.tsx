@@ -20,23 +20,45 @@ const getCampaign = async (
 
   if (!fans?.length) return "No fans.";
 
-  const playlist = fans.map((fan) => Array.isArray(fan.playlist) || []).flat();
-  const artists = fans
-    .map((fan) => [
-      ...(Array.isArray(fan.followedArtists) ? fan.followedArtists : []),
-      ...(Array.isArray(fan.topArtists) ? fan.topArtists : []),
-    ])
-    .flat();
-  const episodes = fans.map((fan) => fan.episodes || []).flat();
-  const albums = fans.map((fan) => fan.savedAlbums || []).flat();
-  const audioBooks = fans.map((fan) => fan.savedAudioBooks || []).flat();
-  const shows = fans.map((fan) => fan.savedShows || []).flat();
-  const tracks = fans
-    .map((fan) => [
-      ...(Array.isArray(fan.topTracks) ? fan.topTracks : []),
-      ...(Array.isArray(fan.savedTracks) ? fan.savedTracks : []),
-    ])
-    .flat();
+  const { playlist, artists, episodes, albums, audioBooks, shows, tracks } =
+    fans.reduce(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (acc: any, fan) => {
+        acc.playlist.push(...(Array.isArray(fan.playlist) ? fan.playlist : []));
+        if (Array.isArray(fan.followedArtists)) {
+          acc.artists.push(...fan.followedArtists);
+        }
+        if (Array.isArray(fan.topArtists)) {
+          acc.artists.push(...fan.topArtists);
+        }
+        acc.episodes.push(...(Array.isArray(fan.episodes) ? fan.episodes : []));
+        acc.albums.push(
+          ...(Array.isArray(fan.savedAlbums) ? fan.savedAlbums : []),
+        );
+        acc.audioBooks.push(
+          ...(Array.isArray(fan.savedAudioBooks) ? fan.savedAudioBooks : []),
+        );
+        acc.shows.push(
+          ...(Array.isArray(fan.savedShows) ? fan.savedShows : []),
+        );
+        if (Array.isArray(fan.topTracks)) {
+          acc.tracks.push(...fan.topTracks);
+        }
+        if (Array.isArray(fan.savedTracks)) {
+          acc.tracks.push(...fan.savedTracks);
+        }
+        return acc;
+      },
+      {
+        playlist: [],
+        artists: [],
+        episodes: [],
+        albums: [],
+        audioBooks: [],
+        shows: [],
+        tracks: [],
+      },
+    );
 
   const premiumCount = (fans as unknown as FAN_TYPE[]).filter(
     (fan) => fan.product === "premium",
