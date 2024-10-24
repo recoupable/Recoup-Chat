@@ -1,10 +1,6 @@
 import { AudioBook } from "@/types/AudioBook";
-import { FAN_TYPE } from "@/types/fans";
 
-const getAudioBooks = (fan: FAN_TYPE) => {
-  const audioBooks = Array.isArray(fan.savedAudioBooks)
-    ? fan.savedAudioBooks
-    : [];
+const getAudioBooks = (audioBooks: AudioBook[]) => {
   const uniqueAudioBooks = audioBooks
     .reduce((acc: AudioBook[], audioBook: AudioBook) => {
       const existingElement = acc.find(

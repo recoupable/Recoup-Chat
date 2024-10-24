@@ -1,8 +1,6 @@
 import { Episode } from "@/types/Episodes";
-import { FAN_TYPE } from "@/types/fans";
 
-const getEpisodes = (fan: FAN_TYPE) => {
-  const episodes = Array.isArray(fan.episodes) ? fan.episodes : [];
+const getEpisodes = (episodes: Episode[]) => {
   const uniqueEpisodes =
     episodes
       .reduce((acc: Episode[], episode: Episode) => {

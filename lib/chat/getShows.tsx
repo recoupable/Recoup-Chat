@@ -1,8 +1,6 @@
-import { FAN_TYPE } from "@/types/fans";
 import { Show } from "@/types/Show";
 
-const getAudioBooks = (fan: FAN_TYPE) => {
-  const shows = Array.isArray(fan.savedShows) ? fan.savedShows : [];
+const getShows = (shows: Show[]) => {
   const uniqueShows = shows
     .reduce((acc: Show[], show: Show) => {
       const existingElement = acc.find(
@@ -18,4 +16,4 @@ const getAudioBooks = (fan: FAN_TYPE) => {
   return uniqueShows;
 };
 
-export default getAudioBooks;
+export default getShows;

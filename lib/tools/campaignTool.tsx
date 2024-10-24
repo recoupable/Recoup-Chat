@@ -42,7 +42,7 @@ const campaignTool = (question: string) =>
     }),
     execute: async ({ specific_focus }) => {
       const client = getSupabaseServerAdminClient();
-      const fans = await getCampaign(client, specific_focus);
+      const fans = await getCampaign(client);
       return {
         context: fans,
         question,

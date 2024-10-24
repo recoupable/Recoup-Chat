@@ -1,8 +1,6 @@
-import { FAN_TYPE } from "@/types/fans";
 import { Playlist } from "@/types/Playlist";
 
-const getPlaylist = (fan: FAN_TYPE) => {
-  const playlist = Array.isArray(fan.playlist) ? fan.playlist : [];
+const getPlaylist = (playlist: Playlist[]) => {
   const uniquePlaylists =
     playlist
       .reduce((acc: Playlist[], playlist: Playlist) => {
