@@ -1,84 +1,55 @@
 // import { useChatProvider } from "@/providers/ChatProvider";
 import { Message } from "ai";
 import { useChat } from "ai/react";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { v4 as uuidV4 } from "uuid";
 
 const useToolCall = (message: Message) => {
-  const [loading, setLoading] = useState(false);
   // const { finalCallback } = useChatProvider();
   // const [answer, setAnswer] = useState("");
   // const { clearQuery } = useChatProvider();
   // const [isCalled, setIsCalled] = useState(false);
-  const isCalled = false;
   const answer = "";
   const toolInvocations = [...(message.toolInvocations || [])];
   const toolInvocationResult = toolInvocations?.filter(
     (toolInvocation) => toolInvocation.state === "result",
   )?.[0];
+  const question = toolInvocationResult?.result?.question || "";
+  const context = toolInvocationResult?.result?.context || "";
 
-  const { handleSubmit, messages, append } = useChat({
+  const {
+    messages,
+    append,
+    isLoading: loading,
+  } = useChat({
     api: "/api/tool_call",
     body: {
-      question: toolInvocationResult?.result?.question || "",
-      context: toolInvocationResult?.result?.context || "",
+      question,
+      context,
+    },
+    onError: console.error,
+    onFinish: async (message) => {
+      console.log("ZIAD", message);
     },
   });
 
-  console.log("ZIAD", messages);
+  console.log("ZIAD messages", messages);
   useEffect(() => {
     const init = async () => {
-      setLoading(true);
-      // let answer = "";
-      const question = toolInvocationResult.result?.question || "";
-      const context = toolInvocationResult.result?.context || "";
-      console.log("ZIAD Submit");
       if (question && context) {
         append({
           id: uuidV4(),
-          content: "",
+          content: question,
           role: "user",
         });
       }
-
-      // if (question && context) {
-      //   setIsCalled(true);
-      //   const response = await fetch(`/api/tool_call`, {
-      //     method: "POST",
-      //     body: JSON.stringify({
-      //       context,
-      //       question,
-      //     }),
-      //   });
-      //   const data = await response.json();
-      //   answer = data.answer;
-      //   await finalCallback({
-      //     role: "assistant",
-      //     content: answer,
-      //     id: "",
-      //   });
-      //   setAnswer(answer);
-      // }
-      // clearQuery();
-      setLoading(false);
     };
 
     if (!toolInvocationResult) return;
-
-    console.log("ZIAD isAssistant", toolInvocationResult);
     const isAssistant = message.role === "assistant";
-
-    if (!isAssistant) {
-      setLoading(false);
-      return;
-    }
-
-    console.log("ZIAD isCalled", isCalled, loading);
-    if (isCalled || loading) return;
-
-    console.log("ZIAD passed");
+    if (!isAssistant || loading) return;
     init();
-  }, [toolInvocationResult, isCalled]);
+  }, [toolInvocationResult, loading]);
 
   return {
     loading,
