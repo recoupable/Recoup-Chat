@@ -8,6 +8,7 @@ import { Track } from "./Track";
 
 export type FAN_TYPE = {
   name: string | null;
+  display_name: string | null;
   country: string | null;
   city: string | null;
   product: string | null;

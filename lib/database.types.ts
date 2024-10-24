@@ -1547,6 +1547,17 @@ export type Database = {
       };
     };
     Functions: {
+      get_campaign: {
+        Returns: {
+          playlist: string[];
+          artists: string[];
+          audio_books: string[];
+          episodes: string[];
+          albums: string[];
+          tracks: string[];
+          shows: string[];
+        };
+      };
       accept_invitation: {
         Args: {
           token: string;
