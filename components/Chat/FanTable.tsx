@@ -3,7 +3,7 @@ import { FAN_TYPE } from "@/types/fans";
 const FanTable = ({
   fans,
 }: {
-  fans: (FAN_TYPE & { name: string; segment: string })[];
+  fans: (FAN_TYPE & { name: string; })[];
 }) => {
   return (
     <div className="border-gray-700 border-[1px] rounded-md w-full p-2">
@@ -20,9 +20,6 @@ const FanTable = ({
               <td className="text-sm p-1">{fan.name}</td>
               <td className="text-sm p-1">{fan.country}</td>
               <td className="text-sm p-1">{fan.city}</td>
-              <td className="text-sm p-1">
-                {fan.segment.replace("Listener", "")}
-              </td>
             </tr>
           ))}
         </tbody>
