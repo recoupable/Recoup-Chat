@@ -19,8 +19,8 @@ const useToolCall = (message: Message) => {
   const { handleSubmit, messages } = useChat({
     api: "/api/tool_call",
     body: {
-      question: toolInvocationResult.result?.question || "",
-      context: toolInvocationResult.result?.context || "",
+      question: toolInvocationResult?.result?.question || "",
+      context: toolInvocationResult?.result?.context || "",
     },
   });
 
