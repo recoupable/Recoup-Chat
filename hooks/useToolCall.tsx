@@ -1,4 +1,4 @@
-// import { useChatProvider } from "@/providers/ChatProvider";
+import { useChatProvider } from "@/providers/ChatProvider";
 import { Message } from "ai";
 import { useChat } from "ai/react";
 import { useParams } from "next/navigation";
@@ -6,8 +6,7 @@ import { useEffect, useState } from "react";
 import { v4 as uuidV4 } from "uuid";
 
 const useToolCall = (message: Message) => {
-  // const { finalCallback, messages: chatMessages } = useChatProvider();
-  // const { clearQuery } = useChatProvider();
+  const { finalCallback, clearQuery } = useChatProvider();
   const { conversation: conversationId } = useParams();
   const [isCalled, setIsCalled] = useState(false);
   const toolInvocations = [...(message.toolInvocations || [])];
@@ -28,7 +27,8 @@ const useToolCall = (message: Message) => {
     },
     onError: console.error,
     onFinish: async (message) => {
-      console.log("ZIAD onFinish", message, question, conversationId);
+      await finalCallback(message, question, conversationId as string);
+      await clearQuery();
     },
   });
   const answer = messages.filter(
