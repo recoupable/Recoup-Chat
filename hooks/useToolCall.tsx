@@ -25,7 +25,6 @@ const useToolCall = (message: Message) => {
   });
 
   console.log("ZIAD", messages);
-
   useEffect(() => {
     const init = async () => {
       setLoading(true);
