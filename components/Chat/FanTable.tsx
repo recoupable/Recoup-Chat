@@ -1,10 +1,6 @@
 import { FAN_TYPE } from "@/types/fans";
 
-const FanTable = ({
-  fans,
-}: {
-  fans: (FAN_TYPE & { name: string; })[];
-}) => {
+const FanTable = ({ fans }: { fans: (FAN_TYPE & { name: string })[] }) => {
   return (
     <div className="border-gray-700 border-[1px] rounded-md w-full p-2">
       <table className="w-full">

@@ -15,6 +15,8 @@ const useToolCall = (message: Message) => {
   )?.[0];
   const question = toolInvocationResult?.result?.question || "";
   const context = toolInvocationResult?.result?.context || "";
+  const toolName = toolInvocationResult?.toolName;
+
   const {
     messages,
     append,
@@ -59,6 +61,9 @@ const useToolCall = (message: Message) => {
   return {
     loading,
     answer,
+    toolName,
+    question,
+    context,
   };
 };
 

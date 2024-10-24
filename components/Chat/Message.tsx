@@ -4,6 +4,7 @@ import { Message as AIMessage } from "ai";
 import { UserIcon, TvMinimalPlay, LoaderCircle } from "lucide-react";
 import { useEffect } from "react";
 import ReactMarkdown from "react-markdown";
+import FanTable from "./FanTable";
 
 const Message = ({
   message,
@@ -12,7 +13,7 @@ const Message = ({
   message: AIMessage;
   scroll: ({ smooth, y }: { smooth: boolean; y: number }) => void;
 }) => {
-  const { loading, answer } = useToolCall(message);
+  const { loading, answer, toolName, context } = useToolCall(message);
   const { pending } = useChatProvider();
   const isHidden =
     pending &&
@@ -36,6 +37,9 @@ const Message = ({
           <TvMinimalPlay className="h-6 w-6" />
         )}
       </div>
+      {toolName === "getCampaign" && context && (
+        <FanTable fans={context?.fans} />
+      )}
       {loading && !message.content && !answer ? (
         <div className="flex gap-2 items-center">
           <p>is thinking...</p>
