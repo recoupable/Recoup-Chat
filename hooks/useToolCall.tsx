@@ -1,14 +1,14 @@
 // import { useChatProvider } from "@/providers/ChatProvider";
 import { Message } from "ai";
 import { useChat } from "ai/react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { v4 as uuidV4 } from "uuid";
 
 const useToolCall = (message: Message) => {
   // const { finalCallback } = useChatProvider();
   // const [answer, setAnswer] = useState("");
   // const { clearQuery } = useChatProvider();
-  // const [isCalled, setIsCalled] = useState(false);
+  const [isCalled, setIsCalled] = useState(false);
   const answer = "";
   const toolInvocations = [...(message.toolInvocations || [])];
   const toolInvocationResult = toolInvocations?.filter(
@@ -35,21 +35,17 @@ const useToolCall = (message: Message) => {
 
   console.log("ZIAD messages", messages);
   useEffect(() => {
-    const init = async () => {
-      if (question && context) {
-        append({
-          id: uuidV4(),
-          content: question,
-          role: "user",
-        });
-      }
-    };
-
-    if (!toolInvocationResult) return;
+    if (!question || !context) return;
     const isAssistant = message.role === "assistant";
-    if (!isAssistant || loading) return;
-    init();
-  }, [toolInvocationResult, loading]);
+    if (!isAssistant) return;
+    if (isCalled) return;
+    setIsCalled(true);
+    append({
+      id: uuidV4(),
+      content: question,
+      role: "user",
+    });
+  }, [question, context]);
 
   return {
     loading,
