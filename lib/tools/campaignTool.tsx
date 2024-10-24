@@ -26,13 +26,19 @@ const campaignTool = (question: string) =>
     - "How many premium subscribers are there?"
 
     When in doubt, call this tool to ensure you have the most up-to-date and accurate information.`,
-    parameters: z.object({}),
-    execute: async () => {
+    parameters: z.object({
+      specific_focus: z
+        .string()
+        .optional()
+        .describe("The fan name to get the information. Optional."),
+    }),
+    execute: async ({ specific_focus }) => {
       const client = getSupabaseServerAdminClient();
       const fans = await getFans(client);
       return {
         context: fans,
         question,
+        specificFocus: specific_focus,
       };
     },
   });
