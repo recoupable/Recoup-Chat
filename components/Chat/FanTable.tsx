@@ -8,7 +8,6 @@ const FanTable = ({ fans }: { fans: (FAN_TYPE & { name: string })[] }) => {
           <th className="text-sm text-left p-1">Name</th>
           <th className="text-sm text-left p-1">Coutry</th>
           <th className="text-sm text-left p-1">City</th>
-          <th className="text-sm text-left p-1">Segment</th>
         </thead>
         <tbody>
           {fans.map((fan, index) => (
@@ -18,6 +17,11 @@ const FanTable = ({ fans }: { fans: (FAN_TYPE & { name: string })[] }) => {
               <td className="text-sm p-1">{fan.city}</td>
             </tr>
           ))}
+          <tr>
+            <td colSpan={3} className="text-center">
+              ...
+            </td>
+          </tr>
         </tbody>
       </table>
     </div>

@@ -26,7 +26,7 @@ const Message = ({
   useEffect(() => {
     scroll({ smooth: true, y: Number.MAX_SAFE_INTEGER });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [content]);
+  }, [content, context]);
 
   return (
     <div
@@ -40,7 +40,7 @@ const Message = ({
         )}
       </div>
       {toolName === "getCampaign" && context && (
-        <FanTable fans={context?.fans} />
+        <FanTable fans={context?.fans?.slice(0, 30)} />
       )}
       {loading && !message.content && !answer ? (
         <div className="flex gap-2 items-center">
