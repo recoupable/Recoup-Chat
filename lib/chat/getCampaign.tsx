@@ -50,7 +50,7 @@ const getCampaign = async (client: SupabaseClient<Database, "public">) => {
       if (Array.isArray(fan.savedTracks)) {
         acc.tracks.push(...fan.savedTracks);
       }
-      fansdata.push({
+      acc.fansdata.push({
         name: fan.display_name || "Unknown",
         country: fan.country || "Unknown",
         city: fan.city || "Unknown",
@@ -83,13 +83,14 @@ const getCampaign = async (client: SupabaseClient<Database, "public">) => {
     playlist: limitCollections(getPlaylist(playlist)),
     artists: getSortedNames(getArtists(artists), "name"),
     episodes: limitCollections(getEpisodes(episodes)),
-    albums: limitCollections(getSavedAlbums(albums)),
+    albums: getSortedNames(getSavedAlbums(albums), "name"),
     tracks: getSortedNames(getTracks(tracks), "name"),
     shows: limitCollections(getShows(shows)),
     audioBooks: limitCollections(getAudioBooks(audioBooks)),
     premiumCount,
     freeCount,
     followers,
+    totalFansCount: premiumCount + freeCount,
     fans: fansdata,
   };
 };
