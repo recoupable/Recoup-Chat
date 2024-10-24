@@ -59,7 +59,7 @@ const useToolCall = (message: Message) => {
 
     if (!toolInvocationResult) return;
 
-    console.log("ZIAD isAssistant");
+    console.log("ZIAD isAssistant", toolInvocationResult);
     const isAssistant = message.role === "assistant";
 
     if (!isAssistant) {
@@ -67,7 +67,7 @@ const useToolCall = (message: Message) => {
       return;
     }
 
-    console.log("ZIAD isCalled");
+    console.log("ZIAD isCalled", isCalled, loading);
     if (isCalled || loading) return;
 
     console.log("ZIAD passed");
