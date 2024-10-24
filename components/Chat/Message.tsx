@@ -27,8 +27,12 @@ const Message = ({
     ?.filter((fan: FAN_TYPE) => fan.name !== "Unknown")
     ?.slice(0, 25);
 
+  const scrollTo = () => scroll({ smooth: true, y: Number.MAX_SAFE_INTEGER });
   useEffect(() => {
-    scroll({ smooth: true, y: Number.MAX_SAFE_INTEGER });
+    scrollTo();
+    setTimeout(() => {
+      scrollTo();
+    }, 1000);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [content, context]);
 
