@@ -10,7 +10,7 @@ const FanTable = ({ fans }: { fans: FAN_TYPE[] }) => {
           <th className="text-xs text-left p-1">City</th>
         </thead>
         <tbody>
-          {fans.map((fan, index) => (
+          {fans?.map((fan, index) => (
             <tr key={index}>
               <td className="text-xs p-1">{fan.name}</td>
               <td className="text-xs p-1">{fan.country}</td>
