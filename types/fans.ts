@@ -21,4 +21,5 @@ export type FAN_TYPE = {
   savedTracks: Array<Track> | null;
   topTracks: Array<Track> | null;
   topArtists: Array<Artist> | null;
+  email: string;
 };
