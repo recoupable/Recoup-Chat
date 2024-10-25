@@ -10,7 +10,11 @@ const getCampaign = async (client: SupabaseClient<Database, "public">) => {
     .select("display_name, country, city, product");
 
   if (!fans?.length) return "No fans.";
-  const { data: campaignInfo } = await client.rpc("get_campaign");
+  const { data: campaignInfo } = await client.rpc("get_campaign", {
+    clientid: ""
+  });
+
+  if (!campaignInfo) return
 
   const premiumCount = (fans as unknown as FAN_TYPE[]).filter(
     (fan) => fan.product === "premium",

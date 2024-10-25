@@ -1548,6 +1548,9 @@ export type Database = {
     };
     Functions: {
       get_campaign: {
+        Args: {
+          clientid: string;
+        };
         Returns: {
           playlist: string[];
           artists: string[];
