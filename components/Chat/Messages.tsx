@@ -22,7 +22,7 @@ const Messages = ({
       className={`w-full mt-4 max-w-3xl mx-auto overflow-y-auto ${messages.length && "grow"}`}
     >
       {messages.map((message: AIMessage, index: number) => (
-        <Message message={message} key={index} />
+        <Message message={message} key={index} scroll={scroll} />
       ))}
       {pending && <Thinking />}
     </ScrollArea>

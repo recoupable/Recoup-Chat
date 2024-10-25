@@ -2,9 +2,16 @@ import useToolCall from "@/hooks/useToolCall";
 import { useChatProvider } from "@/providers/ChatProvider";
 import { Message as AIMessage } from "ai";
 import { UserIcon, TvMinimalPlay, LoaderCircle } from "lucide-react";
+import { useEffect } from "react";
 import ReactMarkdown from "react-markdown";
 
-const Message = ({ message }: { message: AIMessage }) => {
+const Message = ({
+  message,
+  scroll,
+}: {
+  message: AIMessage;
+  scroll: ({ smooth, y }: { smooth: boolean; y: number }) => void;
+}) => {
   const { loading, answer } = useToolCall(message);
   const { pending } = useChatProvider();
   const isHidden =
@@ -12,6 +19,13 @@ const Message = ({ message }: { message: AIMessage }) => {
     message.role === "assistant" &&
     !message.content &&
     message?.toolInvocations;
+
+  const content = message.content || answer;
+
+  useEffect(() => {
+    scroll({ smooth: true, y: Number.MAX_SAFE_INTEGER });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [content]);
 
   return (
     <div className={`p-3 rounded-lg flex w-full gap-2 ${isHidden && "hidden"}`}>
@@ -29,7 +43,7 @@ const Message = ({ message }: { message: AIMessage }) => {
         </div>
       ) : (
         <div className="text-sm font-sans text-pretty break-words">
-          <ReactMarkdown>{message.content || answer}</ReactMarkdown>
+          <ReactMarkdown>{content}</ReactMarkdown>
         </div>
       )}
     </div>
