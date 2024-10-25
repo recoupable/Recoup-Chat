@@ -38,7 +38,7 @@ const getFans = async (client: SupabaseClient<Database, "public">) => {
     return {
       name: fan.display_name || "Unknown",
       country: fan.country || "Unknown",
-      city: fan.city || "Unknown",
+      email: fan.email || "Unknown",
     };
   });
 
