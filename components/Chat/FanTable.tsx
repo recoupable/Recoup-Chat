@@ -31,8 +31,8 @@ const FanTable = ({
             {fanslist.map((fan, index) => (
               <tr key={index}>
                 <td className="text-xs p-1">{fan.name}</td>
-                <td className="text-xs p-1">{fan.city}</td>
                 <td className="text-xs p-1">{fan.email}</td>
+                <td className="text-xs p-1">{fan.country}</td>
               </tr>
             ))}
             <tr>
