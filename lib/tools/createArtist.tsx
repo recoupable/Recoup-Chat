@@ -17,11 +17,11 @@ const createArtist = (question: string, email: string) =>
     execute: async ({ artist_name }) => {
       if (!artist_name)
         return {
-          status: ArtistToolResponse.MISSING_ARTIST_NAME,
           context: {
-            question,
+            status: ArtistToolResponse.MISSING_ARTIST_NAME,
             answer: "Please provide the artist name to proceed.",
           },
+          question,
         };
       const data = await upsertArtist(artist_name, email);
       return {
@@ -29,6 +29,7 @@ const createArtist = (question: string, email: string) =>
           status: ArtistToolResponse.CREATED_ARTIST,
           data: data,
         },
+        question,
       };
     },
   });

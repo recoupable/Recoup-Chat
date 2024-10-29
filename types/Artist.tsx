@@ -4,3 +4,9 @@ export type Artist = {
   image: string;
   popularity: number;
 };
+
+export type ArtistRecord = {
+  name: string;
+  id: string;
+  timestamp: number;
+};

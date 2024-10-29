@@ -1,5 +1,5 @@
 import FanTable from "./FanTable";
-import InputArtist from "./InputArtist";
+import Artist from "./Artist";
 
 interface ToolContentProps {
   toolName: string | undefined;
@@ -12,7 +12,9 @@ interface ToolContentProps {
 const ToolContent = ({ toolName, context, fans, scroll }: ToolContentProps) => (
   <div>
     {toolName === "getCampaign" && <FanTable fans={fans} scroll={scroll} />}
-    {toolName === "createArtist" && <InputArtist context={context} />}
+    {(toolName === "createArtist" || toolName === "getArtists") && (
+      <Artist context={context} scroll={scroll} />
+    )}
   </div>
 );
 
