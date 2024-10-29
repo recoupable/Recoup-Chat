@@ -13,9 +13,8 @@ export const DESCRIPTION =
   "Chat with Recoupable. Generate insights with simple text prompts.";
 
 export const SUGGESTIONS = [
-  "What are the listening habits from Spotify and Apple?",
-  "Who's played the most?",
-  "Who's scored the highest?",
-  "How many streams did this campaign earn?",
-  "How many followers did this campaign earn?",
+  "Which artists do I manage?",
+  "Create a new artist.",
+  "What campaigns do I have?",
+  "Create a new campaign.",
 ];
