@@ -26,17 +26,17 @@ const upsertArtist = async (artistName: string, userEmail: string) => {
   const { data: found, error } = await client
     .from("artists")
     .select("*")
-    .eq("name", artistName)
-    .single();
+    .eq("name", artistName);
+
   if (error) throw error;
 
-  if (found) {
+  if (found?.length) {
     const artistIds = user.artistIds;
-    if (!artistIds.includes(found.id)) {
+    if (!artistIds.includes(found[0].id)) {
       await client
         .from("accounts")
         .update({
-          artistIds: [...artistIds, found.id],
+          artistIds: [...artistIds, found[0].id],
           timestamp: Date.now(),
           email: userEmail,
         })
