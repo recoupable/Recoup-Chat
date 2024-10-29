@@ -8,6 +8,7 @@ const ArtistsTable = ({
   artists: ArtistRecord[];
   scroll: ({ smooth, y }: { smooth: boolean; y: number }) => void;
 }) => {
+  console.log("ZIAD", artists);
   const [isCollapsed, setIsCollapsed] = useState(true);
 
   const artistsList = artists?.slice(0, isCollapsed ? 3 : artists?.length);
