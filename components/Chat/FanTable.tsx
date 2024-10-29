@@ -23,15 +23,17 @@ const FanTable = ({
       <div className="border-gray-700 border-[1px] rounded-md w-full p-2">
         <table className="w-full">
           <thead>
-            <th className="text-xs text-left p-1">Name</th>
-            <th className="text-xs text-left p-1">Email</th>
-            <th className="text-xs text-left p-1">Country</th>
+            <tr>
+              <th className="text-xs text-left p-1">Name</th>
+              <th className="text-xs text-left p-1">Email</th>
+              <th className="text-xs text-left p-1">Country</th>
+            </tr>
           </thead>
           <tbody>
             {fanslist.map((fan, index) => (
               <tr key={index}>
                 <td className="text-xs p-1">{fan.name || fan.display_name}</td>
-                <td className="text-xs p-1">{fan.email}</td>
+                <td className="text-xs p-1 !max-w-[350px]">{fan.email}</td>
                 <td className="text-xs p-1">{fan.country}</td>
               </tr>
             ))}
