@@ -6,7 +6,7 @@ import useInitialMessages from "./useInitialMessages";
 import useConversations from "./useConversations";
 import { usePathname } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
-import useUser from "./useUser";
+import { useUserProvider } from "@/providers/UserProvder";
 
 const useMessages = () => {
   const { finalCallback } = useSuggestions();
@@ -14,7 +14,7 @@ const useMessages = () => {
   const { initialMessages, fetchInitialMessages } = useInitialMessages();
   const { conversationRef } = useConversations();
   const queryClient = useQueryClient();
-  const { email } = useUser();
+  const { email } = useUserProvider();
 
   const pathname = usePathname();
 

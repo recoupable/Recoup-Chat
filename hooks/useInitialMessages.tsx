@@ -2,13 +2,13 @@ import { Address } from "viem";
 import { useEffect, useState } from "react";
 import getInitialMessages from "@/lib/stack/getInitialMessages";
 import { sortMessages, flattenMessagePairs } from "@/lib/sortMessages";
-import useUser from "./useUser";
 import { StackMessage } from "@/types/Stack";
 import { useParams } from "next/navigation";
+import { useUserProvider } from "@/providers/UserProvder";
 
 const useInitialMessages = () => {
   const [initialMessages, setInitialMessages] = useState<StackMessage[]>([]);
-  const { address } = useUser();
+  const { address } = useUserProvider();
   const { conversation: pathId } = useParams();
 
   useEffect(() => {

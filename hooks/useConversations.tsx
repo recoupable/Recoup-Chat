@@ -1,13 +1,13 @@
 import { Address } from "viem";
 import { useEffect, useRef, useState } from "react";
-import useUser from "./useUser";
 import { Conversation } from "@/types/Stack";
 import getConversations from "@/lib/stack/getConversations";
 import { useParams } from "next/navigation";
+import { useUserProvider } from "@/providers/UserProvder";
 
 const useConversations = () => {
   const [conversations, setConversations] = useState<Conversation[]>([]);
-  const { address } = useUser();
+  const { address } = useUserProvider();
   const { conversation } = useParams();
   const conversationRef = useRef(conversation as string);
 

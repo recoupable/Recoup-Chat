@@ -4,11 +4,11 @@ import { BookOpen, Plus } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import Tooltip from "../Tooltip";
-import useUser from "@/hooks/useUser";
+import { useUserProvider } from "@/providers/UserProvder";
 
 const Sidebar = () => {
   const { push } = useRouter();
-  const { isPrepared } = useUser();
+  const { isPrepared } = useUserProvider();
 
   const goToItem = (link?: string) => {
     if (isPrepared()) push(`/${link || ""}`);
