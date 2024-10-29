@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { tool } from "ai";
 import readArtists from "./readArtists";
+import { ArtistToolResponse } from "@/types/Tool";
 
 const getArtists = (email: string) =>
   tool({
@@ -16,6 +17,9 @@ const getArtists = (email: string) =>
       const artists = await readArtists(email);
       return {
         context: {
+          status: artists.length
+            ? ArtistToolResponse.ARTIST_LIST
+            : ArtistToolResponse.NO_ARTISTS,
           artists,
         },
       };
