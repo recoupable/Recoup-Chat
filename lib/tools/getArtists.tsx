@@ -9,9 +9,7 @@ const getArtists = (question: string, email: string) =>
     Do NOT attempt to answer questions on these topics without calling this tool first.
 
     Example questions that MUST trigger this tool:
-    - "Which artists do I manage?"
-
-    When in doubt, call this tool to ensure you have the most up-to-date and accurate information.`,
+    - "Which artists do I manage?"`,
     parameters: z.object({}),
     execute: async () => {
       const artists = await readArtists(email);

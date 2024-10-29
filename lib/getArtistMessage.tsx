@@ -10,7 +10,7 @@ const getArtistMessage = (toolName: string | undefined, context: any) => {
   )
     return {
       id: uuidV4(),
-      content: `Name ${context.data.name}, Id ${context.data.id}`,
+      content: `Name: ${context.data.name}, ID: ${context.data.id}`,
       role: "assistant",
     };
   if (toolName === "getArtists")
