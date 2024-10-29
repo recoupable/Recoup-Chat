@@ -57,7 +57,7 @@ const useToolCall = (message: Message) => {
       finalCallback(
         {
           id: uuidV4(),
-          content: `Name ${context.data.name}, Id ${context.data.id}`,
+          content: `Name: ${context.data.name}, Id: ${context.data.id}`,
           role: "assistant",
         },
         {
