@@ -1,7 +1,7 @@
 import { useChatProvider } from "@/providers/ChatProvider";
 import { FAN_TYPE } from "@/types/fans";
 import { ArtistToolResponse } from "@/types/Tool";
-import { Message, tool } from "ai";
+import { Message } from "ai";
 import { useChat } from "ai/react";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -50,21 +50,10 @@ const useToolCall = (message: Message) => {
 
   useEffect(() => {
     if (!question || !context) return;
-    const isAssistant = message.role === "assistant";
-    if (!isAssistant) return;
-    if (isCalled) return;
-    setIsCalled(true);
-    if (toolName === "getCampaign")
-      append({
-        id: uuidV4(),
-        content: question,
-        role: "user",
-      });
     if (
       toolName === "createArtist" &&
       context?.status === ArtistToolResponse.CREATED_ARTIST
     ) {
-      console.log("ZIAD HERE");
       finalCallback(
         {
           id: uuidV4(),
@@ -78,7 +67,18 @@ const useToolCall = (message: Message) => {
         },
         conversationId as string,
       );
+      return;
     }
+    const isAssistant = message.role === "assistant";
+    if (!isAssistant) return;
+    if (isCalled) return;
+    setIsCalled(true);
+    if (toolName === "getCampaign")
+      append({
+        id: uuidV4(),
+        content: question,
+        role: "user",
+      });
   }, [question, context, toolName]);
 
   return {
