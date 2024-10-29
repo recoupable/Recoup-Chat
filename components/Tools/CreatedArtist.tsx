@@ -7,11 +7,14 @@ const CreatedArtist = ({ context }: any) => {
       <p className="text-sm">
         {data?.name} - {data?.id}
       </p>
+      <p className="py-2 text-sm">
+        To create a new campaign for the next step, click the button below.
+      </p>
       <button
         type="button"
         className="border-gray-700 border-[1px] px-3 py-1 rounded-full text-sm"
       >
-        Create a new campaign.
+        Create a new campaign
       </button>
     </div>
   );
