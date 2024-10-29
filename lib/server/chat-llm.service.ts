@@ -18,7 +18,7 @@ export const ChatMessagesSchema = z.object({
 });
 
 export const StreamResponseSchema = ChatMessagesSchema.extend({
-  accountId: z.string().uuid(),
+  email: z.string(),
 });
 
 /**
@@ -40,7 +40,10 @@ class ChatLLMService {
    * @name streamResponse
    * @description Stream a response to the user and store the messages in the database.
    */
-  async streamResponse({ messages }: z.infer<typeof StreamResponseSchema>) {
+  async streamResponse({
+    messages,
+    email,
+  }: z.infer<typeof StreamResponseSchema>) {
     // use a normal service instance using the current user RLS
     const chatMessagesService = createChatMessagesService();
 
@@ -57,6 +60,7 @@ class ChatLLMService {
     // retrieve the chat settings
     const settings = await chatMessagesService.getChatSettings(
       lastMessage.content,
+      email,
     );
     const systemMessage = settings.systemMessage;
     const maxTokens = settings.maxTokens;

@@ -6,14 +6,15 @@ import useInitialMessages from "./useInitialMessages";
 import useConversations from "./useConversations";
 import { usePathname } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
+import useUser from "./useUser";
 
 const useMessages = () => {
   const { finalCallback } = useSuggestions();
   const csrfToken = useCsrfToken();
-  const accountId = "3664dcb4-164f-4566-8e7c-20b2c93f9951";
   const { initialMessages, fetchInitialMessages } = useInitialMessages();
   const { conversationRef } = useConversations();
   const queryClient = useQueryClient();
+  const { email } = useUser();
 
   const pathname = usePathname();
 
@@ -33,7 +34,7 @@ const useMessages = () => {
       "X-CSRF-Token": csrfToken,
     },
     body: {
-      accountId,
+      email,
     },
     initialMessages,
     onError: console.error,
@@ -44,7 +45,7 @@ const useMessages = () => {
         conversationRef.current,
       );
       void queryClient.invalidateQueries({
-        queryKey: ["credits", accountId],
+        queryKey: ["credits", email],
       });
     },
   });
