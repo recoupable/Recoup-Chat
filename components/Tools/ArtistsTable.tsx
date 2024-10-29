@@ -12,8 +12,6 @@ const ArtistsTable = ({
 
   const artistsList = artists?.slice(0, isCollapsed ? 3 : artists?.length);
 
-  console.log("ZIAD", artistsList);
-
   useEffect(() => {
     scroll();
     // eslint-disable-next-line react-hooks/exhaustive-deps
