@@ -44,7 +44,7 @@ const upsertArtist = async (artistName: string, userEmail: string) => {
     }
     if (updateError) throw updateError;
 
-    return found;
+    return found[0];
   }
 
   const { data, error: insertError } = await client
