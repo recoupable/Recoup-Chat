@@ -1,9 +1,10 @@
 import MissingArtist from "./MissingArtist";
 import CreatedArtist from "./CreatedArtist";
 import { ArtistToolResponse } from "@/types/Tool";
+import ArtistsTable from "./ArtistsTable";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const InputArtist = ({ context }: any) => {
+const Artist = ({ context, scroll }: any) => {
   return (
     <>
       {context?.status === ArtistToolResponse.MISSING_ARTIST_NAME && (
@@ -12,8 +13,11 @@ const InputArtist = ({ context }: any) => {
       {context?.status === ArtistToolResponse.CREATED_ARTIST && (
         <CreatedArtist context={context} />
       )}
+      {context?.status === ArtistToolResponse.ARTIST_LIST && (
+        <ArtistsTable artists={context.artists} scroll={scroll} />
+      )}
     </>
   );
 };
 
-export default InputArtist;
+export default Artist;
