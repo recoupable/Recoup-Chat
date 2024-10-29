@@ -39,23 +39,25 @@ const ArtistsTable = ({
                 <td className="text-xs p-1">
                   <button
                     type="button"
-                    className="px-3 py-1 text-sm border-gray-700 border-[1px] rounded-md"
+                    className="px-3 py-1 text-sm border-gray-700 border-[1px] rounded-md text-sm"
                   >
-                    Get Campaign
+                    Get campaigns
                   </button>
                 </td>
               </tr>
             ))}
-            <tr>
-              <td colSpan={3} className="text-center">
-                <button
-                  type="button"
-                  onClick={() => setIsCollapsed(!isCollapsed)}
-                >
-                  ...
-                </button>
-              </td>
-            </tr>
+            {artists?.length > 3 && (
+              <tr>
+                <td colSpan={3} className="text-center">
+                  <button
+                    type="button"
+                    onClick={() => setIsCollapsed(!isCollapsed)}
+                  >
+                    ...
+                  </button>
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>
