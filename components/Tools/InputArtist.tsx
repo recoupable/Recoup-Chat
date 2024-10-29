@@ -1,5 +1,6 @@
 import { ArtistToolResponse } from "@/lib/tools/createArtist";
 import MissingArtist from "./MissingArtist";
+import CreatedArtist from "./CreatedArtist";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const InputArtist = ({ context }: any) => {
@@ -7,6 +8,9 @@ const InputArtist = ({ context }: any) => {
     <>
       {context?.status === ArtistToolResponse.MISSING_ARTIST_NAME && (
         <MissingArtist answer={context.answer} question={context.qustion} />
+      )}
+      {context?.status === ArtistToolResponse.CREATED_ARTIST && (
+        <CreatedArtist context={context} />
       )}
     </>
   );

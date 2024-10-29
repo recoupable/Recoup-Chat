@@ -1,8 +1,10 @@
 import { z } from "zod";
 import { tool } from "ai";
+import upsertArtist from "./upsertArtist";
 
 export enum ArtistToolResponse {
   MISSING_ARTIST_NAME = "MISSING_ARTIST_NAME",
+  CREATED_ARTIST = "CREATED_ARTIST",
 }
 
 const createArtist = (question: string, email: string) =>
@@ -27,10 +29,11 @@ const createArtist = (question: string, email: string) =>
             answer: "Please provide the artist name to proceed.",
           },
         };
+      const data = await upsertArtist(artist_name, email);
       return {
         context: {
-          question,
-          email,
+          status: ArtistToolResponse.CREATED_ARTIST,
+          data: data,
         },
       };
     },
