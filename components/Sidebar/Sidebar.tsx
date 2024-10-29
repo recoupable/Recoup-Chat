@@ -1,7 +1,6 @@
 "use client";
 
 import { BookOpen, Plus } from "lucide-react";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import Tooltip from "../Tooltip";
 import { useUserProvider } from "@/providers/UserProvder";
@@ -17,17 +16,22 @@ const Sidebar = () => {
   return (
     <div className="border-r-[1px] border-r-gray-700 w-16 flex flex-col py-4 px-2 items-center gap-3 hidden md:block">
       <button type="button" onClick={() => goToItem()} className="mb-6">
-        <Image
-          src="/logo.jpg"
-          width={90}
-          height={90}
-          alt="not found icon"
+        <div
+          style={{
+            backgroundImage: 'var(--logo-image)',
+            width: '44px',
+            height: '44px',
+            backgroundSize: 'contain',
+            backgroundRepeat: 'no-repeat',
+            backgroundPosition: 'center',
+          }}
           className="rounded-md overflow-hidden"
+          aria-label="Logo"
         />
       </button>
       <div className="flex flex-col gap-3">
         <Tooltip
-          id={"new-conversation-tooltip"}
+          id="new-conversation-tooltip"
           message="New Chat"
           className="!z-[100]"
         >
@@ -40,7 +44,7 @@ const Sidebar = () => {
           </button>
         </Tooltip>
         <Tooltip
-          id={"chat-history-tooltip"}
+          id="chat-history-tooltip"
           message="Chat History"
           className="!z-[100]"
         >

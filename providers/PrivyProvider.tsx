@@ -7,6 +7,9 @@ export default function PrivyProvider({
 }: {
   children: React.ReactNode;
 }) {
+  // Log the Privy App ID to confirm it's loaded
+  console.log("Privy App ID:", process.env.NEXT_PUBLIC_PRIVY_APP_ID);
+
   return (
     <Privy
       appId={process.env.NEXT_PUBLIC_PRIVY_APP_ID as string}
@@ -14,7 +17,7 @@ export default function PrivyProvider({
         appearance: {
           theme: "light",
           accentColor: "#003199",
-          logo: "./logo.jpg",
+          logo: "/logo-light.svg",
         },
         loginMethods: ["email"],
         embeddedWallets: {

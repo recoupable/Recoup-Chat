@@ -5,12 +5,14 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --logo-image: url('/logo-light.svg'); /* Light mode logo */
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
+    --logo-image: url('/logo-dark.svg'); /* Dark mode logo */
   }
 }
 

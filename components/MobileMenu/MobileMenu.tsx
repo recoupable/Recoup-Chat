@@ -1,5 +1,4 @@
 import { BookOpen, Plus, X } from "lucide-react";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { useUserProvider } from "@/providers/UserProvder";
@@ -14,7 +13,10 @@ const MobileMenu = ({ toggleMenu }: { toggleMenu: () => void }) => {
 
   return (
     <motion.div
-      className="fixed w-[80%] !bg-[#0a0a0a] h-full left-0 top-0 z-[10000] px-4 py-4 border-r-gray-700 border-r-[1px]"
+      className="fixed w-[80%] h-full left-0 top-0 z-[10000] px-4 py-4 border-r-gray-700 border-r-[1px]"
+      style={{
+        backgroundColor: 'var(--background)',
+      }}
       initial={{
         x: "-80%",
       }}
@@ -30,12 +32,17 @@ const MobileMenu = ({ toggleMenu }: { toggleMenu: () => void }) => {
     >
       <div className="flex justify-between mb-6">
         <button type="button" onClick={() => goToItem()}>
-          <Image
-            src="/logo.jpg"
-            width={40}
-            height={40}
-            alt="not found icon"
+          <div
+            style={{
+              backgroundImage: 'var(--logo-image)',
+              width: '40px',
+              height: '40px',
+              backgroundSize: 'contain',
+              backgroundRepeat: 'no-repeat',
+              backgroundPosition: 'center',
+            }}
             className="rounded-md overflow-hidden"
+            aria-label="Logo"
           />
         </button>
         <button type="button" onClick={toggleMenu}>
@@ -44,7 +51,7 @@ const MobileMenu = ({ toggleMenu }: { toggleMenu: () => void }) => {
       </div>
       <div className="flex flex-col gap-6">
         <button
-          className="flex gap-2 justify-center items-center border-gray-700 border-[1px] p-2 rounded-md bg-gray-900 text-sm"
+          className="flex gap-2 justify-center items-center border-gray-700 border-[1px] p-2 rounded-md bg-white text-black text-sm"
           type="button"
           onClick={() => goToItem()}
         >
