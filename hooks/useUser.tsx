@@ -42,6 +42,7 @@ const useUser = () => {
     email,
     login,
     isPrepared,
+    userData,
   };
 };
 
