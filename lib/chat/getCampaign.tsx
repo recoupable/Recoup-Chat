@@ -5,16 +5,13 @@ import limitCollections from "../limitCollections";
 import { FAN_TYPE } from "@/types/fans";
 
 const getCampaign = async (client: SupabaseClient<Database, "public">) => {
-  const { data: fans } = await client
-    .from("fans")
-    .select("display_name, country, city, product");
+  const { data: campaignInfo } = (await client.rpc("get_campaign", {
+    clientid: "",
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  })) as any;
 
-  if (!fans?.length) return "No fans.";
-  const { data: campaignInfo } = await client.rpc("get_campaign", {
-    clientid: ""
-  });
-
-  if (!campaignInfo) return
+  if (!campaignInfo) return;
+  const fans = campaignInfo?.fans;
 
   const premiumCount = (fans as unknown as FAN_TYPE[]).filter(
     (fan) => fan.product === "premium",
