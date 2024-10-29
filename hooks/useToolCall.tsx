@@ -1,6 +1,7 @@
 import { useChatProvider } from "@/providers/ChatProvider";
 import { FAN_TYPE } from "@/types/fans";
-import { Message } from "ai";
+import { ArtistToolResponse } from "@/types/Tool";
+import { Message, tool } from "ai";
 import { useChat } from "ai/react";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -59,6 +60,24 @@ const useToolCall = (message: Message) => {
         content: question,
         role: "user",
       });
+    if (
+      toolName === "createArtist" &&
+      context?.status === ArtistToolResponse.CREATED_ARTIST
+    ) {
+      finalCallback(
+        {
+          id: uuidV4(),
+          content: `New artist: ${context.data.name} - ${context.data.id}`,
+          role: "assistant",
+        },
+        {
+          id: uuidV4(),
+          content: question as string,
+          role: "user",
+        },
+        conversationId as string,
+      );
+    }
   }, [question, context, toolName]);
 
   return {
