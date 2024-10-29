@@ -13,10 +13,7 @@ const getArtistMessage = (toolName: string | undefined, context: any) => {
       content: `Name ${context.data.name}, Id ${context.data.id}`,
       role: "assistant",
     };
-  if (
-    toolName === "getArtists" &&
-    context.status === ArtistToolResponse.ARTIST_LIST
-  )
+  if (toolName === "getArtists")
     return {
       id: uuidV4(),
       content: `${context.artists.length ? context.artists.map((artist: ArtistRecord) => artist.name).join(",") : "You don't manage any artists."}`,

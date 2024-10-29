@@ -24,6 +24,7 @@ const useToolCall = (message: Message) => {
     (message: Message) => message.role === "assistant",
   )?.[0]?.content;
 
+  console.log("ZIAD QUESTION", toolInvocationResult, question);
   useEffect(() => {
     if (!context || !question) return;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
