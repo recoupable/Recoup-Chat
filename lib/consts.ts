@@ -13,8 +13,6 @@ export const DESCRIPTION =
   "Chat with Recoupable. Generate insights with simple text prompts.";
 
 export const SUGGESTIONS = [
-  "How's my campaign doing?",
-  "Who's scored the highest?",
   "Which artists do I manage?",
   "Create a new artist.",
   "What campaigns do I have?",
