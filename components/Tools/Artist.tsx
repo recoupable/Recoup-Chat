@@ -2,13 +2,15 @@ import MissingArtist from "./MissingArtist";
 import CreatedArtist from "./CreatedArtist";
 import { ArtistToolResponse } from "@/types/Tool";
 // import ArtistsTable from "./ArtistsTable";
-// import { ArtistRecord } from "@/types/Artist";
+import { ArtistRecord } from "@/types/Artist";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const Artist = ({ context }: any) => {
-  // const artists = context?.artists?.filter(
-  //   (artist: ArtistRecord) => artist.name !== "Unknown",
-  // );
+  const artists = context?.artists?.filter(
+    (artist: ArtistRecord) => artist.name !== "Unknown",
+  );
+
+  console.log("ZIAD", artists);
   return (
     <>
       {context?.status === ArtistToolResponse.MISSING_ARTIST_NAME && (
