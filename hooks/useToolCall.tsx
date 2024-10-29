@@ -49,8 +49,7 @@ const useToolCall = (message: Message) => {
   )?.[0]?.content;
 
   useEffect(() => {
-    console.log("ZIAD", toolName, context, question);
-    if (!question || !context) return;
+    if (!context) return;
     if (
       toolName === "createArtist" &&
       context?.status === ArtistToolResponse.CREATED_ARTIST
@@ -70,6 +69,7 @@ const useToolCall = (message: Message) => {
       );
       return;
     }
+    if (!question) return;
     const isAssistant = message.role === "assistant";
     if (!isAssistant) return;
     if (isCalled) return;
