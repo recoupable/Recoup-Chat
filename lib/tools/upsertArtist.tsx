@@ -52,7 +52,6 @@ const upsertArtist = async (artistName: string, userEmail: string) => {
     .insert({
       name: artistName,
       timestamp: Date.now(),
-      email: userEmail,
     })
     .select("*")
     .single();
