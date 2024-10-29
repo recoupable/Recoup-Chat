@@ -1,7 +1,9 @@
 import { z } from "zod";
-// import getFans from "../chat/getFans";
-// import { getSupabaseServerAdminClient } from "@/packages/supabase/src/clients/server-admin-client";
 import { tool } from "ai";
+
+export enum ArtistToolResponse {
+  MISSING_ARTIST_NAME = "MISSING_ARTIST_NAME",
+}
 
 const createArtist = (question: string, email: string) =>
   tool({
@@ -13,8 +15,18 @@ const createArtist = (question: string, email: string) =>
     - "I wanna create a new artist."
 
     When in doubt, call this tool to ensure you have the most up-to-date and accurate information.`,
-    parameters: z.object({}),
-    execute: async () => {
+    parameters: z.object({
+      artist_name: z.string().describe("The name of the artist to be created."),
+    }),
+    execute: async ({ artist_name }) => {
+      if (!artist_name)
+        return {
+          status: ArtistToolResponse.MISSING_ARTIST_NAME,
+          context: {
+            question,
+            answer: "Please provide the artist name to proceed.",
+          },
+        };
       return {
         context: {
           question,

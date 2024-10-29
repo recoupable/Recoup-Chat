@@ -1,4 +1,5 @@
 import { useChatProvider } from "@/providers/ChatProvider";
+import { FAN_TYPE } from "@/types/fans";
 import { Message } from "ai";
 import { useChat } from "ai/react";
 import { useParams } from "next/navigation";
@@ -16,6 +17,7 @@ const useToolCall = (message: Message) => {
   const question = toolInvocationResult?.result?.question || "";
   const context = toolInvocationResult?.result?.context || "";
   const toolName = toolInvocationResult?.toolName;
+  const fans = context?.fans?.filter((fan: FAN_TYPE) => fan.name !== "Unknown");
 
   const {
     messages,
@@ -51,12 +53,13 @@ const useToolCall = (message: Message) => {
     if (!isAssistant) return;
     if (isCalled) return;
     setIsCalled(true);
-    append({
-      id: uuidV4(),
-      content: question,
-      role: "user",
-    });
-  }, [question, context]);
+    if (toolName === "getCampaign")
+      append({
+        id: uuidV4(),
+        content: question,
+        role: "user",
+      });
+  }, [question, context, toolName]);
 
   return {
     loading,
@@ -64,6 +67,7 @@ const useToolCall = (message: Message) => {
     toolName,
     question,
     context,
+    fans,
   };
 };
 

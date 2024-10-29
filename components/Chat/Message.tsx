@@ -4,8 +4,8 @@ import { Message as AIMessage } from "ai";
 import { UserIcon, TvMinimalPlay, LoaderCircle } from "lucide-react";
 import { useEffect } from "react";
 import ReactMarkdown from "react-markdown";
-import FanTable from "./FanTable";
-import { FAN_TYPE } from "@/types/fans";
+import FanTable from "../Tools/FanTable";
+import InputArtist from "../Tools/InputArtist";
 
 const Message = ({
   message,
@@ -14,7 +14,7 @@ const Message = ({
   message: AIMessage;
   scroll: ({ smooth, y }: { smooth: boolean; y: number }) => void;
 }) => {
-  const { loading, answer, toolName, context } = useToolCall(message);
+  const { loading, answer, toolName, context, fans } = useToolCall(message);
   const { pending } = useChatProvider();
   const isHidden =
     pending &&
@@ -23,7 +23,6 @@ const Message = ({
     message?.toolInvocations;
 
   const content = message.content || answer;
-  const fans = context?.fans?.filter((fan: FAN_TYPE) => fan.name !== "Unknown");
 
   const scrollTo = () => scroll({ smooth: true, y: Number.MAX_SAFE_INTEGER });
   useEffect(() => {
@@ -45,10 +44,15 @@ const Message = ({
           <TvMinimalPlay className="h-6 w-6" />
         )}
       </div>
-      {toolName === "getCampaign" && context && (
-        <FanTable fans={fans} scroll={scroll} />
+      {context && (
+        <>
+          {toolName === "getCampaign" && (
+            <FanTable fans={fans} scroll={scroll} />
+          )}
+          {toolName === "createArtist" && <InputArtist context={context} />}
+        </>
       )}
-      {loading && !message.content && !answer ? (
+      {loading && !content && toolName === "getCampaign" ? (
         <div className="flex gap-2 items-center">
           <p>is thinking...</p>
           <LoaderCircle className="h-4 w-4 animate-spin" />
