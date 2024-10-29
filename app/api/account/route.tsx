@@ -14,11 +14,15 @@ export async function POST(req: NextRequest) {
       .single();
     if (found) return Response.json({ data: found }, { status: 200 });
 
-    const { data: newAccount } = await client.from("accounts").insert({
-      email,
-      timestamp: Date.now(),
-      artistIds: [],
-    });
+    const { data: newAccount } = await client
+      .from("accounts")
+      .insert({
+        email,
+        timestamp: Date.now(),
+        artistIds: [],
+      })
+      .select("*")
+      .single();
 
     return Response.json({ date: newAccount }, { status: 200 });
   } catch (error) {
