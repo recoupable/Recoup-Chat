@@ -57,12 +57,12 @@ const useToolCall = (message: Message) => {
       finalCallback(
         {
           id: uuidV4(),
-          content: `New artist: ${context.data.name} - ${context.data.id}`,
+          content: `Name ${context.data.name}, Id ${context.data.id}`,
           role: "assistant",
         },
         {
           id: uuidV4(),
-          content: question as string,
+          content: `${context.data.name}`,
           role: "user",
         },
         conversationId as string,
