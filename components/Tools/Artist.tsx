@@ -3,6 +3,7 @@ import CreatedArtist from "./CreatedArtist";
 import { ArtistToolResponse } from "@/types/Tool";
 import ArtistsTable from "./ArtistsTable";
 import { ArtistRecord } from "@/types/Artist";
+import SubmitArtist from "./SubmitArtist";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const Artist = ({ context, scroll }: any) => {
@@ -21,6 +22,7 @@ const Artist = ({ context, scroll }: any) => {
       {context?.status === ArtistToolResponse.ARTIST_LIST && (
         <ArtistsTable artists={artists} scroll={scroll} />
       )}
+      {context?.status === ArtistToolResponse.NO_ARTISTS && <SubmitArtist />}
     </>
   );
 };
