@@ -17,7 +17,7 @@ const ArtistsTable = ({
   useEffect(() => {
     scroll();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isCollapsed, scroll]);
+  }, [isCollapsed]);
 
   return (
     <div>
