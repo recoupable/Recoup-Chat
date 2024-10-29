@@ -1,7 +1,7 @@
 import FanTable from "./FanTable";
 import InputArtist from "./InputArtist";
 
-interface ContentProps {
+interface ToolContentProps {
   toolName: string | undefined;
   context: Record<string, unknown>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -9,11 +9,11 @@ interface ContentProps {
   scroll: () => void;
 }
 
-const Content = ({ toolName, context, fans, scroll }: ContentProps) => (
+const ToolContent = ({ toolName, context, fans, scroll }: ToolContentProps) => (
   <div>
     {toolName === "getCampaign" && <FanTable fans={fans} scroll={scroll} />}
     {toolName === "createArtist" && <InputArtist context={context} />}
   </div>
 );
 
-export default Content;
+export default ToolContent;
