@@ -16,7 +16,7 @@ export const SUGGESTIONS = [
   "How's my campaign doing?",
   "Who's scored the highest?",
   "Which artists do I manage?",
-  "Create a new artist",
+  "Create a new artist.",
   "What campaigns do I have?",
-  "Create a new campaign",
+  "Create a new campaign.",
 ];
