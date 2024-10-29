@@ -31,7 +31,7 @@ const useSuggestions = () => {
     await trackNewMessage(
       address as Address,
       {
-        content: message.content.replace(/[^a-zA-Z0-9\s,\.]/g, ""),
+        content: message.content.replace(/[^a-zA-Z0-9\s,._]/g, ""),
         role: message.role,
         id: uuidV4(),
         questionId: question.id,
