@@ -64,6 +64,7 @@ const useToolCall = (message: Message) => {
       toolName === "createArtist" &&
       context?.status === ArtistToolResponse.CREATED_ARTIST
     ) {
+      console.log("ZIAD HERE");
       finalCallback(
         {
           id: uuidV4(),
