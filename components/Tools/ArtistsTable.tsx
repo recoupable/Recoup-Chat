@@ -12,6 +12,8 @@ const ArtistsTable = ({
 
   const artistsList = artists?.slice(0, isCollapsed ? 3 : artists?.length);
 
+  console.log("ZIAD", artistsList);
+
   useEffect(() => {
     scroll({ smooth: true, y: Number.MAX_SAFE_INTEGER });
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -34,7 +36,7 @@ const ArtistsTable = ({
                 <td className="text-xs p-1">{artist.id}</td>
                 <td className="text-xs p-1">{artist.name}</td>
                 <td className="text-xs p-1">
-                  {new Date(artist.timestamp).toLocaleDateString()}
+                  {/* {new Date(artist.timestamp).toLocaleDateString()} */}
                 </td>
                 <td className="text-xs p-1">
                   <button
