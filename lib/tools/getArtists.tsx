@@ -16,10 +16,10 @@ const getArtists = (question: string, email: string) =>
     execute: async () => {
       const artists = await readArtists(email);
       return {
-        status: artists.length
-          ? ArtistToolResponse.ARTIST_LIST
-          : ArtistToolResponse.NO_ARTISTS,
         context: {
+          status: artists.length
+            ? ArtistToolResponse.ARTIST_LIST
+            : ArtistToolResponse.NO_ARTISTS,
           artists,
         },
         question,
