@@ -21,17 +21,17 @@ const createArtist = (question: string, email: string) =>
         return {
           status: ArtistToolResponse.MISSING_ARTIST_NAME,
           context: {
-            question,
             answer: "Please provide the artist name to proceed.",
           },
+          question,
         };
       const data = await upsertArtist(artist_name, email);
       return {
+        status: ArtistToolResponse.CREATED_ARTIST,
         context: {
-          status: ArtistToolResponse.CREATED_ARTIST,
           data: data,
-          question,
         },
+        question,
       };
     },
   });
