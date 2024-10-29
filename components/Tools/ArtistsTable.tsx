@@ -13,16 +13,16 @@ const ArtistsTable = ({
 
   const artistsList = artists?.slice(0, isCollapsed ? 3 : artists?.length);
 
-  console.log("ZIAD", artistsList);
+  console.log("ZIAD list", artistsList, scroll);
 
   useEffect(() => {
-    scroll({ smooth: true, y: Number.MAX_SAFE_INTEGER });
+    // scroll({ smooth: true, y: Number.MAX_SAFE_INTEGER });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isCollapsed]);
 
   return (
     <div>
-      <p className="pl-2 pb-2">{`Here's a table with all the fans from your campaign.`}</p>
+      <p className="pl-2 pb-2">{`Here's a table with all the artists which you are managing.`}</p>
       <div className="border-gray-700 border-[1px] rounded-md w-full p-2">
         <table className="w-full">
           <thead>
