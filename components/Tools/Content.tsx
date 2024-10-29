@@ -13,7 +13,9 @@ const Content = ({ toolName, context, fans, scroll }: ContentProps) => {
   return (
     <div>
       {toolName === "getCampaign" && <FanTable fans={fans} scroll={scroll} />}
-      {<Artist context={context} scroll={scroll} />}
+      {(toolName === "createArtist" || toolName === "getArtists") && (
+        <Artist context={context} scroll={scroll} />
+      )}
     </div>
   );
 };
