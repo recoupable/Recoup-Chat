@@ -31,7 +31,7 @@ const upsertArtist = async (artistName: string, userEmail: string) => {
   if (error) throw error;
 
   if (found?.length) {
-    const artistIds = user.artistIds;
+    const artistIds = user.artistIds || [];
     if (!artistIds.includes(found[0].id)) {
       await client
         .from("accounts")
