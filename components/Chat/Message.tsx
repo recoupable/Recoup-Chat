@@ -47,19 +47,21 @@ const Message = ({
           <TvMinimalPlay className="h-6 w-6" />
         )}
       </div>
-      {toolName === "getCampaign" && context && (
-        <FanTable fans={fans} scroll={scroll} />
-      )}
-      {loading && !message.content && !answer ? (
-        <div className="flex gap-2 items-center">
-          <p>is thinking...</p>
-          <LoaderCircle className="h-4 w-4 animate-spin" />
-        </div>
-      ) : (
-        <div className="text-sm font-sans text-pretty break-words">
-          <ReactMarkdown>{content}</ReactMarkdown>
-        </div>
-      )}
+      <div>
+        {toolName === "getCampaign" && context && (
+          <FanTable fans={fans} scroll={scroll} />
+        )}
+        {loading && !message.content && !answer ? (
+          <div className="flex gap-2 items-center">
+            <p>is thinking...</p>
+            <LoaderCircle className="h-4 w-4 animate-spin" />
+          </div>
+        ) : (
+          <div className="text-sm font-sans text-pretty break-words">
+            <ReactMarkdown>{content}</ReactMarkdown>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
