@@ -29,7 +29,7 @@ const ArtistsTable = ({
             <th className="text-xs text-left p-1">Action</th>
           </thead>
           <tbody>
-            {artistsList.map((artist, index) => (
+            {artistsList?.map((artist, index) => (
               <tr key={index}>
                 <td className="text-xs p-1">{artist.id}</td>
                 <td className="text-xs p-1">{artist.name}</td>

@@ -1,5 +1,4 @@
 import { useChatProvider } from "@/providers/ChatProvider";
-import { ArtistRecord } from "@/types/Artist";
 import { FAN_TYPE } from "@/types/fans";
 import { ArtistToolResponse } from "@/types/Tool";
 import { Message } from "ai";
@@ -20,9 +19,6 @@ const useToolCall = (message: Message) => {
   const context = toolInvocationResult?.result?.context || "";
   const toolName = toolInvocationResult?.toolName;
   const fans = context?.fans?.filter((fan: FAN_TYPE) => fan.name !== "Unknown");
-  const artists = context?.artists?.filter(
-    (artist: ArtistRecord) => artist.name !== "Unknown",
-  );
 
   const {
     messages,
@@ -93,7 +89,6 @@ const useToolCall = (message: Message) => {
     question,
     context,
     fans,
-    artists,
   };
 };
 

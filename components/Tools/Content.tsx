@@ -6,22 +6,14 @@ interface ContentProps {
   context: Record<string, unknown>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   fans: Array<any>;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  artists: Array<any>;
   scroll: ({ smooth, y }: { smooth: boolean; y: number }) => void;
 }
 
-const Content = ({
-  toolName,
-  context,
-  fans,
-  artists,
-  scroll,
-}: ContentProps) => (
+const Content = ({ toolName, context, fans, scroll }: ContentProps) => (
   <div>
     {toolName === "getCampaign" && <FanTable fans={fans} scroll={scroll} />}
     {(toolName === "createArtist" || toolName === "getArtists") && (
-      <Artist context={context} srcoll={scroll} artists={artists} />
+      <Artist context={context} srcoll={scroll} />
     )}
   </div>
 );

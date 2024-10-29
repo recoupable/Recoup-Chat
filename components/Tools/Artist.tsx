@@ -2,9 +2,13 @@ import MissingArtist from "./MissingArtist";
 import CreatedArtist from "./CreatedArtist";
 import { ArtistToolResponse } from "@/types/Tool";
 import ArtistsTable from "./ArtistsTable";
+import { ArtistRecord } from "@/types/Artist";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const Artist = ({ context, scroll, artists }: any) => {
+const Artist = ({ context, scroll }: any) => {
+  const artists = context?.artists?.filter(
+    (artist: ArtistRecord) => artist.name !== "Unknown",
+  );
   return (
     <>
       {context?.status === ArtistToolResponse.MISSING_ARTIST_NAME && (
