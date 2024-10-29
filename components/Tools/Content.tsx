@@ -10,6 +10,7 @@ interface ContentProps {
 }
 
 const Content = ({ toolName, context, fans, scroll }: ContentProps) => {
+  console.log("ZIAD", toolName, context, fans, scroll);
   return (
     <div>
       {toolName === "getCampaign" && <FanTable fans={fans} scroll={scroll} />}
