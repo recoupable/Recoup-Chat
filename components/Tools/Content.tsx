@@ -6,7 +6,7 @@ interface ContentProps {
   context: Record<string, unknown>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   fans: Array<any>;
-  scroll: ({ smooth, y }: { smooth: boolean; y: number }) => void;
+  scroll: () => void;
 }
 
 const Content = ({ toolName, context, fans, scroll }: ContentProps) => (

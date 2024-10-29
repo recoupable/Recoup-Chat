@@ -42,7 +42,7 @@ const Message = ({
             toolName={toolName}
             context={context}
             fans={fans}
-            scroll={scroll}
+            scroll={scrollTo}
           />
         )}
         {loading && !content && toolName === "getCampaign" ? (

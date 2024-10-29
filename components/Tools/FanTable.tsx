@@ -6,14 +6,14 @@ const FanTable = ({
   scroll,
 }: {
   fans: FAN_TYPE[];
-  scroll: ({ smooth, y }: { smooth: boolean; y: number }) => void;
+  scroll: () => void;
 }) => {
   const [isCollapsed, setIsCollapsed] = useState(true);
 
   const fanslist = fans?.slice(0, isCollapsed ? 3 : fans?.length);
 
   useEffect(() => {
-    scroll({ smooth: true, y: Number.MAX_SAFE_INTEGER });
+    scroll();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isCollapsed]);
 

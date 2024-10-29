@@ -6,17 +6,14 @@ const ArtistsTable = ({
   scroll,
 }: {
   artists: ArtistRecord[];
-  scroll: ({ smooth, y }: { smooth: boolean; y: number }) => void;
+  scroll: () => void;
 }) => {
-  console.log("ZIAD", artists);
   const [isCollapsed, setIsCollapsed] = useState(true);
 
   const artistsList = artists?.slice(0, isCollapsed ? 3 : artists?.length);
 
-  console.log("ZIAD list", artistsList, scroll);
-
   useEffect(() => {
-    // scroll({ smooth: true, y: Number.MAX_SAFE_INTEGER });
+    scroll();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isCollapsed]);
 
@@ -37,7 +34,7 @@ const ArtistsTable = ({
                 <td className="text-xs p-1">{artist.id}</td>
                 <td className="text-xs p-1">{artist.name}</td>
                 <td className="text-xs p-1">
-                  {/* {new Date(artist.timestamp).toLocaleDateString()} */}
+                  {new Date(artist.timestamp).toLocaleDateString()}
                 </td>
                 <td className="text-xs p-1">
                   <button
