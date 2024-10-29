@@ -20,19 +20,21 @@ const SubmitArtist = () => {
       <p className="py-2 text-sm">
         To create a new artist, submit new artist information.
       </p>
-      <input
-        type="text"
-        onChange={(e) => setArtistName(e.target.value)}
-        className="!bg-transparent border-gray-700 border-[1px] rounded-md !outline-none px-2 py-1 text-sm"
-        placeholder="Input artist name."
-      />
-      <button
-        type="button"
-        onClick={handleSubmit}
-        className="border-gray-700 border-[1px] px-3 py-1 rounded-full text-sm"
-      >
-        Submit
-      </button>
+      <fieldset className="flex gap-2 items-center">
+        <input
+          type="text"
+          onChange={(e) => setArtistName(e.target.value)}
+          className="!bg-transparent border-gray-700 border-[1px] rounded-md !outline-none px-2 py-1 text-sm"
+          placeholder="Input artist name."
+        />
+        <button
+          type="button"
+          onClick={handleSubmit}
+          className="border-gray-700 border-[1px] px-3 py-1 rounded-full text-sm"
+        >
+          Submit
+        </button>
+      </fieldset>
     </div>
   );
 };
