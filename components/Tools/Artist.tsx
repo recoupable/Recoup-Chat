@@ -4,7 +4,7 @@ import { ArtistToolResponse } from "@/types/Tool";
 import ArtistsTable from "./ArtistsTable";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const Artist = ({ context, scroll }: any) => {
+const Artist = ({ context, scroll, artists }: any) => {
   return (
     <>
       {context?.status === ArtistToolResponse.MISSING_ARTIST_NAME && (
@@ -14,7 +14,7 @@ const Artist = ({ context, scroll }: any) => {
         <CreatedArtist context={context} />
       )}
       {context?.status === ArtistToolResponse.ARTIST_LIST && (
-        <ArtistsTable artists={context.artists} scroll={scroll} />
+        <ArtistsTable artists={artists} scroll={scroll} />
       )}
     </>
   );
