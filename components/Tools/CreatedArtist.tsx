@@ -4,9 +4,8 @@ const CreatedArtist = ({ context }: any) => {
 
   return (
     <div>
-      <p className="text-sm">
-        {data?.name} - {data?.id}
-      </p>
+      <p className="text-sm">Name: {data?.name}</p>
+      <p className="text-sm">Id: {data?.id}</p>
       <p className="py-2 text-sm">
         To create a new campaign for the next step, click the button below.
       </p>
