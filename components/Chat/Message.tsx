@@ -23,7 +23,9 @@ const Message = ({
     message?.toolInvocations;
 
   const content = message.content || answer;
-  const fans = context?.fans?.filter((fan: FAN_TYPE) => fan.name !== "Unknown");
+  const fans = context?.fans?.filter(
+    (fan: FAN_TYPE) => !fan.display_name || !fan.email,
+  );
 
   const scrollTo = () => scroll({ smooth: true, y: Number.MAX_SAFE_INTEGER });
   useEffect(() => {
