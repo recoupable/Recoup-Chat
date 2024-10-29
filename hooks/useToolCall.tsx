@@ -50,6 +50,7 @@ const useToolCall = (message: Message) => {
 
   useEffect(() => {
     if (!question || !context) return;
+    console.log("ZIAD", toolName, context, question)
     if (
       toolName === "createArtist" &&
       context?.status === ArtistToolResponse.CREATED_ARTIST
