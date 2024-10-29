@@ -59,7 +59,7 @@ const upsertArtist = async (artistName: string, userEmail: string) => {
   await client
     .from("accounts")
     .update({
-      artistIds: [...user.artistIds, data.id],
+      artistIds: [...(user.artistIds || []), data.id],
       email: userEmail,
       timestamp: Date.now(),
     })
