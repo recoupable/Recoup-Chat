@@ -4,7 +4,7 @@ import { Message as AIMessage } from "ai";
 import { UserIcon, TvMinimalPlay, LoaderCircle } from "lucide-react";
 import { useEffect } from "react";
 import ReactMarkdown from "react-markdown";
-import Content from "../Tools/Content";
+import ToolContent from "../Tools/ToolContent";
 
 const Message = ({
   message,
@@ -38,7 +38,7 @@ const Message = ({
       </div>
       <div className="grow">
         {context && (
-          <Content
+          <ToolContent
             toolName={toolName}
             context={context}
             fans={fans}

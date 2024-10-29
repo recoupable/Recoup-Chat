@@ -2,11 +2,11 @@ import { BookOpen, Plus, X } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import useUser from "@/hooks/useUser";
+import { useUserProvider } from "@/providers/UserProvder";
 
 const MobileMenu = ({ toggleMenu }: { toggleMenu: () => void }) => {
   const { push } = useRouter();
-  const { isPrepared } = useUser();
+  const { isPrepared } = useUserProvider();
 
   const goToItem = (link?: string) => {
     if (isPrepared()) push(`/${link || ""}`);
