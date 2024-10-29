@@ -1,4 +1,6 @@
 import { useChatProvider } from "@/providers/ChatProvider";
+import { FAN_TYPE } from "@/types/fans";
+import { ArtistToolResponse } from "@/types/Tool";
 import { Message } from "ai";
 import { useChat } from "ai/react";
 import { useParams } from "next/navigation";
@@ -16,6 +18,7 @@ const useToolCall = (message: Message) => {
   const question = toolInvocationResult?.result?.question || "";
   const context = toolInvocationResult?.result?.context || "";
   const toolName = toolInvocationResult?.toolName;
+  const fans = context?.fans?.filter((fan: FAN_TYPE) => fan.name !== "Unknown");
 
   const {
     messages,
@@ -46,17 +49,38 @@ const useToolCall = (message: Message) => {
   )?.[0]?.content;
 
   useEffect(() => {
-    if (!question || !context) return;
+    if (!context) return;
+    if (
+      toolName === "createArtist" &&
+      context?.status === ArtistToolResponse.CREATED_ARTIST
+    ) {
+      finalCallback(
+        {
+          id: uuidV4(),
+          content: `Name: ${context.data.name}, Id: ${context.data.id}`,
+          role: "assistant",
+        },
+        {
+          id: uuidV4(),
+          content: `${context.data.name}`,
+          role: "user",
+        },
+        conversationId as string,
+      );
+      return;
+    }
+    if (!question) return;
     const isAssistant = message.role === "assistant";
     if (!isAssistant) return;
     if (isCalled) return;
     setIsCalled(true);
-    append({
-      id: uuidV4(),
-      content: question,
-      role: "user",
-    });
-  }, [question, context]);
+    if (toolName === "getCampaign")
+      append({
+        id: uuidV4(),
+        content: question,
+        role: "user",
+      });
+  }, [question, context, toolName]);
 
   return {
     loading,
@@ -64,6 +88,7 @@ const useToolCall = (message: Message) => {
     toolName,
     question,
     context,
+    fans,
   };
 };
 

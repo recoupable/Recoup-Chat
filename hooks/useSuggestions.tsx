@@ -3,12 +3,12 @@ import trackNewMessage from "@/lib/stack/trackNewMessage";
 import { Message } from "ai";
 import { useEffect, useState } from "react";
 import { Address } from "viem";
-import useUser from "./useUser";
 import { v4 as uuidV4 } from "uuid";
 import { useParams, usePathname } from "next/navigation";
+import { useUserProvider } from "@/providers/UserProvder";
 
 const useSuggestions = () => {
-  const { address } = useUser();
+  const { address } = useUserProvider();
   const [suggestions, setSuggestions] = useState(SUGGESTIONS);
   const [currentQuestion, setCurrentQuestion] = useState<Message | null>(null);
   const { conversation: pathId } = useParams();
@@ -31,7 +31,7 @@ const useSuggestions = () => {
     await trackNewMessage(
       address as Address,
       {
-        content: message.content.replace(/[^a-zA-Z0-9\s,\.]/g, ""),
+        content: message.content.replace(/[^a-zA-Z0-9\s,._:]/g, ""),
         role: message.role,
         id: uuidV4(),
         questionId: question.id,
