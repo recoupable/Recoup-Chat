@@ -1,0 +1,4 @@
+export enum ArtistToolResponse {
+  MISSING_ARTIST_NAME = "MISSING_ARTIST_NAME",
+  CREATED_ARTIST = "CREATED_ARTIST",
+}

@@ -1,11 +1,7 @@
 import { z } from "zod";
 import { tool } from "ai";
 import upsertArtist from "./upsertArtist";
-
-export enum ArtistToolResponse {
-  MISSING_ARTIST_NAME = "MISSING_ARTIST_NAME",
-  CREATED_ARTIST = "CREATED_ARTIST",
-}
+import { ArtistToolResponse } from "@/types/Tool";
 
 const createArtist = (question: string, email: string) =>
   tool({

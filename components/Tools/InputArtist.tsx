@@ -1,6 +1,6 @@
-import { ArtistToolResponse } from "@/lib/tools/createArtist";
 import MissingArtist from "./MissingArtist";
 import CreatedArtist from "./CreatedArtist";
+import { ArtistToolResponse } from "@/types/Tool";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const InputArtist = ({ context }: any) => {
