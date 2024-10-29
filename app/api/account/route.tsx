@@ -12,6 +12,7 @@ export async function POST(req: NextRequest) {
       .select("*")
       .eq("email", email)
       .single();
+      
     if (found) return Response.json({ data: found }, { status: 200 });
 
     const { data: newAccount } = await client
