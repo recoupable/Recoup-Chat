@@ -5,7 +5,7 @@ import { Address } from "viem";
 const useUser = () => {
   const { login, user } = usePrivy();
   const address = user?.wallet?.address as Address;
-  const email = "sweetmantech@gmail.com";
+  const email = user?.email?.address;
   const [userData, setUserData] = useState<any>(null);
 
   const isPrepared = () => {
