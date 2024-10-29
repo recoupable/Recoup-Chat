@@ -34,7 +34,7 @@ const ArtistsTable = ({
                 <td className="text-xs p-1">{artist.id}</td>
                 <td className="text-xs p-1">{artist.name}</td>
                 <td className="text-xs p-1">
-                  {new Date(artist.timestamp).toLocaleDateString()}
+                  {new Date(artist.timestamp).toLocaleString()}
                 </td>
                 <td className="text-xs p-1">
                   <button

@@ -47,7 +47,7 @@ Please use this information to provide accurate and relevant responses and don't
       return {
         getCampaign: getCampaign(question),
         createArtist: createArtist(question, email),
-        getArtists: getArtists(email),
+        getArtists: getArtists(question, email),
       };
     } catch (error) {
       console.error("Error reading or parsing JSON files:", error);

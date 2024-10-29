@@ -1,14 +1,14 @@
 import { useChatProvider } from "@/providers/ChatProvider";
 import { FAN_TYPE } from "@/types/fans";
-import { ArtistToolResponse } from "@/types/Tool";
 import { Message } from "ai";
-import { useChat } from "ai/react";
-import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { v4 as uuidV4 } from "uuid";
+import useToolChat from "./useToolChat";
+import { useParams } from "next/navigation";
+import getArtistMessage from "@/lib/getArtistMessage";
 
 const useToolCall = (message: Message) => {
-  const { finalCallback, clearQuery } = useChatProvider();
+  const { finalCallback } = useChatProvider();
   const { conversation: conversationId } = useParams();
   const [isCalled, setIsCalled] = useState(false);
   const toolInvocations = [...(message.toolInvocations || [])];
@@ -19,57 +19,24 @@ const useToolCall = (message: Message) => {
   const context = toolInvocationResult?.result?.context || "";
   const toolName = toolInvocationResult?.toolName;
   const fans = context?.fans?.filter((fan: FAN_TYPE) => fan.name !== "Unknown");
-
-  const {
-    messages,
-    append,
-    isLoading: loading,
-  } = useChat({
-    api: "/api/tool_call",
-    body: {
-      question,
-      context,
-    },
-    onError: console.error,
-    onFinish: async (message) => {
-      await finalCallback(
-        message,
-        {
-          id: uuidV4(),
-          content: question as string,
-          role: "user",
-        },
-        conversationId as string,
-      );
-      await clearQuery();
-    },
-  });
+  const { messages, append, loading } = useToolChat(question, context);
   const answer = messages.filter(
     (message: Message) => message.role === "assistant",
   )?.[0]?.content;
 
   useEffect(() => {
-    if (!context) return;
-    if (
-      toolName === "createArtist" &&
-      context?.status === ArtistToolResponse.CREATED_ARTIST
-    ) {
+    if (!context || !question) return;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const newMessage: any = getArtistMessage(toolName, context);
+    if (newMessage) {
       finalCallback(
-        {
-          id: uuidV4(),
-          content: `Name ${context.data.name}, Id ${context.data.id}`,
-          role: "assistant",
-        },
-        {
-          id: uuidV4(),
-          content: `${context.data.name}`,
-          role: "user",
-        },
+        newMessage,
+        { id: uuidV4(), content: question, role: "user" },
         conversationId as string,
       );
       return;
     }
-    if (!question) return;
+
     const isAssistant = message.role === "assistant";
     if (!isAssistant) return;
     if (isCalled) return;

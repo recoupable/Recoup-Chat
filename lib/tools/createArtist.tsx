@@ -30,6 +30,7 @@ const createArtist = (question: string, email: string) =>
         context: {
           status: ArtistToolResponse.CREATED_ARTIST,
           data: data,
+          question,
         },
       };
     },

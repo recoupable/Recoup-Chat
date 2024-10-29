@@ -3,7 +3,7 @@ import { tool } from "ai";
 import readArtists from "./readArtists";
 import { ArtistToolResponse } from "@/types/Tool";
 
-const getArtists = (email: string) =>
+const getArtists = (question: string, email: string) =>
   tool({
     description: `IMPORTANT: Always call this tool for ANY question related to regarding the artists I manage:
     Do NOT attempt to answer questions on these topics without calling this tool first.
@@ -21,6 +21,7 @@ const getArtists = (email: string) =>
             ? ArtistToolResponse.ARTIST_LIST
             : ArtistToolResponse.NO_ARTISTS,
           artists,
+          question,
         },
       };
     },
