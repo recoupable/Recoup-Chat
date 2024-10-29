@@ -18,7 +18,7 @@ const Artist = ({ context, scroll }: any) => {
       {context?.status === ArtistToolResponse.CREATED_ARTIST && (
         <CreatedArtist context={context} />
       )}
-      {context?.status !== ArtistToolResponse.ARTIST_LIST && (
+      {context?.status === ArtistToolResponse.ARTIST_LIST && (
         <ArtistsTable artists={artists} scroll={scroll} />
       )}
     </>

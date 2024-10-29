@@ -9,16 +9,13 @@ interface ContentProps {
   scroll: () => void;
 }
 
-const Content = ({ toolName, context, fans, scroll }: ContentProps) => {
-  console.log("ZIAD", toolName, context, fans, scroll);
-  return (
-    <div>
-      {toolName === "getCampaign" && <FanTable fans={fans} scroll={scroll} />}
-      {(toolName === "createArtist" || toolName === "getArtists") && (
-        <Artist context={context} scroll={scroll} />
-      )}
-    </div>
-  );
-};
+const Content = ({ toolName, context, fans, scroll }: ContentProps) => (
+  <div>
+    {toolName === "getCampaign" && <FanTable fans={fans} scroll={scroll} />}
+    {(toolName === "createArtist" || toolName === "getArtists") && (
+      <Artist context={context} scroll={scroll} />
+    )}
+  </div>
+);
 
 export default Content;
