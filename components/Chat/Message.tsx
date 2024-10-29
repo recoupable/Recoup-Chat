@@ -4,8 +4,7 @@ import { Message as AIMessage } from "ai";
 import { UserIcon, TvMinimalPlay, LoaderCircle } from "lucide-react";
 import { useEffect } from "react";
 import ReactMarkdown from "react-markdown";
-import FanTable from "../Tools/FanTable";
-import InputArtist from "../Tools/InputArtist";
+import Content from "../Tools/Content";
 
 const Message = ({
   message,
@@ -16,40 +15,35 @@ const Message = ({
 }) => {
   const { loading, answer, toolName, context, fans } = useToolCall(message);
   const { pending } = useChatProvider();
+  const Icon = message.role === "user" ? UserIcon : TvMinimalPlay;
   const isHidden =
     pending &&
     message.role === "assistant" &&
     !message.content &&
     message?.toolInvocations;
-
   const content = message.content || answer;
-
   const scrollTo = () => scroll({ smooth: true, y: Number.MAX_SAFE_INTEGER });
+
   useEffect(() => {
     scrollTo();
-    setTimeout(() => {
-      scrollTo();
-    }, 1000);
+    const timeoutId = setTimeout(scrollTo, 1000);
+    return () => clearTimeout(timeoutId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [content, context]);
 
   return (
     <div className={`p-3 rounded-lg flex w-full gap-2 ${isHidden && "hidden"}`}>
       <div className="size-fit">
-        {message.role === "user" ? (
-          <UserIcon className="h-6 w-6" />
-        ) : (
-          <TvMinimalPlay className="h-6 w-6" />
-        )}
+        <Icon className="h-6 w-6" />
       </div>
       <div className="grow">
         {context && (
-          <>
-            {toolName === "getCampaign" && (
-              <FanTable fans={fans} scroll={scroll} />
-            )}
-            {toolName === "createArtist" && <InputArtist context={context} />}
-          </>
+          <Content
+            toolName={toolName}
+            context={context}
+            fans={fans}
+            scroll={scroll}
+          />
         )}
         {loading && !content && toolName === "getCampaign" ? (
           <div className="flex gap-2 items-center">
