@@ -10,10 +10,10 @@ interface ContentProps {
 }
 
 const Content = ({ toolName, context, fans, scroll }: ContentProps) => (
-  <>
+  <div>
     {toolName === "getCampaign" && <FanTable fans={fans} scroll={scroll} />}
     {toolName === "createArtist" && <InputArtist context={context} />}
-  </>
+  </div>
 );
 
 export default Content;
