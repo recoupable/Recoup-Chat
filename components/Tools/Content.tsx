@@ -9,13 +9,13 @@ interface ContentProps {
   scroll: () => void;
 }
 
-const Content = ({ toolName, context, fans, scroll }: ContentProps) => (
-  <div>
-    {toolName === "getCampaign" && <FanTable fans={fans} scroll={scroll} />}
-    {(toolName === "createArtist" || toolName === "getArtists") && (
-      <Artist context={context} srcoll={scroll} />
-    )}
-  </div>
-);
+const Content = ({ toolName, context, fans, scroll }: ContentProps) => {
+  return (
+    <div>
+      {toolName === "getCampaign" && <FanTable fans={fans} scroll={scroll} />}
+      {<Artist context={context} scroll={scroll} />}
+    </div>
+  );
+};
 
 export default Content;
