@@ -10,11 +10,9 @@ const getArtistAnalysis = (question: string) =>
     Do NOT attempt to answer questions on these topics without calling this tool first.
 
     Example questions that MUST trigger this tool:
-    - "Analyze officialluhtyler."
+    - "Analyze [tiktok username of artist or musician]"
     - "Analyze my musician."
-    - "Analyze @officialluhtyler."
-    
-    In this example: officialluhtyler is tiktok username of musician.`,
+    - "Analyze @[tiktok username of artist or musician]."`,
     parameters: z.object({
       user_name: z
         .string()
