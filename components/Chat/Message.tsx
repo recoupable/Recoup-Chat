@@ -5,6 +5,7 @@ import { UserIcon, TvMinimalPlay, LoaderCircle } from "lucide-react";
 import { useEffect } from "react";
 import ReactMarkdown from "react-markdown";
 import ToolContent from "../Tools/ToolContent";
+import FollowUp from "./FollowUp";
 
 const Message = ({
   message,
@@ -47,7 +48,9 @@ const Message = ({
             scroll={scrollTo}
           />
         )}
-        {loading && !content && toolName === "getCampaign" ? (
+        {loading &&
+        !content &&
+        (toolName === "getCampaign" || toolName === "getArtistAnalysis") ? (
           <div className="flex gap-2 items-center">
             <p>is thinking...</p>
             <LoaderCircle className="h-4 w-4 animate-spin" />
@@ -55,6 +58,7 @@ const Message = ({
         ) : (
           <div className="text-sm font-sans text-pretty break-words">
             <ReactMarkdown>{content}</ReactMarkdown>
+            <FollowUp toolName={toolName} />
           </div>
         )}
       </div>
