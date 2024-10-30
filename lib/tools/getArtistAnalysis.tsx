@@ -12,7 +12,9 @@ const getArtistAnalysis = (question: string) =>
     Example questions that MUST trigger this tool:
     - "Analyze officialluhtyler."
     - "Analyze my musician."
-    - "Analyze @officialluhtyler."`,
+    - "Analyze @officialluhtyler."
+    
+    In this example: officialluhtyler is tiktok username of musician.`,
     parameters: z.object({
       user_name: z
         .string()
