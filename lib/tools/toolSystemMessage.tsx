@@ -11,8 +11,7 @@ const toolSystemMessage = (context: any, question: any, toolName: string) => {
 
     Instructions:
     1. Review the TikTok trends data provided.
-    2. Identify key patterns or themes related to the artist's content.
-    3. Provide an analysis that includes:
+    2. Provide an analysis that includes:
       - The artist's most viral content and why it was successful.
 
     Make sure to provide actionable insights focused on creating new campaigns, such as games that players can play while listening to music.
