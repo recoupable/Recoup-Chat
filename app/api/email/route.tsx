@@ -14,6 +14,7 @@ export async function POST(req: NextRequest) {
     return Response.json({
       success: resp.success,
       message: resp.message || "",
+      id: resp.id || "",
     });
   } catch (error) {
     console.error(error);
