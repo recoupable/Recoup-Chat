@@ -3,7 +3,7 @@ const TikTokPfp = ({ trends }: { trends: any }) => {
   return (
     <div>
       <p className="text-sm">{`Searching for @${trends[0].username} videos on tiktok...`}</p>
-      <fieldset className="flex flex-col gap-2 py-2 items-center">
+      <fieldset className="flex flex-col gap-2 py-2 items-center w-fit">
         <div className="w-10 h-10 rounded-full overflow-hidden">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={trends[0].pfp} width={40} height={40} alt="not found pfp" />
