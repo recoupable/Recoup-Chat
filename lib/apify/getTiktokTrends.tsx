@@ -4,8 +4,7 @@ const getTiktokTrends = async (username: string) => {
   try {
     const profiles = [username];
     const input = {
-      hashtags: ["fyp"],
-      resultsPerPage: 100,
+      resultsPerPage: 10,
       proxyCountryCode: "None",
       profiles,
     };
