@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
     const result = await streamText({
       model: openai(AI_MODEL) as LanguageModelV1,
       system: systemMessage,
-      maxTokens: 1111,
+      maxTokens: 555,
       temperature: 0.7,
       messages: [],
     });
