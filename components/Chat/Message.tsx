@@ -46,6 +46,7 @@ const Message = ({
             question={question}
             fans={fans}
             scroll={scrollTo}
+            loading={loading}
           />
         )}
         {loading &&

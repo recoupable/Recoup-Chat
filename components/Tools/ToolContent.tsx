@@ -7,6 +7,7 @@ interface ToolContentProps {
   question: string | undefined;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   fans: Array<any>;
+  loading: boolean;
   scroll: () => void;
 }
 
@@ -16,13 +17,19 @@ const ToolContent = ({
   fans,
   scroll,
   question,
+  loading,
 }: ToolContentProps) => (
   <div>
     {toolName === "getCampaign" && <FanTable fans={fans} scroll={scroll} />}
     {(toolName === "createArtist" ||
       toolName === "getArtists" ||
       toolName === "getArtistAnalysis") && (
-      <Artist context={context} scroll={scroll} question={question} />
+      <Artist
+        context={context}
+        scroll={scroll}
+        question={question}
+        loading={loading}
+      />
     )}
   </div>
 );
