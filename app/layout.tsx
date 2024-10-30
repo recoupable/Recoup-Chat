@@ -5,6 +5,7 @@ import Providers from "@/providers/Providers";
 import { DESCRIPTION, TITLE } from "@/lib/consts";
 import Sidebar from "@/components/Sidebar";
 import Header from "@/components/Header";
+import { Suspense } from "react";
 
 export const metadata: Metadata = {
   title: TITLE,
@@ -28,7 +29,7 @@ export default function RootLayout({
           <div className="flex flex-col md:flex-row">
             <Sidebar />
             <Header />
-            {children}
+            <Suspense>{children}</Suspense>
           </div>
         </Providers>
       </body>
