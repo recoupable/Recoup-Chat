@@ -1,5 +1,5 @@
 import client from "./client";
-import demo from "./trends.json";
+import { trends } from "./trends";
 
 const getTiktokTrends = async () => {
   try {
@@ -24,7 +24,7 @@ const getTiktokTrends = async () => {
     return allItems;
   } catch (error) {
     console.error(error);
-    return demo;
+    return trends;
   }
 };
 
