@@ -16,6 +16,10 @@ const Artist = ({ context, scroll }: any) => {
       {context?.status === ArtistToolResponse.MISSING_ARTIST_NAME && (
         <MissingArtist answer={context.answer} question={context.qustion} />
       )}
+      {context?.status ===
+        ArtistToolResponse.MISSING_ARTIST_TIKTOK_USERNAME && (
+        <MissingArtist answer={context.answer} question={context.qustion} />
+      )}
       {context?.status === ArtistToolResponse.CREATED_ARTIST && (
         <CreatedArtist context={context} />
       )}

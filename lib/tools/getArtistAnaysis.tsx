@@ -12,17 +12,17 @@ const getArtistAnaysis = (question: string) =>
     - "What’s the artist's latest activity on social media?"
     - "How did the artist become famous?"`,
     parameters: z.object({
-      artist_name: z
+      user_name: z
         .string()
         .optional()
-        .describe("The name of the artist to be analyzed."),
+        .describe("The TikTok username of the artist to be analyzed."),
     }),
-    execute: async ({ artist_name }) => {
-      if (!artist_name)
+    execute: async ({ user_name }) => {
+      if (!user_name)
         return {
           context: {
-            status: ArtistToolResponse.MISSING_ARTIST_NAME,
-            answer: "Please provide the artist name to proceed.",
+            status: ArtistToolResponse.MISSING_ARTIST_TIKTOK_USERNAME,
+            answer: "Please provide the TikTok username to proceed.",
           },
           question,
         };
@@ -30,7 +30,6 @@ const getArtistAnaysis = (question: string) =>
       return {
         context: {
           trends,
-          artist_name: artist_name || "not provided",
         },
         question,
       };

@@ -12,7 +12,9 @@ interface ToolContentProps {
 const ToolContent = ({ toolName, context, fans, scroll }: ToolContentProps) => (
   <div>
     {toolName === "getCampaign" && <FanTable fans={fans} scroll={scroll} />}
-    {(toolName === "createArtist" || toolName === "getArtists") && (
+    {(toolName === "createArtist" ||
+      toolName === "getArtists" ||
+      toolName === "getArtistAnaysis") && (
       <Artist context={context} scroll={scroll} />
     )}
   </div>
