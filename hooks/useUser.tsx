@@ -19,22 +19,16 @@ const useUser = () => {
 
   useEffect(() => {
     const init = async () => {
-      const req = JSON.stringify({ email });
-      const headers = {
-        "Content-Type": "application/json",
+      const config = {
+        method: "POST",
+        body: JSON.stringify({ email }),
+        headers: {
+          "Content-Type": "application/json",
+        },
       };
-
       const [emailResponse, accountResponse] = await Promise.all([
-        fetch("/api/email", {
-          method: "POST",
-          body: req,
-          headers,
-        }),
-        fetch("/api/account", {
-          method: "POST",
-          body: req,
-          headers,
-        }),
+        fetch("/api/email", config),
+        fetch("/api/account", config),
       ]);
 
       if (!emailResponse.ok) {
