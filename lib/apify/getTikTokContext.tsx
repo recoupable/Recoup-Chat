@@ -15,7 +15,10 @@ const getTikTokContext = (trends: any) => {
       (artist: any) => artist.nick_name,
     ),
     music_release_date: new Date(
-      trend?.music?.music_release_info?.group_release_date || 0,
+      trend?.music?.music_release_info?.group_release_date ||
+        trend?.music?.matched_pgc_sound?.music_release_info
+          ?.group_release_date ||
+        0,
     ).toLocaleDateString(),
     music_title: trend?.music?.matched_song?.title || "",
     music_total_duration: trend?.music?.matched_song?.full_duration || 0,
