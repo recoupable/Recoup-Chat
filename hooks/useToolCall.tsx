@@ -49,7 +49,7 @@ const useToolCall = (message: Message) => {
     setIsCalled(true);
     if (
       toolName === "getCampaign" ||
-      (toolName === "getArtistAnaysis" &&
+      (toolName === "getArtistAnalysis" &&
         context.status === ArtistToolResponse.TIKTOK_TRENDS)
     )
       append({
