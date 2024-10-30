@@ -10,8 +10,8 @@ const getArtistAnalysis = (question: string) =>
     Do NOT attempt to answer questions on these topics without calling this tool first.
 
     Example questions that MUST trigger this tool:
-    - "What’s the artist's latest activity on social media?"
-    - "How did the artist become famous?"`,
+    - "Analyze officialluhtyler"
+    - "Analyze my musician`,
     parameters: z.object({
       user_name: z
         .string()
