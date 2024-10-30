@@ -1,12 +1,14 @@
 import { usePrivy } from "@privy-io/react-auth";
 import { useEffect, useState } from "react";
 import { Address } from "viem";
+import useTrackeEmail from "./useTrackEmail";
 
 const useUser = () => {
   const { login, user } = usePrivy();
   const address = user?.wallet?.address as Address;
   const email = user?.email?.address;
   const [userData, setUserData] = useState<any>(null);
+  const { trackId } = useTrackeEmail();
 
   const isPrepared = () => {
     if (!address) {
@@ -26,24 +28,15 @@ const useUser = () => {
           "Content-Type": "application/json",
         },
       };
-      const [emailResponse, accountResponse] = await Promise.all([
-        fetch("/api/email", config),
-        fetch("/api/account", config),
-      ]);
+      const response = await fetch("/api/email", config);
 
-      if (!emailResponse.ok) {
+      if (!response.ok) {
         throw new Error(
-          `Email API request failed with status: ${emailResponse.status}`,
+          `Email API request failed with status: ${response.status}`,
         );
       }
 
-      if (!accountResponse.ok) {
-        throw new Error(
-          `Account API request failed with status: ${accountResponse.status}`,
-        );
-      }
-
-      const data = await accountResponse.json();
+      const data = await response.json();
       setUserData(data);
     };
     if (!email) return;
@@ -56,6 +49,7 @@ const useUser = () => {
     login,
     isPrepared,
     userData,
+    trackId,
   };
 };
 
