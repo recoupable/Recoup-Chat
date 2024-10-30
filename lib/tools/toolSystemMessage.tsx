@@ -18,6 +18,7 @@ const toolSystemMessage = (context: any, question: any, toolName: string) => {
       - Insights on audience engagement and demographics.
 
     Make sure to provide actionable insights that the artist can use to enhance their presence on TikTok.
+    Actionable insights should focus on creating effective campaigns. 
     `;
   if (toolName === "getCampaign")
     return `
