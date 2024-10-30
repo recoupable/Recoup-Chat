@@ -1,30 +1,22 @@
 import client from "./client";
-import { trends } from "./trends";
 
-const getTiktokTrends = async () => {
+const getTiktokTrends = async (username: string) => {
   try {
-    const { defaultDatasetId } = await client
-      .actor("novi/fast-tiktok-api")
-      .call();
+    const profiles = [username];
+    const input = {
+      hashtags: ["fyp"],
+      resultsPerPage: 100,
+      proxyCountryCode: "None",
+      profiles,
+    };
 
-    const datasetClient = client.dataset(defaultDatasetId);
+    const run = await client.actor("clockworks/tiktok-scraper").call(input);
+    const { items } = await client.dataset(run.defaultDatasetId).listItems();
 
-    const limit = 1000;
-    let offset = 0;
-    const allItems = [];
-    while (true) {
-      const { items, total } = await datasetClient.listItems({ limit, offset });
-      allItems.push(...items);
-      if (offset + limit >= total) {
-        break;
-      }
-      offset += limit;
-    }
-
-    return allItems;
+    return items;
   } catch (error) {
     console.error(error);
-    return trends;
+    return [];
   }
 };
 

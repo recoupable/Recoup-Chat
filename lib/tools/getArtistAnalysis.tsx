@@ -27,7 +27,7 @@ const getArtistAnalysis = (question: string) =>
           },
           question,
         };
-      const trends = await getTiktokTrends();
+      const trends = await getTiktokTrends(user_name);
       const artistTrends = trends.filter(
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (trend: any) => trend.author.unique_id === user_name,
