@@ -3,7 +3,7 @@ import { useChat } from "ai/react";
 import { useParams } from "next/navigation";
 import { v4 as uuidV4 } from "uuid";
 
-const useToolChat = (question?: string, context?: any) => {
+const useToolChat = (question?: string, context?: any, toolName?: any) => {
   const { finalCallback, clearQuery } = useChatProvider();
   const { conversation: conversationId } = useParams();
 
@@ -16,6 +16,7 @@ const useToolChat = (question?: string, context?: any) => {
     body: {
       question,
       context,
+      toolName,
     },
     onError: console.error,
     onFinish: async (message) => {

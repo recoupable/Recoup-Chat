@@ -2,6 +2,7 @@ import { z } from "zod";
 import { tool } from "ai";
 import getTiktokTrends from "../apify/getTiktokTrends";
 import { ArtistToolResponse } from "@/types/Tool";
+import getTikTokContext from "../apify/getTikTokContext";
 
 const getArtistAnaysis = (question: string) =>
   tool({
@@ -31,9 +32,11 @@ const getArtistAnaysis = (question: string) =>
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (trend: any) => trend.author.unique_id === user_name,
       );
+      const trendsContext = getTikTokContext(artistTrends);
+
       return {
         context: {
-          trends: artistTrends,
+          trends: trendsContext,
         },
         question,
       };

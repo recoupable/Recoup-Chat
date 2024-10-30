@@ -19,11 +19,16 @@ const useToolCall = (message: Message) => {
   const context = toolInvocationResult?.result?.context || "";
   const toolName = toolInvocationResult?.toolName;
   const fans = context?.fans?.filter((fan: FAN_TYPE) => fan.name !== "Unknown");
-  const { messages, append, loading } = useToolChat(question, context);
+  const { messages, append, loading } = useToolChat(
+    question,
+    context,
+    toolName,
+  );
   const answer = messages.filter(
     (message: Message) => message.role === "assistant",
   )?.[0]?.content;
 
+  console.log("ZIAD", context);
   useEffect(() => {
     if (!context || !question) return;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -41,7 +46,7 @@ const useToolCall = (message: Message) => {
     if (!isAssistant) return;
     if (isCalled) return;
     setIsCalled(true);
-    if (toolName === "getCampaign")
+    if (toolName === "getCampaign" || toolName === "getArtistAnaysis")
       append({
         id: uuidV4(),
         content: question,
