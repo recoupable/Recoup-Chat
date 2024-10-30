@@ -9,7 +9,7 @@ const getArtistAnaysis = (question: string) =>
 
     Example questions that MUST trigger this tool:
     - "What’s the artist's latest activity on social media?"
-    - "How did this artist become famous?"`,
+    - "How did the artist become famous?"`,
     parameters: z.object({
       artist_name: z
         .string()
