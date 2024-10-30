@@ -14,7 +14,6 @@ const toolSystemMessage = (context: any, question: any, toolName: string) => {
     2. Identify key patterns or themes related to the artist's content.
     3. Provide an analysis that includes:
       - The artist's most viral content and why it was successful.
-      - Recommendations for future content strategies based on current trends.
 
     Make sure to provide actionable insights focused on creating new campaigns, such as games that players can play while listening to music.
     `;
