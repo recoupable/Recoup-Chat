@@ -6,8 +6,8 @@ export async function POST(req: NextRequest) {
   const email = body.email;
 
   try {
-    const resp = await loopsClient.createContact(email);
-    return resp;
+    await loopsClient.createContact(email);
+    return Response.json({ success: true }, { status: 200 });
   } catch (error) {
     console.error(error);
     const message = error instanceof Error ? error.message : "failed";
