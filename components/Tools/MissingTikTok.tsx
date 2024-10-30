@@ -22,20 +22,22 @@ const MissingTikTok = ({
 
   return (
     <div>
-      <p>{answer}</p>
-      <input
-        type="text"
-        onChange={(e) => setUserName(e.target.value)}
-        className="!bg-transparent border-gray-700 border-[1px] rounded-md !outline-none px-2 py-1 text-sm"
-        placeholder="Input TikTok username."
-      />
-      <button
-        type="button"
-        onClick={handleSubmit}
-        className="border-gray-700 border-[1px] px-3 py-1 rounded-full text-sm"
-      >
-        Submit
-      </button>
+      <p className="text-sm pb-3">{answer}</p>
+      <fieldset className="flex gap-2 items-center">
+        <input
+          type="text"
+          onChange={(e) => setUserName(e.target.value)}
+          className="!bg-transparent border-gray-700 border-[1px] rounded-md !outline-none px-2 py-1 text-sm"
+          placeholder="Input TikTok username."
+        />
+        <button
+          type="button"
+          onClick={handleSubmit}
+          className="border-gray-700 border-[1px] px-3 py-1 rounded-full text-sm"
+        >
+          Submit
+        </button>
+      </fieldset>
     </div>
   );
 };
