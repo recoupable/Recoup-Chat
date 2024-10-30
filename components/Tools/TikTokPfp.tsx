@@ -2,7 +2,7 @@
 const TikTokPfp = ({ trends }: { trends: any }) => {
   return (
     <div>
-      <p className="pl-2 pb-2">{`Searching for @${trends[0].username} videos on tiktok...`}</p>
+      <p className="pl-2 pb-2 text-sm">{`Searching for @${trends[0].username} videos on tiktok...`}</p>
       <div className="w-10 h-10 rounded-full overflow-hidden">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={trends[0].pfp} width={40} height={40} alt="not found pfp" />
