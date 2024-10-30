@@ -58,7 +58,7 @@ const Message = ({
         ) : (
           <div className="text-sm font-sans text-pretty break-words">
             <ReactMarkdown>{content}</ReactMarkdown>
-            <FollowUp toolName={toolName} context={context} />
+            <FollowUp toolName={toolName} context={context} loading={loading} />
           </div>
         )}
       </div>
