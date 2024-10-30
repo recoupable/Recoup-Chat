@@ -5,6 +5,7 @@ import { AI_MODEL } from "../consts";
 import getCampaign from "../tools/getCampaign";
 import createArtist from "../tools/createArtist";
 import getArtists from "../tools/getArtists";
+import getArtistAnaysis from "../tools/getArtistAnaysis";
 
 export function createChatMessagesService() {
   return new ChatMessagesService();
@@ -48,6 +49,7 @@ Please use this information to provide accurate and relevant responses and don't
         getCampaign: getCampaign(question),
         createArtist: createArtist(question, email),
         getArtists: getArtists(question, email),
+        getArtistAnaysis: getArtistAnaysis(question),
       };
     } catch (error) {
       console.error("Error reading or parsing JSON files:", error);

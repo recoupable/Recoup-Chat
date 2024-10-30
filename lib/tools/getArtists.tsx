@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { tool } from "ai";
-import readArtists from "./readArtists";
+import readArtists from "../supabase/readArtists";
 import { ArtistToolResponse } from "@/types/Tool";
 
 const getArtists = (question: string, email: string) =>
