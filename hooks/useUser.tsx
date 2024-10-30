@@ -21,23 +21,35 @@ const useUser = () => {
     const init = async () => {
       const req = JSON.stringify({ email });
       const headers = {
-        "Content-Type": "application/json", // Specify the content type
+        "Content-Type": "application/json",
       };
-      fetch("/api/email", {
-        method: "POST",
-        body: req,
-        headers,
-      });
-      const response = await fetch("/api/account", {
-        method: "POST",
-        body: req,
-        headers,
-      });
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+      const [emailResponse, accountResponse] = await Promise.all([
+        fetch("/api/email", {
+          method: "POST",
+          body: req,
+          headers,
+        }),
+        fetch("/api/account", {
+          method: "POST",
+          body: req,
+          headers,
+        }),
+      ]);
+
+      if (!emailResponse.ok) {
+        throw new Error(
+          `Email API request failed with status: ${emailResponse.status}`,
+        );
       }
-      const data = await response.json();
+
+      if (!accountResponse.ok) {
+        throw new Error(
+          `Account API request failed with status: ${accountResponse.status}`,
+        );
+      }
+
+      const data = await accountResponse.json();
       setUserData(data);
     };
     if (!email) return;
