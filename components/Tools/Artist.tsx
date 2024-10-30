@@ -5,6 +5,7 @@ import ArtistsTable from "./ArtistsTable";
 import { ArtistRecord } from "@/types/Artist";
 import SubmitArtist from "./SubmitArtist";
 import MissingTikTok from "./MissingTikTok";
+import TikTokPfp from "./TikTokPfp";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const Artist = ({ context, scroll, question }: any) => {
@@ -20,6 +21,9 @@ const Artist = ({ context, scroll, question }: any) => {
       {context?.status ===
         ArtistToolResponse.MISSING_ARTIST_TIKTOK_USERNAME && (
         <MissingTikTok answer={context.answer} question={question} />
+      )}
+      {context?.status === ArtistToolResponse.TIKTOK_TRENDS && (
+        <TikTokPfp trends={context.trends} />
       )}
       {context?.status === ArtistToolResponse.CREATED_ARTIST && (
         <CreatedArtist context={context} />
