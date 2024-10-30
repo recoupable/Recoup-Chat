@@ -10,7 +10,7 @@ const useTrackEmail = () => {
       const email = searchParams.get("email");
       if (!email) return;
       const response = await fetch(
-        `/api/email?email=${decodeURIComponent(email)}`,
+        `/api/email?email=${encodeURIComponent(email)}`,
       );
       const data = await response.json();
 
