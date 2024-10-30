@@ -17,7 +17,7 @@ const getArtistAnalysis = (question: string) =>
       user_name: z
         .string()
         .optional()
-        .describe("The TikTok username to be analyzed."),
+        .describe("The TikTok username of artist or musician to be analyzed."),
     }),
     execute: async ({ user_name }) => {
       if (!user_name)
