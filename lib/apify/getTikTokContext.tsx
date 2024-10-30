@@ -15,8 +15,8 @@ const getTikTokContext = (trends: any) => {
     playCount: trend?.playCount,
     collectCount: trend?.collectCount,
     commentCount: trend?.commentCount,
-    pfp: trend?.authorMeta?.profileUrl,
-    pfpUrl: trend?.authorMeta?.avatar,
+    pfp: trend?.authorMeta?.avatar,
+    profileUrl: trend?.authorMeta?.profileUrl,
   }));
 };
 
