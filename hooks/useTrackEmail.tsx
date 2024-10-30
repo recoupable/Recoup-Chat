@@ -1,7 +1,7 @@
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
-const useTrackeEmail = () => {
+const useTrackEmail = () => {
   const searchParams = useSearchParams();
   const [trackId, setTrackId] = useState("");
 
@@ -25,4 +25,4 @@ const useTrackeEmail = () => {
   };
 };
 
-export default useTrackeEmail;
+export default useTrackEmail;

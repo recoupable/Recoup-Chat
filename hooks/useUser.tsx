@@ -1,14 +1,14 @@
 import { usePrivy } from "@privy-io/react-auth";
 import { useEffect, useState } from "react";
 import { Address } from "viem";
-import useTrackeEmail from "./useTrackEmail";
+import useTrackEmail from "./useTrackEmail";
 
 const useUser = () => {
   const { login, user } = usePrivy();
   const address = user?.wallet?.address as Address;
   const email = user?.email?.address;
   const [userData, setUserData] = useState<any>(null);
-  const { trackId } = useTrackeEmail();
+  const { trackId } = useTrackEmail();
 
   const isPrepared = () => {
     if (!address) {
