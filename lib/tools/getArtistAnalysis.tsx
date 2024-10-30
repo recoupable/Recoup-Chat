@@ -6,17 +6,18 @@ import getTikTokContext from "../apify/getTikTokContext";
 
 const getArtistAnalysis = (question: string) =>
   tool({
-    description: `IMPORTANT: Always call this tool for ANY question related to artist analytics:
+    description: `IMPORTANT: Always call this tool for question related to musician or artist analytics:
     Do NOT attempt to answer questions on these topics without calling this tool first.
 
     Example questions that MUST trigger this tool:
     - "Analyze officialluhtyler."
-    - "Analyze my musician.`,
+    - "Analyze my musician."
+    - "Analyze @officialluhtyler."`,
     parameters: z.object({
       user_name: z
         .string()
         .optional()
-        .describe("The TikTok username of the artist to be analyzed."),
+        .describe("The TikTok username to be analyzed."),
     }),
     execute: async ({ user_name }) => {
       if (!user_name)
