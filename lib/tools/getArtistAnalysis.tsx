@@ -10,8 +10,8 @@ const getArtistAnalysis = (question: string) =>
     Do NOT attempt to answer questions on these topics without calling this tool first.
 
     Example questions that MUST trigger this tool:
-    - "Analyze officialluhtyler"
-    - "Analyze my musician`,
+    - "Analyze officialluhtyler."
+    - "Analyze my musician.`,
     parameters: z.object({
       user_name: z
         .string()
