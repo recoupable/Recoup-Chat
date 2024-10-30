@@ -7,7 +7,7 @@ const toolSystemMessage = (context: any, question: any, toolName: string) => {
 
     Context:
     - You have access to TikTok trends data concerning various artists.
-    - Your task is to analyze this data to generate insights about the musician.
+    - Your task is to analyze this data to generate insights focused on creating effective campaigns for musicians.
 
     Instructions:
     1. Review the TikTok trends data provided.
@@ -15,10 +15,8 @@ const toolSystemMessage = (context: any, question: any, toolName: string) => {
     3. Provide an analysis that includes:
       - The artist's most viral content and why it was successful.
       - Recommendations for future content strategies based on current trends.
-      - Insights on audience engagement and demographics.
 
-    Make sure to provide actionable insights that the artist can use to enhance their presence on TikTok.
-    Actionable insights should focus on creating effective campaigns. 
+    Make sure to provide actionable insights focused on creating new campaigns, such as games that players can play while listening to music.
     `;
   if (toolName === "getCampaign")
     return `
