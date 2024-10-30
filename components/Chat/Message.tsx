@@ -31,7 +31,7 @@ const Message = ({
     const timeoutId = setTimeout(scrollTo, 1000);
     return () => clearTimeout(timeoutId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [content, context]);
+  }, [content, context, loading]);
 
   return (
     <div className={`p-3 rounded-lg flex w-full gap-2 ${isHidden && "hidden"}`}>
