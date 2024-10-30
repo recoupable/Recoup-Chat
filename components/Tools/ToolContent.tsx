@@ -21,7 +21,7 @@ const ToolContent = ({
     {toolName === "getCampaign" && <FanTable fans={fans} scroll={scroll} />}
     {(toolName === "createArtist" ||
       toolName === "getArtists" ||
-      toolName === "getArtistAnaysis") && (
+      toolName === "getArtistAnalysis") && (
       <Artist context={context} scroll={scroll} question={question} />
     )}
   </div>
