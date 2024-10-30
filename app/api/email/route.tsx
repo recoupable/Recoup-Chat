@@ -11,7 +11,10 @@ export async function POST(req: NextRequest) {
       id?: string;
       message?: string;
     } = await loopsClient.updateContact(email, {});
-    return Response.json({ success: resp.success });
+    return Response.json({
+      success: resp.success,
+      message: resp.message || "",
+    });
   } catch (error) {
     console.error(error);
     const message = error instanceof Error ? error.message : "failed";
