@@ -6,6 +6,7 @@ import { v4 as uuidV4 } from "uuid";
 import useToolChat from "./useToolChat";
 import { useParams } from "next/navigation";
 import getArtistMessage from "@/lib/getArtistMessage";
+import { ArtistToolResponse } from "@/types/Tool";
 
 const useToolCall = (message: Message) => {
   const { finalCallback } = useChatProvider();
@@ -46,7 +47,11 @@ const useToolCall = (message: Message) => {
     if (!isAssistant) return;
     if (isCalled) return;
     setIsCalled(true);
-    if (toolName === "getCampaign" || toolName === "getArtistAnaysis")
+    if (
+      toolName === "getCampaign" ||
+      (toolName === "getArtistAnaysis" &&
+        context.status === ArtistToolResponse.TIKTOK_TRENDS)
+    )
       append({
         id: uuidV4(),
         content: question,

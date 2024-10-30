@@ -36,6 +36,7 @@ const getArtistAnaysis = (question: string) =>
 
       return {
         context: {
+          status: ArtistToolResponse.TIKTOK_TRENDS,
           trends: trendsContext,
         },
         question,
