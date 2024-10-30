@@ -7,7 +7,7 @@ import SubmitArtist from "./SubmitArtist";
 import MissingTikTok from "./MissingTikTok";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const Artist = ({ context, scroll }: any) => {
+const Artist = ({ context, scroll, question }: any) => {
   const artists = context?.artists?.filter(
     (artist: ArtistRecord) => artist.name !== "Unknown",
   );
@@ -15,11 +15,11 @@ const Artist = ({ context, scroll }: any) => {
   return (
     <>
       {context?.status === ArtistToolResponse.MISSING_ARTIST_NAME && (
-        <MissingArtist answer={context.answer} question={context.qustion} />
+        <MissingArtist answer={context.answer} question={question} />
       )}
       {context?.status ===
         ArtistToolResponse.MISSING_ARTIST_TIKTOK_USERNAME && (
-        <MissingTikTok answer={context.answer} question={context.qustion} />
+        <MissingTikTok answer={context.answer} question={question} />
       )}
       {context?.status === ArtistToolResponse.CREATED_ARTIST && (
         <CreatedArtist context={context} />

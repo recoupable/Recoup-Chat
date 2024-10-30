@@ -13,7 +13,8 @@ const Message = ({
   message: AIMessage;
   scroll: ({ smooth, y }: { smooth: boolean; y: number }) => void;
 }) => {
-  const { loading, answer, toolName, context, fans } = useToolCall(message);
+  const { loading, answer, toolName, context, fans, question } =
+    useToolCall(message);
   const { pending } = useChatProvider();
   const Icon = message.role === "user" ? UserIcon : TvMinimalPlay;
   const isHidden =
@@ -41,6 +42,7 @@ const Message = ({
           <ToolContent
             toolName={toolName}
             context={context}
+            question={question}
             fans={fans}
             scroll={scrollTo}
           />
