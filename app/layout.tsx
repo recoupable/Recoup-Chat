@@ -25,13 +25,15 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={GeistSans.className}>
-        <Providers>
-          <div className="flex flex-col md:flex-row">
-            <Sidebar />
-            <Header />
-            <Suspense>{children}</Suspense>
-          </div>
-        </Providers>
+        <Suspense>
+          <Providers>
+            <div className="flex flex-col md:flex-row">
+              <Sidebar />
+              <Header />
+              {children}
+            </div>
+          </Providers>
+        </Suspense>
       </body>
     </html>
   );
