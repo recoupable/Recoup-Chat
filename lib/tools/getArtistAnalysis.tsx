@@ -4,7 +4,7 @@ import getTiktokTrends from "../apify/getTiktokTrends";
 import { ArtistToolResponse } from "@/types/Tool";
 import getTikTokContext from "../apify/getTikTokContext";
 
-const getArtistAnaysis = (question: string) =>
+const getArtistAnalysis = (question: string) =>
   tool({
     description: `IMPORTANT: Always call this tool for ANY question related to to artist analytics:
     Do NOT attempt to answer questions on these topics without calling this tool first.
@@ -44,4 +44,4 @@ const getArtistAnaysis = (question: string) =>
     },
   });
 
-export default getArtistAnaysis;
+export default getArtistAnalysis;
