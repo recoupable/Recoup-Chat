@@ -10,13 +10,15 @@ const createCampaign = (question: string, email: string) =>
     IMPORTANT: Always call this tool for ANY question related to creating a campaign.
     NOTE: This feature must always execute when prompted to create a campaign, regardless of whether you receive an artist ID or campaign name.
     Extract Parameters from the Current Prompt: Always derive parameters from the current question only. Do not reference parameters from previous questions or responses.
-    Immediate Parameter Extraction:
-    Avoid Parameter Duplication: Ensure that the parameters used to create a campaign in response to each request are fresh and specific to that request. Parameters defined in previous interactions must not influence current operations.
 
+    VERY VERY IMPORTANT: 
+    - Parameters defined in previous interactions must not influence current operations!!!.
+    - Do Not Use Previous Context!!!.
+    - Each of the above questions must be treated as entirely new requests
+    
     Must Trigger the Tool:
     "Create a new campaign."
-    "I want to create a new campaign."
-    Do Not Use Previous Context: Each of the above questions must be treated as entirely new requests, with a unique set of parameters extracted from the current input.`,
+    "I want to create a new campaign."`,
     parameters: z.object({
       campaign_name: z
         .string()
