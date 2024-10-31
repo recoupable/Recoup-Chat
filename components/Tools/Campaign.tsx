@@ -12,9 +12,9 @@ const Campaign = () => {
     <div>
       {status === ArtistToolResponse.MISSING_ARTIST_CLIENT_ID &&
         (artists?.length ? (
-          <MissingArtist description="Please create your first artist before proceeding to create a campaign" />
-        ) : (
           <MissingArtistClient />
+        ) : (
+          <MissingArtist description="Please create your first artist before proceeding to create a campaign" />
         ))}
     </div>
   );
