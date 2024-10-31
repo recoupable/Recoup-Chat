@@ -10,7 +10,7 @@ import getFollows from "./getFollows";
 const getFans = async (client: SupabaseClient<Database, "public">) => {
   const { data: fans } = await client.from("fans").select("*");
 
-  if (!fans?.length) return "No fans.";
+  if (!fans?.length) return [];
 
   let playlists: string[] = [];
   let episodes: string[] = [];
