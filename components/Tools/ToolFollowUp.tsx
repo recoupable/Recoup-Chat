@@ -25,11 +25,11 @@ const ToolFollowUp = ({ message }: { message: AIMessage }) => {
               <LoaderCircle className="h-4 w-4 animate-spin" />
             </div>
           ) : (
-            <Answer message={message} />
+            <Answer content={content} />
           )}
         </>
       )}
-      {!toolName && <Answer message={message} />}
+      {!toolName && <Answer content={content} />}
     </div>
   );
 };
