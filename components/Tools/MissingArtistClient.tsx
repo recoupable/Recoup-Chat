@@ -53,7 +53,7 @@ const MissingArtistClient = () => {
             type="text"
             onChange={(e) => setClientId(e.target.value)}
             className="!bg-transparent border-gray-700 border-[1px] rounded-md !outline-none px-2 py-1 text-sm"
-            placeholder="Input client id."
+            placeholder="Input campaign name."
           />
         </fieldset>
         <button
