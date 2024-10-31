@@ -32,6 +32,8 @@ const upsertArtist = async (artistName: string, userEmail: string) => {
     .select("*")
     .single();
 
+  if (insertError) throw insertError;
+
   await client
     .from("accounts")
     .update({
@@ -40,8 +42,6 @@ const upsertArtist = async (artistName: string, userEmail: string) => {
       timestamp: Date.now(),
     })
     .eq("id", user.id);
-
-  if (insertError) throw insertError;
 
   return data;
 };
