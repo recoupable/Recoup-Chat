@@ -13,8 +13,6 @@ export const DESCRIPTION =
   "Recoup is an AI agent platform for smarter song rollouts, unforgettable fan experiences, and lasting artist growth. Empowering music executives with actionable insights and next-gen tools to elevate every artist and engage every fan.";
 
 export const SUGGESTIONS = [
-  "Which artists do I manage?",
-  "Create a new artist.",
-  "What campaigns do I have?",
-  "Create a new campaign.",
+  "How is my current campaign going?",
+  "Analyze my artists TikTok account.",
 ];
