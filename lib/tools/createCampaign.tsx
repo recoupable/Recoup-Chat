@@ -10,7 +10,7 @@ const createCampaign = (question: string, email: string) =>
     IMPORTANT: Always call this tool for ANY question related to creating a campaign.
     NOTE: This feature must always execute when prompted to create a campaign, regardless of whether you receive an artist ID or campaign name.
 
-    The following is list that trigger this function and whether parameter values are defined or not.
+    The following is the list that trigger this tool and whether parameter values are defined or not.
     "Create a new campaign." -> ALWAYS [undefined].
     "I want to create a new campaign." -> ALWAYS [undefined].
     "Create a campaign." -> ALWAYS [undefined]
