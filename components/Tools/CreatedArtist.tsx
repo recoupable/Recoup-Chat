@@ -1,5 +1,7 @@
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const CreatedArtist = ({ context }: any) => {
+import { useToolCallProvider } from "@/providers/ToolCallProvider";
+
+const CreatedArtist = () => {
+  const { context } = useToolCallProvider();
   const data = context?.data;
 
   return (

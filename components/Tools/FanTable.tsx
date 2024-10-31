@@ -1,19 +1,15 @@
+import { useToolCallProvider } from "@/providers/ToolCallProvider";
 import { FAN_TYPE } from "@/types/fans";
 import { useEffect, useState } from "react";
 
-const FanTable = ({
-  fans,
-  scroll,
-}: {
-  fans: FAN_TYPE[];
-  scroll: () => void;
-}) => {
+const FanTable = () => {
+  const { fans, scrollTo } = useToolCallProvider();
   const [isCollapsed, setIsCollapsed] = useState(true);
 
   const fanslist = fans?.slice(0, isCollapsed ? 3 : fans?.length);
 
   useEffect(() => {
-    scroll();
+    scrollTo();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isCollapsed]);
 
@@ -28,7 +24,7 @@ const FanTable = ({
             <th className="text-xs text-left p-1">Country</th>
           </thead>
           <tbody>
-            {fanslist.map((fan, index) => (
+            {fanslist.map((fan: FAN_TYPE, index: number) => (
               <tr key={index}>
                 <td className="text-xs p-1">{fan.name}</td>
                 <td className="text-xs p-1">{fan.email}</td>
