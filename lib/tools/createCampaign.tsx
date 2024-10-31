@@ -10,14 +10,14 @@ const createCampaign = (question: string, email: string) =>
     IMPORTANT: Always call this tool for ANY question related to creating a campaign.
     NOTE: This feature must always execute when prompted to create a campaign, regardless of whether you receive an artist ID or campaign name.
 
-    TO EXTRACT THIS TOOL PARAMETERS, YOU SHOULD ALWAYS FOLLOW THESE STEPS: 
+    TO EXTRACT PARAMETERS FOR THIS TOOL, FOLLOW THESE STEPS: 
       - Always derive parameters from the current question only!!!
       - Do not reference parameters from previous questions or responses!!!
       - Parameters defined in previous interactions must not influence current operations!!!
       - Do Not Use Previous Context!!!
       - Each of the above questions must be treated as entirely new requests!!!
     
-    Must Trigger the Tool:
+    The following queries trigger this tool:
     "Create a new campaign."
     "I want to create a new campaign."`,
     parameters: z.object({
