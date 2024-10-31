@@ -8,7 +8,8 @@ const CreatedCampaign = () => {
     <div>
       <p className="text-sm">Campaign Id: {data?.id}</p>
       <p className="text-sm">
-        Please refer to the SyncStream documentation{" "}
+        Add SyncStream OneTap to your campaign site to start collecting listener
+        data. Follow the steps in the SyncStream guide{" "}
         <a
           href="https://docs.syncstream.ai/syncstream/less-than-syncstreamprovider-greater-than"
           target="_blank"
@@ -16,7 +17,7 @@ const CreatedCampaign = () => {
         >
           here
         </a>{" "}
-        for the next steps on using the campaignId.
+        to use your campaignId and capture important insights.
       </p>
     </div>
   );
