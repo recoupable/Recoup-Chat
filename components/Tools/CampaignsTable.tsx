@@ -13,7 +13,7 @@ const CampaignsTable = () => {
   );
 
   const getRecentFanTimestamp = (fans: FAN_TYPE[]) => {
-    const sortedFans = fans.sort((a, b) => {
+    const sortedFans = fans?.sort((a, b) => {
       const timestampA = a.timestamp
         ? new Date(a.timestamp).getTime()
         : Number.NEGATIVE_INFINITY;
