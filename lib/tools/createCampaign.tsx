@@ -9,13 +9,7 @@ const createCampaign = (question: string, email: string) =>
     description: `
     IMPORTANT: Always call this tool for ANY question related to creating a campaign.
     NOTE: This feature must always execute when prompted to create a campaign, regardless of whether you receive an artist ID or campaign name.
-
-    TO EXTRACT PARAMETERS FOR THIS TOOL, FOLLOW THESE STEPS: 
-      - Always derive parameters from the current question only!!!
-      - Do not reference parameters from previous questions or responses!!!
-      - Parameters defined in previous interactions must not influence current operations!!!
-      - Do Not Use Previous Context!!!
-      - Each of the above questions must be treated as entirely new requests!!!
+    Each of the above questions must be treated as entirely new requests!!!
     
     The following queries trigger this tool:
     "Create a new campaign."
@@ -24,11 +18,13 @@ const createCampaign = (question: string, email: string) =>
       campaign_name: z
         .string()
         .optional()
-        .describe("The campaign name. Do Not Use Previous Value!!!"),
+        .describe(
+          "The campaign name to be created. Do Not Use Previous Value!!!",
+        ),
       artist_id: z
         .string()
         .optional()
-        .describe("The artist id. Do Not Use Previous Value!!!"),
+        .describe("The artist id to be created. Do Not Use Previous Value!!!"),
     }),
     execute: async ({ campaign_name, artist_id }) => {
       if (!artist_id || !campaign_name) {
