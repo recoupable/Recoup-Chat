@@ -1,12 +1,10 @@
 "use client";
 
 import { MenuIcon } from "lucide-react";
-import { usePathname } from "next/navigation";
 import { useState } from "react";
 import MobileMenu from "../MobileMenu";
 
 const Header = () => {
-  const pathname = usePathname();
   const [isOpenMobileMenu, setIsOpenMobileMenu] = useState(false);
 
   return (
