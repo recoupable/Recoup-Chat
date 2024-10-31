@@ -21,14 +21,14 @@ const MissingArtistClient = () => {
     if (!clientId || !artistId) return;
     append({
       id: uuidV4(),
-      content: `Create a new campaign. ClientId: ${clientId} ArtistId: ${artistId}`,
+      content: `Create a new campaign. CampaignName: ${clientId} ArtistId: ${artistId}`,
       role: "user",
     });
   };
 
   return (
     <div className="w-full">
-      <p className="text-sm">Please provide the artist and client id.</p>
+      <p className="text-sm">Please provide the artist id and campaign name.</p>
       <section className="pt-2 flex flex-col gap-2">
         <fieldset className="flex gap-2 items-center">
           <p className="text-sm">Artist Id:</p>
@@ -48,7 +48,7 @@ const MissingArtistClient = () => {
           </select>
         </fieldset>
         <fieldset className="flex gap-2 items-center">
-          <p className="text-sm">Client Id:</p>
+          <p className="text-sm">Campaign Name:</p>
           <input
             type="text"
             onChange={(e) => setClientId(e.target.value)}

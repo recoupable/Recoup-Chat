@@ -6,7 +6,7 @@ const CreatedCampaign = () => {
 
   return (
     <div>
-      <p className="text-sm">Campagin Id: {data?.id}</p>
+      <p className="text-sm">Campaign Id: {data?.id}</p>
       <p className="text-sm">
         Please refer to the SyncStream documentation{" "}
         <a
