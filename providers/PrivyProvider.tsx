@@ -14,7 +14,7 @@ export default function PrivyProvider({
         appearance: {
           theme: "light",
           accentColor: "#003199",
-          logo: "./logo.jpg",
+          logo: "/Icon_Text_Logo_Light.png",
         },
         loginMethods: ["email"],
         embeddedWallets: {
