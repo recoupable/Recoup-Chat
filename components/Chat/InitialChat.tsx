@@ -1,6 +1,6 @@
 import ChatInput from "./ChatInput";
 import { Plus_Jakarta_Sans } from "next/font/google";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 
 const plusJakartaSans = Plus_Jakarta_Sans({ 
   subsets: ["latin"],
@@ -8,11 +8,10 @@ const plusJakartaSans = Plus_Jakarta_Sans({
 });
 
 const InitialChat = () => {
-  const words = ["artist?", "campaign?", "fans?"]; 
+  const words = useMemo(() => ["artist?", "campaign?", "fans?"], []);
   const [currentWord, setCurrentWord] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
   const [wordIndex, setWordIndex] = useState(0);
-  const [isTyping, setIsTyping] = useState(true);
 
   useEffect(() => {
     const currentFullWord = words[wordIndex];
