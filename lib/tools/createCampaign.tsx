@@ -14,7 +14,7 @@ const createCampaign = (question: string, email: string) =>
     VERY VERY IMPORTANT: 
     - Parameters defined in previous interactions must not influence current operations!!!.
     - Do Not Use Previous Context!!!.
-    - Each of the above questions must be treated as entirely new requests
+    - Each of the above questions must be treated as entirely new requests!!!.
     
     Must Trigger the Tool:
     "Create a new campaign."
