@@ -42,7 +42,7 @@ const MissingArtistClient = () => {
                 className="!bg-black text-sm"
                 value={artist.id}
               >
-                {artist.id}
+                {artist.name}
               </option>
             ))}
           </select>
