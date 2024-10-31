@@ -14,5 +14,5 @@ export const DESCRIPTION =
 
 export const SUGGESTIONS = [
   "How is my current campaign going?",
-  "Analyze my artists TikTok account.",
+  "Analyze my artists' TikTok account.",
 ];
