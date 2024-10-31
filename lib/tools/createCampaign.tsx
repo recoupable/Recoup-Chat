@@ -9,11 +9,11 @@ const createCampaign = (question: string, email: string) =>
     description: `
     IMPORTANT: Always call this tool for ANY question related to creating a campaign.
     NOTE: This feature must always execute when prompted to create a campaign, regardless of whether you receive an artist ID or campaign name.
-    
+
     The following is list that trigger this function and whether parameter values are defined or not.
-    "Create a new campaign." -> [undefined].
-    "I want to create a new campaign." -> [undefined].
-    "Create a campaign." -> [undefined]
+    "Create a new campaign." -> ALWAYS [undefined].
+    "I want to create a new campaign." -> ALWAYS [undefined].
+    "Create a campaign." -> ALWAYS [undefined]
     "Create a new campaign. CampaignName: [campaign name] ArtistId: [artistId]" -> [defined]`,
     parameters: z.object({
       campaign_name: z
