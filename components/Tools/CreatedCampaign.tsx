@@ -11,7 +11,7 @@ const CreatedCampaign = () => {
         Add SyncStream OneTap to your campaign site to start collecting listener
         data. Follow the steps in the SyncStream guide{" "}
         <a
-          href="https://docs.syncstream.ai/syncstream/less-than-syncstreamprovider-greater-than"
+          href="https://docs.syncstream.ai/syncstream/quickstart"
           target="_blank"
           className="underline text-[#4377e5]"
         >
