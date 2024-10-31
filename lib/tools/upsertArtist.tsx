@@ -2,7 +2,7 @@ import { getSupabaseServerAdminClient } from "@/packages/supabase/src/clients/se
 
 const upsertArtist = async (artistName: string, userEmail: string) => {
   const client = getSupabaseServerAdminClient();
-  const { data: userData, error: updateError } = await client
+  const { data: userData } = await client
     .from("accounts")
     .select("*")
     .eq("email", userEmail)
@@ -23,30 +23,6 @@ const upsertArtist = async (artistName: string, userEmail: string) => {
     user = newUserData;
   }
 
-  const { data: found, error } = await client
-    .from("artists")
-    .select("*")
-    .eq("name", artistName);
-
-  if (error) throw error;
-
-  if (found?.length) {
-    const artistIds = user.artistIds || [];
-    if (!artistIds.includes(found[0].id)) {
-      await client
-        .from("accounts")
-        .update({
-          artistIds: [...artistIds, found[0].id],
-          timestamp: Date.now(),
-          email: userEmail,
-        })
-        .eq("id", user.id);
-    }
-    if (updateError) throw updateError;
-
-    return found[0];
-  }
-
   const { data, error: insertError } = await client
     .from("artists")
     .insert({
@@ -56,6 +32,8 @@ const upsertArtist = async (artistName: string, userEmail: string) => {
     .select("*")
     .single();
 
+  if (insertError) throw insertError;
+
   await client
     .from("accounts")
     .update({
@@ -64,8 +42,6 @@ const upsertArtist = async (artistName: string, userEmail: string) => {
       timestamp: Date.now(),
     })
     .eq("id", user.id);
-
-  if (insertError) throw insertError;
 
   return data;
 };

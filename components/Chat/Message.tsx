@@ -1,19 +1,13 @@
-import useToolCall from "@/hooks/useToolCall";
 import { useChatProvider } from "@/providers/ChatProvider";
 import { Message as AIMessage } from "ai";
 import { UserIcon, TvMinimalPlay, LoaderCircle } from "lucide-react";
 import { useEffect } from "react";
 import ReactMarkdown from "react-markdown";
 import ToolContent from "../Tools/ToolContent";
+import { useToolCallProvider } from "@/providers/ToolCallProvider";
 
-const Message = ({
-  message,
-  scroll,
-}: {
-  message: AIMessage;
-  scroll: ({ smooth, y }: { smooth: boolean; y: number }) => void;
-}) => {
-  const { loading, answer, toolName, context, fans } = useToolCall(message);
+const Message = ({ message }: { message: AIMessage }) => {
+  const { loading, answer, toolName, context } = useToolCallProvider();
   const { pending } = useChatProvider();
   const Icon = message.role === "user" ? UserIcon : TvMinimalPlay;
   const isHidden =
@@ -22,7 +16,6 @@ const Message = ({
     !message.content &&
     message?.toolInvocations;
   const content = message.content || answer;
-  const scrollTo = () => scroll({ smooth: true, y: Number.MAX_SAFE_INTEGER });
 
   useEffect(() => {
     scrollTo();
@@ -37,14 +30,7 @@ const Message = ({
         <Icon className="h-6 w-6" />
       </div>
       <div className="grow">
-        {context && (
-          <ToolContent
-            toolName={toolName}
-            context={context}
-            fans={fans}
-            scroll={scrollTo}
-          />
-        )}
+        {context && <ToolContent />}
         {loading && !content && toolName === "getCampaign" ? (
           <div className="flex gap-2 items-center">
             <p>is thinking...</p>

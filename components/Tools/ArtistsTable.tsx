@@ -1,15 +1,11 @@
+import { useToolCallProvider } from "@/providers/ToolCallProvider";
 import { ArtistRecord } from "@/types/Artist";
 import { useEffect, useState } from "react";
 
-const ArtistsTable = ({
-  artists,
-  scroll,
-}: {
-  artists: ArtistRecord[];
-  scroll: () => void;
-}) => {
+const ArtistsTable = () => {
+  const { context } = useToolCallProvider();
   const [isCollapsed, setIsCollapsed] = useState(true);
-
+  const artists = context?.artists;
   const artistsList = artists?.slice(0, isCollapsed ? 3 : artists?.length);
 
   useEffect(() => {
@@ -29,7 +25,7 @@ const ArtistsTable = ({
             <th className="text-xs text-left p-1">Action</th>
           </thead>
           <tbody>
-            {artistsList?.map((artist, index) => (
+            {artistsList?.map((artist: ArtistRecord, index: number) => (
               <tr key={index}>
                 <td className="text-xs p-1">{artist.id}</td>
                 <td className="text-xs p-1">{artist.name}</td>

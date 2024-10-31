@@ -1,21 +1,16 @@
 import FanTable from "./FanTable";
 import Artist from "./Artist";
+import { useToolCallProvider } from "@/providers/ToolCallProvider";
 
-interface ToolContentProps {
-  toolName: string | undefined;
-  context: Record<string, unknown>;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  fans: Array<any>;
-  scroll: () => void;
-}
+const ToolContent = () => {
+  const { toolName } = useToolCallProvider();
 
-const ToolContent = ({ toolName, context, fans, scroll }: ToolContentProps) => (
-  <div>
-    {toolName === "getCampaign" && <FanTable fans={fans} scroll={scroll} />}
-    {(toolName === "createArtist" || toolName === "getArtists") && (
-      <Artist context={context} scroll={scroll} />
-    )}
-  </div>
-);
+  return (
+    <div>
+      {toolName === "getCampaign" && <FanTable />}
+      {(toolName === "createArtist" || toolName === "getArtists") && <Artist />}
+    </div>
+  );
+};
 
 export default ToolContent;
