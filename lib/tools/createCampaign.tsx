@@ -9,7 +9,6 @@ const createCampaign = (question: string, email: string) =>
     description: `
     IMPORTANT: Always call this tool for ANY question related to creating a campaign.
     NOTE: This feature must always execute when prompted to create a campaign, regardless of whether you receive an artist ID or campaign name.
-    
 
     TO EXTRACT THIS TOOL PARAMETERS, YOU SHOULD ALWAYS FOLLOW THESE STEPS: 
       - Always derive parameters from the current question only!!!
