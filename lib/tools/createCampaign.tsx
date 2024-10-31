@@ -11,11 +11,7 @@ const createCampaign = (question: string, email: string) =>
     NOTE: This feature must always execute when prompted to create a campaign, regardless of whether you receive an artist ID or campaign name.
     Extract Parameters from the Current Prompt: Always derive parameters from the current question only. Do not reference parameters from previous questions or responses.
     Immediate Parameter Extraction:
-
-    If a question indicates the initiation of a new campaign (e.g., "Create a new campaign," "I want to create a new campaign"), immediately extract and use parameters specified only in the current question.
     Avoid Parameter Duplication: Ensure that the parameters used to create a campaign in response to each request are fresh and specific to that request. Parameters defined in previous interactions must not influence current operations.
-
-    Clarifying Examples:
 
     Must Trigger the Tool:
     "Create a new campaign."
