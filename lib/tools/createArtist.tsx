@@ -11,7 +11,7 @@ const createArtist = (question: string, email: string) =>
     Do NOT attempt to answer questions on these topics without calling this tool first!!!
 
     Example questions that MUST trigger this tool:
-    - "Create a new aritst."
+    - "Create a new artist."
     - "I wanna create a new artist."`,
     parameters: z.object({
       artist_name: z
