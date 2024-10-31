@@ -8,7 +8,7 @@ const createCampaign = (question: string, email: string) =>
   tool({
     description: `
     IMPORTANT: Always call this tool for ANY question related to creating campaign:
-    NOTE!!!: This feature will always run when prompted to create an campaign, even if you don't get an artist id.
+    NOTE!!!: This feature will always run when prompted to create an campaign, even if you don't get an artist or client id.
     Do NOT attempt to answer questions on these topics without calling this tool first!!!
 
     Example questions that MUST trigger this tool:
