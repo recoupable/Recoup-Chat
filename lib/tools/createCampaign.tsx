@@ -13,7 +13,8 @@ const createCampaign = (question: string, email: string) =>
 
     The following queries trigger this tool:
     "Create a new campaign." - In this case, params should be undefined.
-    "I want to create a new campaign." - In this case, params should be undefined.`,
+    "I want to create a new campaign." - In this case, params should be undefined.
+    "Create a new campaign. CampaignName: [campaign name] ArtistId: [artistId]" - In this case, params should be defined.`,
     parameters: z.object({
       campaign_name: z
         .string()
