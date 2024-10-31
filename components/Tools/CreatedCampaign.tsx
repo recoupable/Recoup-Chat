@@ -12,6 +12,7 @@ const CreatedCampaign = () => {
         <a
           href="https://docs.syncstream.ai/syncstream/less-than-syncstreamprovider-greater-than"
           target="_blank"
+          className="underline text-[#4377e5]"
         >
           here
         </a>{" "}
