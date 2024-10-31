@@ -24,12 +24,10 @@ const createCampaign = (question: string, email: string) =>
       campaign_name: z
         .string()
         .optional()
-        .nullable()
         .describe("The campaign name. Do Not Use Previous Value!!!"),
       artist_id: z
         .string()
         .optional()
-        .nullable()
         .describe("The artist id. Do Not Use Previous Value!!!"),
     }),
     execute: async ({ campaign_name, artist_id }) => {
