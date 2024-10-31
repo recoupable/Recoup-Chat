@@ -16,18 +16,16 @@ const createCampaign = (question: string, email: string) =>
       - Parameters defined in previous interactions must not influence current operations!!!
       - Do Not Use Previous Context!!!
       - Each of the above questions must be treated as entirely new requests!!!
-
+      
     Must Trigger the Tool:
     "Create a new campaign."
     "I want to create a new campaign."`,
     parameters: z.object({
       campaign_name: z
         .string()
-        .nullable()
         .describe("The campaign name. Do Not Use Previous Value!!!"),
       artist_id: z
         .string()
-        .nullable()
         .describe("The artist id. Do Not Use Previous Value!!!"),
     }),
     execute: async ({ campaign_name, artist_id }) => {
