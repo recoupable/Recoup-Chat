@@ -14,8 +14,8 @@ const FanTable = () => {
   }, [isCollapsed]);
 
   return (
-    <div>
-      <p className="pl-2 pb-2">{`Here's a table with all the fans from your campaign.`}</p>
+    <div className="pb-2">
+      <p className="pl-2 pb-2 text-sm">{`Here's a table with all the fans from your campaign.`}</p>
       <div className="border-gray-700 border-[1px] rounded-md w-full p-2">
         <table className="w-full">
           <thead>

@@ -2,11 +2,12 @@ import { Message as AIMessage } from "ai";
 import { useToolCallProvider } from "@/providers/ToolCallProvider";
 import { LoaderCircle } from "lucide-react";
 import { useEffect } from "react";
-import ReactMarkdown from "react-markdown";
+import Answer from "./Answer";
 
 const ToolFollowUp = ({ message }: { message: AIMessage }) => {
   const { loading, answer, toolName, context } = useToolCallProvider();
   const content = message.content || answer;
+  const isUser = message.role === "user";
 
   useEffect(() => {
     scrollTo();
@@ -25,12 +26,11 @@ const ToolFollowUp = ({ message }: { message: AIMessage }) => {
               <LoaderCircle className="h-4 w-4 animate-spin" />
             </div>
           ) : (
-            <div className="text-sm font-sans text-pretty break-words">
-              <ReactMarkdown>{content}</ReactMarkdown>
-            </div>
+            <Answer message={message} />
           )}
         </>
       )}
+      {isUser && <Answer message={message} />}
     </div>
   );
 };
