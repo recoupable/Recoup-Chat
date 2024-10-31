@@ -33,11 +33,15 @@ const MissingArtistClient = () => {
         <fieldset className="flex gap-2 items-center">
           <p className="text-sm">Artist Id:</p>
           <select
-            className="!bg-transparent border-gray-700 border-[1px] rounded-md px-2 text-center"
+            className="!bg-transparent border-gray-700 border-[1px] rounded-md px-2 text-center text-sm"
             onChange={(e) => setArtistId(e.target.value)}
           >
             {artists.map((artist: ArtistRecord, index: number) => (
-              <option key={index} className="!bg-black" value={artist.id}>
+              <option
+                key={index}
+                className="!bg-black text-sm"
+                value={artist.id}
+              >
                 {artist.id}
               </option>
             ))}
