@@ -10,6 +10,8 @@ const createCampaign = (question: string, email: string) =>
     IMPORTANT: Always call this tool for ANY question related to creating a campaign:
     NOTE!!!: This feature will always run when prompted to create a campaign, even if you don't get an artist id or campaign name.
     Do NOT attempt to answer questions on these topics without calling this tool first!!!
+    This tool parameter should be taken from the question only.
+    Do NOT get it from a previous question!!!
 
     Example questions that MUST trigger this tool:
     - "Create a new campaign."
