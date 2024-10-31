@@ -7,7 +7,6 @@ import Answer from "./Answer";
 const ToolFollowUp = ({ message }: { message: AIMessage }) => {
   const { loading, answer, toolName, context } = useToolCallProvider();
   const content = message.content || answer;
-  const isUser = message.role === "user";
 
   useEffect(() => {
     scrollTo();
@@ -30,7 +29,7 @@ const ToolFollowUp = ({ message }: { message: AIMessage }) => {
           )}
         </>
       )}
-      {isUser && <Answer message={message} />}
+      {!toolName && <Answer message={message} />}
     </div>
   );
 };
