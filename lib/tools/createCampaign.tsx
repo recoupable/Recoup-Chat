@@ -7,15 +7,20 @@ import readArtists from "../supabase/readArtists";
 const createCampaign = (question: string, email: string) =>
   tool({
     description: `
-    IMPORTANT: Always call this tool for ANY question related to creating a campaign:
-    NOTE!!!: This feature will always run when prompted to create a campaign, even if you don't get an artist id or campaign name.
-    Do NOT attempt to answer questions on these topics without calling this tool first!!!
-    This tool parameter should be taken from the question only.
-    Do NOT get it from a previous question!!!
+    IMPORTANT: Always call this tool for ANY question related to creating a campaign.
+    NOTE: This feature must always execute when prompted to create a campaign, regardless of whether you receive an artist ID or campaign name.
+    Extract Parameters from the Current Prompt: Always derive parameters from the current question only. Do not reference parameters from previous questions or responses.
+    Immediate Parameter Extraction:
 
-    Example questions that MUST trigger this tool:
-    - "Create a new campaign."
-    - "I wanna create a new campaign."`,
+    If a question indicates the initiation of a new campaign (e.g., "Create a new campaign," "I want to create a new campaign"), immediately extract and use parameters specified only in the current question.
+    Avoid Parameter Duplication: Ensure that the parameters used to create a campaign in response to each request are fresh and specific to that request. Parameters defined in previous interactions must not influence current operations.
+
+    Clarifying Examples:
+
+    Must Trigger the Tool:
+    "Create a new campaign."
+    "I want to create a new campaign."
+    Do Not Use Previous Context: Each of the above questions must be treated as entirely new requests, with a unique set of parameters extracted from the current input.`,
     parameters: z.object({
       campaign_name: z
         .string()
