@@ -12,8 +12,8 @@ const createCampaign = (question: string, email: string) =>
     Parameters defined in previous interactions must not influence current operations!!!
 
     The following queries trigger this tool:
-    "Create a new campaign."
-    "I want to create a new campaign."`,
+    "Create a new campaign." - In which case, params should be undefined.
+    "I want to create a new campaign." - In which case, params should be undefined.`,
     parameters: z.object({
       campaign_name: z
         .string()
