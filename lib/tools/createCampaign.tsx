@@ -7,37 +7,35 @@ import readArtists from "../supabase/readArtists";
 const createCampaign = (question: string, email: string) =>
   tool({
     description: `
-    IMPORTANT: Always call this tool for ANY question related to creating campaign:
-    NOTE!!!: This feature will always run when prompted to create an campaign, even if you don't get an artist or client id.
-    Do NOT attempt to answer questions on these topics without calling this tool first!!!
+    IMPORTANT: Always call this tool for ANY question related to creating a campaign.
+    NOTE: This feature must always execute when prompted to create a campaign, regardless of whether you receive an artist ID or campaign name.
 
-    Example questions that MUST trigger this tool:
-    - "Create a new campaign."
-    - "I wanna create a new campaign."`,
+    The following is the list that trigger this tool and whether parameter values are defined or not.
+    "Create a new campaign." -> ALWAYS [undefined].
+    "I want to create a new campaign." -> ALWAYS [undefined].
+    "Create a campaign." -> ALWAYS [undefined]
+    "Create a new campaign. CampaignName: [campaign name] ArtistId: [artistId]" -> [defined]`,
     parameters: z.object({
-      client_id: z
+      campaign_name: z
         .string()
         .optional()
-        .describe("The client id of the campaign to be created."),
-      artist_id: z
-        .string()
-        .optional()
-        .describe("The artist id of the campaign to be created."),
+        .describe("The campaign name to be created."),
+      artist_id: z.string().optional().describe("The artist id to be created."),
     }),
-    execute: async ({ client_id, artist_id }) => {
-      if (!artist_id || !client_id) {
+    execute: async ({ campaign_name, artist_id }) => {
+      if (!artist_id || !campaign_name) {
         const artists = await readArtists(email);
         return {
           context: {
             status: ArtistToolResponse.MISSING_ARTIST_CLIENT_ID,
-            answer: "Please provide the artist id & client id to proceed.",
+            answer: "Please provide the artist id & campaign name to proceed.",
             artists,
           },
           question,
         };
       }
 
-      const data = await upsertCampaign(artist_id, client_id);
+      const data = await upsertCampaign(artist_id, campaign_name);
       return {
         context: {
           status: ArtistToolResponse.CREATED_CAMPAIGN,
