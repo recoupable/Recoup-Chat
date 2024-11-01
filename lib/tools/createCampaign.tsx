@@ -2,7 +2,6 @@ import { z } from "zod";
 import { tool } from "ai";
 import { ArtistToolResponse } from "@/types/Tool";
 import upsertCampaign from "../supabase/upsertCampaign";
-import readArtists from "../supabase/readArtists";
 
 const createCampaign = (question: string, email: string) =>
   tool({
@@ -23,23 +22,21 @@ const createCampaign = (question: string, email: string) =>
       artist_id: z.string().optional().describe("The artist id to be created."),
     }),
     execute: async ({ campaign_name, artist_id }) => {
-      if (!artist_id || !campaign_name) {
-        const artists = await readArtists(email);
+      const response = await upsertCampaign(artist_id, campaign_name, email);
+      if (response?.error) {
         return {
           context: {
             status: ArtistToolResponse.MISSING_ARTIST_CLIENT_ID,
             answer: "Please provide the artist id & campaign name to proceed.",
-            artists,
+            artists: response?.artists || [],
           },
           question,
         };
       }
-
-      const data = await upsertCampaign(artist_id, campaign_name);
       return {
         context: {
           status: ArtistToolResponse.CREATED_CAMPAIGN,
-          data: data,
+          data: response,
         },
         question,
       };
