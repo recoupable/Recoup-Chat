@@ -50,6 +50,7 @@ const useToolChat = (question?: string, context?: any, toolName?: any) => {
     setTiktokTrends,
     setPending,
     answer,
+    tiktokTrends,
   };
 };
 
