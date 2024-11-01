@@ -10,8 +10,9 @@ const ToolContent = () => {
     <div>
       {toolName === "getCampaign" && <FanTable />}
       {(toolName === "createArtist" || toolName === "getArtists") && <Artist />}
-      {toolName === "createCampaign" ||
-        (toolName === "getCampaigns" && <Campaign />)}
+      {(toolName === "createCampaign" || toolName === "getCampaigns") && (
+        <Campaign />
+      )}
     </div>
   );
 };
