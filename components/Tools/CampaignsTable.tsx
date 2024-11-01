@@ -69,7 +69,7 @@ const CampaignsTable = () => {
                 </td>
               </tr>
             ))}
-            {campaignsList?.length > 3 && (
+            {campaigns?.length > 3 && (
               <tr>
                 <td colSpan={3} className="text-center">
                   <button
