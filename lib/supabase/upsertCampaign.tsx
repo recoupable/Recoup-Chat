@@ -7,13 +7,21 @@ const upsertCampaign = async (
   client_id: string | undefined,
   email: string,
 ) => {
+  const artists = await readArtists(email);
   try {
-    const artists = await readArtists(email);
-    if (!artist_id || !client_id || validate(artist_id || "")) {
-      return { error: "null values.", artists };
+    if (!artist_id || !client_id || !validate(artist_id || "")) {
+      return { error: "invalid values.", artists };
     }
 
     const client = getSupabaseServerAdminClient();
+    const { data: artist } = await client
+      .from("artists")
+      .select("*")
+      .eq("id", artist_id)
+      .single();
+    if (!artist) {
+      return { error: "artist is not existed", artists };
+    }
 
     const { data, error: insertError } = await client
       .from("campaigns")
@@ -28,7 +36,10 @@ const upsertCampaign = async (
     if (insertError) return { error: insertError, artists };
     return data;
   } catch (error) {
-    return error;
+    return {
+      error,
+      artists,
+    };
   }
 };
 
