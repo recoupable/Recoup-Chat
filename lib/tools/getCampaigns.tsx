@@ -5,7 +5,7 @@ import readCampaigns from "../supabase/readCampaigns";
 
 const getCampaigns = (question: string, email: string) =>
   tool({
-    description: `IMPORTANT: Always call this tool for ANY question related to regarding the campaigns I manage or have:
+    description: `IMPORTANT: Always call this tool for ANY question related to the campaigns I manage or have:
     Do NOT attempt to answer questions on these topics without calling this tool first.
 
     Example questions that MUST trigger this tool:
