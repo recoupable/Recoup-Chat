@@ -2,14 +2,13 @@ import { useChatProvider } from "@/providers/ChatProvider";
 import { LoaderCircle, TvMinimalPlay } from "lucide-react";
 
 const Thinking = () => {
-  const { messages } = useChatProvider();
-  const message = messages?.[messages?.length - 1];
+  const { toolCall } = useChatProvider();
   // const toolInvocations = [...(message.toolInvocations || [])];
   // const toolInvocationResult = toolInvocations?.filter(
   //   (toolInvocation) => toolInvocation.state === "result",
   // )?.[0];
   // const toolName = toolInvocationResult?.toolName;
-  console.log("ZIAD HERE", message);
+  console.log("ZIAD HERE", toolCall);
 
   return (
     <div className="p-3 flex gap-2 w-full max-w-3xl mx-auto items-center pb-2">

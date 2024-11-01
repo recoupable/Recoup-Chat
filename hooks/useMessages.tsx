@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import useSuggestions from "./useSuggestions";
 import { useChat as useAiChat } from "ai/react";
 import { useCsrfToken } from "@/packages/shared/src/hooks";
@@ -15,6 +15,7 @@ const useMessages = () => {
   const { conversationRef } = useConversations();
   const queryClient = useQueryClient();
   const { email } = useUserProvider();
+  const [toolCall, setToolCall] = useState(null);
 
   const pathname = usePathname();
 
@@ -39,9 +40,10 @@ const useMessages = () => {
     initialMessages,
     onError: console.error,
     onToolCall: ({ toolCall }) => {
-      console.log("ZIAD TOOL CALL", toolCall);
+      setToolCall(toolCall as any);
     },
     onFinish: async (message) => {
+      setToolCall(null);
       await finalCallback(
         message,
         messagesRef.current[messagesRef.current.length - 2],
@@ -79,6 +81,7 @@ const useMessages = () => {
     messagesRef,
     pending,
     fetchInitialMessages,
+    toolCall,
   };
 };
 
