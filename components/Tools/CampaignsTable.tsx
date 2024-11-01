@@ -1,4 +1,3 @@
-import getSortedRows from "@/lib/getSortedRows";
 import { useToolCallProvider } from "@/providers/ToolCallProvider";
 import { CampaignRecord } from "@/types/Artist";
 import { FAN_TYPE } from "@/types/fans";
@@ -8,14 +7,22 @@ const CampaignsTable = () => {
   const { context, scrollTo } = useToolCallProvider();
   const [isCollapsed, setIsCollapsed] = useState(true);
   const campaigns = context?.campaigns;
-  const sortedCampaigns = getSortedRows(campaigns);
-  const campaignsList = sortedCampaigns?.slice(
+  const campaignsList = campaigns?.slice(
     0,
     isCollapsed ? 3 : campaigns?.length,
   );
 
   const getRecentFanTimestamp = (fans: FAN_TYPE[]) => {
-    const sortedFans = getSortedRows(fans);
+    const sortedFans = fans?.sort((a, b) => {
+      const timestampA = a.timestamp
+        ? new Date(a.timestamp).getTime()
+        : Number.NEGATIVE_INFINITY;
+      const timestampB = b.timestamp
+        ? new Date(b.timestamp).getTime()
+        : Number.NEGATIVE_INFINITY;
+      return timestampA - timestampB;
+    });
+
     if (!sortedFans?.length) return "";
     return sortedFans[0].timestamp
       ? new Date(parseInt(sortedFans[0].timestamp, 10)).toLocaleString()
@@ -62,7 +69,7 @@ const CampaignsTable = () => {
                 </td>
               </tr>
             ))}
-            {sortedCampaigns?.length > 3 && (
+            {campaigns?.length > 3 && (
               <tr>
                 <td colSpan={6} className="text-center">
                   <button
