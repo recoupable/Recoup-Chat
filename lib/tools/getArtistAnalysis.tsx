@@ -4,7 +4,7 @@ import { ArtistToolResponse } from "@/types/Tool";
 
 const getArtistAnalysis = (question: string) =>
   tool({
-    description: `IMPORTANT: Always call this tool for question related to artist ANALYTICS:
+    description: `IMPORTANT: Always call this tool for questions related to artist ANALYTICS:
     Do NOT attempt to answer questions on these topics without calling this tool first.
 
     Example questions that MUST trigger this tool:
