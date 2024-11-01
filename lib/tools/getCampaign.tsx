@@ -6,7 +6,7 @@ import { tool } from "ai";
 const getCampaign = (question: string) =>
   tool({
     description: `IMPORTANT: Always call this tool for ANY question related to the following topics:
-    1. Artists(except the case related to analytics and management!!!)
+    1. Artists
     2. Albums
     3. Episodes
     4. Tracks
