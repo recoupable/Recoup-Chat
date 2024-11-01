@@ -1,7 +1,7 @@
 import { useChatProvider } from "@/providers/ChatProvider";
 import { Message, useChat } from "ai/react";
 import { useParams } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { v4 as uuidV4 } from "uuid";
 
 const useToolChat = (question?: string, context?: any, toolName?: any) => {
@@ -13,6 +13,7 @@ const useToolChat = (question?: string, context?: any, toolName?: any) => {
     ...(context !== null && { context }),
     ...(tiktokTrends !== null && { trends: tiktokTrends }),
   };
+  const [beginCall, setBeginCall] = useState(false);
 
   const {
     messages,
@@ -44,6 +45,19 @@ const useToolChat = (question?: string, context?: any, toolName?: any) => {
     (message: Message) => message.role === "assistant",
   )?.[0]?.content;
 
+  useEffect(() => {
+    const init = async () => {
+      await append({
+        id: uuidV4(),
+        content: question as string,
+        role: "user",
+      });
+      setBeginCall(false);
+    };
+    if (!beginCall || !question) return;
+    init();
+  }, [beginCall, question]);
+
   return {
     messages,
     append,
@@ -52,6 +66,7 @@ const useToolChat = (question?: string, context?: any, toolName?: any) => {
     setPending,
     answer,
     tiktokTrends,
+    setBeginCall,
   };
 };
 

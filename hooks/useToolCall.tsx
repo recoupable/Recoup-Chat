@@ -15,8 +15,14 @@ const useToolCall = (message: Message) => {
   const [isCalled, setIsCalled] = useState(false);
   const { toolName, context, question } = useToolCallParams(message);
   const fans = context?.fans?.filter((fan: FAN_TYPE) => fan.name !== "Unknown");
-  const { append, loading, setTiktokTrends, answer, setPending, tiktokTrends } =
-    useToolChat(question, context, toolName);
+  const {
+    setBeginCall,
+    setTiktokTrends,
+    setPending,
+    answer,
+    loading,
+    tiktokTrends,
+  } = useToolChat(question, context, toolName);
 
   useEffect(() => {
     const init = async () => {
@@ -49,11 +55,7 @@ const useToolCall = (message: Message) => {
           setTiktokTrends(data.trends);
           setPending(false);
         }
-        await append({
-          id: uuidV4(),
-          content: question,
-          role: "user",
-        });
+        setBeginCall(true);
       }
     };
     if (!context || !question) return;
