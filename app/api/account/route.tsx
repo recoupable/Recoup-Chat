@@ -10,9 +10,10 @@ export async function POST(req: NextRequest) {
     const { data: found } = await client
       .from("accounts")
       .select("*")
-      .eq("email", email)
-      .single();
-    if (found) return Response.json({ data: found }, { status: 200 });
+      .eq("email", email);
+
+    if (found?.length)
+      return Response.json({ data: found[0] }, { status: 200 });
 
     const { data: newAccount } = await client
       .from("accounts")
@@ -24,7 +25,7 @@ export async function POST(req: NextRequest) {
       .select("*")
       .single();
 
-    return Response.json({ date: newAccount }, { status: 200 });
+    return Response.json({ data: newAccount }, { status: 200 });
   } catch (error) {
     console.error(error);
     const message = error instanceof Error ? error.message : "failed";
