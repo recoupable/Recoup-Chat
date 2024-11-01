@@ -4,7 +4,6 @@ import { v4 as uuidV4 } from "uuid";
 
 const SubmitArtist = () => {
   const [artistName, setArtistName] = useState("");
-
   const { append } = useChatProvider();
 
   const handleSubmit = async () => {

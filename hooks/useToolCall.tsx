@@ -6,6 +6,7 @@ import { v4 as uuidV4 } from "uuid";
 import useToolChat from "./useToolChat";
 import { useParams } from "next/navigation";
 import getArtistMessage from "@/lib/getArtistMessage";
+import getCampaignMessage from "@/lib/getCampaignMessage";
 import { ArtistToolResponse } from "@/types/Tool";
 
 const useToolCall = (message: Message) => {
@@ -32,10 +33,20 @@ const useToolCall = (message: Message) => {
   useEffect(() => {
     if (!context || !question) return;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const newMessage: any = getArtistMessage(toolName, context);
-    if (newMessage) {
+    const newArtistMessage: any = getArtistMessage(toolName, context);
+    if (newArtistMessage) {
       finalCallback(
-        newMessage,
+        newArtistMessage,
+        { id: uuidV4(), content: question, role: "user" },
+        conversationId as string,
+      );
+      return;
+    }
+
+    const newCampaignMessage: any = getCampaignMessage(toolName, context);
+    if (newCampaignMessage) {
+      finalCallback(
+        newCampaignMessage,
         { id: uuidV4(), content: question, role: "user" },
         conversationId as string,
       );

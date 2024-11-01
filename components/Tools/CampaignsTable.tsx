@@ -1,12 +1,33 @@
 import { useToolCallProvider } from "@/providers/ToolCallProvider";
-import { ArtistRecord } from "@/types/Artist";
+import { CampaignRecord } from "@/types/Artist";
+import { FAN_TYPE } from "@/types/fans";
 import { useEffect, useState } from "react";
 
-const ArtistsTable = () => {
+const CampaignsTable = () => {
   const { context } = useToolCallProvider();
   const [isCollapsed, setIsCollapsed] = useState(true);
-  const artists = context?.artists;
-  const artistsList = artists?.slice(0, isCollapsed ? 3 : artists?.length);
+  const campaigns = context?.campaigns;
+  const campaignsList = campaigns?.slice(
+    0,
+    isCollapsed ? 3 : campaigns?.length,
+  );
+
+  const getRecentFanTimestamp = (fans: FAN_TYPE[]) => {
+    const sortedFans = fans?.sort((a, b) => {
+      const timestampA = a.timestamp
+        ? new Date(a.timestamp).getTime()
+        : Number.NEGATIVE_INFINITY;
+      const timestampB = b.timestamp
+        ? new Date(b.timestamp).getTime()
+        : Number.NEGATIVE_INFINITY;
+      return timestampA - timestampB;
+    });
+
+    if (sortedFans?.length === 0) return "Unknown";
+    return sortedFans[0].timestamp
+      ? new Date(sortedFans[0].timestamp).toLocaleDateString()
+      : "Unknown";
+  };
 
   useEffect(() => {
     scroll();
@@ -20,29 +41,33 @@ const ArtistsTable = () => {
         <table className="w-full">
           <thead>
             <th className="text-xs text-left p-1">ID</th>
-            <th className="text-xs text-left p-1">Name</th>
-            <th className="text-xs text-left p-1">Updated At</th>
+            <th className="text-xs text-left p-1">NumberOfFans</th>
+            <th className="text-xs text-left p-1">CreatedOn</th>
+            <th className="text-xs text-left p-1">MostRecentFan</th>
             <th className="text-xs text-left p-1">Action</th>
           </thead>
           <tbody>
-            {artistsList?.map((artist: ArtistRecord, index: number) => (
+            {campaignsList?.map((campaign: CampaignRecord, index: number) => (
               <tr key={index}>
-                <td className="text-xs p-1">{artist.id}</td>
-                <td className="text-xs p-1">{artist.name}</td>
+                <td className="text-xs p-1">{campaign.id}</td>
+                <td className="text-xs p-1">{campaign?.fans?.length || 0}</td>
                 <td className="text-xs p-1">
-                  {new Date(artist.timestamp).toLocaleString()}
+                  {new Date(campaign.timestamp).toLocaleString()}
+                </td>
+                <td className="text-xs p-1">
+                  {getRecentFanTimestamp(campaign?.fans)}
                 </td>
                 <td className="text-xs p-1">
                   <button
                     type="button"
                     className="px-3 py-1 text-sm border-gray-700 border-[1px] rounded-md text-sm"
                   >
-                    Get campaigns
+                    Get a campaign.
                   </button>
                 </td>
               </tr>
             ))}
-            {artists?.length > 3 && (
+            {campaignsList?.length > 3 && (
               <tr>
                 <td colSpan={3} className="text-center">
                   <button
@@ -61,4 +86,4 @@ const ArtistsTable = () => {
   );
 };
 
-export default ArtistsTable;
+export default CampaignsTable;

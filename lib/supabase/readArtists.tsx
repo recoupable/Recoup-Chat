@@ -8,10 +8,25 @@ const readArtists = async (userEmail: string) => {
     .eq("email", userEmail)
     .single();
 
+  let user = userData;
+
+  if (!userData) {
+    const newUserData = await client
+      .from("accounts")
+      .insert({
+        email: userEmail,
+        timestamp: Date.now(),
+        artistIds: [],
+      })
+      .select("*")
+      .single();
+    user = newUserData;
+  }
+
   const { data: artists, error } = await client
     .from("artists")
     .select("*")
-    .in("id", userData.artistIds || []);
+    .in("id", user.artistIds || []);
 
   if (error) throw error;
 

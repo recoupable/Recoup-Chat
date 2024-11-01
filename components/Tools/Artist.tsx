@@ -2,36 +2,27 @@ import MissingArtist from "./MissingArtist";
 import CreatedArtist from "./CreatedArtist";
 import { ArtistToolResponse } from "@/types/Tool";
 import ArtistsTable from "./ArtistsTable";
-import { ArtistRecord } from "@/types/Artist";
 import SubmitArtist from "./SubmitArtist";
+import { useToolCallProvider } from "@/providers/ToolCallProvider";
 import MissingTikTok from "./MissingTikTok";
 import TikTokPfp from "./TikTokPfp";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const Artist = ({ context, scroll, question, loading }: any) => {
-  const artists = context?.artists?.filter(
-    (artist: ArtistRecord) => artist.name !== "Unknown",
-  );
+const Artist = () => {
+  const { context } = useToolCallProvider();
+  const status = context?.status;
 
   return (
     <>
-      {context?.status === ArtistToolResponse.MISSING_ARTIST_NAME && (
-        <MissingArtist answer={context.answer} question={question} />
+      {status === ArtistToolResponse.MISSING_ARTIST_NAME && (
+        <MissingArtist description="Please provide the artist name to proceed." />
       )}
-      {context?.status ===
-        ArtistToolResponse.MISSING_ARTIST_TIKTOK_USERNAME && (
-        <MissingTikTok answer={context.answer} question={question} />
+      {status === ArtistToolResponse.CREATED_ARTIST && <CreatedArtist />}
+      {status === ArtistToolResponse.ARTIST_LIST && <ArtistsTable />}
+      {status === ArtistToolResponse.NO_ARTISTS && <SubmitArtist />}
+      {status === ArtistToolResponse.MISSING_ARTIST_TIKTOK_USERNAME && (
+        <MissingTikTok />
       )}
-      {context?.status === ArtistToolResponse.TIKTOK_TRENDS && (
-        <TikTokPfp trends={context.trends} loading={loading} />
-      )}
-      {context?.status === ArtistToolResponse.CREATED_ARTIST && (
-        <CreatedArtist context={context} />
-      )}
-      {context?.status === ArtistToolResponse.ARTIST_LIST && (
-        <ArtistsTable artists={artists} scroll={scroll} />
-      )}
-      {context?.status === ArtistToolResponse.NO_ARTISTS && <SubmitArtist />}
+      {status === ArtistToolResponse.TIKTOK_TRENDS && <TikTokPfp />}
     </>
   );
 };

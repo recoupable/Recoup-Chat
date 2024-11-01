@@ -10,7 +10,7 @@ import getFollows from "./getFollows";
 const getFans = async (client: SupabaseClient<Database, "public">) => {
   const { data: fans } = await client.from("fans").select("*");
 
-  if (!fans?.length) return "No fans.";
+  const fansdata = fans || [];
 
   let playlists: string[] = [];
   let episodes: string[] = [];
@@ -19,14 +19,14 @@ const getFans = async (client: SupabaseClient<Database, "public">) => {
   let audioBooks: Array<string> = [];
   let shows: Array<string> = [];
   let tracks: Array<Track> = [];
-  const premiumCount = (fans as unknown as FAN_TYPE[]).filter(
+  const premiumCount = (fansdata as unknown as FAN_TYPE[]).filter(
     (fan) => fan.product === "premium",
   ).length;
-  const freeCount = (fans as unknown as FAN_TYPE[]).filter(
+  const freeCount = (fansdata as unknown as FAN_TYPE[]).filter(
     (fan) => fan.product === "free",
   ).length;
 
-  const rows = fans.map((fan) => {
+  const rows = fansdata.map((fan) => {
     const data = getFandata(fan as unknown as FAN_TYPE);
     playlists = playlists.concat(data.playlist);
     episodes = episodes.concat(data.episode);

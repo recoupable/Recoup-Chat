@@ -1,6 +1,19 @@
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const CreatedArtist = ({ context }: any) => {
+import { useChatProvider } from "@/providers/ChatProvider";
+import { useToolCallProvider } from "@/providers/ToolCallProvider";
+import { v4 as uuidV4 } from "uuid";
+
+const CreatedArtist = () => {
+  const { context } = useToolCallProvider();
+  const { append } = useChatProvider();
   const data = context?.data;
+
+  const handleSubmit = () => {
+    append({
+      id: uuidV4(),
+      content: `Create a new campaign.`,
+      role: "user",
+    });
+  };
 
   return (
     <div>
@@ -12,6 +25,7 @@ const CreatedArtist = ({ context }: any) => {
       <button
         type="button"
         className="border-gray-700 border-[1px] px-3 py-1 rounded-full text-sm"
+        onClick={handleSubmit}
       >
         Create a new campaign
       </button>
