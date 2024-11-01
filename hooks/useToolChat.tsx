@@ -7,8 +7,12 @@ import { v4 as uuidV4 } from "uuid";
 const useToolChat = (question?: string, context?: any, toolName?: any) => {
   const { finalCallback, clearQuery } = useChatProvider();
   const { conversation: conversationId } = useParams();
-  const [tiktokTrends, setTiktokTrends] = useState(null);
+  const [tiktokTrends, setTiktokTrends] = useState<any>(null);
   const [pending, setPending] = useState(false);
+  const toolCallContext = {
+    ...(context !== null && { context }),
+    ...(tiktokTrends !== null && { trends: tiktokTrends }),
+  };
 
   const {
     messages,
@@ -18,10 +22,7 @@ const useToolChat = (question?: string, context?: any, toolName?: any) => {
     api: "/api/tool_call",
     body: {
       question,
-      context: {
-        ...context,
-        tiktokTrends,
-      },
+      context: toolCallContext,
       toolName,
     },
     onError: console.error,

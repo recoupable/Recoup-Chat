@@ -15,11 +15,8 @@ const useToolCall = (message: Message) => {
   const [isCalled, setIsCalled] = useState(false);
   const { toolName, context, question } = useToolCallParams(message);
   const fans = context?.fans?.filter((fan: FAN_TYPE) => fan.name !== "Unknown");
-  const { append, loading, setTiktokTrends, answer, setPending } = useToolChat(
-    question,
-    context,
-    toolName,
-  );
+  const { append, loading, setTiktokTrends, answer, setPending, tiktokTrends } =
+    useToolChat(question, context, toolName);
 
   useEffect(() => {
     const init = async () => {
@@ -49,10 +46,10 @@ const useToolCall = (message: Message) => {
             `/api/trends?handle=${context?.username}`,
           );
           const data = await response.json();
-          setTiktokTrends(data);
+          setTiktokTrends(data.trends);
           setPending(false);
         }
-        append({
+        await append({
           id: uuidV4(),
           content: question,
           role: "user",
@@ -70,6 +67,7 @@ const useToolCall = (message: Message) => {
     question,
     context,
     fans,
+    tiktokTrends,
   };
 };
 
