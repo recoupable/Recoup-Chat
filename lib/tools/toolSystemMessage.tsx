@@ -5,9 +5,11 @@ const toolSystemMessage = (context: any, question: any, toolName: string) => {
     Context: ${JSON.stringify(context)}
     Question: ${question}
 
-    Context:
-    - You have access to TikTok trends data concerning various artists.
-    - Your task is to analyze this data to generate insights focused on creating effective campaigns for musicians.
+    Reply Format:
+    - Overview 
+      3 sentences with details including their TikTok following, number of likes, music style, and how they connect with their audience, particularly regarding their recent singles.
+    - Insights
+      2 sentences with insights focused on creating effective campaigns for musicians.
     
     Make sure to provide actionable insights focused on creating new campaigns, such as games that players can play while listening to music.
     `;
