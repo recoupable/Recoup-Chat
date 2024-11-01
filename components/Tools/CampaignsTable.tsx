@@ -1,33 +1,32 @@
 import { useToolCallProvider } from "@/providers/ToolCallProvider";
 import { CampaignRecord } from "@/types/Artist";
-import { FAN_TYPE } from "@/types/fans";
+// import { FAN_TYPE } from "@/types/fans";
 import { useEffect, useState } from "react";
 
 const CampaignsTable = () => {
   const { context } = useToolCallProvider();
   const [isCollapsed, setIsCollapsed] = useState(true);
   const campaigns = context?.campaigns;
-  const campaignsList = campaigns?.slice(
-    0,
-    isCollapsed ? 3 : campaigns?.length,
-  );
+  console.log("ZIAD", campaigns);
+  // eslint-disable-next-line
+  const campaignsList = [] as any;
 
-  const getRecentFanTimestamp = (fans: FAN_TYPE[]) => {
-    const sortedFans = fans?.sort((a, b) => {
-      const timestampA = a.timestamp
-        ? new Date(a.timestamp).getTime()
-        : Number.NEGATIVE_INFINITY;
-      const timestampB = b.timestamp
-        ? new Date(b.timestamp).getTime()
-        : Number.NEGATIVE_INFINITY;
-      return timestampA - timestampB;
-    });
+  // const getRecentFanTimestamp = (fans: FAN_TYPE[]) => {
+  //   const sortedFans = fans?.sort((a, b) => {
+  //     const timestampA = a.timestamp
+  //       ? new Date(a.timestamp).getTime()
+  //       : Number.NEGATIVE_INFINITY;
+  //     const timestampB = b.timestamp
+  //       ? new Date(b.timestamp).getTime()
+  //       : Number.NEGATIVE_INFINITY;
+  //     return timestampA - timestampB;
+  //   });
 
-    if (sortedFans?.length === 0) return "Unknown";
-    return sortedFans[0].timestamp
-      ? new Date(sortedFans[0].timestamp).toLocaleDateString()
-      : "Unknown";
-  };
+  //   if (sortedFans?.length === 0) return "Unknown";
+  //   return sortedFans[0].timestamp
+  //     ? new Date(sortedFans[0].timestamp).toLocaleDateString()
+  //     : "Unknown";
+  // };
 
   useEffect(() => {
     scroll();
@@ -57,7 +56,7 @@ const CampaignsTable = () => {
                   {new Date(campaign.timestamp).toLocaleString()}
                 </td>
                 <td className="text-xs p-1">
-                  {getRecentFanTimestamp(campaign?.fans)}
+                  {/* {getRecentFanTimestamp(campaign?.fans)} */}
                 </td>
                 <td className="text-xs p-1">
                   <button
