@@ -64,7 +64,7 @@ const CampaignsTable = () => {
                     type="button"
                     className="px-3 py-1 text-sm border-gray-700 border-[1px] rounded-md text-sm"
                   >
-                    Get a campaign.
+                    More Info
                   </button>
                 </td>
               </tr>
