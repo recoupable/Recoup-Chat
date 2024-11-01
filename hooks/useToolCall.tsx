@@ -7,27 +7,19 @@ import useToolChat from "./useToolChat";
 import { useParams } from "next/navigation";
 import { ArtistToolResponse } from "@/types/Tool";
 import getToolCallMessage from "@/lib/getToolCallMessage";
+import useToolCallParams from "./useToolCallParams";
 
 const useToolCall = (message: Message) => {
   const { finalCallback } = useChatProvider();
   const { conversation: conversationId } = useParams();
   const [isCalled, setIsCalled] = useState(false);
-  const toolInvocations = [...(message.toolInvocations || [])];
-  const toolInvocationResult = toolInvocations?.filter(
-    (toolInvocation) => toolInvocation.state === "result",
-  )?.[0];
-  const question = toolInvocationResult?.result?.question || "";
-  const context = toolInvocationResult?.result?.context || "";
-  const toolName = toolInvocationResult?.toolName;
+  const { toolName, context, question } = useToolCallParams(message);
   const fans = context?.fans?.filter((fan: FAN_TYPE) => fan.name !== "Unknown");
-  const { messages, append, loading, setTiktokTrends } = useToolChat(
+  const { append, loading, setTiktokTrends, answer, setPending } = useToolChat(
     question,
     context,
     toolName,
   );
-  const answer = messages.filter(
-    (message: Message) => message.role === "assistant",
-  )?.[0]?.content;
 
   useEffect(() => {
     const init = async () => {
@@ -52,11 +44,13 @@ const useToolCall = (message: Message) => {
           context.status === ArtistToolResponse.TIKTOK_TRENDS)
       ) {
         if (toolName === "getArtistAnalysis") {
+          setPending(true);
           const response = await fetch(
             `/api/trends?handle=${context?.username}`,
           );
           const data = await response.json();
           setTiktokTrends(data);
+          setPending(false);
         }
         append({
           id: uuidV4(),
