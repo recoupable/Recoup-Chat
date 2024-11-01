@@ -71,7 +71,7 @@ const CampaignsTable = () => {
             ))}
             {campaigns?.length > 3 && (
               <tr>
-                <td colSpan={3} className="text-center">
+                <td colSpan={6} className="text-center">
                   <button
                     type="button"
                     onClick={() => setIsCollapsed(!isCollapsed)}
