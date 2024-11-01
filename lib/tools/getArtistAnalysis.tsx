@@ -1,8 +1,6 @@
 import { z } from "zod";
 import { tool } from "ai";
-import getTiktokTrends from "../apify/getTiktokTrends";
 import { ArtistToolResponse } from "@/types/Tool";
-import getTikTokContext from "../apify/getTikTokContext";
 
 const getArtistAnalysis = (question: string) =>
   tool({
@@ -30,12 +28,9 @@ const getArtistAnalysis = (question: string) =>
           },
           question,
         };
-      const trends = await getTiktokTrends(user_name);
-      const trendsContext = getTikTokContext(trends);
       return {
         context: {
           status: ArtistToolResponse.TIKTOK_TRENDS,
-          trends: trendsContext,
           username: user_name,
         },
         question,

@@ -1,11 +1,13 @@
 import { useChatProvider } from "@/providers/ChatProvider";
 import { useChat } from "ai/react";
 import { useParams } from "next/navigation";
+import { useState } from "react";
 import { v4 as uuidV4 } from "uuid";
 
 const useToolChat = (question?: string, context?: any, toolName?: any) => {
   const { finalCallback, clearQuery } = useChatProvider();
   const { conversation: conversationId } = useParams();
+  const [tiktokTrends, setTiktokTrends] = useState(null);
 
   const {
     messages,
@@ -15,7 +17,10 @@ const useToolChat = (question?: string, context?: any, toolName?: any) => {
     api: "/api/tool_call",
     body: {
       question,
-      context,
+      context: {
+        ...context,
+        tiktokTrends,
+      },
       toolName,
     },
     onError: console.error,
@@ -37,6 +42,7 @@ const useToolChat = (question?: string, context?: any, toolName?: any) => {
     messages,
     append,
     loading,
+    setTiktokTrends,
   };
 };
 
