@@ -10,7 +10,7 @@ export async function POST(req: NextRequest) {
     const { data: found } = await client
       .from("accounts")
       .select("*")
-      .eq("email", "tech.eng.me+10312@gmail.com");
+      .eq("email", email);
 
     if (found?.length)
       return Response.json({ data: found[0] }, { status: 200 });
