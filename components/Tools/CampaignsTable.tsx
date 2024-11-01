@@ -4,7 +4,7 @@ import { FAN_TYPE } from "@/types/fans";
 import { useEffect, useState } from "react";
 
 const CampaignsTable = () => {
-  const { context } = useToolCallProvider();
+  const { context, scrollTo } = useToolCallProvider();
   const [isCollapsed, setIsCollapsed] = useState(true);
   const campaigns = context?.campaigns;
   const campaignsList = campaigns?.slice(
@@ -23,20 +23,20 @@ const CampaignsTable = () => {
       return timestampA - timestampB;
     });
 
-    if (sortedFans?.length === 0) return "Unknown";
+    if (!sortedFans?.length) return "";
     return sortedFans[0].timestamp
-      ? new Date(sortedFans[0].timestamp).toLocaleDateString()
+      ? new Date(parseInt(sortedFans[0].timestamp, 10)).toLocaleString()
       : "Unknown";
   };
 
   useEffect(() => {
-    scroll();
+    scrollTo();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isCollapsed]);
 
   return (
     <div>
-      <p className="pl-2 pb-2">{`Here's a table with all the artists which you are managing.`}</p>
+      <p className="pl-2 pb-2 text-sm">{`Here's a table with all the campaigns which you are managing.`}</p>
       <div className="border-gray-700 border-[1px] rounded-md w-full p-2">
         <table className="w-full">
           <thead>
@@ -64,14 +64,14 @@ const CampaignsTable = () => {
                     type="button"
                     className="px-3 py-1 text-sm border-gray-700 border-[1px] rounded-md text-sm"
                   >
-                    Get a campaign.
+                    More Info
                   </button>
                 </td>
               </tr>
             ))}
-            {campaignsList?.length > 3 && (
+            {campaigns?.length > 3 && (
               <tr>
-                <td colSpan={3} className="text-center">
+                <td colSpan={6} className="text-center">
                   <button
                     type="button"
                     onClick={() => setIsCollapsed(!isCollapsed)}
