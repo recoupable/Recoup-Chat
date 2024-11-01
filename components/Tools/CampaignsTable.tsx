@@ -41,6 +41,7 @@ const CampaignsTable = () => {
         <table className="w-full">
           <thead>
             <th className="text-xs text-left p-1">ID</th>
+            <th className="text-xs text-left p-1">Campaign Name</th>
             <th className="text-xs text-left p-1">NumberOfFans</th>
             <th className="text-xs text-left p-1">CreatedOn</th>
             <th className="text-xs text-left p-1">MostRecentFan</th>
@@ -50,6 +51,7 @@ const CampaignsTable = () => {
             {campaignsList?.map((campaign: CampaignRecord, index: number) => (
               <tr key={index}>
                 <td className="text-xs p-1">{campaign.id}</td>
+                <td className="text-xs p-1">{campaign.clientId}</td>
                 <td className="text-xs p-1">{campaign?.fans?.length || 0}</td>
                 <td className="text-xs p-1">
                   {new Date(campaign.timestamp).toLocaleString()}
