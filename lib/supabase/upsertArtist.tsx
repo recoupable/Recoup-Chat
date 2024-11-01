@@ -5,12 +5,11 @@ const upsertArtist = async (artistName: string, userEmail: string) => {
   const { data: userData } = await client
     .from("accounts")
     .select("*")
-    .eq("email", userEmail)
-    .single();
+    .eq("email", userEmail);
 
-  let user = userData;
+  let user = userData?.[0];
 
-  if (!userData) {
+  if (!userData?.length) {
     const newUserData = await client
       .from("accounts")
       .insert({

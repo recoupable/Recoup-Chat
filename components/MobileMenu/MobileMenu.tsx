@@ -43,7 +43,9 @@ const MobileMenu = ({ toggleMenu }: { toggleMenu: () => void }) => {
       <div className="flex justify-between mb-6">
         <button type="button" onClick={() => goToItem()}>
           <Image
-            src={resolvedTheme === 'dark' ? '/logo-light.png' : '/logo-dark.png'}
+            src={
+              resolvedTheme === "dark" ? "/logo-light.png" : "/logo-dark.png"
+            }
             width={45}
             height={45}
             alt="logo"

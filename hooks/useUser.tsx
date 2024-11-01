@@ -28,7 +28,7 @@ const useUser = () => {
           "Content-Type": "application/json",
         },
       };
-      const response = await fetch("/api/email", config);
+      const response = await fetch("/api/account", config);
 
       if (!response.ok) {
         throw new Error(

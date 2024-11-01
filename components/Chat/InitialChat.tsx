@@ -2,9 +2,9 @@ import ChatInput from "./ChatInput";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import { useEffect, useState, useMemo } from "react";
 
-const plusJakartaSans = Plus_Jakarta_Sans({ 
+const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ["latin"],
-  weight: ['600']
+  weight: ["600"],
 });
 
 const InitialChat = () => {
@@ -15,18 +15,18 @@ const InitialChat = () => {
 
   useEffect(() => {
     const currentFullWord = words[wordIndex];
-    
+
     const typeNextCharacter = () => {
       if (isDeleting) {
         if (currentWord.length > 0) {
-          setCurrentWord(prev => prev.slice(0, -1));
+          setCurrentWord((prev) => prev.slice(0, -1));
         } else {
           setIsDeleting(false);
           setWordIndex((prev) => (prev + 1) % words.length);
         }
       } else {
         if (currentWord.length < currentFullWord.length) {
-          setCurrentWord(prev => currentFullWord.slice(0, prev.length + 1));
+          setCurrentWord((prev) => currentFullWord.slice(0, prev.length + 1));
         } else {
           setTimeout(() => setIsDeleting(true), 1000);
         }
@@ -40,7 +40,8 @@ const InitialChat = () => {
   return (
     <div className="grow h-screen overflow-hidden flex flex-col items-center justify-center w-full px-6">
       <div className="max-w-[900px] w-full mx-auto text-center -mt-20">
-        <div className={`
+        <div
+          className={`
           ${plusJakartaSans.className} 
           text-[28px]
           sm:text-3xl 
@@ -54,8 +55,11 @@ const InitialChat = () => {
           inline-block 
           font-semibold 
           text-center
-        `}>
-          <span className="lg:inline block mb-4 lg:mb-0">What would you like to know </span>
+        `}
+        >
+          <span className="lg:inline block mb-4 lg:mb-0">
+            What would you like to know{" "}
+          </span>
           <span className="lg:inline block lg:ml-0">
             about your&nbsp;
             <span className="inline-block min-w-[1ch] text-center transition-all duration-100">

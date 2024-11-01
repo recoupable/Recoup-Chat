@@ -2,7 +2,7 @@ import { useChatProvider } from "@/providers/ChatProvider";
 import { useState } from "react";
 import { v4 as uuidV4 } from "uuid";
 
-const MissingArtist = () => {
+const MissingArtist = ({ description }: { description: string }) => {
   const [newArtistName, setNewArtistName] = useState("");
   const { append } = useChatProvider();
 
@@ -16,7 +16,7 @@ const MissingArtist = () => {
 
   return (
     <div>
-      <p className="text-sm">Please provide the artist name to proceed.</p>
+      <p className="text-sm">{description}</p>
       <fieldset className="pt-2 flex gap-2 items-center">
         <input
           type="text"

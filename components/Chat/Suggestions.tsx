@@ -6,21 +6,21 @@ import { useEffect, useState } from "react";
 const Suggestions = () => {
   const { append, suggestions } = useChatProvider();
   const [maxWidth, setMaxWidth] = useState<string>("auto");
-  
+
   // Take only the first two suggestions
   const limitedSuggestions = suggestions.slice(0, 2);
 
   useEffect(() => {
     // Create a temporary span to measure text width
-    const span = document.createElement('span');
-    span.style.visibility = 'hidden';
-    span.style.position = 'absolute';
-    span.style.fontSize = '14px'; // match text-sm
+    const span = document.createElement("span");
+    span.style.visibility = "hidden";
+    span.style.position = "absolute";
+    span.style.fontSize = "14px"; // match text-sm
     document.body.appendChild(span);
 
     // Find the longest text width
     let maxTextWidth = 0;
-    limitedSuggestions.forEach(suggestion => {
+    limitedSuggestions.forEach((suggestion) => {
       span.textContent = suggestion;
       maxTextWidth = Math.max(maxTextWidth, span.offsetWidth);
     });
