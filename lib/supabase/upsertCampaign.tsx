@@ -7,9 +7,9 @@ const upsertCampaign = async (
   client_id: string | undefined,
   email: string,
 ) => {
+  const artists = await readArtists(email);
   try {
-    const artists = await readArtists(email);
-    if (!artist_id || !client_id || validate(artist_id || "")) {
+    if (!artist_id || !client_id || !validate(artist_id || "")) {
       return { error: "null values.", artists };
     }
 
@@ -28,7 +28,10 @@ const upsertCampaign = async (
     if (insertError) return { error: insertError, artists };
     return data;
   } catch (error) {
-    return error;
+    return {
+      error,
+      artists,
+    };
   }
 };
 
