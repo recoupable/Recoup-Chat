@@ -6,7 +6,7 @@ const readCampaigns = async (email: string, artistId?: string) => {
     const client = getSupabaseServerAdminClient();
     let queryId = artistId;
     if (!validate(artistId || "")) queryId = "";
-    const { data } = await client.rpc("get_campaigns_fans", {
+    const { data } = await client.rpc("get_campaign_fans", {
       artistid: queryId,
       email,
     });
