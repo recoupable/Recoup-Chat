@@ -12,7 +12,6 @@ const ArtistsTable = () => {
     scroll();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isCollapsed]);
-
   return (
     <div>
       <p className="pl-2 pb-2">{`Here's a table with all the artists which you are managing.`}</p>
