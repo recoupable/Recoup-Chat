@@ -26,6 +26,7 @@ const getArtistAnalysis = (question: string) =>
           context: {
             status: ArtistToolResponse.MISSING_ARTIST_TIKTOK_USERNAME,
             answer: "Please provide the TikTok username to proceed.",
+            username: user_name,
           },
           question,
         };
@@ -35,6 +36,7 @@ const getArtistAnalysis = (question: string) =>
         context: {
           status: ArtistToolResponse.TIKTOK_TRENDS,
           trends: trendsContext,
+          username: user_name,
         },
         question,
       };

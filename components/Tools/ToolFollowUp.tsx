@@ -3,6 +3,7 @@ import { useToolCallProvider } from "@/providers/ToolCallProvider";
 import { LoaderCircle } from "lucide-react";
 import { useEffect } from "react";
 import Answer from "./Answer";
+import getThinkingStatus from "@/lib/getThinkingStatus";
 
 const ToolFollowUp = ({ message }: { message: AIMessage }) => {
   const { loading, answer, toolName, context } = useToolCallProvider();
@@ -17,11 +18,11 @@ const ToolFollowUp = ({ message }: { message: AIMessage }) => {
 
   return (
     <div>
-      {toolName === "getCampaign" && (
+      {(toolName === "getCampaign" || toolName === "getArtistAnalysis") && (
         <>
           {loading && !content ? (
             <div className="flex gap-2 items-center">
-              <p>is thinking...</p>
+              <p>{getThinkingStatus(context, toolName)}</p>
               <LoaderCircle className="h-4 w-4 animate-spin" />
             </div>
           ) : (
