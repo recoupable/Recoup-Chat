@@ -10,10 +10,18 @@ const upsertCampaign = async (
   const artists = await readArtists(email);
   try {
     if (!artist_id || !client_id || !validate(artist_id || "")) {
-      return { error: "null values.", artists };
+      return { error: "invalid values.", artists };
     }
 
     const client = getSupabaseServerAdminClient();
+    const { data: artist } = await client
+      .from("artists")
+      .select("*")
+      .eq("id", artist_id)
+      .single();
+    if (!artist) {
+      return { error: "artist is not existed", artists };
+    }
 
     const { data, error: insertError } = await client
       .from("campaigns")
