@@ -5,7 +5,8 @@ import { useEffect } from "react";
 import Answer from "./Answer";
 
 const ToolFollowUp = ({ message }: { message: AIMessage }) => {
-  const { loading, answer, toolName, context } = useToolCallProvider();
+  const { loading, answer, toolName, context, isSearchingTrends } =
+    useToolCallProvider();
   const content = message.content || answer;
 
   useEffect(() => {
@@ -17,11 +18,15 @@ const ToolFollowUp = ({ message }: { message: AIMessage }) => {
 
   return (
     <div>
-      {toolName === "getCampaign" && (
+      {(toolName === "getCampaign" || toolName === "getArtistAnalysis") && (
         <>
           {loading && !content ? (
             <div className="flex gap-2 items-center">
-              <p>is thinking...</p>
+              <p className="text-sm">
+                {isSearchingTrends && context?.username
+                  ? `Searching for @${context?.username || ""} videos on tiktok...`
+                  : "is thinking..."}
+              </p>
               <LoaderCircle className="h-4 w-4 animate-spin" />
             </div>
           ) : (

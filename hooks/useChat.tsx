@@ -20,6 +20,7 @@ const useChat = () => {
     messagesRef,
     pending,
     fetchInitialMessages,
+    toolCall,
   } = useMessages();
 
   const goToNewConversation = async (name: string) => {
@@ -70,6 +71,7 @@ const useChat = () => {
     pending,
     finalCallback,
     clearQuery,
+    toolCall,
   };
 };
 

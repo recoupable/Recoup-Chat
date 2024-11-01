@@ -5,6 +5,7 @@ import { AI_MODEL } from "../consts";
 import getCampaign from "../tools/getCampaign";
 import createArtist from "../tools/createArtist";
 import getArtists from "../tools/getArtists";
+import getArtistAnalysis from "../tools/getArtistAnalysis";
 import createCampaign from "../tools/createCampaign";
 import getCampaigns from "../tools/getCampaigns";
 
@@ -50,6 +51,7 @@ Please use this information to provide accurate and relevant responses and don't
         getCampaign: getCampaign(question),
         createArtist: createArtist(question, email),
         getArtists: getArtists(question, email),
+        getArtistAnalysis: getArtistAnalysis(question),
         createCampaign: createCampaign(question, email),
         getCampaigns: getCampaigns(question, email),
       };

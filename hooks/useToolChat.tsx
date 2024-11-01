@@ -1,11 +1,19 @@
 import { useChatProvider } from "@/providers/ChatProvider";
-import { useChat } from "ai/react";
+import { Message, useChat } from "ai/react";
 import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import { v4 as uuidV4 } from "uuid";
 
-const useToolChat = (question?: string, context?: any) => {
+const useToolChat = (question?: string, context?: any, toolName?: any) => {
   const { finalCallback, clearQuery } = useChatProvider();
   const { conversation: conversationId } = useParams();
+  const [tiktokTrends, setTiktokTrends] = useState<any>(null);
+  const [isSearchingTrends, setIsSearchingTrends] = useState(false);
+  const toolCallContext = {
+    ...(context !== null && { context }),
+    ...(tiktokTrends !== null && { trends: tiktokTrends }),
+  };
+  const [beginCall, setBeginCall] = useState(false);
 
   const {
     messages,
@@ -15,7 +23,8 @@ const useToolChat = (question?: string, context?: any) => {
     api: "/api/tool_call",
     body: {
       question,
-      context,
+      context: toolCallContext,
+      toolName,
     },
     onError: console.error,
     onFinish: async (message) => {
@@ -32,10 +41,33 @@ const useToolChat = (question?: string, context?: any) => {
     },
   });
 
+  const answer = messages.filter(
+    (message: Message) => message.role === "assistant",
+  )?.[0]?.content;
+
+  useEffect(() => {
+    const init = async () => {
+      await append({
+        id: uuidV4(),
+        content: question as string,
+        role: "user",
+      });
+      setBeginCall(false);
+    };
+    if (!beginCall || !question) return;
+    init();
+  }, [beginCall, question]);
+
   return {
     messages,
     append,
-    loading,
+    loading: loading || isSearchingTrends,
+    isSearchingTrends,
+    setTiktokTrends,
+    setIsSearchingTrends,
+    answer,
+    tiktokTrends,
+    setBeginCall,
   };
 };
 

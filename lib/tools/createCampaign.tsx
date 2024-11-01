@@ -29,6 +29,7 @@ const createCampaign = (question: string, email: string) =>
             status: ArtistToolResponse.MISSING_ARTIST_CLIENT_ID,
             answer: "Please provide the artist id & campaign name to proceed.",
             artists: response?.artists || [],
+            email,
           },
           question,
         };
