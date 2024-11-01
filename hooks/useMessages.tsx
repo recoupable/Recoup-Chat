@@ -15,7 +15,7 @@ const useMessages = () => {
   const { conversationRef } = useConversations();
   const queryClient = useQueryClient();
   const { email } = useUserProvider();
-  const [toolCall, setToolCall] = useState(null);
+  const [toolCall, setToolCall] = useState<any>(null);
 
   const pathname = usePathname();
   const isNewChat = pathname === "/";

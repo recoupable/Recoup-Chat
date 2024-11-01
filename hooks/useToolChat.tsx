@@ -8,7 +8,7 @@ const useToolChat = (question?: string, context?: any, toolName?: any) => {
   const { finalCallback, clearQuery } = useChatProvider();
   const { conversation: conversationId } = useParams();
   const [tiktokTrends, setTiktokTrends] = useState<any>(null);
-  const [pending, setPending] = useState(false);
+  const [isSearchingTrends, setIsSearchingTrends] = useState(false);
   const toolCallContext = {
     ...(context !== null && { context }),
     ...(tiktokTrends !== null && { trends: tiktokTrends }),
@@ -61,9 +61,10 @@ const useToolChat = (question?: string, context?: any, toolName?: any) => {
   return {
     messages,
     append,
-    loading: loading || pending,
+    loading: loading || isSearchingTrends,
+    isSearchingTrends,
     setTiktokTrends,
-    setPending,
+    setIsSearchingTrends,
     answer,
     tiktokTrends,
     setBeginCall,

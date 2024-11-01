@@ -18,10 +18,11 @@ const useToolCall = (message: Message) => {
   const {
     setBeginCall,
     setTiktokTrends,
-    setPending,
+    setIsSearchingTrends,
     answer,
     loading,
     tiktokTrends,
+    isSearchingTrends,
   } = useToolChat(question, context, toolName);
 
   useEffect(() => {
@@ -47,13 +48,13 @@ const useToolCall = (message: Message) => {
           context.status === ArtistToolResponse.TIKTOK_TRENDS)
       ) {
         if (toolName === "getArtistAnalysis") {
-          setPending(true);
+          setIsSearchingTrends(true);
           const response = await fetch(
             `/api/trends?handle=${context?.username}`,
           );
           const data = await response.json();
           setTiktokTrends(data.trends);
-          setPending(false);
+          setIsSearchingTrends(false);
         }
         setBeginCall(true);
       }
@@ -70,6 +71,7 @@ const useToolCall = (message: Message) => {
     context,
     fans,
     tiktokTrends,
+    isSearchingTrends,
   };
 };
 
