@@ -5,13 +5,7 @@ const toolSystemMessage = (context: any, question: any, toolName: string) => {
     Context: ${JSON.stringify(context)}
     Question: ${question}
 
-    Reply Format:
-    - Overview 
-      3 sentences with details including their TikTok following, number of likes, music style, and how they connect with their audience, particularly regarding their recent singles.
-    - Insights
-      2 sentences with insights focused on creating effective campaigns for musicians.
-    
-    Make sure to provide actionable insights focused on creating new campaigns, such as games that players can play while listening to music.
+    Reply should be 4 sentences or less with actionable insights that focus on creating new campaigns, such as how many TikTok followers you have, how many likes you have, your music style, how you connect with your audience, especially when it comes to your latest single, and what games you can play while listening to music.
     `;
   if (toolName === "getCampaign")
     return `
