@@ -18,7 +18,6 @@ const useMessages = () => {
   const [toolCall, setToolCall] = useState(null);
 
   const pathname = usePathname();
-
   const isNewChat = pathname === "/";
 
   const {

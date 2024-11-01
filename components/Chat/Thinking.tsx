@@ -1,13 +1,9 @@
+import getThinkingStatus from "@/lib/getThinkingStatus";
 import { useChatProvider } from "@/providers/ChatProvider";
 import { LoaderCircle, TvMinimalPlay } from "lucide-react";
 
 const Thinking = () => {
   const { toolCall } = useChatProvider();
-  // const toolInvocations = [...(message.toolInvocations || [])];
-  // const toolInvocationResult = toolInvocations?.filter(
-  //   (toolInvocation) => toolInvocation.state === "result",
-  // )?.[0];
-  // const toolName = toolInvocationResult?.toolName;
   console.log("ZIAD HERE", toolCall);
 
   return (
@@ -15,7 +11,7 @@ const Thinking = () => {
       <div className="size-fit">
         <TvMinimalPlay className="h-6 w-6" />
       </div>
-      <p>is thinking...</p>
+      <p>{getThinkingStatus(toolCall)}</p>
       <LoaderCircle className="h-4 w-4 animate-spin" />
     </div>
   );

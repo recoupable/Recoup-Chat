@@ -1,7 +1,7 @@
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const getThinkingStatus = (context: any, toolName: any) => {
-  if (toolName === "getArtistAnalysis") {
-    return `Searching for @${context?.userName || ""} videos on tiktok...`;
+const getThinkingStatus = (toolCall: any) => {
+  if (toolCall?.toolName === "getArtistAnalysis" && toolCall?.args?.user_name) {
+    return `Searching for @${toolCall?.args?.userName || ""} videos on tiktok...`;
   }
 
   return "is thinking...";
