@@ -22,5 +22,4 @@ export type FAN_TYPE = {
   topTracks: Array<Track> | null;
   topArtists: Array<Artist> | null;
   email: string;
-  timestamp: string | null;
 };
