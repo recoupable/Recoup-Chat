@@ -1,14 +1,10 @@
 import { useChatProvider } from "@/providers/ChatProvider";
+import { useToolCallProvider } from "@/providers/ToolCallProvider";
 import { useState } from "react";
 import { v4 as uuidV4 } from "uuid";
 
-const MissingTikTok = ({
-  question,
-  answer,
-}: {
-  question: string;
-  answer: string;
-}) => {
+const MissingTikTok = () => {
+  const { question } = useToolCallProvider();
   const [userName, setUserName] = useState("");
   const { append } = useChatProvider();
 
@@ -22,7 +18,9 @@ const MissingTikTok = ({
 
   return (
     <div>
-      <p className="text-sm pb-3">{answer}</p>
+      <p className="text-sm pb-3">
+        Please provide the TikTok username to proceed.
+      </p>
       <fieldset className="flex gap-2 items-center">
         <input
           type="text"

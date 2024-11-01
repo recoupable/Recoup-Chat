@@ -9,7 +9,9 @@ const ToolContent = () => {
   return (
     <div>
       {toolName === "getCampaign" && <FanTable />}
-      {(toolName === "createArtist" || toolName === "getArtists" || toolName === "getArtistAnalysis") && <Artist />}
+      {(toolName === "createArtist" ||
+        toolName === "getArtists" ||
+        toolName === "getArtistAnalysis") && <Artist />}
       {toolName === "createCampaign" ||
         (toolName === "getCampaigns" && <Campaign />)}
     </div>
