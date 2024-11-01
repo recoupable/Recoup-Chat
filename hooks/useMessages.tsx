@@ -38,6 +38,9 @@ const useMessages = () => {
     },
     initialMessages,
     onError: console.error,
+    onToolCall: ({ toolCall }) => {
+      console.log("ZIAD TOOL CALL", toolCall);
+    },
     onFinish: async (message) => {
       await finalCallback(
         message,
