@@ -9,7 +9,7 @@ const Messages = ({
 }: {
   scroll: ({ smooth, y }: { smooth: boolean; y: number }) => void;
 }) => {
-  const { messages, pending, suggestions } = useChatProvider();
+  const { messages, pending } = useChatProvider();
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {

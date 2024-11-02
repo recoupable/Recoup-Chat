@@ -59,7 +59,6 @@ const useChat = () => {
     };
     
     setCurrentQuestion(userMessage);
-    appendAiChat(userMessage);
     await goToNewConversation(input);
     handleAiChatSubmit(e);
   };

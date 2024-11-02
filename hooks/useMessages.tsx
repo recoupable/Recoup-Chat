@@ -36,7 +36,6 @@ const useMessages = () => {
     body: {
       email,
     },
-    initialMessages,
     onError: console.error,
     onFinish: async (message) => {
       await finalCallback(
@@ -57,15 +56,15 @@ const useMessages = () => {
   }, [messages]);
 
   useEffect(() => {
-    if (initialMessages.length) setMessages(initialMessages);
-  }, [initialMessages]);
-
-  useEffect(() => {
     if (isNewChat) {
       conversationRef.current = "";
       setMessages([]);
     }
   }, [isNewChat]);
+
+  useEffect(() => {
+    if (initialMessages.length) setMessages(initialMessages);
+  }, [initialMessages]);
 
   return {
     conversationRef,

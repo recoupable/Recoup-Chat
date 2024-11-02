@@ -24,7 +24,7 @@ const Message = ({
     scroll({ smooth: true, y: Number.MAX_SAFE_INTEGER });
     const timeoutId = setTimeout(() => scroll({ smooth: true, y: Number.MAX_SAFE_INTEGER }), 100);
     return () => clearTimeout(timeoutId);
-  }, [content, context]);
+  }, [content, context, scroll]);
 
   return (
     <div className={`mb-8 ${isHidden && "hidden"}`}>
@@ -36,6 +36,7 @@ const Message = ({
               toolName={toolName}
               context={context}
               fans={fans}
+              scroll={scroll}
             />
           )}
           {loading && !content && toolName === "getCampaign" ? (
