@@ -2,6 +2,7 @@ import SubmitButton from "./SubmitButton";
 import { useChatProvider } from "@/providers/ChatProvider";
 import Suggestions from "./Suggestions";
 import { useEffect, useRef } from "react";
+import { ArrowUpRight } from "lucide-react";
 
 const ChatInput: React.FC = () => {
   const { input, handleInputChange, handleSubmit } = useChatProvider();
@@ -30,8 +31,8 @@ const ChatInput: React.FC = () => {
   return (
     <div className="w-full">
       <div className="w-full px-2 z-[10] bg-background">
-        <div className="border-gray-700 border-[1px] rounded-md p-2 max-w-3xl mx-auto">
-          <form onSubmit={handleSubmit} className="w-full">
+        <div className="bg-white dark:bg-black border-gray-500 dark:border-gray-700 border-[1px] rounded-md p-2 max-w-3xl mx-auto">
+          <form onSubmit={handleSubmit} className="relative mb-6">
             <textarea
               ref={textareaRef}
               value={input}
@@ -42,7 +43,13 @@ const ChatInput: React.FC = () => {
               aria-label="Chat input"
             />
             <div className="w-full flex justify-end">
-              <SubmitButton canSubmit={Boolean(input)} />
+              <button
+                type="submit"
+                className="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-lg bg-black dark:bg-white"
+                disabled={!input.trim()}
+              >
+                <ArrowUpRight className="h-3.5 w-3.5 text-white dark:text-black stroke-[2.5]" />
+              </button>
             </div>
           </form>
         </div>

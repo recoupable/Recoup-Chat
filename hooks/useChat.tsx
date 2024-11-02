@@ -51,13 +51,17 @@ const useChat = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!isPrepared()) return;
-    setCurrentQuestion({
+    
+    const userMessage = {
       content: input,
       role: "user",
       id: uuidV4(),
-    });
-    handleAiChatSubmit(e);
+    };
+    
+    setCurrentQuestion(userMessage);
+    appendAiChat(userMessage);
     await goToNewConversation(input);
+    handleAiChatSubmit(e);
   };
 
   return {

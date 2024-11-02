@@ -16,45 +16,47 @@ const Message = ({
   const { loading, answer, toolName, context, fans } = useToolCall(message);
   const { pending } = useChatProvider();
   const Icon = message.role === "user" ? UserIcon : TvMinimalPlay;
-  const isHidden =
-    pending &&
-    message.role === "assistant" &&
-    !message.content &&
-    message?.toolInvocations;
+  const isHidden = pending && message.role === "assistant" && !message.content && message?.toolInvocations;
   const content = message.content || answer;
-  const scrollTo = () => scroll({ smooth: true, y: Number.MAX_SAFE_INTEGER });
+  const isUser = message.role === "user";
 
   useEffect(() => {
-    scrollTo();
-    const timeoutId = setTimeout(scrollTo, 1000);
+    scroll({ smooth: true, y: Number.MAX_SAFE_INTEGER });
+    const timeoutId = setTimeout(() => scroll({ smooth: true, y: Number.MAX_SAFE_INTEGER }), 100);
     return () => clearTimeout(timeoutId);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [content, context]);
 
   return (
-    <div className={`p-3 rounded-lg flex w-full gap-2 ${isHidden && "hidden"}`}>
-      <div className="size-fit">
-        <Icon className="h-6 w-6" />
-      </div>
-      <div className="grow">
-        {context && (
-          <ToolContent
-            toolName={toolName}
-            context={context}
-            fans={fans}
-            scroll={scrollTo}
-          />
-        )}
-        {loading && !content && toolName === "getCampaign" ? (
-          <div className="flex gap-2 items-center">
-            <p>is thinking...</p>
-            <LoaderCircle className="h-4 w-4 animate-spin" />
-          </div>
-        ) : (
-          <div className="text-sm font-sans text-pretty break-words">
-            <ReactMarkdown>{content}</ReactMarkdown>
-          </div>
-        )}
+    <div className={`mb-8 ${isHidden && "hidden"}`}>
+      <div className={`flex items-start gap-3 ${isUser ? "flex-row-reverse" : ""}`}>
+        <Icon className={`h-4 w-4 flex-shrink-0 text-gray-400 ${isUser ? "mt-[10px]" : "mt-1"}`} />
+        <div className={`flex-1 ${isUser ? "text-right" : "text-left"}`}>
+          {context && (
+            <ToolContent
+              toolName={toolName}
+              context={context}
+              fans={fans}
+            />
+          )}
+          {loading && !content && toolName === "getCampaign" ? (
+            <div className={`flex items-center gap-2 text-gray-400 ${isUser ? "justify-end" : "justify-start"}`}>
+              <p className="text-sm">is thinking...</p>
+              <LoaderCircle className="h-3 w-3 animate-spin" />
+            </div>
+          ) : (
+            <div className={`${isUser ? "flex justify-end" : ""}`}>
+              <div className={`inline-block text-[15px] leading-relaxed text-pretty break-words 
+                ${isUser 
+                  ? "bg-gray-100 dark:bg-gray-800 text-black dark:text-white px-4 py-2 rounded-2xl" 
+                  : ""}`}
+              >
+                <ReactMarkdown className={`prose max-w-none ${isUser ? "" : "prose-invert"}`}>
+                  {content}
+                </ReactMarkdown>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

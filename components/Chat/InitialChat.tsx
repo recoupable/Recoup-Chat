@@ -1,6 +1,7 @@
 import ChatInput from "./ChatInput";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import { useEffect, useState, useMemo } from "react";
+import AnimatedCircles from "../Background/AnimatedCircles";
 
 const plusJakartaSans = Plus_Jakarta_Sans({ 
   subsets: ["latin"],
@@ -38,8 +39,10 @@ const InitialChat = () => {
   }, [currentWord, isDeleting, wordIndex, words]);
 
   return (
-    <div className="grow h-screen overflow-hidden flex flex-col items-center justify-center w-full px-6">
-      <div className="max-w-[900px] w-full mx-auto text-center -mt-20">
+    <div className="grow h-screen overflow-hidden flex flex-col items-center justify-center w-full px-6 relative">
+      <AnimatedCircles />
+      
+      <div className="max-w-[900px] w-full mx-auto text-center -mt-20 relative z-10">
         <div className={`
           ${plusJakartaSans.className} 
           text-[28px]
@@ -65,7 +68,9 @@ const InitialChat = () => {
           </span>
         </div>
       </div>
-      <ChatInput />
+      <div className="relative z-10">
+        <ChatInput />
+      </div>
     </div>
   );
 };

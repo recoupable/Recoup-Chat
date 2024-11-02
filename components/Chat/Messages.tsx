@@ -1,6 +1,5 @@
 import { useChatProvider } from "@/providers/ChatProvider";
-import { useEffect } from "react";
-import { ScrollArea } from "react-scroll-to";
+import { useEffect, useRef } from "react";
 import Thinking from "./Thinking";
 import Message from "./Message";
 import { Message as AIMessage } from "ai";
@@ -11,21 +10,24 @@ const Messages = ({
   scroll: ({ smooth, y }: { smooth: boolean; y: number }) => void;
 }) => {
   const { messages, pending, suggestions } = useChatProvider();
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
 
   useEffect(() => {
-    scroll({ smooth: true, y: Number.MAX_SAFE_INTEGER });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [messages, pending, suggestions]);
+    scrollToBottom();
+  }, [messages, pending]);
 
   return (
-    <ScrollArea
-      className={`w-full mt-4 max-w-3xl mx-auto overflow-y-auto ${messages.length && "grow"}`}
-    >
+    <div className="w-full mt-4 max-w-3xl mx-auto overflow-y-auto hide-scrollbar">
       {messages.map((message: AIMessage, index: number) => (
         <Message message={message} key={index} scroll={scroll} />
       ))}
-      {pending && <Thinking />}
-    </ScrollArea>
+      {pending && messages.length > 0 && <Thinking />}
+      <div ref={messagesEndRef} />
+    </div>
   );
 };
 
