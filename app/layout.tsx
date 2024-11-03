@@ -6,6 +6,8 @@ import { DESCRIPTION, TITLE } from "@/lib/consts";
 import Sidebar from "@/components/Sidebar";
 import Header from "@/components/Header";
 import { Suspense } from "react";
+import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 
 export const metadata: Metadata = {
   title: TITLE,
@@ -34,6 +36,8 @@ export default function RootLayout({
             </div>
           </Providers>
         </Suspense>
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
