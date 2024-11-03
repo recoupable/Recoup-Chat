@@ -9,8 +9,9 @@ Recoup is an AI agent platform fueling smarter song rollouts, unforgettable fan 
 
 ## Features
 
-- AI-powered chatbot using GPT models
+- AI-powered chatbot
 - Real-time streaming responses
+- Artist Mode for roster analytics
 - User authentication with Privy
 - Integration with Supabase for data storage
 - Tailwind CSS for styling
