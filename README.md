@@ -1,10 +1,11 @@
-# Luh Tyler's Mr. Skii 3D Video Game Chatbot
+# Recoup | AI Agents Made for the Music Industry
 
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+
+This is a [Next.js](https://nextjs.org) project made with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Description
 
-This project is a chatbot application specifically designed for Luh Tyler's 3D Video game promoting his new album Mr. Skii. It uses advanced AI models to provide insights, answer questions, and assist players with various aspects of the game and Luh Tyler's music.
+Recoup is an AI agent platform fueling smarter song rollouts, unforgettable fan experiences and lasting artist growth -- Empowering music executives with actionable insights and next-gen tools to elevate every artist and engage every fan.
 
 ## Features
 
@@ -71,4 +72,3 @@ To learn more about the technologies used in this project, check out the followi
 
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
