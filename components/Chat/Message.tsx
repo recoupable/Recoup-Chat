@@ -2,13 +2,7 @@ import { Message as AIMessage } from "ai";
 import ToolContent from "../Tools/ToolContent";
 import { useToolCallProvider } from "@/providers/ToolCallProvider";
 import ToolFollowUp from "../Tools/ToolFollowUp";
-import { Inter } from 'next/font/google'
 import Image from 'next/image';
-
-const inter = Inter({ 
-  subsets: ['latin'],
-  display: 'swap',
-})
 
 const Message = ({ message }: { message: AIMessage }) => {
   const { context } = useToolCallProvider();
