@@ -27,6 +27,11 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+.message-content {
+  font-size: 18px !important;
+  line-height: 1.75 !important;
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;

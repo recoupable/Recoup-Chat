@@ -6,6 +6,12 @@ import { DESCRIPTION, TITLE } from "@/lib/consts";
 import Sidebar from "@/components/Sidebar";
 import Header from "@/components/Header";
 import { Suspense } from "react";
+import { Inter } from 'next/font/google'
+
+const inter = Inter({ 
+  subsets: ['latin'],
+  display: 'swap',
+})
 
 export const metadata: Metadata = {
   title: TITLE,

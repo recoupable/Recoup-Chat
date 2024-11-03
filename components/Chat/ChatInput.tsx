@@ -2,6 +2,12 @@ import SubmitButton from "./SubmitButton";
 import { useChatProvider } from "@/providers/ChatProvider";
 import Suggestions from "./Suggestions";
 import { useEffect, useRef } from "react";
+import { Inter } from 'next/font/google'
+
+const inter = Inter({ 
+  subsets: ['latin'],
+  display: 'swap',
+})
 
 const ChatInput: React.FC = () => {
   const { input, handleInputChange, handleSubmit } = useChatProvider();
@@ -38,7 +44,7 @@ const ChatInput: React.FC = () => {
               onChange={handleInputChange}
               onKeyDown={handleKeyDown}
               placeholder="Ask Recoup a question..."
-              className="bg-transparent w-full p-2 text-sm !border-none !outline-none rounded-md resize-none min-h-[40px] max-h-[200px] overflow-y-auto"
+              className={`bg-transparent w-full p-2 text-[15px] leading-6 !border-none !outline-none rounded-md resize-none min-h-[40px] max-h-[200px] overflow-y-auto ${inter.className}`}
               aria-label="Chat input"
             />
             <div className="w-full flex justify-end">
