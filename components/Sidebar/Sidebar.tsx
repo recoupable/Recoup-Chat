@@ -82,6 +82,7 @@ const Sidebar = () => {
           <button
             type="button"
             className="border-gray-700 border-[1px] p-2 rounded-md"
+            onClick={() => goToItem("")}
           >
             <MicVocal />
           </button>
