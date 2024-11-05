@@ -1,5 +1,6 @@
 import { useArtistProvider } from "@/providers/ArtistProvider";
 import { ArtistRecord } from "@/types/Artist";
+import { Plus } from "lucide-react";
 import Image from "next/image";
 
 const ArtistDropDown = ({ toggleModal }: { toggleModal: () => void }) => {
@@ -32,7 +33,12 @@ const ArtistDropDown = ({ toggleModal }: { toggleModal: () => void }) => {
           </button>
         ))}
       </div>
-      <div className="flex gap-2 items-center mt-2">
+      <button className="flex gap-2 items-center mt-1" type="button">
+        <Plus />
+        <p className="text-sm">New Artist</p>
+      </button>
+      <div className="h-[0.1px] w-full bg-gray-700 my-2" />
+      <div className="flex gap-2 items-center">
         <button
           className="flex items-center border-[1px] border-gray-700 rounded-full w-10 h-[20px] pl-2"
           onClick={() => setArtistActive(!artistActive)}
