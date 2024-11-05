@@ -57,7 +57,7 @@ const SideMenu = ({
       </div>
       <button
         type="button"
-        className="border-gray-700 border-[1px] rounded-md p-2 mt-8 cursor-pointer"
+        className="border-gray-700 border-[1px] rounded-md p-2 mt-4 md:mt-8 cursor-pointer"
         onClick={() => goToItem("")}
       >
         New Chat
@@ -73,7 +73,7 @@ const SideMenu = ({
       {artists.length > 0 && <Artists />}
       <div className="h-[0.1px] bg-gray-700 w-full my-4" />
       {email && <RecentChats toggleModal={toggleModal} />}
-      <div className="grow flex flex-col gap-3 justify-end">
+      <div className="grow flex flex-col gap-1 md:gap-3 justify-end">
         {isIntroOpen && (
           <Introducing toggleVisible={() => setIsIntroOpen(!isIntroOpen)} />
         )}
