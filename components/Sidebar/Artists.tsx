@@ -17,7 +17,7 @@ const Artists = () => {
     setIsOpenModal(true);
   };
 
-  const toggleModal = () => setIsOpenDropDown(!isOpenModal);
+  const toggleModal = () => setIsOpenModal(!isOpenModal);
 
   return (
     <>
@@ -72,7 +72,7 @@ const Artists = () => {
         )}
       </AnimatePresence>
       {isOpenModal && (
-        <Modal onClose={toggleModal}>
+        <Modal onClose={toggleModal} className="!bg-none !bg-transparent">
           <Settings toggleModal={toggleModal} />
         </Modal>
       )}
