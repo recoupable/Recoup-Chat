@@ -3,13 +3,20 @@ import { ArtistRecord } from "@/types/Artist";
 import { EllipsisVertical, Plus } from "lucide-react";
 import Image from "next/image";
 
-const ArtistDropDown = ({ toggleModal }: { toggleModal: () => void }) => {
+const ArtistDropDown = ({
+  toggleModal,
+  toggleSetting,
+}: {
+  toggleModal: () => void;
+  toggleSetting: () => void;
+}) => {
   const { artists, setSelectedArtist, artistActive, setArtistActive } =
     useArtistProvider();
 
   const handleClickArtist = (artist: ArtistRecord) => {
     setSelectedArtist(artist);
     setArtistActive(true);
+    toggleSetting();
     toggleModal();
   };
 
