@@ -4,10 +4,18 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ChevronDown, ChevronUp, MicVocal, Plus } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
+import Modal from "../Modal";
+import Settings from "../ArtistSettingModal/Settings";
 
 const Artists = () => {
-  const [isOpenDropDown, setIsOpenDropDown] = useState(true);
-  const { artists } = useArtistProvider();
+  const [isOpenDropDown, setIsOpenDropDown] = useState(false);
+  const { artists, setSelectedArtist } = useArtistProvider();
+  const [isOpenModal, setIsOpenModal] = useState(false);
+
+  const handleClick = (artist: ArtistRecord) => {
+    setSelectedArtist(artist);
+    setIsOpenModal(true);
+  };
 
   return (
     <>
@@ -42,6 +50,7 @@ const Artists = () => {
                 key={artist.id}
                 className="flex gap-2 items-center"
                 type="button"
+                onClick={() => handleClick(artist)}
               >
                 <div className="relative w-8 h-8 rounded-md overflow-hidden">
                   <Image
@@ -60,6 +69,11 @@ const Artists = () => {
           </motion.section>
         )}
       </AnimatePresence>
+      {isOpenModal && (
+        <Modal onClose={() => setIsOpenModal(!isOpenModal)}>
+          <Settings />
+        </Modal>
+      )}
     </>
   );
 };

@@ -9,7 +9,7 @@ interface IModal {
 const Modal = ({ children, onClose }: IModal) => (
   // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
   <div
-    className="absolute left-0 top-0 w-full h-full z-[150] flex items-center justify-center backdrop-blur-[4px]"
+    className="fixed left-0 top-0 w-screen h-screen z-[150] flex items-center justify-center backdrop-blur-[4px]"
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onClick={(e: any) => {
       if (e.target === e.currentTarget) onClose();
