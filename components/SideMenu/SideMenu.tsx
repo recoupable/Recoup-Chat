@@ -58,13 +58,13 @@ const SideMenu = ({
       <button
         type="button"
         className="border-gray-700 border-[1px] rounded-md p-2 mt-8 cursor-pointer"
-        onClick={() => goToItem("/")}
+        onClick={() => goToItem("")}
       >
         New Chat
       </button>
       <button
         type="button"
-        onClick={() => goToItem("/history")}
+        onClick={() => goToItem("history")}
         className="flex gap-2 items-center my-4"
       >
         <BookOpen />
@@ -72,7 +72,7 @@ const SideMenu = ({
       </button>
       {artists.length > 0 && <Artists />}
       <div className="h-[0.1px] bg-gray-700 w-full my-4" />
-      {email && <RecentChats />}
+      {email && <RecentChats toggleModal={toggleModal}/>}
       <div className="grow flex flex-col gap-3 justify-end">
         {isIntroOpen && (
           <Introducing toggleVisible={() => setIsIntroOpen(!isIntroOpen)} />
