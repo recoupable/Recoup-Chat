@@ -17,6 +17,8 @@ const Artists = () => {
     setIsOpenModal(true);
   };
 
+  const toggleModal = () => setIsOpenModal(!isOpenModal);
+
   return (
     <>
       <button
@@ -33,7 +35,7 @@ const Artists = () => {
       <AnimatePresence initial={false}>
         {isOpenDropDown && (
           <motion.section
-            className="pl-6 pt-3 flex flex-col gap-2"
+            className="pl-6 pt-3 flex flex-col gap-2 max-h-[100px] md:max-h-[160px] overflow-y-auto"
             initial="collapsed"
             animate="open"
             exit="collapsed"
@@ -52,7 +54,7 @@ const Artists = () => {
                 type="button"
                 onClick={() => handleClick(artist)}
               >
-                <div className="relative w-8 h-8 rounded-md overflow-hidden">
+                <div className="relative w-6 h-6 md:w-8 md:h-8 rounded-md overflow-hidden">
                   <Image
                     src={artist.image || "https://i.imgur.com/QCdc8Ai.jpg"}
                     layout="fill"
@@ -64,14 +66,14 @@ const Artists = () => {
             ))}
             <button type="button" className="flex gap-2 items-center">
               <Plus />
-              <p className="text-sm">New Chat</p>
+              <p className="text-sm">New Artist</p>
             </button>
           </motion.section>
         )}
       </AnimatePresence>
       {isOpenModal && (
-        <Modal onClose={() => setIsOpenModal(!isOpenModal)}>
-          <Settings />
+        <Modal onClose={toggleModal} className="!bg-none !bg-transparent">
+          <Settings toggleModal={toggleModal} />
         </Modal>
       )}
     </>

@@ -1,35 +1,47 @@
 import { useArtistProvider } from "@/providers/ArtistProvider";
 import { ArtistRecord } from "@/types/Artist";
-import { Plus } from "lucide-react";
+import { EllipsisVertical, Plus } from "lucide-react";
 import Image from "next/image";
 
-const ArtistDropDown = ({ toggleModal }: { toggleModal: () => void }) => {
+const ArtistDropDown = ({
+  toggleModal,
+  toggleSetting,
+}: {
+  toggleModal: () => void;
+  toggleSetting: () => void;
+}) => {
   const { artists, setSelectedArtist, artistActive, setArtistActive } =
     useArtistProvider();
 
   const handleClickArtist = (artist: ArtistRecord) => {
     setSelectedArtist(artist);
+    setArtistActive(true);
     toggleModal();
   };
 
   return (
-    <div className="absolute border-[1px] border-gray-700 rounded-md p-2 bottom-0 right-0 bg-black min-h-[200px] overflow-y-auto">
-      <div className="flex flex-col gap-2">
+    <div className="absolute min-w-[200px] border-[1px] border-gray-700 rounded-md p-2 bottom-0 right-0 bg-black min-h-[200px] overflow-y-auto">
+      <div className="flex flex-col gap-2 max-h-[180px] overflow-y-auto">
         {artists.map((artist: ArtistRecord) => (
           <button
             key={artist.id}
-            className="flex gap-2 items-center"
+            className="flex gap-2 items-center justify-between"
             type="button"
             onClick={() => handleClickArtist(artist)}
           >
-            <div className="relative w-6 h-6 rounded-md overflow-hidden">
-              <Image
-                src={artist.image || "https://i.imgur.com/QCdc8Ai.jpg"}
-                layout="fill"
-                alt="not found icon"
-              />
+            <div className="flex gap-2 items-center">
+              <div className="relative w-6 h-6 rounded-md overflow-hidden">
+                <Image
+                  src={artist.image || "https://i.imgur.com/QCdc8Ai.jpg"}
+                  layout="fill"
+                  alt="not found icon"
+                />
+              </div>
+              <p className="text-sm">{artist.name}</p>
             </div>
-            <p className="text-sm">{artist.name}</p>
+            <button type="button" onClick={toggleSetting}>
+              <EllipsisVertical />
+            </button>
           </button>
         ))}
       </div>

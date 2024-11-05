@@ -1,8 +1,8 @@
 import useArtistSetting from "@/hooks/useArtistSetting";
-import { Plus } from "lucide-react";
+import { MicVocal, Plus, X } from "lucide-react";
 import Image from "next/image";
 
-const Settings = () => {
+const Settings = ({ toggleModal }: { toggleModal: () => void }) => {
   const {
     imageRef,
     baseRef,
@@ -30,14 +30,23 @@ const Settings = () => {
 
   return (
     <div className="w-full grid grid-cols-12 gap-3">
-      <div className="col-span-5 space-y-2">
+      <div className="col-span-12 flex justify-between items-center border-b-gray-700 border-b-[1px] pb-3">
+        <div className="flex gap-2 items-center">
+          <MicVocal />
+          <p>Artist Settings</p>
+        </div>
+        <button type="button" onClick={toggleModal}>
+          <X />
+        </button>
+      </div>
+      <div className="col-span-4 space-y-2">
         <p className="text-sm">Artist Image</p>
         <button
           className="w-full"
           type="button"
           onClick={() => imageRef.current.click()}
         >
-          <div className="w-full h-[120px] rounded-md relative overflow-hidden">
+          <div className="w-[100px] md:w-[120px] aspect-[1/1] rounded-md relative overflow-hidden">
             <Image
               src={image || "https://i.imgur.com/QCdc8Ai.jpg"}
               layout="fill"
@@ -53,7 +62,7 @@ const Settings = () => {
           onChange={handleImageSelected}
         />
       </div>
-      <div className="col-span-7 space-y-2">
+      <div className="col-span-8 space-y-2">
         <p className="text-sm">Custom Intruction</p>
         <textarea
           value={instruction}
@@ -145,7 +154,7 @@ const Settings = () => {
         </button>
         <input type="file" hidden ref={baseRef} />
       </div>
-      <button className="col-span-12 border-gray-700 border-[1px] rounded-md py-1">
+      <button className="col-span-12 border-gray-700 border-[1px] rounded-md py-1 mb-4">
         Save
       </button>
     </div>

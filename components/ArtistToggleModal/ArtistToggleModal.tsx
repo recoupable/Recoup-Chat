@@ -2,11 +2,19 @@ import Image from "next/image";
 import ArtistDropDown from "./ArtistDropDown";
 import { useArtistProvider } from "@/providers/ArtistProvider";
 import useClickOutsideSelect from "@/hooks/useClickOutsideSelect";
+import { useState } from "react";
+import Modal from "../Modal";
+import Settings from "../ArtistSettingModal/Settings";
 
 const ArtistToggleModal = () => {
   const { selectRef, setIsVisibleSelect, isVisibleSelect } =
     useClickOutsideSelect();
   const { artistActive } = useArtistProvider();
+  const [isOpenSetting, setIsOpenSetting] = useState(false);
+
+  const toggleSetting = () => {
+    setIsOpenSetting(!isOpenSetting);
+  };
 
   const toggleArtistModal = () => {
     setIsVisibleSelect(!isVisibleSelect);
@@ -15,7 +23,7 @@ const ArtistToggleModal = () => {
   return (
     <div className="relative" ref={selectRef}>
       <button
-        className="relative flex items-center rounded-full w-12 h-6 pl-2 border-[1px] border-gray-700 rounded-full cursor-pointer"
+        className="relative flex items-center w-12 h-6 pl-2 border-[1px] border-gray-700 rounded-full cursor-pointer"
         onClick={toggleArtistModal}
         type="button"
       >
@@ -30,7 +38,17 @@ const ArtistToggleModal = () => {
           />
         </div>
       </button>
-      {isVisibleSelect && <ArtistDropDown toggleModal={toggleArtistModal} />}
+      {isVisibleSelect && (
+        <ArtistDropDown
+          toggleModal={toggleArtistModal}
+          toggleSetting={toggleSetting}
+        />
+      )}
+      {isOpenSetting && (
+        <Modal onClose={toggleSetting}>
+          <Settings toggleModal={toggleSetting} />
+        </Modal>
+      )}
     </div>
   );
 };
