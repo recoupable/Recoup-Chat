@@ -13,7 +13,7 @@ const ArtistDropDown = ({ toggleModal }: { toggleModal: () => void }) => {
   };
 
   return (
-    <div className="absolute border-[1px] border-gray-700 rounded-md p-2 bottom-0 right-0 bg-black min-h-[200px] overflow-y-auto">
+    <div className="absolute min-w-[240px] border-[1px] border-gray-700 rounded-md p-2 bottom-0 right-0 bg-black min-h-[200px] overflow-y-auto">
       <div className="flex flex-col gap-2">
         {artists.map((artist: ArtistRecord) => (
           <button

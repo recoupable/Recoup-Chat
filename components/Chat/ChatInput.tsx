@@ -3,9 +3,11 @@ import { useChatProvider } from "@/providers/ChatProvider";
 import Suggestions from "./Suggestions";
 import { useEffect, useRef } from "react";
 import ArtistToggleModal from "../ArtistToggleModal";
+import { useUserProvider } from "@/providers/UserProvder";
 
 const ChatInput: React.FC = () => {
   const { input, handleInputChange, handleSubmit } = useChatProvider();
+  const { email } = useUserProvider();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -43,7 +45,7 @@ const ChatInput: React.FC = () => {
               aria-label="Chat input"
             />
             <div className="w-full flex justify-end gap-2">
-              <ArtistToggleModal />
+              {email && <ArtistToggleModal />}
               <SubmitButton canSubmit={Boolean(input)} />
             </div>
           </form>
