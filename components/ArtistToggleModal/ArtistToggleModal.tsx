@@ -20,11 +20,11 @@ const ArtistToggleModal = () => {
         type="button"
       >
         <div
-          className={`${artistActive ? "translate-x-[calc(100%-5px)]" : "translate-x-[-5px]"} w-[20px] aspect-[1/1] rounded-full 
+          className={`${artistActive ? "translate-x-[calc(100%-5px)]" : "translate-x-[-5px]"} w-[20px] aspect-[1/1] rounded-full overflow-hidden
             transition duration-[300ms] ease-[cubic-bezier(0.68,-0.55,0.265,1.55)]`}
         >
           <Image
-            src={"/artists/luh tyler.png"}
+            src={"https://i.imgur.com/QCdc8Ai.jpg"}
             layout="fill"
             alt="not found artist image"
           />
