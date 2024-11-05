@@ -3,7 +3,7 @@ import { getRandomHexColor } from "@/lib/getRandomColor";
 import { Conversation } from "@/types/Stack";
 import { useRouter } from "next/navigation";
 
-const RecentChats = ({toggleModal}: {toggleModal: () => void}) => {
+const RecentChats = ({ toggleModal }: { toggleModal: () => void }) => {
   const { conversations } = useConversations();
   const { push } = useRouter();
 
@@ -17,8 +17,8 @@ const RecentChats = ({toggleModal}: {toggleModal: () => void}) => {
             key={conversation.metadata.id}
             type="button"
             onClick={() => {
-              push(`/${conversation.metadata.id}`)
-              toggleModal()
+              push(`/${conversation.metadata.id}`);
+              toggleModal();
             }}
           >
             <div

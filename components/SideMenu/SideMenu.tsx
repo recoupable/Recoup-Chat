@@ -72,7 +72,7 @@ const SideMenu = ({
       </button>
       {artists.length > 0 && <Artists />}
       <div className="h-[0.1px] bg-gray-700 w-full my-4" />
-      {email && <RecentChats toggleModal={toggleModal}/>}
+      {email && <RecentChats toggleModal={toggleModal} />}
       <div className="grow flex flex-col gap-3 justify-end">
         {isIntroOpen && (
           <Introducing toggleVisible={() => setIsIntroOpen(!isIntroOpen)} />
