@@ -1,18 +1,20 @@
 "use client";
 
-import { BookOpen, Plus } from "lucide-react";
+import { BookOpen, MicVocal, Plus } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import Tooltip from "../Tooltip";
 import { useUserProvider } from "@/providers/UserProvder";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
+import SideMenu from "../SideMenu";
 
 const Sidebar = () => {
   const { push } = useRouter();
   const { isPrepared } = useUserProvider();
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const [isOpenSideMenu, setIsOpenSideMenu] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -34,7 +36,7 @@ const Sidebar = () => {
     <div className="border-r-[1px] border-r-gray-700 w-16 flex flex-col py-4 px-2 items-center gap-3 hidden md:block">
       <button
         type="button"
-        onClick={() => goToItem()}
+        onClick={() => setIsOpenSideMenu(true)}
         className="mb-6 w-[45px] h-[45px]"
       >
         <Image
@@ -72,7 +74,19 @@ const Sidebar = () => {
             <BookOpen />
           </button>
         </Tooltip>
+        <Tooltip id={"artists-tooltip"} message="Artists" className="!z-[100]">
+          <button
+            type="button"
+            className="border-gray-700 border-[1px] p-2 rounded-md"
+          >
+            <MicVocal />
+          </button>
+        </Tooltip>
       </div>
+      <SideMenu
+        isVisible={isOpenSideMenu}
+        toggleModal={() => setIsOpenSideMenu(!isOpenSideMenu)}
+      />
     </div>
   );
 };
