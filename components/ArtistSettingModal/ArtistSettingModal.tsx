@@ -7,6 +7,10 @@ import Settings from "./Settings";
 const ArtistSettingModal = () => {
   const [isOpenModal, setIsOpenModal] = useState(false);
 
+  const toggleModal = () => {
+    setIsOpenModal(!isOpenModal);
+  };
+
   return (
     <div>
       <Tooltip
@@ -23,8 +27,8 @@ const ArtistSettingModal = () => {
         </button>
       </Tooltip>
       {isOpenModal && (
-        <Modal onClose={() => setIsOpenModal(!isOpenModal)}>
-          <Settings />
+        <Modal onClose={toggleModal}>
+          <Settings toggleModal={toggleModal} />
         </Modal>
       )}
     </div>

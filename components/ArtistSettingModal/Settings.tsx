@@ -1,8 +1,8 @@
 import useArtistSetting from "@/hooks/useArtistSetting";
-import { Plus } from "lucide-react";
+import { MicVocal, Plus, X } from "lucide-react";
 import Image from "next/image";
 
-const Settings = () => {
+const Settings = ({ toggleModal }: { toggleModal: () => void }) => {
   const {
     imageRef,
     baseRef,
@@ -30,6 +30,15 @@ const Settings = () => {
 
   return (
     <div className="w-full grid grid-cols-12 gap-3">
+      <div className="col-span-12 flex justify-between items-center border-b-gray-700 border-b-[1px] pb-3">
+        <div className="flex gap-2 items-center">
+          <MicVocal />
+          <p>Artist Settings</p>
+        </div>
+        <button type="button" onClick={toggleModal}>
+          <X />
+        </button>
+      </div>
       <div className="col-span-5 space-y-2">
         <p className="text-sm">Artist Image</p>
         <button
