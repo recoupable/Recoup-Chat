@@ -55,7 +55,7 @@ const Artists = () => {
             ))}
             <button type="button" className="flex gap-2 items-center">
               <Plus />
-              <p className="text-sm">New Chat</p>
+              <p className="text-sm">New Artist</p>
             </button>
           </motion.section>
         )}
