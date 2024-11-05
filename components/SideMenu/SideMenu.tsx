@@ -60,7 +60,7 @@ const SideMenu = ({
         className="border-gray-700 border-[1px] rounded-md p-2 mt-8 cursor-pointer"
         onClick={() => goToItem("/")}
       >
-        New Chat
+        New Artist
       </button>
       <button
         type="button"
