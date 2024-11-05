@@ -21,7 +21,7 @@ const SideModal = ({
       }}
     >
       <motion.div
-        className="flex h-full w-full flex-col bg-black max-w-[300px] px-4 py-8"
+        className="flex h-full w-full flex-col bg-black max-w-[300px] px-4 py-4 md:py-8"
         animate={animate}
         initial={initial}
         transition={{ duration: 0.2 }}

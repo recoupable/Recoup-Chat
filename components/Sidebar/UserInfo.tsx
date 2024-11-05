@@ -7,7 +7,7 @@ const UserInfo = () => {
 
   return (
     <div className="flex gap-3 items-center">
-      <div className="relative w-8 h-8 rounded-md overflow-hidden">
+      <div className="relative w-6 h-6 md:w-8 md:h-8 rounded-md overflow-hidden">
         <Image
           src="https://i.imgur.com/QCdc8Ai.jpg"
           layout="fill"
@@ -15,10 +15,10 @@ const UserInfo = () => {
         />
       </div>
       <div>
-        <p className="text-sm">{email}</p>
-        <p className="text-sm">Team Name</p>
+        <p className="text-xs md:text-sm">{email}</p>
+        <p className="text-xs md:text-sm">Team Name</p>
       </div>
-      <SquareArrowOutUpRight />
+      <SquareArrowOutUpRight className="size-5 md:size-8" />
     </div>
   );
 };
