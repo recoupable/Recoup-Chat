@@ -12,7 +12,7 @@ const SideModal = ({
   const { animate, initial } = useModalAnimation(isVisible);
   return (
     <div
-      className={`!fixed left-0 top-0 z-[200] flex h-screen w-screen overflow-hidden ${isVisible ? "block" : "hidden"}`}
+      className={`!fixed left-0 top-0 z-[200] flex h-screen w-screen backdrop-blur-[5px] overflow-hidden ${isVisible ? "block" : "hidden"}`}
     >
       <motion.div
         className="flex h-full w-full flex-col bg-black max-w-[300px] px-4 py-8"
