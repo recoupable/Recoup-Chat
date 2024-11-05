@@ -134,7 +134,7 @@ const Settings = () => {
           className="w-full !outline-none border-gray-700 border-[1px] p-2 rounded-md text-sm"
         />
       </div>
-      <div className="col-span-5 space-y-2">
+      <div className="col-span-7 md:col-span-5 space-y-2">
         <p className="text-sm">Knowledge Base</p>
         <button
           className="w-full flex gap-2 items-center border-gray-700 rounded-md p-2 border-[1px]"
