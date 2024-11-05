@@ -74,7 +74,11 @@ const Sidebar = () => {
             <BookOpen />
           </button>
         </Tooltip>
-        <Tooltip id={"artists-tooltip"} message="Artists" className="!z-[100]">
+        <Tooltip
+          id={"artists-tooltip"}
+          message="Artist Setting"
+          className="!z-[100]"
+        >
           <button
             type="button"
             className="border-gray-700 border-[1px] p-2 rounded-md"
