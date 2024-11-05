@@ -2,9 +2,12 @@ import SubmitButton from "./SubmitButton";
 import { useChatProvider } from "@/providers/ChatProvider";
 import Suggestions from "./Suggestions";
 import { useEffect, useRef } from "react";
+import ArtistToggleModal from "../ArtistToggleModal";
+import { useUserProvider } from "@/providers/UserProvder";
 
 const ChatInput: React.FC = () => {
   const { input, handleInputChange, handleSubmit } = useChatProvider();
+  const { email } = useUserProvider();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -41,7 +44,8 @@ const ChatInput: React.FC = () => {
               className="bg-transparent w-full p-2 text-sm !border-none !outline-none rounded-md resize-none min-h-[40px] max-h-[200px] overflow-y-auto"
               aria-label="Chat input"
             />
-            <div className="w-full flex justify-end">
+            <div className="w-full flex justify-end gap-2">
+              {email && <ArtistToggleModal />}
               <SubmitButton canSubmit={Boolean(input)} />
             </div>
           </form>

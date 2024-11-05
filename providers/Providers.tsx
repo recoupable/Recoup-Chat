@@ -5,6 +5,7 @@ import { ChatProvider } from "./ChatProvider";
 import PrivyProvider from "./PrivyProvider";
 import { UserProvider } from "./UserProvder";
 import { ThemeProvider } from "next-themes";
+import { ArtistProvider } from "./ArtistProvider";
 
 const queryClient = new QueryClient();
 
@@ -13,7 +14,9 @@ const Providers = ({ children }: { children: React.ReactNode }) => (
     <ThemeProvider attribute="class">
       <PrivyProvider>
         <UserProvider>
-          <ChatProvider>{children}</ChatProvider>
+          <ArtistProvider>
+            <ChatProvider>{children}</ChatProvider>
+          </ArtistProvider>
         </UserProvider>
       </PrivyProvider>
     </ThemeProvider>
