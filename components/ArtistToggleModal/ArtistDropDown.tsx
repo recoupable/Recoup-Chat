@@ -16,7 +16,6 @@ const ArtistDropDown = ({
   const handleClickArtist = (artist: ArtistRecord) => {
     setSelectedArtist(artist);
     setArtistActive(true);
-    toggleSetting();
     toggleModal();
   };
 
@@ -40,7 +39,7 @@ const ArtistDropDown = ({
               </div>
               <p className="text-sm">{artist.name}</p>
             </div>
-            <button type="button">
+            <button type="button" onClick={toggleSetting}>
               <EllipsisVertical />
             </button>
           </button>
