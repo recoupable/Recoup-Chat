@@ -1,7 +1,7 @@
 import Image from "next/image";
 import SideModal from "../SideModal";
 import { Plus_Jakarta_Sans } from "next/font/google";
-import { ArrowLeftFromLine, BookOpen } from "lucide-react";
+import { ArrowLeftFromLine, BookOpen, SquareArrowOutUpRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Artists from "../Sidebar/Artists";
 import { useArtistProvider } from "@/providers/ArtistProvider";
@@ -81,6 +81,7 @@ const SideMenu = ({
             <p className="text-sm">{email}</p>
             <p className="text-sm">Team Name</p>
           </div>
+          <SquareArrowOutUpRight />
         </div>
       </div>
     </SideModal>
