@@ -1,4 +1,5 @@
-import { useRef, useState } from "react";
+import { useArtistProvider } from "@/providers/ArtistProvider";
+import { useEffect, useRef, useState } from "react";
 
 const useArtistSetting = () => {
   const imageRef = useRef() as any;
@@ -14,6 +15,7 @@ const useArtistSetting = () => {
   const [youtube, setYoutube] = useState("");
   const [twitter, setTwitter] = useState("");
   const [bases, setBases] = useState("");
+  const { selectedArtist } = useArtistProvider();
 
   const handleImageSelected = (e: any) => {
     const file = e.target.files[0];
@@ -23,6 +25,13 @@ const useArtistSetting = () => {
       setImage(objectURL);
     }
   };
+
+  useEffect(() => {
+    if (selectedArtist) {
+      setName(selectedArtist.name || "");
+      setImage(selectedArtist.image || "");
+    }
+  }, [selectedArtist]);
 
   return {
     handleImageSelected,

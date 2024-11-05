@@ -1,10 +1,8 @@
 import useArtistSetting from "@/hooks/useArtistSetting";
-import { useArtistProvider } from "@/providers/ArtistProvider";
 import { Plus } from "lucide-react";
 import Image from "next/image";
 
 const Settings = () => {
-  const { selectedArtist } = useArtistProvider();
   const {
     imageRef,
     baseRef,
@@ -30,8 +28,6 @@ const Settings = () => {
     handleImageSelected,
   } = useArtistSetting();
 
-  console.log("ZIAD", image);
-
   return (
     <div className="w-full grid grid-cols-12 gap-3">
       <div className="col-span-5 space-y-2">
@@ -43,11 +39,7 @@ const Settings = () => {
         >
           <div className="w-full h-[120px] rounded-md relative overflow-hidden">
             <Image
-              src={
-                image ||
-                selectedArtist?.image ||
-                "https://i.imgur.com/QCdc8Ai.jpg"
-              }
+              src={image || "https://i.imgur.com/QCdc8Ai.jpg"}
               layout="fill"
               className="object-cover"
               alt="not found pic"
