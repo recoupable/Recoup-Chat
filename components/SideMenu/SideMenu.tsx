@@ -70,9 +70,7 @@ const SideMenu = ({
         <BookOpen />
         Library
       </button>
-      <div className="grow overflow-y-auto">
-        {artists.length > 0 && <Artists />}
-      </div>
+      {artists.length > 0 && <Artists />}
       <div className="h-[0.1px] bg-gray-700 w-full my-4" />
       {email && <RecentChats toggleModal={toggleModal} />}
       <div className="grow flex flex-col gap-3 justify-end">
