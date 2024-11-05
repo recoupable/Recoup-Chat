@@ -36,7 +36,7 @@ const Sidebar = () => {
     <div className="border-r-[1px] border-r-gray-700 w-16 flex-col items-center py-4 px-2 gap-3 hidden md:flex h-screen">
       <button
         type="button"
-        onClick={() => setIsOpenSideMenu(true)}
+        onClick={() => push("/")}
         className="mb-6 w-[45px] h-[45px]"
       >
         <Image

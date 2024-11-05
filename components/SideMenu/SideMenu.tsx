@@ -1,11 +1,7 @@
 import Image from "next/image";
 import SideModal from "../SideModal";
 import { Plus_Jakarta_Sans } from "next/font/google";
-import {
-  ArrowLeftFromLine,
-  BookOpen,
-  SquareArrowOutUpRight,
-} from "lucide-react";
+import { ArrowLeftFromLine, BookOpen } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Artists from "../Sidebar/Artists";
 import { useArtistProvider } from "@/providers/ArtistProvider";
@@ -13,6 +9,7 @@ import { useUserProvider } from "@/providers/UserProvder";
 import RecentChats from "../Sidebar/RecentChats";
 import Introducing from "../Sidebar/Introducing";
 import { useState } from "react";
+import UserInfo from "../Sidebar/UserInfo";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -28,8 +25,15 @@ const SideMenu = ({
 }) => {
   const { push } = useRouter();
   const { artists } = useArtistProvider();
-  const { email } = useUserProvider();
+  const { email, isPrepared } = useUserProvider();
   const [isIntroOpen, setIsIntroOpen] = useState(true);
+
+  const goToItem = (link?: string) => {
+    if (isPrepared()) {
+      push(`/${link || ""}`);
+      toggleModal();
+    }
+  };
 
   return (
     <SideModal isVisible={isVisible} toggleModal={toggleModal}>
@@ -54,13 +58,13 @@ const SideMenu = ({
       <button
         type="button"
         className="border-gray-700 border-[1px] rounded-md p-2 mt-8 cursor-pointer"
-        onClick={() => push("/")}
+        onClick={() => goToItem("/")}
       >
         New Chat
       </button>
       <button
         type="button"
-        onClick={() => push("/history")}
+        onClick={() => goToItem("/history")}
         className="flex gap-2 items-center my-4"
       >
         <BookOpen />
@@ -68,28 +72,11 @@ const SideMenu = ({
       </button>
       {artists.length > 0 && <Artists />}
       <div className="h-[0.1px] bg-gray-700 w-full my-4" />
-      <RecentChats />
+      {email && <RecentChats />}
       {isIntroOpen && (
         <Introducing toggleVisible={() => setIsIntroOpen(!isIntroOpen)} />
       )}
-      {email && (
-        <div className="grow flex flex-col justify-end">
-          <div className="flex gap-3 items-center">
-            <div className="relative w-8 h-8 rounded-md overflow-hidden">
-              <Image
-                src="https://i.imgur.com/QCdc8Ai.jpg"
-                layout="fill"
-                alt="not found icon"
-              />
-            </div>
-            <div>
-              <p className="text-sm">{email}</p>
-              <p className="text-sm">Team Name</p>
-            </div>
-            <SquareArrowOutUpRight />
-          </div>
-        </div>
-      )}
+      {email && <UserInfo />}
     </SideModal>
   );
 };
