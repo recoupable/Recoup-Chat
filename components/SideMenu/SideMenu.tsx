@@ -1,7 +1,11 @@
 import Image from "next/image";
 import SideModal from "../SideModal";
 import { Plus_Jakarta_Sans } from "next/font/google";
-import { ArrowLeftFromLine, BookOpen, SquareArrowOutUpRight } from "lucide-react";
+import {
+  ArrowLeftFromLine,
+  BookOpen,
+  SquareArrowOutUpRight,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 import Artists from "../Sidebar/Artists";
 import { useArtistProvider } from "@/providers/ArtistProvider";
@@ -28,7 +32,7 @@ const SideMenu = ({
   const [isIntroOpen, setIsIntroOpen] = useState(true);
 
   return (
-    <SideModal isVisible={isVisible}>
+    <SideModal isVisible={isVisible} toggleModal={toggleModal}>
       <div className="flex items-center gap-4 justify-between">
         <div className="flex gap-2 items-center">
           <div className="w-[45px] h-[45px] relative">
@@ -68,22 +72,24 @@ const SideMenu = ({
       {isIntroOpen && (
         <Introducing toggleVisible={() => setIsIntroOpen(!isIntroOpen)} />
       )}
-      <div className="grow flex flex-col justify-end">
-        <div className="flex gap-3 items-center">
-          <div className="relative w-8 h-8 rounded-md overflow-hidden">
-            <Image
-              src="https://i.imgur.com/QCdc8Ai.jpg"
-              layout="fill"
-              alt="not found icon"
-            />
+      {email && (
+        <div className="grow flex flex-col justify-end">
+          <div className="flex gap-3 items-center">
+            <div className="relative w-8 h-8 rounded-md overflow-hidden">
+              <Image
+                src="https://i.imgur.com/QCdc8Ai.jpg"
+                layout="fill"
+                alt="not found icon"
+              />
+            </div>
+            <div>
+              <p className="text-sm">{email}</p>
+              <p className="text-sm">Team Name</p>
+            </div>
+            <SquareArrowOutUpRight />
           </div>
-          <div>
-            <p className="text-sm">{email}</p>
-            <p className="text-sm">Team Name</p>
-          </div>
-          <SquareArrowOutUpRight />
         </div>
-      </div>
+      )}
     </SideModal>
   );
 };
