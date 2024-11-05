@@ -25,7 +25,7 @@ const Artists = () => {
       <AnimatePresence initial={false}>
         {isOpenDropDown && (
           <motion.section
-            className="pl-6 pt-3 flex flex-col gap-2"
+            className="pl-6 pt-3 flex flex-col gap-2 max-h-[160px] overflow-y-auto"
             initial="collapsed"
             animate="open"
             exit="collapsed"
@@ -55,7 +55,7 @@ const Artists = () => {
             ))}
             <button type="button" className="flex gap-2 items-center">
               <Plus />
-              <p className="text-sm">New Chat</p>
+              <p className="text-sm">New Artist</p>
             </button>
           </motion.section>
         )}
