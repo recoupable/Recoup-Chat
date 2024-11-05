@@ -49,7 +49,7 @@ const SideMenu = ({
       </div>
       <button
         type="button"
-        className="border-gray-700 border-[1px] rounded-md p-2 mt-8 cursor-pointer"
+        className="border-gray-700 border-[1px] rounded-md p-2 mt-8 cursor-pointer w-full"
         onClick={() => push("/")}
       >
         New Chat
@@ -62,7 +62,9 @@ const SideMenu = ({
         <BookOpen />
         Library
       </button>
-      {artists.length > 0 && <Artists />}
+      <div className="grow overflow-y-auto">
+        {artists.length > 0 && <Artists />}
+      </div>
       <div className="h-[0.1px] bg-gray-700 w-full my-4" />
       <RecentChats />
       {isIntroOpen && (

@@ -2,7 +2,7 @@
 
 import { MenuIcon } from "lucide-react";
 import { useState } from "react";
-import MobileMenu from "../MobileMenu";
+import SideMenu from "../SideMenu";
 
 const Header = () => {
   const [isOpenMobileMenu, setIsOpenMobileMenu] = useState(false);
@@ -16,9 +16,10 @@ const Header = () => {
       >
         <MenuIcon />
       </button>
-      {isOpenMobileMenu && (
-        <MobileMenu toggleMenu={() => setIsOpenMobileMenu(!isOpenMobileMenu)} />
-      )}
+      <SideMenu
+        isVisible={isOpenMobileMenu}
+        toggleModal={() => setIsOpenMobileMenu(!isOpenMobileMenu)}
+      />
     </div>
   );
 };
