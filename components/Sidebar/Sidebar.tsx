@@ -1,6 +1,6 @@
 "use client";
 
-import { BookOpen, MicVocal, Plus } from "lucide-react";
+import { BookOpen, Plus } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import Tooltip from "../Tooltip";
@@ -8,6 +8,8 @@ import { useUserProvider } from "@/providers/UserProvder";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import SideMenu from "../SideMenu";
+import ArtistSettingModal from "../ArtistSettingModal";
+import { useArtistProvider } from "@/providers/ArtistProvider";
 
 const Sidebar = () => {
   const { push } = useRouter();
@@ -15,6 +17,7 @@ const Sidebar = () => {
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [isOpenSideMenu, setIsOpenSideMenu] = useState(false);
+  const { artistActive, selectedArtist } = useArtistProvider();
 
   useEffect(() => {
     setMounted(true);
@@ -74,18 +77,7 @@ const Sidebar = () => {
             <BookOpen />
           </button>
         </Tooltip>
-        <Tooltip
-          id={"artists-tooltip"}
-          message="Artist Setting"
-          className="!z-[100]"
-        >
-          <button
-            type="button"
-            className="border-gray-700 border-[1px] p-2 rounded-md"
-          >
-            <MicVocal />
-          </button>
-        </Tooltip>
+        {artistActive && selectedArtist && <ArtistSettingModal />}
       </div>
       <SideMenu
         isVisible={isOpenSideMenu}
