@@ -1,6 +1,6 @@
 "use client";
 
-import { BookOpen, MicVocal, Plus } from "lucide-react";
+import { ArrowRightFromLine, BookOpen, MicVocal, Plus } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import Tooltip from "../Tooltip";
@@ -33,7 +33,7 @@ const Sidebar = () => {
   }
 
   return (
-    <div className="border-r-[1px] border-r-gray-700 w-16 flex flex-col py-4 px-2 items-center gap-3 hidden md:block">
+    <div className="border-r-[1px] border-r-gray-700 w-16 flex-col items-center py-4 px-2 gap-3 hidden md:flex h-screen">
       <button
         type="button"
         onClick={() => setIsOpenSideMenu(true)}
@@ -47,7 +47,7 @@ const Sidebar = () => {
           className="rounded-md overflow-hidden w-full h-full object-contain"
         />
       </button>
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-3 grow">
         <Tooltip
           id={"new-conversation-tooltip"}
           message="New Chat"
@@ -76,7 +76,7 @@ const Sidebar = () => {
         </Tooltip>
         <Tooltip
           id={"artists-tooltip"}
-          message="Artist Setting"
+          message="Artist Settings"
           className="!z-[100]"
         >
           <button
@@ -86,6 +86,11 @@ const Sidebar = () => {
             <MicVocal />
           </button>
         </Tooltip>
+        <div className="flex-grow flex items-end justify-center">
+          <button type="button" onClick={() => setIsOpenSideMenu(true)}>
+            <ArrowRightFromLine />
+          </button>
+        </div>
       </div>
       <SideMenu
         isVisible={isOpenSideMenu}
