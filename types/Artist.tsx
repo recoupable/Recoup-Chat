@@ -11,6 +11,7 @@ export type ArtistRecord = {
   name: string;
   id: string;
   timestamp: number;
+  image: string | null;
 };
 
 export type CampaignRecord = {
