@@ -28,7 +28,7 @@ const useSuggestions = () => {
       }
       setSuggestions(SUGGESTIONS);
     }
-  }, [isNewChat, artistActive]);
+  }, [isNewChat, artistActive, selectedArtist]);
 
   const finalCallback = async (
     message: Message,
