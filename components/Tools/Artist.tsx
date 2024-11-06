@@ -13,10 +13,12 @@ import { useArtistProvider } from "@/providers/ArtistProvider";
 
 const Artist = () => {
   const { context } = useToolCallProvider();
-  const { setSelectedArtist } = useArtistProvider();
+  const { setSelectedArtist, selectedArtist } = useArtistProvider();
   const status = context?.status;
   const artist = context?.artist;
-
+  const artistInfo =
+    (artist || selectedArtist) &&
+    status === ArtistToolResponse.UPDATED_ARTIST_INFO;
   const [isOpenModal, setIsOpenModal] = useState(false);
 
   const toggleModal = () => {
@@ -24,12 +26,12 @@ const Artist = () => {
   };
 
   useEffect(() => {
-    if (artist) {
-      setSelectedArtist(artist);
+    setSelectedArtist(artistInfo);
+    if (artistInfo) {
       setIsOpenModal(true);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [artist]);
+  }, [artistInfo]);
 
   return (
     <>
@@ -43,10 +45,16 @@ const Artist = () => {
         <MissingTikTok />
       )}
       {status === ArtistToolResponse.TIKTOK_TRENDS && <TikTokPfp />}
-      {status === ArtistToolResponse.UPDATED_ARTIST_INFO && isOpenModal && (
-        <Modal onClose={toggleModal}>
-          <Settings toggleModal={toggleModal} />
-        </Modal>
+      {status === ArtistToolResponse.UPDATED_ARTIST_INFO && (
+        <>
+          {isOpenModal ? (
+            <Modal onClose={toggleModal}>
+              <Settings toggleModal={toggleModal} />
+            </Modal>
+          ) : (
+            <div />
+          )}
+        </>
       )}
     </>
   );
