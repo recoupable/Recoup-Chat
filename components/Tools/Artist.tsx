@@ -27,8 +27,7 @@ const Artist = () => {
   };
 
   useEffect(() => {
-    console.log("ZIAD", artistInfo)
-    setSelectedArtist(artistInfo);
+    setSelectedArtist(artist || selectedArtist);
     if (artistInfo) {
       setIsOpenModal(true);
     }
