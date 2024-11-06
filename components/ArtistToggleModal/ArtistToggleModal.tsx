@@ -9,7 +9,7 @@ import Settings from "../ArtistSettingModal/Settings";
 const ArtistToggleModal = () => {
   const { selectRef, setIsVisibleSelect, isVisibleSelect } =
     useClickOutsideSelect();
-  const { artistActive } = useArtistProvider();
+  const { artistActive, selectedArtist } = useArtistProvider();
   const [isOpenSetting, setIsOpenSetting] = useState(false);
 
   const toggleSetting = () => {
@@ -39,7 +39,7 @@ const ArtistToggleModal = () => {
             />
           </div>
         </button>
-        <p className="text-sm">Artist Mode</p>
+        <p className="text-sm">{selectedArtist?.name || "Artist Mode"}</p>
       </div>
       {isVisibleSelect && (
         <ArtistDropDown
