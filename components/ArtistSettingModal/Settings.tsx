@@ -31,7 +31,13 @@ const Settings = ({ toggleModal }: { toggleModal: () => void }) => {
     saveSetting,
     loading,
     imageUploading,
+    updating,
   } = useArtistSetting();
+
+  const handleSave = async () => {
+    await saveSetting();
+    toggleModal();
+  };
 
   return (
     <div className="w-full grid grid-cols-12 gap-2 md:gap-3">
@@ -167,10 +173,10 @@ const Settings = ({ toggleModal }: { toggleModal: () => void }) => {
       </div>
       <button
         className="col-span-12 border-gray-700 border-[1px] rounded-md py-1 md:mb-4"
-        onClick={saveSetting}
+        onClick={handleSave}
         disabled={loading}
       >
-        {loading ? "Saving..." : "Save"}
+        {updating ? "Saving..." : "Save"}
       </button>
       <button
         className="col-span-12 border-gray-700 border-[1px] rounded-md py-1 mb-4"

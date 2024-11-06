@@ -19,8 +19,9 @@ const useArtistSetting = () => {
   const [bases, setBases] = useState("");
   const { selectedArtist, getArtists } = useArtistProvider();
   const [imageUploading, setImageUploading] = useState(false);
+  const [updating, setUpdating] = useState(false);
 
-  const loading = imageUploading;
+  const loading = imageUploading || updating;
 
   const handleImageSelected = async (e: any) => {
     setImageUploading(true);
@@ -37,6 +38,7 @@ const useArtistSetting = () => {
   };
 
   const saveSetting = async () => {
+    setUpdating(true);
     const response = await fetch("/api/artist/profile", {
       method: "POST",
       body: JSON.stringify({ name, image, artistId: selectedArtist?.id }),
@@ -46,6 +48,7 @@ const useArtistSetting = () => {
     });
     await response.json();
     getArtists();
+    setUpdating(false);
   };
 
   useEffect(() => {
@@ -84,6 +87,7 @@ const useArtistSetting = () => {
     saveSetting,
     loading,
     imageUploading,
+    updating,
   };
 };
 

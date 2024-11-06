@@ -6,6 +6,7 @@ export async function POST(req: NextRequest) {
   const image = body.image;
   const name = body.name;
   const artistId = body.artistId;
+
   try {
     const client = getSupabaseServerAdminClient();
     const { data } = await client
@@ -17,11 +18,14 @@ export async function POST(req: NextRequest) {
 
     const artistData = data[0];
 
-    await client.from("artists").update({
-      ...artistData,
-      image,
-      name,
-    });
+    await client
+      .from("artists")
+      .update({
+        ...artistData,
+        image,
+        name,
+      })
+      .eq("id", artistId);
 
     return Response.json({ message: "success" }, { status: 200 });
   } catch (error) {
