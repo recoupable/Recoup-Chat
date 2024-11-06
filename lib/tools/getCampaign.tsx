@@ -3,7 +3,7 @@ import getFans from "../chat/getFans";
 import { getSupabaseServerAdminClient } from "@/packages/supabase/src/clients/server-admin-client";
 import { tool } from "ai";
 
-const getCampaign = (question: string) =>
+const getCampaign = (question: string, email: string, artistId: string) =>
   tool({
     description: `IMPORTANT: Always call this tool for ANY question related to the following topics:
     1. Artists
@@ -29,9 +29,27 @@ const getCampaign = (question: string) =>
     parameters: z.object({}),
     execute: async () => {
       const client = getSupabaseServerAdminClient();
-      const fans = await getFans(client);
+      const { data: campaign } = await client.rpc('get_campaign', {
+        email,
+        artistId,
+        clientId: ""
+      });
+
       return {
-        context: fans,
+        context: {
+          tracks: trackNames,
+          artists: artistNames,
+          playlists,
+          albums: albumNames,
+          audioBooks,
+          episodes,
+          shows: campaign.shows || [],
+          fans: rows,
+          premiumCount,
+          freeCount,
+          totalFansCount: premiumCount + freeCount,
+          totalFollowersCount: followers,
+        },
         question,
       };
     },

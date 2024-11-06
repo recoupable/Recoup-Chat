@@ -17,6 +17,14 @@ const getChatContext = async (email: string, artistId: string) => {
   const scores: SCORE_EVENT[] = await getUsersScore();
   context.push(INSTRUCTION);
 
+  const campaign = await client.rpc('get_campaign', {
+    email,
+    artistid: artistId,
+    clientid: ""
+  });
+
+  console.log("ZIAD HERE", campaign)
+
   let scoreContext = `\n1. Scores of fan ( please calculate a count for each username to indicate the number of times each player has played the game.) \n`;
   scores.map((score: SCORE_EVENT) => {
     scoreContext =
