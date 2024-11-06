@@ -25,7 +25,6 @@ const useArtists = () => {
         (artist: ArtistRecord) => artist.id === selectedArtist.id,
       );
       if (currentArtist?.length) {
-        console.log(currentArtist[0]?.image);
         setSelectedArtist(currentArtist[0]);
       }
     }
