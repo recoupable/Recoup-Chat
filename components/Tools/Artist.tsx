@@ -43,7 +43,7 @@ const Artist = () => {
         <MissingTikTok />
       )}
       {status === ArtistToolResponse.TIKTOK_TRENDS && <TikTokPfp />}
-      {status === ArtistToolResponse.UPDATED_ARTIST_INFO && (
+      {status === ArtistToolResponse.UPDATED_ARTIST_INFO && isOpenModal && (
         <Modal onClose={toggleModal}>
           <Settings toggleModal={toggleModal} />
         </Modal>
