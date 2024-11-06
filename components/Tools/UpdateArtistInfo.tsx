@@ -1,7 +1,7 @@
 import { useArtistProvider } from "@/providers/ArtistProvider";
 import { ArtistRecord } from "@/types/Artist";
 
-const UpdateArtistInfo = () => {
+const UpdateArtistInfo = ({ toggleModal }: { toggleModal: () => void }) => {
   const { artists, setSelectedArtist, setArtistActive } = useArtistProvider();
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -18,7 +18,7 @@ const UpdateArtistInfo = () => {
       <p className="text-sm">Please select the artist to update info.</p>
       <section className="pt-2 flex flex-col gap-2">
         <fieldset className="flex gap-2 items-center">
-          <p className="text-sm">Artist:</p>
+          <p className="text-sm">Artist Id:</p>
           <select
             className="!bg-transparent border-gray-700 border-[1px] rounded-md px-2 text-center text-sm"
             onChange={handleSelectArtist}
@@ -34,6 +34,13 @@ const UpdateArtistInfo = () => {
             ))}
           </select>
         </fieldset>
+        <button
+          type="button"
+          onClick={toggleModal}
+          className="border-gray-700 border-[1px] px-3 py-1 rounded-full text-sm w-fit"
+        >
+          Update Artist Info.
+        </button>
       </section>
     </div>
   );

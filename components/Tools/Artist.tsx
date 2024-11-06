@@ -53,7 +53,13 @@ const Artist = () => {
               <Settings toggleModal={toggleModal} />
             </Modal>
           ) : (
-            <>{artists.length ? <UpdateArtistInfo /> : <SubmitArtist />}</>
+            <>
+              {artists.length ? (
+                <UpdateArtistInfo toggleModal={toggleModal} />
+              ) : (
+                <SubmitArtist />
+              )}
+            </>
           )}
         </>
       )}
