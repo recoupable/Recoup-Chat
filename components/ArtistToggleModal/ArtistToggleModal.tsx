@@ -33,7 +33,7 @@ const ArtistToggleModal = () => {
               transition duration-[300ms] ease-[cubic-bezier(0.68,-0.55,0.265,1.55)]`}
           >
             <Image
-              src={"https://i.imgur.com/QCdc8Ai.jpg"}
+              src={selectedArtist?.image || "https://i.imgur.com/QCdc8Ai.jpg"}
               layout="fill"
               alt="not found artist image"
             />
