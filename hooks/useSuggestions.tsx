@@ -18,16 +18,14 @@ const useSuggestions = () => {
   const isNewChat = pathname === "/";
 
   useEffect(() => {
-    if (isNewChat) {
-      if (artistActive) {
-        setSuggestions([
-          `Who are ${selectedArtist?.name || ""}’s most engaged fans?`,
-          `Analyze ${selectedArtist?.name || ""}’s TikTok posts from this week.`,
-        ]);
-        return;
-      }
-      setSuggestions(SUGGESTIONS);
+    if (artistActive) {
+      setSuggestions([
+        `Who are ${selectedArtist?.name || ""}’s most engaged fans?`,
+        `Analyze ${selectedArtist?.name || ""}’s TikTok posts from this week.`,
+      ]);
+      return;
     }
+    setSuggestions(SUGGESTIONS);
   }, [isNewChat, artistActive, selectedArtist]);
 
   const finalCallback = async (
