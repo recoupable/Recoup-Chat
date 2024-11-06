@@ -1,7 +1,9 @@
 import { z } from "zod";
-import getFans from "../chat/getFans";
 import { getSupabaseServerAdminClient } from "@/packages/supabase/src/clients/server-admin-client";
 import { tool } from "ai";
+import { FAN_TYPE } from "@/types/fans";
+import getFollows from "../chat/getFollows";
+import limitCollection from "../limitCollection";
 
 const getCampaign = (question: string, email: string, artistId: string) =>
   tool({
@@ -29,22 +31,30 @@ const getCampaign = (question: string, email: string, artistId: string) =>
     parameters: z.object({}),
     execute: async () => {
       const client = getSupabaseServerAdminClient();
-      const { data: campaign } = await client.rpc('get_campaign', {
+      const { data: campaign } = await client.rpc("get_campaign", {
         email,
         artistId,
-        clientId: ""
+        clientId: "",
       });
+
+      const premiumCount =
+        campaign?.fans?.filter((fan: FAN_TYPE) => fan.product === "product")
+          ?.length || 0;
+      const freeCount =
+        campaign?.fans?.filter((fan: FAN_TYPE) => fan.product === "free")
+          ?.length || 0;
+      const followers = getFollows(client);
 
       return {
         context: {
-          tracks: trackNames,
-          artists: artistNames,
-          playlists,
-          albums: albumNames,
-          audioBooks,
-          episodes,
-          shows: campaign.shows || [],
-          fans: rows,
+          tracks: limitCollection(campaign.tracks || []),
+          artists: limitCollection(campaign.artists || []),
+          playlists: limitCollection(campaign.playlists || []),
+          albums: limitCollection(campaign.albums || []),
+          audioBooks: limitCollection(campaign.audio_books || []),
+          episodes: limitCollection(campaign.episodes || []),
+          shows: limitCollection(campaign.shows || []),
+          fans: limitCollection(campaign.fans || [], 1000),
           premiumCount,
           freeCount,
           totalFansCount: premiumCount + freeCount,
