@@ -5,6 +5,8 @@ import Thinking from "./Thinking";
 import Message from "./Message";
 import { Message as AIMessage } from "ai";
 import { ToolCallProvider } from "@/providers/ToolCallProvider";
+import Suggestions from "./Suggestions";
+import { useParams } from "next/navigation";
 
 const Messages = ({
   scroll,
@@ -13,6 +15,7 @@ const Messages = ({
 }) => {
   const { messages, pending, suggestions } = useChatProvider();
   const scrollTo = () => scroll({ smooth: true, y: Number.MAX_SAFE_INTEGER });
+  const { conversation: conversationId } = useParams();
 
   useEffect(() => {
     scrollTo();
@@ -29,6 +32,7 @@ const Messages = ({
         </ToolCallProvider>
       ))}
       {pending && <Thinking />}
+      {conversationId && <Suggestions />}
     </ScrollArea>
   );
 };

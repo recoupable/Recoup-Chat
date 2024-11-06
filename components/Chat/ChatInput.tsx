@@ -4,11 +4,15 @@ import Suggestions from "./Suggestions";
 import { useEffect, useRef } from "react";
 import ArtistToggleModal from "../ArtistToggleModal";
 import { useUserProvider } from "@/providers/UserProvder";
+import { usePathname } from "next/navigation";
 
 const ChatInput: React.FC = () => {
   const { input, handleInputChange, handleSubmit } = useChatProvider();
   const { email } = useUserProvider();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const pathname = usePathname();
+
+  const isNewChat = pathname === "/";
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -51,7 +55,11 @@ const ChatInput: React.FC = () => {
           </form>
         </div>
       </div>
-      <Suggestions />
+      {isNewChat && (
+        <div className="max-w-3xl mx-auto w-full px-2 mt-4 flex gap-3 justify-center">
+          <Suggestions />
+        </div>
+      )}
     </div>
   );
 };

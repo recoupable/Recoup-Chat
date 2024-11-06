@@ -35,13 +35,13 @@ const Suggestions = () => {
   }, [limitedSuggestions]);
 
   return (
-    <div className="max-w-3xl mx-auto w-full px-2 mt-4 flex gap-3 justify-center">
+    <>
       {limitedSuggestions.map((suggestion: string) => (
         <button
           key={suggestion}
           type="button"
           style={{ width: maxWidth }}
-          className="border border-gray-700 py-1 px-3 rounded-md flex gap-1 items-center justify-between text-sm transition-colors hover:bg-gray-100 dark:hover:bg-gray-800"
+          className="border border-gray-700 py-1 px-3 rounded-full flex gap-1 items-center justify-between text-sm transition-colors hover:bg-gray-100 dark:hover:bg-gray-800"
           onClick={() =>
             append({
               id: uuidV4(),
@@ -62,7 +62,7 @@ const Suggestions = () => {
           <ArrowUpRightIcon className="w-4 h-4 flex-shrink-0" />
         </button>
       ))}
-    </div>
+    </>
   );
 };
 
