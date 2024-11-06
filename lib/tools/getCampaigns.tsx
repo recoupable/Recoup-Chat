@@ -20,7 +20,7 @@ const getCampaigns = (question: string, email: string, artistId: string) =>
       const campaigns = await readCampaigns(email, artistId || artist_id);
       return {
         context: {
-          status: campaigns.length
+          status: campaigns?.length
             ? ArtistToolResponse.CAMPAIGN_LIST
             : ArtistToolResponse.NO_CAMPAIGNS,
           campaigns,

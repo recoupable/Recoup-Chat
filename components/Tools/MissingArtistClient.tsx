@@ -1,3 +1,4 @@
+import { useArtistProvider } from "@/providers/ArtistProvider";
 import { useChatProvider } from "@/providers/ChatProvider";
 import { useToolCallProvider } from "@/providers/ToolCallProvider";
 import { ArtistRecord } from "@/types/Artist";
@@ -7,6 +8,7 @@ import { v4 as uuidV4 } from "uuid";
 const MissingArtistClient = () => {
   const [clientId, setClientId] = useState("");
   const [artistId, setArtistId] = useState("");
+  const { artistActive, selectedArtist } = useArtistProvider();
 
   const { context } = useToolCallProvider();
   const artists = context?.artists;
@@ -21,7 +23,7 @@ const MissingArtistClient = () => {
     if (!clientId || !artistId) return;
     append({
       id: uuidV4(),
-      content: `Create a new campaign. CampaignName: ${clientId} ArtistId: ${artistId}`,
+      content: `Create a new campaign. CampaignName: ${clientId} ArtistId: ${artistActive ? selectedArtist?.id : artistId}`,
       role: "user",
     });
   };
@@ -32,20 +34,24 @@ const MissingArtistClient = () => {
       <section className="pt-2 flex flex-col gap-2">
         <fieldset className="flex gap-2 items-center">
           <p className="text-sm">Artist Id:</p>
-          <select
-            className="!bg-transparent border-gray-700 border-[1px] rounded-md px-2 text-center text-sm"
-            onChange={(e) => setArtistId(e.target.value)}
-          >
-            {artists.map((artist: ArtistRecord, index: number) => (
-              <option
-                key={index}
-                className="!bg-black text-sm"
-                value={artist.id}
-              >
-                {artist.name}
-              </option>
-            ))}
-          </select>
+          {artistActive ? (
+            <p className="text-sm">{selectedArtist?.name}</p>
+          ) : (
+            <select
+              className="!bg-transparent border-gray-700 border-[1px] rounded-md px-2 text-center text-sm"
+              onChange={(e) => setArtistId(e.target.value)}
+            >
+              {artists.map((artist: ArtistRecord, index: number) => (
+                <option
+                  key={index}
+                  className="!bg-black text-sm"
+                  value={artist.id}
+                >
+                  {artist.name}
+                </option>
+              ))}
+            </select>
+          )}
         </fieldset>
         <fieldset className="flex gap-2 items-center">
           <p className="text-sm">Campaign Name:</p>
