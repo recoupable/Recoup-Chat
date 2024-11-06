@@ -9,7 +9,7 @@ const Message = ({ message }: { message: AIMessage }) => {
   return (
     <div className="p-3 rounded-lg flex w-full gap-2">
       {message.role === "assistant" && (
-        <div className="w-6 h-6 relative">
+        <div className="!w-[10px] !h-[10px] relative">
           <Image src={"/logo-light.png"} layout="fill" alt="not found logo" />
         </div>
       )}
