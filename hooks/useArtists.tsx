@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 
 const useArtists = () => {
   const { email } = useUserProvider();
-  const [artists, setArtists] = useState([]);
+  const [artists, setArtists] = useState<ArtistRecord[]>([]);
   const [selectedArtist, setSelectedArtist] = useState<ArtistRecord | null>(
     null,
   );
@@ -24,6 +24,17 @@ const useArtists = () => {
       setSelectedArtist(newUpdatedInfo?.[0] || selectedArtist);
     }
   }, [email]);
+
+  useEffect(() => {
+    if (selectedArtist && artists.length > 0) {
+      const currentArtist = artists.filter(
+        (artist: ArtistRecord) => artist.id === selectedArtist.id,
+      );
+      if (currentArtist?.length) {
+        setSelectedArtist(currentArtist[0]);
+      }
+    }
+  }, [artists, selectedArtist]);
 
   useEffect(() => {
     getArtists();

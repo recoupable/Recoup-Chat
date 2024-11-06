@@ -14,7 +14,7 @@ export async function POST(req: NextRequest) {
       .select("*")
       .eq("id", artistId);
 
-    if (!data || !data?.length) throw Error("artist is not existed.");
+    if (!data || !data?.length) throw Error("artist does not exist.");
 
     const artistData = data[0];
 

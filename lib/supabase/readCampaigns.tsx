@@ -11,7 +11,7 @@ const readCampaigns = async (email: string, artistId?: string) => {
       email,
     });
 
-    return data.campaigns;
+    return data?.campaigns;
   } catch (error) {
     console.error(error);
     return [];

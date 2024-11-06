@@ -47,7 +47,7 @@ const useArtistSetting = () => {
       },
     });
     const data = await response.json();
-    getArtists();
+    await getArtists();
     setUpdating(false);
     return data?.artistInfo;
   };
