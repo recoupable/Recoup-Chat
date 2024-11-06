@@ -25,7 +25,8 @@ export async function POST(req: NextRequest) {
         image,
         name,
       })
-      .eq("id", artistId);
+      .eq("id", artistId)
+      .select("*");
 
     return Response.json(
       { message: "success", artistInfo: artistInfo?.[0] },
