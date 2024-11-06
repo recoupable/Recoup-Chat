@@ -11,9 +11,15 @@ import Modal from "../Modal";
 import { useEffect, useState } from "react";
 import { useArtistProvider } from "@/providers/ArtistProvider";
 import UpdateArtistInfo from "./UpdateArtistInfo";
+import { ArtistRecord } from "@/types/Artist";
+import { useChatProvider } from "@/providers/ChatProvider";
+import { v4 as uuidV4 } from "uuid";
+import { useParams } from "next/navigation";
 
 const Artist = () => {
-  const { context } = useToolCallProvider();
+  const { context, question } = useToolCallProvider();
+  const { conversation: conversationId } = useParams();
+  const { finalCallback } = useChatProvider();
   const { setSelectedArtist, selectedArtist, artists } = useArtistProvider();
   const status = context?.status;
   const artist = context?.artist;
@@ -34,6 +40,18 @@ const Artist = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [artistInfo]);
 
+  const saveCallback = (artistInfo: ArtistRecord) => {
+    finalCallback(
+      {
+        role: "assistant",
+        id: uuidV4(),
+        content: `Artist Information: Name - ${artistInfo.name} Image - ${artistInfo.image}`,
+      },
+      { id: uuidV4(), content: question, role: "user" },
+      conversationId as string,
+    );
+  };
+
   return (
     <>
       {status === ArtistToolResponse.MISSING_ARTIST_NAME && (
@@ -50,7 +68,7 @@ const Artist = () => {
         <>
           {isOpenModal ? (
             <Modal onClose={toggleModal}>
-              <Settings toggleModal={toggleModal} />
+              <Settings toggleModal={toggleModal} saveCallback={saveCallback} />
             </Modal>
           ) : (
             <>
