@@ -33,7 +33,7 @@ const Messages = ({
         </ToolCallProvider>
       ))}
       {pending && <Thinking />}
-      {conversationId && !pending && (
+      {conversationId && !pending && messages.length > 0 && (
         <div className="flex gap-2 items-center px-9 py-4">
           <button type="button">
             <Files />
