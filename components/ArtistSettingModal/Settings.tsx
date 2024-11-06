@@ -170,7 +170,7 @@ const Settings = ({ toggleModal }: { toggleModal: () => void }) => {
         onClick={saveSetting}
         disabled={loading}
       >
-        Save
+        {loading ? "Saving..." : "Save"}
       </button>
       <button
         className="col-span-12 border-gray-700 border-[1px] rounded-md py-1 mb-4"
