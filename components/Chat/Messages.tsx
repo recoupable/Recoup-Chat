@@ -33,7 +33,7 @@ const Messages = ({
       ))}
       {pending && <Thinking />}
       {conversationId && !pending && (
-        <div className="flex gap-2 items-center px-6">
+        <div className="flex gap-2 items-center px-9 py-4">
           <Suggestions />
         </div>
       )}

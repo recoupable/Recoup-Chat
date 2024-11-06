@@ -41,7 +41,7 @@ const Suggestions = () => {
           key={suggestion}
           type="button"
           style={{ width: maxWidth }}
-          className="border border-gray-700 py-1 px-3 rounded-full flex gap-1 items-center justify-between text-sm transition-colors hover:bg-gray-100 dark:hover:bg-gray-800"
+          className="border border-gray-700 py-1 px-3 rounded-full flex gap-1 items-center justify-between text-xs transition-colors hover:bg-gray-100 dark:hover:bg-gray-800"
           onClick={() =>
             append({
               id: uuidV4(),
