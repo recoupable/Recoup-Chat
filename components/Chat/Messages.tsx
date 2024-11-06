@@ -7,7 +7,7 @@ import { Message as AIMessage } from "ai";
 import { ToolCallProvider } from "@/providers/ToolCallProvider";
 import Suggestions from "./Suggestions";
 import { useParams } from "next/navigation";
-import { Files } from "lucide-react";
+import { Copy } from "lucide-react";
 
 const Messages = ({
   scroll,
@@ -36,7 +36,7 @@ const Messages = ({
       {conversationId && !pending && messages.length > 0 && (
         <div className="flex gap-2 items-center px-9 py-4">
           <button type="button">
-            <Files />
+            <Copy className="size-5" />
           </button>
           <Suggestions />
         </div>
