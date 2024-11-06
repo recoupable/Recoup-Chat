@@ -33,8 +33,8 @@ const getCampaign = (question: string, email: string, artistId: string) =>
       const client = getSupabaseServerAdminClient();
       const { data: campaign } = await client.rpc("get_campaign", {
         email,
-        artistId,
-        clientId: "",
+        artistid: artistId,
+        clientid: "",
       });
 
       const premiumCount =
