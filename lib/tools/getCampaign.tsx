@@ -38,7 +38,7 @@ const getCampaign = (question: string, email: string, artistId: string) =>
       });
 
       const premiumCount =
-        campaign?.fans?.filter((fan: FAN_TYPE) => fan.product === "product")
+        campaign?.fans?.filter((fan: FAN_TYPE) => fan.product === "premium")
           ?.length || 0;
       const freeCount =
         campaign?.fans?.filter((fan: FAN_TYPE) => fan.product === "free")
