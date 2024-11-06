@@ -10,10 +10,11 @@ import Settings from "../ArtistSettingModal/Settings";
 import Modal from "../Modal";
 import { useEffect, useState } from "react";
 import { useArtistProvider } from "@/providers/ArtistProvider";
+import UpdateArtistInfo from "./UpdateArtistInfo";
 
 const Artist = () => {
   const { context } = useToolCallProvider();
-  const { setSelectedArtist, selectedArtist } = useArtistProvider();
+  const { setSelectedArtist, selectedArtist, artists } = useArtistProvider();
   const status = context?.status;
   const artist = context?.artist;
   const artistInfo =
@@ -52,7 +53,7 @@ const Artist = () => {
               <Settings toggleModal={toggleModal} />
             </Modal>
           ) : (
-            <div />
+            <>{artists.length ? <UpdateArtistInfo /> : <SubmitArtist />}</>
           )}
         </>
       )}
