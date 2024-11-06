@@ -18,16 +18,20 @@ export async function POST(req: NextRequest) {
 
     const artistData = data[0];
 
-    await client
+    const { data: artistInfo } = await client
       .from("artists")
       .update({
         ...artistData,
         image,
         name,
       })
-      .eq("id", artistId);
+      .eq("id", artistId)
+      .select("*");
 
-    return Response.json({ message: "success" }, { status: 200 });
+    return Response.json(
+      { message: "success", artistInfo: artistInfo?.[0] },
+      { status: 200 },
+    );
   } catch (error) {
     console.error(error);
     const message = error instanceof Error ? error.message : "failed";

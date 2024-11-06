@@ -1,9 +1,16 @@
 import useArtistSetting from "@/hooks/useArtistSetting";
 import useIsMobile from "@/hooks/useIsMobile";
+import { ArtistRecord } from "@/types/Artist";
 import { MicVocal, Plus, X } from "lucide-react";
 import Image from "next/image";
 
-const Settings = ({ toggleModal }: { toggleModal: () => void }) => {
+const Settings = ({
+  toggleModal,
+  saveCallback,
+}: {
+  toggleModal: () => void;
+  saveCallback?: (artistInfo: ArtistRecord) => void;
+}) => {
   const isMobile = useIsMobile();
   const {
     imageRef,
@@ -35,7 +42,8 @@ const Settings = ({ toggleModal }: { toggleModal: () => void }) => {
   } = useArtistSetting();
 
   const handleSave = async () => {
-    await saveSetting();
+    const artistInfo = await saveSetting();
+    if (saveCallback) saveCallback(artistInfo);
     toggleModal();
   };
 

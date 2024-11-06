@@ -46,9 +46,10 @@ const useArtistSetting = () => {
         "Content-Type": "application/json",
       },
     });
-    await response.json();
+    const data = await response.json();
     await getArtists();
     setUpdating(false);
+    return data?.artistInfo;
   };
 
   useEffect(() => {

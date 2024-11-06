@@ -11,7 +11,8 @@ const ToolContent = () => {
       {toolName === "getCampaign" && <FanTable />}
       {(toolName === "createArtist" ||
         toolName === "getArtists" ||
-        toolName === "getArtistAnalysis") && <Artist />}
+        toolName === "getArtistAnalysis" ||
+        toolName === "updateArtistInfo") && <Artist />}
       {(toolName === "createCampaign" || toolName === "getCampaigns") && (
         <Campaign />
       )}

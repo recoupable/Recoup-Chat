@@ -8,6 +8,7 @@ import getArtists from "../tools/getArtists";
 import getArtistAnalysis from "../tools/getArtistAnalysis";
 import createCampaign from "../tools/createCampaign";
 import getCampaigns from "../tools/getCampaigns";
+import updateArtistInfo from "../tools/updateArtistInfo";
 
 export function createChatMessagesService() {
   return new ChatMessagesService();
@@ -58,6 +59,7 @@ Please use this information to provide accurate and relevant responses and don't
         getArtistAnalysis: getArtistAnalysis(question),
         createCampaign: createCampaign(question, email),
         getCampaigns: getCampaigns(question, email, artistId),
+        updateArtistInfo: updateArtistInfo(question),
       };
     } catch (error) {
       console.error("Error reading or parsing JSON files:", error);
