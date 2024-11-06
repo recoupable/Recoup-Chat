@@ -40,7 +40,7 @@ const Artist = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [artistInfo]);
 
-  const saveCallback = (artistInfo: ArtistRecord) => {
+  const updateCallback = (artistInfo: ArtistRecord) => {
     finalCallback(
       {
         role: "assistant",
@@ -68,7 +68,10 @@ const Artist = () => {
         <>
           {isOpenModal ? (
             <Modal onClose={toggleModal}>
-              <Settings toggleModal={toggleModal} saveCallback={saveCallback} />
+              <Settings
+                toggleModal={toggleModal}
+                saveCallback={updateCallback}
+              />
             </Modal>
           ) : (
             <>
