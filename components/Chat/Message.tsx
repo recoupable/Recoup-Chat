@@ -11,9 +11,8 @@ const Message = ({ message }: { message: AIMessage }) => {
         // eslint-disable-next-line @next/next/no-img-element
         <img
           src={"/logo-light.png"}
-          width={15}
-          height={15}
           alt="not found logo"
+          className="!w-6 !h-6"
         />
       )}
       <div className={`grow ${message.role === "user" && "flex justify-end"}`}>
