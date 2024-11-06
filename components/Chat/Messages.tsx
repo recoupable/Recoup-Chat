@@ -5,6 +5,9 @@ import Thinking from "./Thinking";
 import Message from "./Message";
 import { Message as AIMessage } from "ai";
 import { ToolCallProvider } from "@/providers/ToolCallProvider";
+import Suggestions from "./Suggestions";
+import { useParams } from "next/navigation";
+import { Copy } from "lucide-react";
 
 const Messages = ({
   scroll,
@@ -13,6 +16,7 @@ const Messages = ({
 }) => {
   const { messages, pending, suggestions } = useChatProvider();
   const scrollTo = () => scroll({ smooth: true, y: Number.MAX_SAFE_INTEGER });
+  const { conversation: conversationId } = useParams();
 
   useEffect(() => {
     scrollTo();
@@ -29,6 +33,14 @@ const Messages = ({
         </ToolCallProvider>
       ))}
       {pending && <Thinking />}
+      {conversationId && !pending && messages.length > 0 && (
+        <div className="flex gap-2 items-center px-9 py-4">
+          <button type="button">
+            <Copy className="size-5" />
+          </button>
+          <Suggestions />
+        </div>
+      )}
     </ScrollArea>
   );
 };

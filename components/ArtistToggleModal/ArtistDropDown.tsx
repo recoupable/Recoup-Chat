@@ -10,8 +10,13 @@ const ArtistDropDown = ({
   toggleModal: () => void;
   toggleSetting: () => void;
 }) => {
-  const { artists, setSelectedArtist, artistActive, setArtistActive } =
-    useArtistProvider();
+  const {
+    artists,
+    setSelectedArtist,
+    artistActive,
+    setArtistActive,
+    selectedArtist,
+  } = useArtistProvider();
 
   const handleClickArtist = (artist: ArtistRecord) => {
     setSelectedArtist(artist);
@@ -62,7 +67,7 @@ const ArtistDropDown = ({
                 transition duration-[300ms] ease-[cubic-bezier(0.68,-0.55,0.265,1.55)]`}
           />
         </button>
-        <p className="text-sm">Artist Mode</p>
+        <p className="text-sm">{selectedArtist?.name || "Artist Mode"}</p>
       </div>
     </div>
   );
