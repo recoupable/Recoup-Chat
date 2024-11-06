@@ -1,3 +1,5 @@
+import getIpfsLink from "@/lib/ipfs/getIpfsLink";
+import { uploadFile } from "@/lib/ipfs/uploadToIpfs";
 import { useArtistProvider } from "@/providers/ArtistProvider";
 import { useEffect, useRef, useState } from "react";
 
@@ -15,15 +17,38 @@ const useArtistSetting = () => {
   const [youtube, setYoutube] = useState("");
   const [twitter, setTwitter] = useState("");
   const [bases, setBases] = useState("");
-  const { selectedArtist } = useArtistProvider();
+  const { selectedArtist, getArtists } = useArtistProvider();
+  const [imageUploading, setImageUploading] = useState(false);
+  const [updating, setUpdating] = useState(false);
 
-  const handleImageSelected = (e: any) => {
+  const loading = imageUploading || updating;
+
+  const handleImageSelected = async (e: any) => {
+    setImageUploading(true);
     const file = e.target.files[0];
-    if (!file) return;
-    if (file) {
-      const objectURL = URL.createObjectURL(file);
-      setImage(objectURL);
+    if (!file) {
+      setImageUploading(false);
+      return;
     }
+    if (file) {
+      const { uri } = await uploadFile(file);
+      setImage(getIpfsLink(uri));
+    }
+    setImageUploading(false);
+  };
+
+  const saveSetting = async () => {
+    setUpdating(true);
+    const response = await fetch("/api/artist/profile", {
+      method: "POST",
+      body: JSON.stringify({ name, image, artistId: selectedArtist?.id }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    await response.json();
+    await getArtists();
+    setUpdating(false);
   };
 
   useEffect(() => {
@@ -59,6 +84,10 @@ const useArtistSetting = () => {
     setBases,
     imageRef,
     baseRef,
+    saveSetting,
+    loading,
+    imageUploading,
+    updating,
   };
 };
 
