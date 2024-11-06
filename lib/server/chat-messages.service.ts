@@ -16,9 +16,9 @@ export function createChatMessagesService() {
 class ChatMessagesService {
   constructor() {}
 
-  async getChatSettings(question: string, email: string) {
+  async getChatSettings(question: string, email: string, artistId: string) {
     const context = await this.fetchRelevantContext();
-    const tools = this.fetchRelevantTools(question, email);
+    const tools = this.fetchRelevantTools(question, email, artistId);
 
     const systemMessage = `You are a helpful assistant
 Here is some relevant data to help you answer:
@@ -45,7 +45,11 @@ Please use this information to provide accurate and relevant responses and don't
     }
   }
 
-  private fetchRelevantTools(question: string, email: string) {
+  private fetchRelevantTools(
+    question: string,
+    email: string,
+    artistId: string,
+  ) {
     try {
       return {
         getCampaign: getCampaign(question),
@@ -53,7 +57,7 @@ Please use this information to provide accurate and relevant responses and don't
         getArtists: getArtists(question, email),
         getArtistAnalysis: getArtistAnalysis(question),
         createCampaign: createCampaign(question, email),
-        getCampaigns: getCampaigns(question, email),
+        getCampaigns: getCampaigns(question, email, artistId),
       };
     } catch (error) {
       console.error("Error reading or parsing JSON files:", error);

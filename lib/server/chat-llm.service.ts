@@ -19,6 +19,7 @@ export const ChatMessagesSchema = z.object({
 
 export const StreamResponseSchema = ChatMessagesSchema.extend({
   email: z.string(),
+  artistId: z.string(),
 });
 
 /**
@@ -43,6 +44,7 @@ class ChatLLMService {
   async streamResponse({
     messages,
     email,
+    artistId,
   }: z.infer<typeof StreamResponseSchema>) {
     // use a normal service instance using the current user RLS
     const chatMessagesService = createChatMessagesService();
@@ -61,6 +63,7 @@ class ChatLLMService {
     const settings = await chatMessagesService.getChatSettings(
       lastMessage.content,
       email,
+      artistId,
     );
     const systemMessage = settings.systemMessage;
     const maxTokens = settings.maxTokens;

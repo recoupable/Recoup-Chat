@@ -7,6 +7,7 @@ import useConversations from "./useConversations";
 import { usePathname } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 import { useUserProvider } from "@/providers/UserProvder";
+import { useArtistProvider } from "@/providers/ArtistProvider";
 
 const useMessages = () => {
   const { finalCallback } = useSuggestions();
@@ -16,6 +17,7 @@ const useMessages = () => {
   const queryClient = useQueryClient();
   const { email } = useUserProvider();
   const [toolCall, setToolCall] = useState<any>(null);
+  const { selectedArtist, artistActive } = useArtistProvider();
 
   const pathname = usePathname();
   const isNewChat = pathname === "/";
@@ -35,6 +37,7 @@ const useMessages = () => {
     },
     body: {
       email,
+      artistId: artistActive ? selectedArtist?.id : "",
     },
     initialMessages,
     onError: console.error,
