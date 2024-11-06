@@ -17,6 +17,14 @@ const useArtists = () => {
     );
     const data = await response.json();
     setArtists(data.artists);
+    if (selectedArtist) {
+      const currentArtist = data.artists.filter(
+        (artist: ArtistRecord) => artist.id === selectedArtist.id,
+      );
+      if (currentArtist?.length) {
+        setSelectedArtist(currentArtist[0]);
+      }
+    }
   }, [email]);
 
   useEffect(() => {
