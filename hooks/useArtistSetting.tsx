@@ -47,7 +47,7 @@ const useArtistSetting = () => {
       },
     });
     await response.json();
-    getArtists();
+    await getArtists();
     setUpdating(false);
   };
 

@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 
 const useArtists = () => {
   const { email } = useUserProvider();
-  const [artists, setArtists] = useState([]);
+  const [artists, setArtists] = useState<ArtistRecord[]>([]);
   const [selectedArtist, setSelectedArtist] = useState<ArtistRecord | null>(
     null,
   );
@@ -17,15 +17,19 @@ const useArtists = () => {
     );
     const data = await response.json();
     setArtists(data.artists);
-    if (selectedArtist) {
-      const currentArtist = data.artists.filter(
+  }, [email]);
+
+  useEffect(() => {
+    if (selectedArtist && artists.length > 0) {
+      const currentArtist = artists.filter(
         (artist: ArtistRecord) => artist.id === selectedArtist.id,
       );
       if (currentArtist?.length) {
+        console.log(currentArtist[0]?.image);
         setSelectedArtist(currentArtist[0]);
       }
     }
-  }, [email]);
+  }, [artists, selectedArtist]);
 
   useEffect(() => {
     getArtists();
