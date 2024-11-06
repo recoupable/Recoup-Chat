@@ -2,10 +2,12 @@ import { useChatProvider } from "@/providers/ChatProvider";
 import { ArrowUpRightIcon } from "lucide-react";
 import { v4 as uuidV4 } from "uuid";
 import { useEffect, useState } from "react";
+import { useArtistProvider } from "@/providers/ArtistProvider";
 
 const Suggestions = () => {
   const { append, suggestions } = useChatProvider();
   const [maxWidth, setMaxWidth] = useState<string>("auto");
+  const { selectedArtist } = useArtistProvider();
 
   // Take only the first two suggestions
   const limitedSuggestions = suggestions.slice(0, 2);
@@ -48,7 +50,15 @@ const Suggestions = () => {
             })
           }
         >
-          <p className="text-left">{suggestion}</p>
+          <div
+            className="text-left"
+            dangerouslySetInnerHTML={{
+              __html: suggestion.replaceAll(
+                selectedArtist?.name || "",
+                `<span style="color:#aa7fdb;">${selectedArtist?.name || ""}</span>`,
+              ),
+            }}
+          />
           <ArrowUpRightIcon className="w-4 h-4 flex-shrink-0" />
         </button>
       ))}

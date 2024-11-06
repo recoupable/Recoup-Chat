@@ -6,9 +6,11 @@ import { Address } from "viem";
 import { v4 as uuidV4 } from "uuid";
 import { useParams, usePathname } from "next/navigation";
 import { useUserProvider } from "@/providers/UserProvder";
+import { useArtistProvider } from "@/providers/ArtistProvider";
 
 const useSuggestions = () => {
   const { address } = useUserProvider();
+  const { artistActive, selectedArtist } = useArtistProvider();
   const [suggestions, setSuggestions] = useState(SUGGESTIONS);
   const [currentQuestion, setCurrentQuestion] = useState<Message | null>(null);
   const { conversation: pathId } = useParams();
@@ -16,8 +18,15 @@ const useSuggestions = () => {
   const isNewChat = pathname === "/";
 
   useEffect(() => {
-    if (isNewChat) setSuggestions(SUGGESTIONS);
-  }, [isNewChat]);
+    if (artistActive) {
+      setSuggestions([
+        `Who are ${selectedArtist?.name || ""}’s most engaged fans?`,
+        `Analyze ${selectedArtist?.name || ""}’s TikTok posts from this week.`,
+      ]);
+      return;
+    }
+    setSuggestions(SUGGESTIONS);
+  }, [isNewChat, artistActive, selectedArtist]);
 
   const finalCallback = async (
     message: Message,
