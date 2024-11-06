@@ -1,6 +1,6 @@
 import { useUserProvider } from "@/providers/UserProvder";
 import { ArtistRecord } from "@/types/Artist";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 const useArtists = () => {
   const { email } = useUserProvider();
@@ -10,17 +10,18 @@ const useArtists = () => {
   );
   const [artistActive, setArtistActive] = useState(false);
 
-  useEffect(() => {
-    const init = async () => {
-      const response = await fetch(
-        `/api/artists?email=${encodeURIComponent(email as string)}`,
-      );
-      const data = await response.json();
-      setArtists(data.artists);
-    };
+  const getArtists = useCallback(async () => {
     if (!email) return;
-    init();
+    const response = await fetch(
+      `/api/artists?email=${encodeURIComponent(email as string)}`,
+    );
+    const data = await response.json();
+    setArtists(data.artists);
   }, [email]);
+
+  useEffect(() => {
+    getArtists();
+  }, [getArtists]);
 
   return {
     artists,
@@ -29,6 +30,7 @@ const useArtists = () => {
     setSelectedArtist,
     artistActive,
     setArtistActive,
+    getArtists,
   };
 };
 

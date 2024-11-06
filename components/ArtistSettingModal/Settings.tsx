@@ -28,6 +28,9 @@ const Settings = ({ toggleModal }: { toggleModal: () => void }) => {
     twitter,
     setTwitter,
     handleImageSelected,
+    saveSetting,
+    loading,
+    imageUploading,
   } = useArtistSetting();
 
   return (
@@ -50,13 +53,17 @@ const Settings = ({ toggleModal }: { toggleModal: () => void }) => {
           type="button"
           onClick={() => imageRef.current.click()}
         >
-          <div className="w-[90px] aspect-[5/4] md:w-[120px] aspect-[1/1] rounded-md relative overflow-hidden">
-            <Image
-              src={image || "https://i.imgur.com/QCdc8Ai.jpg"}
-              layout="fill"
-              className="object-cover"
-              alt="not found pic"
-            />
+          <div className="w-[90px] aspect-[5/4] md:w-[120px] aspect-[1/1] rounded-md relative overflow-hidden flex items-center justify-center">
+            {imageUploading ? (
+              <p className="text-sm">Uploading...</p>
+            ) : (
+              <Image
+                src={image || "https://i.imgur.com/QCdc8Ai.jpg"}
+                layout="fill"
+                className="object-cover"
+                alt="not found pic"
+              />
+            )}
           </div>
         </button>
         <input
@@ -158,7 +165,11 @@ const Settings = ({ toggleModal }: { toggleModal: () => void }) => {
         </button>
         <input type="file" hidden ref={baseRef} />
       </div>
-      <button className="col-span-12 border-gray-700 border-[1px] rounded-md py-1 md:mb-4">
+      <button
+        className="col-span-12 border-gray-700 border-[1px] rounded-md py-1 md:mb-4"
+        onClick={saveSetting}
+        disabled={loading}
+      >
         Save
       </button>
       <button
