@@ -32,7 +32,11 @@ const Messages = ({
         </ToolCallProvider>
       ))}
       {pending && <Thinking />}
-      {conversationId && <Suggestions />}
+      {conversationId && !pending && (
+        <div className="flex gap-2 items-center px-6">
+          <Suggestions />
+        </div>
+      )}
     </ScrollArea>
   );
 };
