@@ -1,3 +1,5 @@
+import { HTML_RESPONSE_FORMAT_INSTRUCTIONS } from "../consts";
+
 // eslint-disable-next-line  @typescript-eslint/no-explicit-any
 const toolSystemMessage = (context: any, question: any, toolName: string) => {
   if (toolName === "getArtistAnalysis")
@@ -42,10 +44,7 @@ const toolSystemMessage = (context: any, question: any, toolName: string) => {
 
     
     Ensure your answer is data-driven, insightful, and provides clear value for understanding and acting on the fan base's behavior.
-    Please provide a wide range of HTML formats with embedded HTML tags such as <div>, <p>, <ul>, <li>, and <span>, along with CSS styles including font size, margin, and padding. 
-    Please do not include any color styles. The font size for paragraphs should be 14px with left padding 8px & top padding 4px for indentation, while the font size for heading tags (h1 to h6) should be 16px and bold with top padding 4px.
-    All Numbers & Proper nouns should bold using <span>.
-    Make sure to present the HTML response as plain HTML without any enclosing code markers or delimiters.`;
+    ${HTML_RESPONSE_FORMAT_INSTRUCTIONS}`;
 
   return "";
 };
