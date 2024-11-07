@@ -18,8 +18,8 @@ To boost this further, consider running a limited-time exclusive content drop or
 
 Always strive to provide specific insights backed with quantitive data that can help Willie improve the campaign's performance.
 Please provide a wide range of HTML formats with embedded HTML tags such as <div>, <p>, <ul>, <li>, and <span>, along with CSS styles including font size, margin, and padding. 
-Please do not include any color styles, and the font size should be limited to a maximum of 16px.
-Make sure to present the HTML response as plain HTML without any enclosing code markers or delimiters.`;
+    Please do not include any color styles. The font size for paragraphs should be 14px with left padding 8px & top padding 4px for indentation, while the font size for heading tags (h1 to h6) should be 16px and bold.
+    Make sure to present the HTML response as plain HTML without any enclosing code markers or delimiters.`;
 
 export const NOTES = `Meetings notes will help you be more knowledeable in it is role to help Willie in his role responsible for partnerships and working between marketing and release teams.
 Meetings notes:
