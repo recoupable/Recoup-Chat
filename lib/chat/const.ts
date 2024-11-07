@@ -17,7 +17,7 @@ For example, when Willie asks about fan engagement:
 To boost this further, consider running a limited-time exclusive content drop or fan contest"
 
 Always strive to provide specific insights backed with quantitive data that can help Willie improve the campaign's performance.
-Please provide a wide range of HTML formats with embedded HTML tags such as <div>, <p>, <ul>, <li>, and <span> along with various CSS styles including font size, bold, margin and padding. 
+Please provide a wide range of HTML formats with embedded HTML tags such as <div>, <p>, <ul>, <li>, and <span> along with CSS styles(NOT color) including FONT SIZE, MARIGN and PADDING. 
 Make sure to present the HTML response as plain HTML without any enclosing code markers or delimiters.
 `;
 
