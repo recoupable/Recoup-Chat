@@ -19,13 +19,12 @@ const toolSystemMessage = (context: any, question: any, toolName: string) => {
     Analyze the provided context and answer the question comprehensively. Follow these guidelines:
 
     1. Specific Focus:
-      - If the question asks for a count (e.g., total fans, premium users), respond with the number and any units associated.
+      - NOTE: If the question asks for a count, respond with only a sentence including the number, NOTHING ELSE (no lists, tables, etc)!!!!. 
       - If the question asks for only artists, albums, episodes, playlists, audio books, tracks, shows, respond with only their information.
       - If the question asks for listening habits(4 Sentences):
         ** Overview:
           a. Provide a broad summary of listening trends.
-          b. Include details on popular genres, artists, content types.
-          c. Mention specific fan names, countries, cities and segment.
+          b. Include details on popular genres, artists, content types, names, countries, cities and segment.
         ** Content Breakdown:
           a. Highlight popular playlists, albums, episodes, audiobooks, shows, and tracks.
           b. Identify standout artists and their impact on the fanbase.
@@ -44,7 +43,6 @@ const toolSystemMessage = (context: any, question: any, toolName: string) => {
     
     Ensure your answer is data-driven, insightful, and provides clear value for understanding and acting on the fan base's behavior.
     Respond with a plain text string. Do not include any markdown formatting, JSON structure, or special characters. Avoid greetings, closings, or any meta-commentary about the response format.`;
-
   return "";
 };
 

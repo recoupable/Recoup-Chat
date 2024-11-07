@@ -7,29 +7,28 @@ import limitCollection from "../limitCollection";
 
 const getCampaign = (question: string, email: string, artistId: string) =>
   tool({
-    description: `IMPORTANT: Always call this tool for ANY question related to the following topics:
+    description: `IMPORTANT: Always call this tool for ANY question related to:
     1. Artists
     2. Albums
     3. Episodes
     4. Tracks
     5. Audio books
     6. Shows
-    7. Fans (including premium, free, or total counts)
+    7. Fans/Users (Premium, Unique fans count and etc)
     8. Email count
     9. Listening habits (from any platform, including Spotify and Apple)
     10. Campaign insights or data
-    11. Any comparison or analysis of music consumption or fan behavior
+    11. Comparisons or analyses of music consumption or fan behavior
 
-    Do NOT attempt to answer questions on these topics without calling this tool first.
+    Do NOT attempt to answer questions on these topics without consulting this tool first.
 
-    Example questions that MUST trigger this tool:
+    Example Questions that MUST trigger this tool:
     - "What are the listening habits from Spotify and Apple?"
+    - "How many unique [users/fans] have participated in this campaign?"
     - "How many fans does the artist have?"
     - "What insights can we draw from the latest campaign?"
     - "How many premium subscribers are there?"
-    - "what is the email count for users with an Apple Music account?"
-
-    When in doubt, call this tool to ensure you have the most up-to-date and accurate information.`,
+    - "What is the email count for users with an Apple Music account?"`,
     parameters: z.object({}),
     execute: async () => {
       const client = getSupabaseServerAdminClient();
