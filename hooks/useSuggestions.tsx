@@ -8,6 +8,7 @@ import { useParams, usePathname } from "next/navigation";
 import { useUserProvider } from "@/providers/UserProvder";
 import { useArtistProvider } from "@/providers/ArtistProvider";
 import removeHtmlTags from "@/lib/removeHTMLTags";
+import formattedContent from "@/lib/formattedContent";
 
 const useSuggestions = () => {
   const { address } = useUserProvider();
@@ -41,7 +42,7 @@ const useSuggestions = () => {
     await trackNewMessage(
       address as Address,
       {
-        content: message.content,
+        content: formattedContent(message.content),
         role: message.role,
         id: uuidV4(),
         questionId: question.id,
