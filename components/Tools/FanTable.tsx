@@ -26,7 +26,7 @@ const FanTable = () => {
           <tbody>
             {fanslist?.map((fan: FAN_TYPE, index: number) => (
               <tr key={index}>
-                <td className="text-xs p-1">{fan.name}</td>
+                <td className="text-xs p-1">{fan.name || fan.display_name}</td>
                 <td className="text-xs p-1">{fan.email}</td>
                 <td className="text-xs p-1">{fan.country}</td>
               </tr>
