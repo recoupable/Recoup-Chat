@@ -11,7 +11,11 @@ const toolSystemMessage = (context: any, question: any, toolName: string) => {
     return `
     Context: ${JSON.stringify(context)}
     Question: ${question}
-    NOTE: Due to Apple's policy, Do not collect apple music emails.
+    
+    NOTE: 
+    1. Due to Apple's policy, Do not collect Apple Music emails. In this case, NO recommendations or insights are needed.
+       For example: "Due to Apple's policy, we do not collect apple music emails"
+
     Analyze the provided context and answer the question comprehensively. Follow these guidelines:
 
     1. Specific Focus:

@@ -15,9 +15,10 @@ const getCampaign = (question: string, email: string, artistId: string) =>
     5. Audio books
     6. Shows
     7. Fans (including premium, free, or total counts)
-    8. Listening habits (from any platform, including Spotify and Apple)
-    9. Campaign insights or data
-    10. Any comparison or analysis of music consumption or fan behavior
+    8. Email count
+    9. Listening habits (from any platform, including Spotify and Apple)
+    10. Campaign insights or data
+    11. Any comparison or analysis of music consumption or fan behavior
 
     Do NOT attempt to answer questions on these topics without calling this tool first.
 
@@ -26,6 +27,7 @@ const getCampaign = (question: string, email: string, artistId: string) =>
     - "How many fans does the artist have?"
     - "What insights can we draw from the latest campaign?"
     - "How many premium subscribers are there?"
+    - "what is the email count for users with an Apple Music account?"
 
     When in doubt, call this tool to ensure you have the most up-to-date and accurate information.`,
     parameters: z.object({}),
