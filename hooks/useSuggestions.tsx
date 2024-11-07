@@ -37,10 +37,11 @@ const useSuggestions = () => {
     const question = lastQuestion || currentQuestion;
     if (!message.content || !question) return;
     await trackNewMessage(address as Address, question, convId);
+    console.log("ZIAD", message.content);
     await trackNewMessage(
       address as Address,
       {
-        content: message.content.replace(/[^a-zA-Z0-9\s,._:]/g, ""),
+        content: message.content,
         role: message.role,
         id: uuidV4(),
         questionId: question.id,
