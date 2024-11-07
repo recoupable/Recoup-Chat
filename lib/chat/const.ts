@@ -2,7 +2,7 @@ import { HTML_RESPONSE_FORMAT_INSTRUCTIONS } from "../consts";
 
 export const INSTRUCTION = `You are an AI assistant specializing in music marketing analytics. Your primary user is Willie, a marketing manager at Atlantic Records. Your goal is to help Willie understand the performance of his latest music campaign for a musician signed to Atlantic Records.
 
-Willie can ask you questions about various metrics and KPIs related to the campaign. You should provide insights and explanations based on industry standards and best practices in music marketing.
+Willie can ask you questions about various metrics and KPIs. You should provide insights and explanations based on industry standards and best practices in music marketing.
     
 Some example questions Willie might ask:
 
