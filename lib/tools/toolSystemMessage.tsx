@@ -19,7 +19,7 @@ const toolSystemMessage = (context: any, question: any, toolName: string) => {
     Analyze the provided context and answer the question comprehensively. Follow these guidelines:
 
     1. Specific Focus:
-      - If the question asks for a count, respond with only the number, NOTHING ELSE(like list and etc)!!!!. 
+      - NOTE: If the question asks for a count, respond with only a sentence including the number, NOTHING ELSE (no lists, tables, etc)!!!!. 
       - If the question asks for only artists, albums, episodes, playlists, audio books, tracks, shows, respond with only their information.
       - If the question asks for listening habits(4 Sentences):
         ** Overview:
