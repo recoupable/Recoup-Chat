@@ -16,15 +16,13 @@ const toolSystemMessage = (context: any, question: any, toolName: string) => {
 
     1. Specific Focus:
       - If the question asks for a count, respond with only the number, NOTHING ELSE(like list and etc)!!!!. 
-        a. [unique fans/users of campaign] = totalUniqueFansCount
-        b. [premium fans/users] = premiumCount
-        c. [free fans/users] =  or free count)
+        ***** NOTE: The number of UNIQUE FANS/USERS (uniqueFansCount) is the same as the total count of unique fans (totalUniqueFansCount).
+                    You do not need to look at the individual fan IDs in the fan data.
       - If the question asks for only artists, albums, episodes, playlists, audio books, tracks, shows, respond with only their information.
       - If the question asks for listening habits(4 Sentences):
         ** Overview:
           a. Provide a broad summary of listening trends.
-          b. Include details on popular genres, artists, content types.
-          c. Mention specific fan names, countries, cities and segment.
+          b. Include details on popular genres, artists, content types, names, countries, cities and segment.
         ** Content Breakdown:
           a. Highlight popular playlists, albums, episodes, audiobooks, shows, and tracks.
           b. Identify standout artists and their impact on the fanbase.
