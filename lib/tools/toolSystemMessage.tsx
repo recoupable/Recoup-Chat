@@ -11,7 +11,7 @@ const toolSystemMessage = (context: any, question: any, toolName: string) => {
     return `
     Context: ${JSON.stringify(context)}
     Question: ${question}
-
+    NOTE: Due to Apple's policy, Do not collect apple music emails.
     Analyze the provided context and answer the question comprehensively. Follow these guidelines:
 
     1. Specific Focus:
@@ -37,6 +37,7 @@ const toolSystemMessage = (context: any, question: any, toolName: string) => {
       - Identify any emerging trends or unique insights from the data.
       - Compare to broader industry trends if relevant.
 
+    
     Ensure your answer is data-driven, insightful, and provides clear value for understanding and acting on the fan base's behavior.
     Respond with a plain text string. Do not include any markdown formatting, JSON structure, or special characters. Avoid greetings, closings, or any meta-commentary about the response format.`;
 
