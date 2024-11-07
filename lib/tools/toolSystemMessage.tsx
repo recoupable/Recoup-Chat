@@ -38,7 +38,7 @@ const toolSystemMessage = (context: any, question: any, toolName: string) => {
 
     
     Ensure your answer is data-driven, insightful, and provides clear value for understanding and acting on the fan base's behavior.
-    Respond with a formatted text with headings & bulleted lists and etc.`;
+    Respond with a wide range of HTML formats, including font sizes and headings, indentation, and formatted lists.`;
 
   return "";
 };
