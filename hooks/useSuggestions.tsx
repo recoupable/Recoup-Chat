@@ -51,7 +51,8 @@ const useSuggestions = () => {
     const response = await fetch(`/api/prompts?answer=${message.content}`);
     const data = await response.json();
 
-    setSuggestions(data.questions);
+    console.log("ZIAD", data.questions);
+    setSuggestions([...data.questions]);
   };
 
   return {
