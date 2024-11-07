@@ -56,7 +56,7 @@ Please use this information to provide accurate and relevant responses and don't
   ) {
     try {
       return {
-        getCampaign: getCampaign(question),
+        getCampaign: getCampaign(question, email, artistId),
         createArtist: createArtist(question, email),
         getArtists: getArtists(question, email),
         getArtistAnalysis: getArtistAnalysis(question),

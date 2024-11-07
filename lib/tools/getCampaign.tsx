@@ -1,9 +1,11 @@
 import { z } from "zod";
-import getFans from "../chat/getFans";
 import { getSupabaseServerAdminClient } from "@/packages/supabase/src/clients/server-admin-client";
 import { tool } from "ai";
+import { FAN_TYPE } from "@/types/fans";
+import getFollows from "../chat/getFollows";
+import limitCollection from "../limitCollection";
 
-const getCampaign = (question: string) =>
+const getCampaign = (question: string, email: string, artistId: string) =>
   tool({
     description: `IMPORTANT: Always call this tool for ANY question related to the following topics:
     1. Artists
@@ -29,9 +31,35 @@ const getCampaign = (question: string) =>
     parameters: z.object({}),
     execute: async () => {
       const client = getSupabaseServerAdminClient();
-      const fans = await getFans(client);
+      const { data: campaign } = await client.rpc("get_campaign", {
+        email,
+        artistid: artistId,
+        clientid: "",
+      });
+
+      const premiumCount =
+        campaign?.fans?.filter((fan: FAN_TYPE) => fan.product === "premium")
+          ?.length || 0;
+      const freeCount =
+        campaign?.fans?.filter((fan: FAN_TYPE) => fan.product === "free")
+          ?.length || 0;
+      const followers = getFollows(client);
+
       return {
-        context: fans,
+        context: {
+          tracks: limitCollection(campaign.tracks || []),
+          artists: limitCollection(campaign.artists || []),
+          playlists: limitCollection(campaign.playlists || []),
+          albums: limitCollection(campaign.albums || []),
+          audioBooks: limitCollection(campaign.audio_books || []),
+          episodes: limitCollection(campaign.episodes || []),
+          shows: limitCollection(campaign.shows || []),
+          fans: limitCollection(campaign.fans || [], 1000),
+          premiumCount,
+          freeCount,
+          totalFansCount: premiumCount + freeCount,
+          totalFollowersCount: followers,
+        },
         question,
       };
     },
