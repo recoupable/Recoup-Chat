@@ -14,7 +14,7 @@ const getCampaign = (question: string, email: string, artistId: string) =>
     4. Tracks
     5. Audio books
     6. Shows
-    7. Fans/Users (including premium, free, or total/unique fans count)
+    7. Fans/Users (including premium, fans count)
     8. Email count
     9. Listening habits (from any platform, including Spotify and Apple)
     10. Campaign insights or data
