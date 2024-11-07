@@ -39,7 +39,7 @@ const toolSystemMessage = (context: any, question: any, toolName: string) => {
     
     Ensure your answer is data-driven, insightful, and provides clear value for understanding and acting on the fan base's behavior.
     Please provide a wide range of HTML formats with embedded HTML tags such as <div>, <p>, <ul>, <li>, and <span>, along with CSS styles including font size, margin, and padding. 
-    Do not include any color styles && FONT SIZE should be lmited under 16px. 
+    Please do not include any color styles, and the font size should be limited to a maximum of 16px.
     Make sure to present the HTML response as plain HTML without any enclosing code markers or delimiters.`;
 
   return "";
