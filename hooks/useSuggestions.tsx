@@ -7,6 +7,7 @@ import { v4 as uuidV4 } from "uuid";
 import { useParams, usePathname } from "next/navigation";
 import { useUserProvider } from "@/providers/UserProvder";
 import { useArtistProvider } from "@/providers/ArtistProvider";
+import removeHtmlTags from "@/lib/removeHTMLTags";
 
 const useSuggestions = () => {
   const { address } = useUserProvider();
@@ -37,7 +38,6 @@ const useSuggestions = () => {
     const question = lastQuestion || currentQuestion;
     if (!message.content || !question) return;
     await trackNewMessage(address as Address, question, convId);
-    console.log("ZIAD", message.content);
     await trackNewMessage(
       address as Address,
       {
@@ -49,7 +49,9 @@ const useSuggestions = () => {
       convId,
     );
     setCurrentQuestion(null);
-    const response = await fetch(`/api/prompts?answer=${message.content}`);
+    const response = await fetch(
+      `/api/prompts?answer=${removeHtmlTags(message.content)}`,
+    );
     const data = await response.json();
 
     setSuggestions(() => [...data.questions]);
