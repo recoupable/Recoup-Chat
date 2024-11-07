@@ -10,7 +10,7 @@ import { useUserProvider } from "@/providers/UserProvder";
 import { useArtistProvider } from "@/providers/ArtistProvider";
 
 const useMessages = () => {
-  const { finalCallback } = useSuggestions();
+  const { finalCallback, suggestions, setCurrentQuestion } = useSuggestions();
   const csrfToken = useCsrfToken();
   const { initialMessages, fetchInitialMessages } = useInitialMessages();
   const { conversationRef } = useConversations();
@@ -84,6 +84,9 @@ const useMessages = () => {
     pending,
     fetchInitialMessages,
     toolCall,
+    suggestions,
+    setCurrentQuestion,
+    finalCallback,
   };
 };
 
