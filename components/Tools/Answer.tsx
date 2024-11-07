@@ -1,4 +1,3 @@
-import ReactMarkdown from "react-markdown";
 import Insights from "./Insights";
 
 const Answer = ({
@@ -11,9 +10,10 @@ const Answer = ({
   <section>
     <div
       className={`text-sm font-sans text-pretty break-words ${role === "user" ? "bg-[#f4f4f438] px-4 p-2 rounded-full" : ""}`}
-    >
-      <ReactMarkdown>{content || ""}</ReactMarkdown>
-    </div>
+      dangerouslySetInnerHTML={{
+        __html: content || "",
+      }}
+    />
     <Insights />
   </section>
 );
