@@ -1,5 +1,7 @@
 const formattedContent = (content: string) => {
-  return content.replaceAll(`\n`, "<br/>").replaceAll("’", "'");
+  return encodeURIComponent(
+    content.replaceAll(`\n`, "<br/>").replaceAll("’", "'"),
+  );
 };
 
 export default formattedContent;
