@@ -14,7 +14,7 @@ const getCampaign = (question: string, email: string, artistId: string) =>
     4. Tracks
     5. Audio books
     6. Shows
-    7. Fans (including PREMIUM, FREE, UNIQUE USERS, TOTAL FANS and etc)
+    7. Fans (including premium, free, or total counts)
     8. Listening habits (from any platform, including Spotify and Apple)
     9. Campaign insights or data
     10. Any comparison or analysis of music consumption or fan behavior
@@ -24,7 +24,6 @@ const getCampaign = (question: string, email: string, artistId: string) =>
     Example questions that MUST trigger this tool:
     - "What are the listening habits from Spotify and Apple?"
     - "How many fans does the artist have?"
-    - "How many unique users have participated in this campaign?"
     - "What insights can we draw from the latest campaign?"
     - "How many premium subscribers are there?"
 
@@ -58,7 +57,7 @@ const getCampaign = (question: string, email: string, artistId: string) =>
           fans: limitCollection(campaign.fans || [], 1000),
           premiumCount,
           freeCount,
-          totalUniqueFansCount: premiumCount + freeCount,
+          totalFansCount: premiumCount + freeCount,
           totalFollowersCount: followers,
         },
         question,
