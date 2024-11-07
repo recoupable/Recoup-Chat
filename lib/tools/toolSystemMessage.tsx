@@ -17,10 +17,10 @@ const toolSystemMessage = (context: any, question: any, toolName: string) => {
     1. Specific Focus:
       - If the question asks for a count (e.g., total fans, premium users), respond with the number and any units associated.
       - If the question asks for only artists, albums, episodes, playlists, audio books, tracks, shows, respond with only their information.
-      - If the question asks for listening habits:
+      - If the question asks for listening habits(4 Sentences):
         ** Overview:
           a. Provide a broad summary of listening trends.
-          b. Include details on popular genres, artists, content types and segment.
+          b. Include details on popular genres, artists, content types.
           c. Mention specific fan names, countries, cities and segment.
         ** Content Breakdown:
           a. Highlight popular playlists, albums, episodes, audiobooks, shows, and tracks.
@@ -29,11 +29,11 @@ const toolSystemMessage = (context: any, question: any, toolName: string) => {
           a. Report on key statistics like total fans, plays, or other relevant metrics.
           b. Identify top performers or outliers in the data.
 
-    2. Recommendations:
-      - Suggest 2-3 actionable strategies to improve engagement based on the data.
+    2. Recommendations(2-3 Sentences):
+      - Actionable strategies to improve engagement based on the data.
       - Example: "To boost engagement, consider launching a personalized playlist campaign featuring top artists from each user's listening history."
 
-    3. Trends and Insights:
+    3. Trends and Insights(2-3 Sentences):
       - Identify any emerging trends or unique insights from the data.
       - Compare to broader industry trends if relevant.
 
