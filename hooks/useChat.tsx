@@ -1,6 +1,5 @@
 import { Message } from "ai/react";
 import { v4 as uuidV4 } from "uuid";
-import useSuggestions from "./useSuggestions";
 import { useRouter } from "next/navigation";
 import useConversations from "./useConversations";
 import useMessages from "./useMessages";
@@ -8,7 +7,6 @@ import { useUserProvider } from "@/providers/UserProvder";
 
 const useChat = () => {
   const { login, address } = useUserProvider();
-  const { finalCallback, suggestions, setCurrentQuestion } = useSuggestions();
   const { push } = useRouter();
   const { conversationId } = useConversations();
   const {
@@ -21,6 +19,9 @@ const useChat = () => {
     pending,
     fetchInitialMessages,
     toolCall,
+    suggestions,
+    finalCallback,
+    setCurrentQuestion,
   } = useMessages();
 
   const goToNewConversation = async (name: string) => {

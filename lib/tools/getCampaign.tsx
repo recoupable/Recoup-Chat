@@ -29,12 +29,22 @@ const getCampaign = (question: string, email: string, artistId: string) =>
     - "What insights can we draw from the latest campaign?"
     - "How many premium subscribers are there?"
     - "What is the email count for users with an Apple Music account?"`,
-    parameters: z.object({}),
-    execute: async () => {
+    parameters: z.object({
+      artist_name: z.string().optional().describe("artist name"),
+    }),
+    execute: async ({ artist_name }) => {
       const client = getSupabaseServerAdminClient();
+      let artistIdByName = "";
+      if (artist_name) {
+        const { data } = await client
+          .from("artists")
+          .select("id")
+          .eq("name", artist_name);
+        if (data?.length) artistIdByName = data[0].id;
+      }
       const { data: campaign } = await client.rpc("get_campaign", {
         email,
-        artistid: artistId,
+        artistid: artistId || artistIdByName,
         clientid: "",
       });
 
@@ -48,14 +58,14 @@ const getCampaign = (question: string, email: string, artistId: string) =>
 
       return {
         context: {
-          tracks: limitCollection(campaign.tracks || []),
-          artists: limitCollection(campaign.artists || []),
-          playlists: limitCollection(campaign.playlists || []),
-          albums: limitCollection(campaign.albums || []),
-          audioBooks: limitCollection(campaign.audio_books || []),
-          episodes: limitCollection(campaign.episodes || []),
-          shows: limitCollection(campaign.shows || []),
-          fans: limitCollection(campaign.fans || [], 1000),
+          tracks: limitCollection(campaign?.tracks || []),
+          artists: limitCollection(campaign?.artists || []),
+          playlists: limitCollection(campaign?.playlists || []),
+          albums: limitCollection(campaign?.albums || []),
+          audioBooks: limitCollection(campaign?.audio_books || []),
+          episodes: limitCollection(campaign?.episodes || []),
+          shows: limitCollection(campaign?.shows || []),
+          fans: limitCollection(campaign?.fans || [], 1000),
           premiumCount,
           freeCount,
           totalFansCount: premiumCount + freeCount,

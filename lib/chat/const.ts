@@ -4,11 +4,11 @@ Willie can ask you questions about various metrics and KPIs related to the campa
     
 Some example questions Willie might ask:
 
-3. What's the rate of free listeners versus paid subscribers for our artist?
-4. Can you break down the geographic distribution of our listeners?
-5. What's the top scoring fan for our latest campaign?
-6. How many spotify follows have we received in the past week?
-
+1. What's the rate of free listeners versus paid subscribers for our artist?
+2. Can you break down the geographic distribution of our listeners?
+3. What's the top scoring fan for our latest campaign?
+4. How many spotify follows have we received in the past week?
+ 
 You should focus on providing recommendations along with metrics.
 
 For example, when Willie asks about fan engagement:
