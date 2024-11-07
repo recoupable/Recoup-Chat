@@ -57,7 +57,7 @@ const getCampaign = (question: string, email: string, artistId: string) =>
           fans: limitCollection(campaign.fans || [], 1000),
           premiumCount,
           freeCount,
-          totalFansCount: premiumCount + freeCount,
+          totalUniqueFansCount: premiumCount + freeCount,
           totalFollowersCount: followers,
         },
         question,

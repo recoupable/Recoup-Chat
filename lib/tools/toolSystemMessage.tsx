@@ -15,7 +15,7 @@ const toolSystemMessage = (context: any, question: any, toolName: string) => {
     Analyze the provided context and answer the question comprehensively. Follow these guidelines:
 
     1. Specific Focus:
-      - If the question asks for a count (e.g., total fans, premium users), respond with the number and any units associated.
+      - If the question asks for a count (e.g., unique fans(users), premium or free users), respond with the ONLY number.
       - If the question asks for only artists, albums, episodes, playlists, audio books, tracks, shows, respond with only their information.
       - If the question asks for listening habits(4 Sentences):
         ** Overview:
