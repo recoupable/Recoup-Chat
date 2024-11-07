@@ -15,7 +15,10 @@ const toolSystemMessage = (context: any, question: any, toolName: string) => {
     Analyze the provided context and answer the question comprehensively. Follow these guidelines:
 
     1. Specific Focus:
-      - If the question asks for a count (e.g., unique fans/users, premium or free count), respond with only the number, NOTHING ELSE(like list and etc)!!!!.
+      - If the question asks for a count, respond with only the number, NOTHING ELSE(like list and etc)!!!!. 
+        a. [unique fans/users of campaign] = totalUniqueFansCount
+        b. [premium fans/users] = premiumCount
+        c. [free fans/users] =  or free count)
       - If the question asks for only artists, albums, episodes, playlists, audio books, tracks, shows, respond with only their information.
       - If the question asks for listening habits(4 Sentences):
         ** Overview:
