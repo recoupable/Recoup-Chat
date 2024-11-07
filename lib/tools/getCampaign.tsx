@@ -27,7 +27,8 @@ const getCampaign = (question: string, email: string, artistId: string) =>
     - "How many unique [users/fans] have participated in this campaign?"
     - "How many fans does the artist have?"
     - "What insights can we draw from the latest campaign?"
-    - "How many premium subscribers are there?"`,
+    - "How many premium subscribers are there?"
+    - "What is the email count for users with an Apple Music account?"`,
     parameters: z.object({
       artist_name: z.string().optional().describe("artist name"),
     }),
