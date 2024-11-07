@@ -18,7 +18,7 @@ class ChatMessagesService {
   constructor() {}
 
   async getChatSettings(question: string, email: string, artistId: string) {
-    const context = await this.fetchRelevantContext();
+    const context = await this.fetchRelevantContext(email, artistId);
     const tools = this.fetchRelevantTools(question, email, artistId);
 
     const systemMessage = `You are a helpful assistant
@@ -35,9 +35,12 @@ Please use this information to provide accurate and relevant responses and don't
     };
   }
 
-  private async fetchRelevantContext(): Promise<string> {
+  private async fetchRelevantContext(
+    email: string,
+    artistId: string,
+  ): Promise<string> {
     try {
-      const context = getChatContext();
+      const context = getChatContext(email, artistId);
 
       return context;
     } catch (error) {
