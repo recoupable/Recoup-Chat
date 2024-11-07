@@ -1,18 +1,19 @@
-import { ChangeEventHandler, useEffect } from "react"
-import { useFormContext } from "react-hook-form"
+import { ChangeEventHandler, useEffect } from "react";
+import { useFormContext } from "react-hook-form";
 
 interface IInput {
-  id?: string
-  name: string
-  value?: any
-  className?: string
-  onChange?: ChangeEventHandler<HTMLInputElement>
-  hookToForm: boolean
-  type: "text" | "password" | "url" | "number" | "email"
-  classNameError?: string
-  disabled?: boolean
-  label?: string
-  required?: boolean
+  id?: string;
+  name: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  value?: any;
+  className?: string;
+  onChange?: ChangeEventHandler<HTMLInputElement>;
+  hookToForm: boolean;
+  type: "text" | "password" | "url" | "number" | "email";
+  classNameError?: string;
+  disabled?: boolean;
+  label?: string;
+  required?: boolean;
 }
 
 function Input({
@@ -27,15 +28,15 @@ function Input({
   label,
   type,
 }: IInput) {
-  const formContext = useFormContext()
-  const isFullyHooked = Boolean(name && hookToForm && formContext)
-  const fieldError = isFullyHooked && formContext?.formState?.errors?.[name]
+  const formContext = useFormContext();
+  const isFullyHooked = Boolean(name && hookToForm && formContext);
+  const fieldError = isFullyHooked && formContext?.formState?.errors?.[name];
 
   useEffect(() => {
     if (name && hookToForm) {
-      formContext.setValue(name, value)
+      formContext.setValue(name, value);
     }
-  }, [value, name, formContext, hookToForm])
+  }, [value, name, formContext, hookToForm]);
 
   return (
     <div className="relative w-full">
@@ -45,10 +46,10 @@ function Input({
         value={value}
         className={`w-full !outline-none border-gray-700 border-[1px] px-2 py-1 md:p-2 rounded-md text-sm
           ${className || ""} ${
-          hookToForm && fieldError && fieldError?.message
-            ? `${classNameError} !border-errorred`
-            : ""
-        }`}
+            hookToForm && fieldError && fieldError?.message
+              ? `${classNameError} !border-errorred`
+              : ""
+          }`}
         {...(!hookToForm && {
           value,
           onChange,
@@ -69,12 +70,12 @@ function Input({
         </p>
       )}
     </div>
-  )
+  );
 }
 
 Input.defaultProps = {
   hookToForm: false,
   type: "text",
-}
+};
 
-export default Input
+export default Input;
