@@ -11,7 +11,7 @@ const Answer = ({
     <div
       className={`text-sm font-sans text-pretty break-words ${role === "user" ? "bg-[#f4f4f438] px-4 p-2 rounded-full" : ""}`}
       dangerouslySetInnerHTML={{
-        __html: content || "",
+        __html: decodeURIComponent(content || ""),
       }}
     />
     <Insights />

@@ -1,3 +1,5 @@
+import { HTML_RESPONSE_FORMAT_INSTRUCTIONS } from "../consts";
+
 // eslint-disable-next-line  @typescript-eslint/no-explicit-any
 const toolSystemMessage = (context: any, question: any, toolName: string) => {
   if (toolName === "getArtistAnalysis")
@@ -11,11 +13,15 @@ const toolSystemMessage = (context: any, question: any, toolName: string) => {
     return `
     Context: ${JSON.stringify(context)}
     Question: ${question}
-    NOTE: Due to Apple's policy, Do not collect apple music emails.
+    
+    NOTE: 
+    1. Due to Apple's policy, Do not collect Apple Music emails. In this case, NO recommendations or insights are needed.
+       For example: "Due to Apple's policy, we do not collect apple music emails"
+
     Analyze the provided context and answer the question comprehensively. Follow these guidelines:
 
     1. Specific Focus:
-      - If the question asks for a count, respond with only the number, NOTHING ELSE(like list and etc)!!!!. 
+      - NOTE: If the question asks for a count, respond with only a sentence including the number, NOTHING ELSE (no lists, tables, etc)!!!!. 
       - If the question asks for only artists, albums, episodes, playlists, audio books, tracks, shows, respond with only their information.
       - If the question asks for listening habits(4 Sentences):
         ** Overview:
@@ -38,10 +44,7 @@ const toolSystemMessage = (context: any, question: any, toolName: string) => {
 
     
     Ensure your answer is data-driven, insightful, and provides clear value for understanding and acting on the fan base's behavior.
-    Please provide a wide range of HTML formats with embedded HTML tags such as <div>, <p>, <ul>, <li>, and <span>, along with CSS styles including font size, margin, and padding. 
-    Please do not include any color styles. The font size for paragraphs should be 14px with left padding 8px & top padding 4px for indentation, while the font size for heading tags (h1 to h6) should be 16px and bold with top padding 4px.
-    All Numbers & Proper nouns should bold using <span>.
-    Make sure to present the HTML response as plain HTML without any enclosing code markers or delimiters.`;
+    ${HTML_RESPONSE_FORMAT_INSTRUCTIONS}`;
 
   return "";
 };
