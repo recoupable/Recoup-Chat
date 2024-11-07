@@ -7,6 +7,8 @@ import { v4 as uuidV4 } from "uuid";
 import { useParams, usePathname } from "next/navigation";
 import { useUserProvider } from "@/providers/UserProvder";
 import { useArtistProvider } from "@/providers/ArtistProvider";
+import removeHtmlTags from "@/lib/removeHTMLTags";
+import formattedContent from "@/lib/formattedContent";
 
 const useSuggestions = () => {
   const { address } = useUserProvider();
@@ -40,7 +42,7 @@ const useSuggestions = () => {
     await trackNewMessage(
       address as Address,
       {
-        content: message.content.replace(/[^a-zA-Z0-9\s,._:]/g, ""),
+        content: formattedContent(message.content),
         role: message.role,
         id: uuidV4(),
         questionId: question.id,
@@ -48,7 +50,9 @@ const useSuggestions = () => {
       convId,
     );
     setCurrentQuestion(null);
-    const response = await fetch(`/api/prompts?answer=${message.content}`);
+    const response = await fetch(
+      `/api/prompts?answer=${removeHtmlTags(message.content)}`,
+    );
     const data = await response.json();
 
     setSuggestions(() => [...data.questions]);

@@ -26,6 +26,7 @@ const getCampaign = (question: string, email: string, artistId: string) =>
     - "What are the listening habits from Spotify and Apple?"
     - "How many unique [users/fans] have participated in this campaign?"
     - "How many fans does the artist have?"
+    - "How is my campaign going?"
     - "What insights can we draw from the latest campaign?"
     - "How many premium subscribers are there?"
     - "What is the email count for users with an Apple Music account?"`,

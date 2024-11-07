@@ -1,3 +1,5 @@
+import { HTML_RESPONSE_FORMAT_INSTRUCTIONS } from "../consts";
+
 // eslint-disable-next-line  @typescript-eslint/no-explicit-any
 const toolSystemMessage = (context: any, question: any, toolName: string) => {
   if (toolName === "getArtistAnalysis")
@@ -42,7 +44,8 @@ const toolSystemMessage = (context: any, question: any, toolName: string) => {
 
     
     Ensure your answer is data-driven, insightful, and provides clear value for understanding and acting on the fan base's behavior.
-    Respond with a plain text string. Do not include any markdown formatting, JSON structure, or special characters. Avoid greetings, closings, or any meta-commentary about the response format.`;
+    ${HTML_RESPONSE_FORMAT_INSTRUCTIONS}`;
+
   return "";
 };
 
