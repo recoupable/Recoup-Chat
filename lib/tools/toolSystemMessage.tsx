@@ -38,7 +38,8 @@ const toolSystemMessage = (context: any, question: any, toolName: string) => {
 
     
     Ensure your answer is data-driven, insightful, and provides clear value for understanding and acting on the fan base's behavior.
-    Respond with a wide range of HTML formats with embbeded html tags like <div>, <p>, <ul>, <li>, <span> ... & css styling.`;
+    Please provide a wide range of HTML formats with embedded HTML tags such as <div>, <p>, <ul>, <li>, and <span> along with various CSS styles like color & font sizes. 
+    Make sure to present the HTML response as plain HTML without any enclosing code markers or delimiters.`;
 
   return "";
 };
