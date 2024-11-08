@@ -5,7 +5,6 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import Tooltip from "../Tooltip";
 import { useUserProvider } from "@/providers/UserProvder";
-import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import SideMenu from "../SideMenu";
 import ArtistSetting from "../ArtistSetting";
@@ -14,7 +13,6 @@ import { useArtistProvider } from "@/providers/ArtistProvider";
 const Sidebar = () => {
   const { push } = useRouter();
   const { isPrepared } = useUserProvider();
-  const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [isOpenSideMenu, setIsOpenSideMenu] = useState(false);
   const { artistActive, selectedArtist } = useArtistProvider();
@@ -43,7 +41,7 @@ const Sidebar = () => {
         className="mb-6 w-[45px] h-[45px]"
       >
         <Image
-          src={resolvedTheme === "dark" ? "/logo-light.png" : "/logo-dark.png"}
+          src={"/logo-light.png"}
           width={45}
           height={45}
           alt="logo"
