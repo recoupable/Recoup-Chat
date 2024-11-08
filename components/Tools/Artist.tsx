@@ -49,7 +49,7 @@ const Artist = () => {
   return (
     <>
       {status === ArtistToolResponse.MISSING_ARTIST_NAME && (
-        <MissingArtist description="Please click button to create an artist." />
+        <MissingArtist description="Please, click button to create an artist." />
       )}
       {status === ArtistToolResponse.CREATED_ARTIST && <CreatedArtist />}
       {status === ArtistToolResponse.ARTIST_LIST && <ArtistsTable />}
@@ -65,7 +65,7 @@ const Artist = () => {
               {artists.length ? (
                 <UpdateArtistInfo toggleModal={toggleSettingModal} />
               ) : (
-                <MissingArtist description="Please click button to create an artist." />
+                <MissingArtist description="Please, click button to create an artist." />
               )}
             </>
           )}
