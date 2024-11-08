@@ -1,4 +1,3 @@
-import MissingArtist from "./MissingArtist";
 import CreatedArtist from "./CreatedArtist";
 import { ArtistToolResponse } from "@/types/Tool";
 import ArtistsTable from "./ArtistsTable";
@@ -9,6 +8,7 @@ import TikTokPfp from "./TikTokPfp";
 import { useEffect } from "react";
 import { useArtistProvider } from "@/providers/ArtistProvider";
 import UpdateArtistInfo from "./UpdateArtistInfo";
+import { SETTING_MODE } from "@/types/Setting";
 
 const Artist = () => {
   const { context, question } = useToolCallProvider();
@@ -20,6 +20,7 @@ const Artist = () => {
     isOpenSettingModal,
     toggleSettingModal,
     setQuestion,
+    setSettingMode,
   } = useArtistProvider();
   const status = context?.status;
   const artist = context?.artist;
@@ -36,11 +37,16 @@ const Artist = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [artistInfo]);
 
+  useEffect(() => {
+    if (status === ArtistToolResponse.MISSING_ARTIST_NAME) {
+      setSettingMode(SETTING_MODE.CREATE);
+      setIsOpenSettingModal(true);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [status]);
+
   return (
     <>
-      {status === ArtistToolResponse.MISSING_ARTIST_NAME && (
-        <MissingArtist description="Please provide the artist name to proceed." />
-      )}
       {status === ArtistToolResponse.CREATED_ARTIST && <CreatedArtist />}
       {status === ArtistToolResponse.ARTIST_LIST && <ArtistsTable />}
       {status === ArtistToolResponse.NO_ARTISTS && <SubmitArtist />}
