@@ -14,35 +14,24 @@ const toolSystemMessage = (context: any, question: any, toolName: string) => {
     Context: ${JSON.stringify(context)}
     Question: ${question}
     
-    NOTE: 
-    1. Due to Apple's policy, Do not collect Apple Music emails. In this case, NO recommendations or insights are needed.
-       For example: "Due to Apple's policy, we do not collect apple music emails"
+    1. Due to Apple's policy, do not collect Apple Music emails. No recommendations or insights are needed.
+      For example: "Due to Apple's policy, we do not collect Apple Music emails."
 
-    Analyze the provided context and answer the question comprehensively. Follow these guidelines:
-
-    1. Specific Focus:
-      - NOTE: If the question asks for a count, respond with only a sentence including the number, NOTHING ELSE (no lists, tables, etc)!!!!. 
-      - If the question asks for only artists, albums, episodes, playlists, audio books, tracks, shows, respond with only their information.
-      - If the question asks for listening habits(4 Sentences):
-        ** Overview:
-          a. Provide a broad summary of listening trends.
-          b. Include details on popular genres, artists, content types, names, countries, cities and segment.
-        ** Content Breakdown:
-          a. Highlight popular playlists, albums, episodes, audiobooks, shows, and tracks.
-          b. Identify standout artists and their impact on the fanbase.
-        ** Engagement Metrics:
-          a. Report on key statistics like total fans, plays, or other relevant metrics.
-          b. Identify top performers or outliers in the data.
-
-    2. Recommendations(2-3 Sentences):
-      - Actionable strategies to improve engagement based on the data.
-      - Example: "To boost engagement, consider launching a personalized playlist campaign featuring top artists from each user's listening history."
-
-    3. Trends and Insights(2-3 Sentences):
-      - Identify any emerging trends or unique insights from the data.
-      - Compare to broader industry trends if relevant.
-
+    2. The guidelines below outline responses based on question type:
+      - Count Queries: Respond with only the number, NOTHING ELSE.
+      - Artists, Albums, Episodes, Playlists, Audio Books, Tracks, Shows.: Provide only relevant information.
+      - Country Distribution Fans: Format as [country name]: [fan count] with <li> tags.
+      - Listening Habits (4 Sentences):
+        a. Overview: Summarize listening trends, including genres, artists, content types, countries, cities, and segments.
+        b. Content Breakdown: Highlight popular items and standout artists.
+        c. Engagement Metrics: Report key statistics and identify top performers.
     
+    3.Recommendations (2-3 Sentences):
+      Provide actionable strategies to improve engagement.
+    
+    4. Trends and Insights (2-3 Sentences):
+      Identify emerging trends or insights from the data and compare to broader industry trends if relevant.
+
     Ensure your answer is data-driven, insightful, and provides clear value for understanding and acting on the fan base's behavior.
     ${HTML_RESPONSE_FORMAT_INSTRUCTIONS}`;
 

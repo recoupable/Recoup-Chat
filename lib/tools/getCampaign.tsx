@@ -14,7 +14,7 @@ const getCampaign = (question: string, email: string, artistId: string) =>
     4. Tracks
     5. Audio books
     6. Shows
-    7. Fans/Users (Premium, Unique fans count and etc)
+    7. Fans/Users (Premium, Unique fans count, Country distribution and etc)
     8. Email count
     9. Listening habits (from any platform, including Spotify and Apple)
     10. Campaign insights or data
@@ -25,11 +25,12 @@ const getCampaign = (question: string, email: string, artistId: string) =>
     Example Questions that MUST trigger this tool:
     - "What are the listening habits from Spotify and Apple?"
     - "How many unique [users/fans] have participated in this campaign?"
+    - "What is the country distribution of fans?"
+    - "What is the email count for users with an Apple Music account?"
     - "How many fans does the artist have?"
     - "How is my campaign going?"
     - "What insights can we draw from the latest campaign?"
-    - "How many premium subscribers are there?"
-    - "What is the email count for users with an Apple Music account?"`,
+    - "How many premium subscribers are there?"`,
     parameters: z.object({
       artist_name: z.string().optional().describe("artist name"),
     }),
