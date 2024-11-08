@@ -27,6 +27,7 @@ function Input({
   disabled,
   label,
   type,
+  required,
 }: IInput) {
   const formContext = useFormContext();
   const isFullyHooked = Boolean(name && hookToForm && formContext);
@@ -40,14 +41,17 @@ function Input({
 
   return (
     <div className="relative w-full">
-      <label className="text-sm">{label}</label>
+      <label className="text-sm">
+        {label}
+        {required && <span className="text-red-700"> *</span>}
+      </label>
       <input
         {...(id && { id })}
         value={value}
         className={`w-full !outline-none border-gray-700 border-[1px] px-2 py-1 md:p-2 rounded-md text-sm
           ${className || ""} ${
             hookToForm && fieldError && fieldError?.message
-              ? `${classNameError} !border-errorred`
+              ? `${classNameError} !border-red-700`
               : ""
           }`}
         {...(!hookToForm && {
@@ -65,7 +69,7 @@ function Input({
       />
 
       {isFullyHooked && fieldError && fieldError?.message && (
-        <p className="!text-errorred text-sm pt-2">
+        <p className="!text-red-700 text-sm pt-2">
           {fieldError?.message as string}
         </p>
       )}

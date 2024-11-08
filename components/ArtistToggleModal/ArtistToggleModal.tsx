@@ -2,19 +2,11 @@ import Image from "next/image";
 import ArtistDropDown from "./ArtistDropDown";
 import { useArtistProvider } from "@/providers/ArtistProvider";
 import useClickOutsideSelect from "@/hooks/useClickOutsideSelect";
-import { useState } from "react";
-import Modal from "../Modal";
-import Settings from "../ArtistSettingModal/Settings";
 
 const ArtistToggleModal = () => {
   const { selectRef, setIsVisibleSelect, isVisibleSelect } =
     useClickOutsideSelect();
   const { artistActive, selectedArtist } = useArtistProvider();
-  const [isOpenSetting, setIsOpenSetting] = useState(false);
-
-  const toggleSetting = () => {
-    setIsOpenSetting(!isOpenSetting);
-  };
 
   const toggleArtistModal = () => {
     setIsVisibleSelect(!isVisibleSelect);
@@ -41,17 +33,7 @@ const ArtistToggleModal = () => {
         </button>
         <p className="text-sm">{selectedArtist?.name || "Artist Mode"}</p>
       </div>
-      {isVisibleSelect && (
-        <ArtistDropDown
-          toggleModal={toggleArtistModal}
-          toggleSetting={toggleSetting}
-        />
-      )}
-      {isOpenSetting && (
-        <Modal onClose={toggleSetting}>
-          <Settings toggleModal={toggleSetting} />
-        </Modal>
-      )}
+      {isVisibleSelect && <ArtistDropDown toggleModal={toggleArtistModal} />}
     </div>
   );
 };

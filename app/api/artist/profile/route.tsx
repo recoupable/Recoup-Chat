@@ -9,29 +9,43 @@ export async function POST(req: NextRequest) {
 
   try {
     const client = getSupabaseServerAdminClient();
-    const { data } = await client
-      .from("artists")
-      .select("*")
-      .eq("id", artistId);
+    if (artistId) {
+      const { data } = await client
+        .from("artists")
+        .select("*")
+        .eq("id", artistId);
 
-    if (!data || !data?.length) throw Error("artist does not exist.");
+      if (!data || !data?.length) throw Error("artist does not exist.");
 
-    const artistData = data[0];
+      const artistData = data[0];
 
-    const { data: artistInfo } = await client
-      .from("artists")
-      .update({
-        ...artistData,
-        image,
-        name,
-      })
-      .eq("id", artistId)
-      .select("*");
+      const { data: artistInfo } = await client
+        .from("artists")
+        .update({
+          ...artistData,
+          image,
+          name,
+        })
+        .eq("id", artistId)
+        .select("*");
 
-    return Response.json(
-      { message: "success", artistInfo: artistInfo?.[0] },
-      { status: 200 },
-    );
+      return Response.json(
+        { message: "success", artistInfo: artistInfo?.[0] },
+        { status: 200 },
+      );
+    } else {
+      const { data: artistInfo } = await client
+        .from("artists")
+        .insert({
+          image,
+          name,
+          timestamp: Date.now(),
+        })
+        .select("*")
+        .single();
+
+      return Response.json({ message: "success", artistInfo }, { status: 200 });
+    }
   } catch (error) {
     console.error(error);
     const message = error instanceof Error ? error.message : "failed";

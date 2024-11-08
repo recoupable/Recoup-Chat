@@ -1,9 +1,14 @@
 import getIpfsLink from "@/lib/ipfs/getIpfsLink";
 import { uploadFile } from "@/lib/ipfs/uploadToIpfs";
-import { useArtistProvider } from "@/providers/ArtistProvider";
-import { useEffect, useRef, useState } from "react";
+import { useParams } from "next/navigation";
+import { useChatProvider } from "@/providers/ChatProvider";
+import { useRef, useState } from "react";
+import { ArtistRecord } from "@/types/Artist";
+import { v4 as uuidV4 } from "uuid";
 
 const useArtistSetting = () => {
+  const { finalCallback } = useChatProvider();
+  const { conversation: conversationId } = useParams();
   const imageRef = useRef() as any;
   const baseRef = useRef() as any;
   const [image, setImage] = useState("");
@@ -17,11 +22,8 @@ const useArtistSetting = () => {
   const [youtube, setYoutube] = useState("");
   const [twitter, setTwitter] = useState("");
   const [bases, setBases] = useState("");
-  const { selectedArtist, getArtists } = useArtistProvider();
   const [imageUploading, setImageUploading] = useState(false);
-  const [updating, setUpdating] = useState(false);
-
-  const loading = imageUploading || updating;
+  const [question, setQuestion] = useState("");
 
   const handleImageSelected = async (e: any) => {
     setImageUploading(true);
@@ -37,27 +39,31 @@ const useArtistSetting = () => {
     setImageUploading(false);
   };
 
-  const saveSetting = async () => {
-    setUpdating(true);
-    const response = await fetch("/api/artist/profile", {
-      method: "POST",
-      body: JSON.stringify({ name, image, artistId: selectedArtist?.id }),
-      headers: {
-        "Content-Type": "application/json",
+  const updateCallback = (artistInfo: ArtistRecord) => {
+    finalCallback(
+      {
+        role: "assistant",
+        id: uuidV4(),
+        content: `Artist Information: Name - ${artistInfo.name} Image - ${artistInfo.image}`,
       },
-    });
-    const data = await response.json();
-    await getArtists();
-    setUpdating(false);
-    return data?.artistInfo;
+      { id: uuidV4(), content: question, role: "user" },
+      conversationId as string,
+    );
   };
 
-  useEffect(() => {
-    if (selectedArtist) {
-      setName(selectedArtist.name || "");
-      setImage(selectedArtist.image || "");
-    }
-  }, [selectedArtist]);
+  const clearParams = () => {
+    setName("");
+    setImage("");
+    setInstruction("");
+    setInstagram("");
+    setLabel("");
+    setSpotifyUrl("");
+    setAppleUrl("");
+    setTikTok("");
+    setYoutube("");
+    setTwitter("");
+    setBases("");
+  };
 
   return {
     handleImageSelected,
@@ -85,10 +91,11 @@ const useArtistSetting = () => {
     setBases,
     imageRef,
     baseRef,
-    saveSetting,
-    loading,
     imageUploading,
-    updating,
+    question,
+    setQuestion,
+    updateCallback,
+    clearParams,
   };
 };
 

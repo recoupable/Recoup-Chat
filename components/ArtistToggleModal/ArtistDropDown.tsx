@@ -3,36 +3,28 @@ import { ArtistRecord } from "@/types/Artist";
 import { EllipsisVertical, Plus } from "lucide-react";
 import Image from "next/image";
 
-const ArtistDropDown = ({
-  toggleModal,
-  toggleSetting,
-}: {
-  toggleModal: () => void;
-  toggleSetting: () => void;
-}) => {
+const ArtistDropDown = ({ toggleModal }: { toggleModal: () => void }) => {
   const {
     artists,
-    setSelectedArtist,
     artistActive,
     setArtistActive,
     selectedArtist,
+    toggleCreation,
+    toggleUpdate,
+    toggleSettingModal,
   } = useArtistProvider();
-
-  const handleClickArtist = (artist: ArtistRecord) => {
-    setSelectedArtist(artist);
-    setArtistActive(true);
-    toggleModal();
-  };
 
   return (
     <div className="absolute min-w-[200px] border-[1px] border-gray-700 rounded-md p-2 bottom-0 right-0 bg-black min-h-[200px] overflow-y-auto">
-      <div className="flex flex-col gap-2 max-h-[180px] overflow-y-auto">
+      <div className="flex flex-col gap-2 max-h-[180px] overflow-x-hidden overflow-y-auto">
         {artists.map((artist: ArtistRecord) => (
           <button
             key={artist.id}
             className="flex gap-2 items-center justify-between"
             type="button"
-            onClick={() => handleClickArtist(artist)}
+            onClick={() => {
+              toggleUpdate(artist);
+            }}
           >
             <div className="flex gap-2 items-center">
               <div className="relative w-6 h-6 rounded-md overflow-hidden">
@@ -44,13 +36,24 @@ const ArtistDropDown = ({
               </div>
               <p className="text-sm">{artist.name}</p>
             </div>
-            <button type="button" onClick={toggleSetting}>
+            <button
+              type="button"
+              onClick={() => {
+                toggleUpdate(artist);
+                toggleModal();
+                toggleSettingModal();
+              }}
+            >
               <EllipsisVertical />
             </button>
           </button>
         ))}
       </div>
-      <button className="flex gap-2 items-center mt-1" type="button">
+      <button
+        className="flex gap-2 items-center mt-1"
+        type="button"
+        onClick={toggleCreation}
+      >
         <Plus />
         <p className="text-sm">New Artist</p>
       </button>

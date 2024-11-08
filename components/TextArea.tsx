@@ -1,3 +1,5 @@
+"use client";
+
 import { ChangeEventHandler, useEffect } from "react";
 import { useFormContext } from "react-hook-form";
 
