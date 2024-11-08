@@ -56,6 +56,7 @@ const useArtists = () => {
         name: artistSetting.name,
         image: artistSetting.image,
         artistId: settingMode === SETTING_MODE.CREATE ? "" : selectedArtist?.id,
+        email,
       }),
       headers: {
         "Content-Type": "application/json",
