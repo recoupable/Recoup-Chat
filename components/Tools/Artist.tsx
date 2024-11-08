@@ -65,7 +65,7 @@ const Artist = () => {
               {artists.length ? (
                 <UpdateArtistInfo toggleModal={toggleSettingModal} />
               ) : (
-                <SubmitArtist />
+                <MissingArtist description="Please click button to create an artist." />
               )}
             </>
           )}
