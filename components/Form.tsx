@@ -32,7 +32,6 @@ function Form({
 
   const handleFormSubmit = async (event: FormEvent<HTMLFormElement>) => {
     try {
-      console.log("ZIAD HERE");
       event.preventDefault();
       await formMethods.handleSubmit(onSubmit, onError)(event);
     } catch (err) {
