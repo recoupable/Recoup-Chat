@@ -34,6 +34,12 @@ export async function GET(req: NextRequest) {
           content: `Let's get response with only this json format. {"data": [string]}`,
         },
       ],
+      store: true,
+      metadata: {
+        feature: "prompt_suggestions",
+        source: "follow_up_questions",
+        context: "data_analysis",
+      },
     });
 
     const questions = response.choices[0].message!.content!.toString();
