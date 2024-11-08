@@ -48,7 +48,7 @@ const Artist = () => {
 
   return (
     <>
-      {status === ArtistToolResponse.CREATED_ARTIST && (
+      {status === ArtistToolResponse.MISSING_ARTIST_NAME && (
         <MissingArtist description="Please click button to create an artist." />
       )}
       {status === ArtistToolResponse.CREATED_ARTIST && <CreatedArtist />}
