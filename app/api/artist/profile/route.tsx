@@ -6,6 +6,7 @@ export async function POST(req: NextRequest) {
   const image = body.image;
   const name = body.name;
   const artistId = body.artistId;
+  const email = body.email;
 
   try {
     const client = getSupabaseServerAdminClient();
@@ -44,6 +45,16 @@ export async function POST(req: NextRequest) {
         .select("*")
         .single();
 
+      const { data: account } = await client
+        .from("accounts")
+        .select("*")
+        .eq("email", email);
+      if (!account || !account.length) throw Error("Account does not exist.");
+
+      await client.from("accounts").update({
+        ...account[0],
+        artistIds: [...account[0].artistIds, artistInfo.id],
+      });
       return Response.json({ message: "success", artistInfo }, { status: 200 });
     }
   } catch (error) {
