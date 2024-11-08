@@ -1,4 +1,3 @@
-import FanTable from "./FanTable";
 import Artist from "./Artist";
 import { useToolCallProvider } from "@/providers/ToolCallProvider";
 import Campaign from "./Campaign";
@@ -8,7 +7,6 @@ const ToolContent = () => {
 
   return (
     <div>
-      {toolName === "getCampaign" && <FanTable />}
       {(toolName === "createArtist" ||
         toolName === "getArtists" ||
         toolName === "getArtistAnalysis" ||
