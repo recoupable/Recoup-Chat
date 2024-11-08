@@ -17,7 +17,7 @@ const toolSystemMessage = (context: any, question: any, toolName: string) => {
     1. Due to Apple's policy, do not collect Apple Music emails. No recommendations or insights are needed.
       For example: "Due to Apple's policy, we do not collect Apple Music emails."
 
-    2. If the question asks for:
+    2. The guidelines below outline responses based on question type:
       - Count Queries: Respond with only the number, NOTHING ELSE.
       - Artists, Albums, Episodes, Playlists, Audio Books, Tracks, Shows.: Provide only relevant information.
       - Country Contribution Fans: Format as [country name]: [fan count] with <li> tags.
