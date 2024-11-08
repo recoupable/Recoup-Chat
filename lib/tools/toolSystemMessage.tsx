@@ -20,7 +20,7 @@ const toolSystemMessage = (context: any, question: any, toolName: string) => {
     2. The guidelines below outline responses based on question type:
       - Count Queries: Respond with only the number, NOTHING ELSE.
       - Artists, Albums, Episodes, Playlists, Audio Books, Tracks, Shows.: Provide only relevant information.
-      - Country Contribution Fans: Format as [country name]: [fan count] with <li> tags.
+      - Country Distribution Fans: Format as [country name]: [fan count] with <li> tags.
       - Listening Habits (4 Sentences):
         a. Overview: Summarize listening trends, including genres, artists, content types, countries, cities, and segments.
         b. Content Breakdown: Highlight popular items and standout artists.
