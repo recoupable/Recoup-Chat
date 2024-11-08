@@ -9,6 +9,7 @@ import { useEffect } from "react";
 import { useArtistProvider } from "@/providers/ArtistProvider";
 import UpdateArtistInfo from "./UpdateArtistInfo";
 import { SETTING_MODE } from "@/types/Setting";
+import MissingArtist from "./MissingArtist";
 
 const Artist = () => {
   const { context, question } = useToolCallProvider();
@@ -47,6 +48,9 @@ const Artist = () => {
 
   return (
     <>
+      {status === ArtistToolResponse.CREATED_ARTIST && (
+        <MissingArtist description="Please click button to proceed." />
+      )}
       {status === ArtistToolResponse.CREATED_ARTIST && <CreatedArtist />}
       {status === ArtistToolResponse.ARTIST_LIST && <ArtistsTable />}
       {status === ArtistToolResponse.NO_ARTISTS && <SubmitArtist />}
