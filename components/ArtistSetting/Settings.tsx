@@ -1,16 +1,16 @@
-import useArtistSetting from "@/hooks/useArtistSetting";
+"use client";
+
 import useIsMobile from "@/hooks/useIsMobile";
-import { ArtistRecord } from "@/types/Artist";
 import { MicVocal, Plus, X } from "lucide-react";
 import Image from "next/image";
+import Form from "../Form";
+import { validation } from "@/lib/utils/setting";
+import Input from "../Input";
+import TextArea from "../TextArea";
+import { useArtistProvider } from "@/providers/ArtistProvider";
+import { SETTING_MODE } from "@/types/Setting";
 
-const Settings = ({
-  toggleModal,
-  saveCallback,
-}: {
-  toggleModal: () => void;
-  saveCallback?: (artistInfo: ArtistRecord) => void;
-}) => {
+const Settings = () => {
   const isMobile = useIsMobile();
   const {
     imageRef,
@@ -35,27 +35,37 @@ const Settings = ({
     twitter,
     setTwitter,
     handleImageSelected,
-    saveSetting,
-    loading,
     imageUploading,
     updating,
-  } = useArtistSetting();
+    saveSetting,
+    toggleSettingModal,
+    settingMode,
+  } = useArtistProvider();
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleSave = async () => {
-    const artistInfo = await saveSetting();
-    if (saveCallback) saveCallback(artistInfo);
-    toggleModal();
+    await saveSetting();
+    toggleSettingModal();
   };
 
   return (
-    <div className="w-full grid grid-cols-12 gap-2 md:gap-3">
+    <Form
+      id="artist-setting"
+      className="w-full grid grid-cols-12 gap-2 md:gap-3"
+      validationSchema={validation}
+      onSubmit={handleSave}
+    >
       <div className="col-span-12 flex justify-between items-center border-b-gray-700 border-b-[1px] pb-3">
         <div className="flex gap-2 items-center">
           <MicVocal />
-          <p>Artist Settings</p>
+          <p>
+            {settingMode === SETTING_MODE.CREATE
+              ? "Add Artist"
+              : "Artist Settings"}
+          </p>
         </div>
         {!isMobile && (
-          <button type="button" onClick={toggleModal}>
+          <button type="button" onClick={toggleSettingModal}>
             <X />
           </button>
         )}
@@ -88,84 +98,96 @@ const Settings = ({
         />
       </div>
       <div className="col-span-8 space-y-1 md:space-y-2">
-        <p className="text-sm">Custom Intruction</p>
-        <textarea
+        <TextArea
           value={instruction}
           onChange={(e) => setInstruction(e.target.value)}
-          rows={isMobile ? 3 : 5}
-          className="w-full !outline-none border-gray-700 border-[1px] px-2 py-1 md:p-2 rounded-md text-sm"
+          label="Custom Instruction"
+          id="instruction"
+          name="instruction"
+          rows={3}
+          hookToForm
         />
       </div>
       <div className="col-span-6 space-y-1 md:space-y-2">
-        <p className="text-sm">Artist Name</p>
-        <input
-          type="text"
+        <Input
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="w-full !outline-none border-gray-700 border-[1px] px-2 py-1 md:p-2 rounded-md text-sm"
+          label="Artist Name"
+          id="name"
+          name="name"
+          required
+          hookToForm
         />
       </div>
       <div className="col-span-6 space-y-1 md:space-y-2">
-        <p className="text-sm">Artist Label</p>
-        <input
-          type="text"
+        <Input
           value={label}
           onChange={(e) => setLabel(e.target.value)}
-          className="w-full !outline-none border-gray-700 border-[1px] px-2 py-1 md:p-2 rounded-md text-sm"
+          label="Artist Label"
+          id="label"
+          name="label"
+          hookToForm
         />
       </div>
       <div className="col-span-6 space-y-1 md:space-y-2">
-        <p className="text-sm">Spotify URL</p>
-        <input
-          type="text"
+        <Input
           value={spotifyUrl}
           onChange={(e) => setSpotifyUrl(e.target.value)}
-          className="w-full !outline-none border-gray-700 border-[1px] px-2 py-1 md:p-2 rounded-md text-sm"
+          label="Spotify URL"
+          id="spotifyUrl"
+          name="spotifyUrl"
+          required
+          hookToForm
         />
       </div>
       <div className="col-span-6 space-y-1 md:space-y-2">
-        <p className="text-sm">Apple URL</p>
-        <input
-          type="text"
+        <Input
           value={appleUrl}
           onChange={(e) => setAppleUrl(e.target.value)}
-          className="w-full !outline-none border-gray-700 border-[1px] px-2 py-1 md:p-2 rounded-md text-sm"
+          label="Apple URL"
+          id="appleUrl"
+          name="appleUrl"
+          hookToForm
         />
       </div>
       <div className="col-span-6 space-y-1 md:space-y-2">
-        <p className="text-sm">TikTok</p>
-        <input
-          type="text"
+        <Input
           value={tiktok}
           onChange={(e) => setTikTok(e.target.value)}
-          className="w-full !outline-none border-gray-700 border-[1px] px-2 py-1 md:p-2 rounded-md text-sm"
+          label="TikTok"
+          id="tiktok"
+          name="tiktok"
+          hookToForm
         />
       </div>
       <div className="col-span-6 space-y-1 md:space-y-2">
-        <p className="text-sm">Instagram</p>
-        <input
-          type="text"
+        <Input
           value={instagram}
           onChange={(e) => setInstagram(e.target.value)}
-          className="w-full !outline-none border-gray-700 border-[1px] px-2 py-1 md:p-2 rounded-md text-sm"
+          label="Instagram"
+          id="instagram"
+          name="instagram"
+          hookToForm
         />
       </div>
       <div className="col-span-6 space-y-1 md:space-y-2">
-        <p className="text-sm">YouTube</p>
-        <input
-          type="text"
+        <Input
           value={youtube}
           onChange={(e) => setYoutube(e.target.value)}
-          className="w-full !outline-none border-gray-700 border-[1px] px-2 py-1 md:p-2 rounded-md text-sm"
+          label="YouTube"
+          id="youtube"
+          name="youtube"
+          hookToForm
         />
       </div>
       <div className="col-span-6 space-y-1 md:space-y-2">
-        <p className="text-sm">X</p>
-        <input
-          type="text"
+        <Input
           value={twitter}
           onChange={(e) => setTwitter(e.target.value)}
-          className="w-full !outline-none border-gray-700 border-[1px] px-2 py-1 md:p-2 rounded-md text-sm"
+          label="X"
+          id="twitter"
+          name="twitter"
+          hookToForm
         />
       </div>
       <div className="col-span-7 md:col-span-5 space-y-1 md:space-y-2">
@@ -180,19 +202,18 @@ const Settings = ({
         <input type="file" hidden ref={baseRef} />
       </div>
       <button
-        className="col-span-12 border-gray-700 border-[1px] rounded-md py-1 md:mb-4"
-        onClick={handleSave}
-        disabled={loading}
+        className="col-span-12 border-gray-700 border-[1px] rounded-md py-1"
+        type="submit"
       >
         {updating ? "Saving..." : "Save"}
       </button>
       <button
         className="col-span-12 border-gray-700 border-[1px] rounded-md py-1 mb-4"
-        onClick={toggleModal}
+        onClick={toggleSettingModal}
       >
         Close
       </button>
-    </div>
+    </Form>
   );
 };
 

@@ -7,6 +7,7 @@ import Sidebar from "@/components/Sidebar";
 import Header from "@/components/Header";
 import { Suspense } from "react";
 import { CircleHelp } from "lucide-react";
+import ArtistSettingModal from "@/components/ArtistSettingModal";
 
 export const metadata: Metadata = {
   title: TITLE,
@@ -31,6 +32,7 @@ export default function RootLayout({
             <div className="flex flex-col md:flex-row">
               <Sidebar />
               <Header />
+              <ArtistSettingModal />
               {children}
               <div className="fixed right-4 bottom-4">
                 <button type="button">

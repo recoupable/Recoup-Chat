@@ -8,7 +8,7 @@ import { useUserProvider } from "@/providers/UserProvder";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import SideMenu from "../SideMenu";
-import ArtistSettingModal from "../ArtistSettingModal";
+import ArtistSetting from "../ArtistSetting";
 import { useArtistProvider } from "@/providers/ArtistProvider";
 
 const Sidebar = () => {
@@ -77,7 +77,7 @@ const Sidebar = () => {
             <BookOpen />
           </button>
         </Tooltip>
-        {artistActive && selectedArtist && <ArtistSettingModal />}
+        {artistActive && selectedArtist && <ArtistSetting />}
         <div className="flex-grow flex items-end justify-center">
           <button type="button" onClick={() => setIsOpenSideMenu(true)}>
             <ArrowRightFromLine />
