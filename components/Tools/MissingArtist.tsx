@@ -16,7 +16,7 @@ const MissingArtist = ({ description }: { description: string }) => {
           }}
           className="border-gray-700 border-[1px] px-3 py-1 rounded-full text-sm"
         >
-          Create a artist.
+          Create an artist.
         </button>
       </fieldset>
     </div>
