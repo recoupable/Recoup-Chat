@@ -24,6 +24,7 @@ const ArtistDropDown = ({ toggleModal }: { toggleModal: () => void }) => {
             type="button"
             onClick={() => {
               toggleUpdate(artist);
+              toggleModal();
             }}
           >
             <div className="flex gap-2 items-center">
@@ -39,8 +40,6 @@ const ArtistDropDown = ({ toggleModal }: { toggleModal: () => void }) => {
             <button
               type="button"
               onClick={() => {
-                toggleUpdate(artist);
-                toggleModal();
                 toggleSettingModal();
               }}
             >
