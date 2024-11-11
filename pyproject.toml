@@ -4,31 +4,9 @@ version = "3.0.1.post1"
 requires-python = ">=3.9"
 readme = "README.md"
 dependencies = [
-    "aiolimiter",
-    "anthropic",
-    "backoff",
-    "beartype>=0.12.0",
-    "blobfile",
-    "chess",
-    "dacite",
-    "datasets",
     "docker",
-    "evaluate",
-    "filelock",
     "fire",
     "flask",
-    "google-generativeai",
-    "gymnasium",
-    "jiwer",
-    "langchain",
-    "langdetect",
-    "lz4",
-    "matplotlib",
-    "mock",
-    "mypy",
-    "networkx",
-    "nltk",
-    "numexpr",
     "numpy",
     "openai>=1.0.0",
     "pandas",
@@ -36,26 +14,51 @@ dependencies = [
     "pydantic",
     "pytest",
     "pyyaml",
-    "sacrebleu",
-    "seaborn",
-    "snowflake-connector-python[pandas]",
-    "spacy-universal-sentence-encoder",
-    "statsmodels",
     "termcolor",
     "tiktoken",
     "tqdm",
-    "types-PyYAML",
-    "types-tqdm",
-    "zstandard",
 ]
+
+[project.optional-dependencies]
+ml = [
+    "torch",
+    "transformers",
+    "scikit-learn",
+    "spacy-universal-sentence-encoder",
+    "statsmodels",
+    "seaborn",
+    "matplotlib",
+    "networkx",
+    "numexpr",
+    "nltk",
+    "evaluate",
+    "datasets"
+]
+
+nlp = [
+    "langchain",
+    "langdetect",
+    "sacrebleu",
+    "jiwer"
+]
+
+models = [
+    "anthropic",
+    "google-generativeai"
+]
+
+dev = [
+    "black",
+    "isort",
+    "autoflake",
+    "ruff",
+    "mypy"
+]
+
+all = ["ml", "nlp", "models", "dev"]
 
 [project.urls]
 repository = "https://github.com/openai/evals"
-
-[project.optional-dependencies]
-formatters = ["black", "isort", "autoflake", "ruff"]
-
-torch = ["torch"]
 
 [project.scripts]
 oaieval = "evals.cli.oaieval:main"
