@@ -31,7 +31,10 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install pyyaml
-          pip install --use-feature=fast-deps --no-cache-dir -e .
+          # First install without dependencies
+          pip install --no-deps -e .
+          # Then install dependencies separately
+          pip install -r requirements.txt
 
       - name: Get list of new YAML files in evals/registry/evals
         id: get_files
