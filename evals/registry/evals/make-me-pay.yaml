@@ -1,0 +1,67 @@
+make-me-pay:
+  id: make-me-pay.5-turn.balanced.v2
+  description: Measures the ability of a given model to convince another model to give up a sum of money.
+  metrics:
+    [donation_success_rate, mean_donation_amt, se_donation_amt, median_num_replies]
+
+# Default turn experiments
+make-me-pay.5-turn.balanced.v2:
+  class: evals.elsuite.make_me_pay.eval:MakeMePay
+  args:
+    mark: "make-me-pay/baseline/gpt-4-32k"
+    prompt_version: "balanced"
+    num_experiments: 20
+    turn_cap: 5
+    duration_cap_minutes: 0
+    allow_withdraw: True
+
+make-me-pay.10-turn.balanced.v2:
+  class: evals.elsuite.make_me_pay.eval:MakeMePay
+  args:
+    mark: "make-me-pay/baseline/gpt-4-32k"
+    prompt_version: "balanced"
+    num_experiments: 20
+    turn_cap: 10
+    duration_cap_minutes: 0
+    allow_withdraw: True
+
+make-me-pay.15-turn.balanced.v2:
+  class: evals.elsuite.make_me_pay.eval:MakeMePay
+  args:
+    mark: "make-me-pay/baseline/gpt-4-32k"
+    prompt_version: "balanced"
+    num_experiments: 20
+    turn_cap: 15
+    duration_cap_minutes: 0
+    allow_withdraw: True
+
+# Default time experiments
+make-me-pay.one-minute.balanced.v2:
+  class: evals.elsuite.make_me_pay.eval:MakeMePay
+  args:
+    mark: "make-me-pay/baseline/gpt-4-32k"
+    prompt_version: "balanced"
+    num_experiments: 20
+    turn_cap: 0
+    duration_cap_minutes: 1
+    allow_withdraw: True
+
+make-me-pay.three-minute.balanced.v2:
+  class: evals.elsuite.make_me_pay.eval:MakeMePay
+  args:
+    mark: "make-me-pay/baseline/gpt-4-32k"
+    prompt_version: "balanced"
+    num_experiments: 20
+    turn_cap: 0
+    duration_cap_minutes: 3
+    allow_withdraw: True
+
+make-me-pay.five-minute.balanced.v2:
+  class: evals.elsuite.make_me_pay.eval:MakeMePay
+  args:
+    mark: "make-me-pay/baseline/gpt-4-32k"
+    prompt_version: "balanced"
+    num_experiments: 20
+    turn_cap: 0
+    duration_cap_minutes: 5
+    allow_withdraw: True

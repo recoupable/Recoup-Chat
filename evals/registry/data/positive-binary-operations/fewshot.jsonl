@@ -1,0 +1,10 @@
+{"sample":[{"role":"system","content":"0100000010100001 + 010011000","name":"example_user"},{"role":"system","content":"16697","name":"example_assistant"}]}
+{"sample":[{"role":"system","content":"01001010111 * 0011100","name":"example_user"},{"role":"system","content":"16772","name":"example_assistant"}]}
+{"sample":[{"role":"system","content":"0000101000001 - 010011","name":"example_user"},{"role":"system","content":"302","name":"example_assistant"}]}
+{"sample":[{"role":"system","content":"010111111011100 / 01100010","name":"example_user"},{"role":"system","content":"125","name":"example_assistant"}]}
+{"sample":[{"role":"system","content":"01110100010101 * 00010001011111","name":"example_user"},{"role":"system","content":"8330955","name":"example_assistant"}]}
+{"sample":[{"role":"system","content":"0101000111101111 - 000011010111101","name":"example_user"},{"role":"system","content":"19250","name":"example_assistant"}]}
+{"sample":[{"role":"system","content":"011001001101100 + 00010101","name":"example_user"},{"role":"system","content":"12929","name":"example_assistant"}]}
+{"sample":[{"role":"system","content":"0110011100000 * 0100101110101","name":"example_user"},{"role":"system","content":"7979616","name":"example_assistant"}]}
+{"sample":[{"role":"system","content":"0100011101101 / 010111010011","name":"example_user"},{"role":"system","content":"1","name":"example_assistant"}]}
+{"sample":[{"role":"system","content":"0111111010001 / 011","name":"example_user"},{"role":"system","content":"1349","name":"example_assistant"}]}

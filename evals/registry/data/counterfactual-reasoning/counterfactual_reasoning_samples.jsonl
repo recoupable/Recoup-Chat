@@ -1,0 +1,15 @@
+{"input": [{"role": "system", "content": "You are a helpful assistant."}, {"role": "user", "content": "If the sky flies in a bird, then what does the ground run on?"}], "ideal": "human"}
+{"input": [{"role": "system", "content": "You are a helpful assistant."}, {"role": "user", "content": "If a song sings a bird, then what does a book read?"}], "ideal": "human"}
+{"input": [{"role": "system", "content": "You are a helpful assistant."}, {"role": "user", "content": "If the river swims in a fish, then what does a bone chew?"}], "ideal": "dog"}
+{"input": [{"role": "system", "content": "You are a helpful assistant."}, {"role": "user", "content": "If the earth flows on the river, then what does the sky hangs in?"}], "ideal": "the sun"}
+{"input": [{"role": "system", "content": "You are a helpful assistant."}, {"role": "user", "content": "If the windmill blows the wind, then what does the grass moisten?"}], "ideal": "the rain"}
+{"input": [{"role": "system", "content": "You are a helpful assistant."}, {"role": "user", "content": "If the lock unlocks the key, then what does the sheath go in?"}], "ideal": "the knife or the sword"}
+{"input": [{"role": "system", "content": "You are a helpful assistant."}, {"role": "user", "content": "If the moon means the day, then what does the sun means?"}], "ideal": "the night"}
+{"input": [{"role": "system", "content": "You are a helpful assistant."}, {"role": "user", "content": "If the black color means bad things, then what does the white color means?"}], "ideal": "good things"}
+{"input": [{"role": "system", "content": "You are a helpful assistant."}, {"role": "user", "content": "If the black color means a low position, then what does the white color means?"}], "ideal": "a high position"}
+{"input": [{"role": "system", "content": "You are a helpful assistant."}, {"role": "user", "content": "If the ice feels hot, then what does the fire feel?"}], "ideal": "cold"}
+{"input": [{"role": "system", "content": "You are a helpful assistant."}, {"role": "user", "content": "If the moon is bigger than the earth, then who is bigger between the earth and the sun?"}], "ideal": "the earth"}
+{"input": [{"role": "system", "content": "You are a helpful assistant."}, {"role": "user", "content": "If the moon is a cubic object, then what is the shape of the sun?"}], "ideal": "cube"}
+{"input": [{"role": "system", "content": "You are a helpful assistant."}, {"role": "user", "content": "If chinese food matches Beijing, then what does american food match?"}], "ideal": "washington"}
+{"input": [{"role": "system", "content": "You are a helpful assistant."}, {"role": "user", "content": "If 1 is less than 2, then is 3 bigger than 4?"}], "ideal": "yes"}
+{"input": [{"role": "system", "content": "You are a helpful assistant."}, {"role": "user", "content": "If one matches eno, then what does two match?"}], "ideal": "owt"}

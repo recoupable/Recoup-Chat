@@ -1,0 +1,336 @@
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: A B Db D E Gb Ab A?"}],"ideal":["A Ionian","A Major"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: A B C D E Gb G A?"}],"ideal":["A Dorian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: A Bb C D E F G A?"}],"ideal":["A Phrygian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: A B Db Eb E Gb Ab A?"}],"ideal":["A Lydian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: A B Db D E Gb G A?"}],"ideal":["A Mixolydian","A Dominant"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: A B C D E F G A?"}],"ideal":["A Aeolian","A Minor"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: A Bb C D Eb F G A?"}],"ideal":["A Locrian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: Bb C D Eb F G A Bb?"}],"ideal":["Bb Ionian","Bb Major"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: Bb C Db Eb F G Ab Bb?"}],"ideal":["Bb Dorian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: Bb B Db Eb F Gb Ab Bb?"}],"ideal":["Bb Phrygian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: Bb C D E F G A Bb?"}],"ideal":["Bb Lydian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: Bb C D Eb F G Ab Bb?"}],"ideal":["Bb Mixolydian","Bb Dominant"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: Bb C Db Eb F Gb Ab Bb?"}],"ideal":["Bb Aeolian","Bb Minor"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: Bb B Db Eb E Gb Ab Bb?"}],"ideal":["Bb Locrian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: B Db Eb E Gb Ab Bb B?"}],"ideal":["B Ionian","B Major"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: B Db D E Gb Ab A B?"}],"ideal":["B Dorian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: B C D E Gb G A B?"}],"ideal":["B Phrygian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: B Db Eb F Gb Ab Bb B?"}],"ideal":["B Lydian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: B Db Eb E Gb Ab A B?"}],"ideal":["B Mixolydian","B Dominant"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: B Db D E Gb G A B?"}],"ideal":["B Aeolian","B Minor"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: B C D E F G A B?"}],"ideal":["B Locrian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: C D E F G A B C?"}],"ideal":["C Ionian","C Major"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: C D Eb F G A Bb C?"}],"ideal":["C Dorian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: C Db Eb F G Ab Bb C?"}],"ideal":["C Phrygian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: C D E Gb G A B C?"}],"ideal":["C Lydian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: C D E F G A Bb C?"}],"ideal":["C Mixolydian","C Dominant"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: C D Eb F G Ab Bb C?"}],"ideal":["C Aeolian","C Minor"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: C Db Eb F Gb Ab Bb C?"}],"ideal":["C Locrian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: Db Eb F Gb Ab Bb C Db?"}],"ideal":["Db Ionian","Db Major"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: Db Eb E Gb Ab Bb B Db?"}],"ideal":["Db Dorian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: Db D E Gb Ab A B Db?"}],"ideal":["Db Phrygian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: Db Eb F G Ab Bb C Db?"}],"ideal":["Db Lydian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: Db Eb F Gb Ab Bb B Db?"}],"ideal":["Db Mixolydian","Db Dominant"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: Db Eb E Gb Ab A B Db?"}],"ideal":["Db Aeolian","Db Minor"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: Db D E Gb G A B Db?"}],"ideal":["Db Locrian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: D E Gb G A B Db D?"}],"ideal":["D Ionian","D Major"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: D E F G A B C D?"}],"ideal":["D Dorian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: D Eb F G A Bb C D?"}],"ideal":["D Phrygian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: D E Gb Ab A B Db D?"}],"ideal":["D Lydian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: D E Gb G A B C D?"}],"ideal":["D Mixolydian","D Dominant"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: D E F G A Bb C D?"}],"ideal":["D Aeolian","D Minor"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: D Eb F G Ab Bb C D?"}],"ideal":["D Locrian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: Eb F G Ab Bb C D Eb?"}],"ideal":["Eb Ionian","Eb Major"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: Eb F Gb Ab Bb C Db Eb?"}],"ideal":["Eb Dorian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: Eb E Gb Ab Bb B Db Eb?"}],"ideal":["Eb Phrygian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: Eb F G A Bb C D Eb?"}],"ideal":["Eb Lydian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: Eb F G Ab Bb C Db Eb?"}],"ideal":["Eb Mixolydian","Eb Dominant"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: Eb F Gb Ab Bb B Db Eb?"}],"ideal":["Eb Aeolian","Eb Minor"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: Eb E Gb Ab A B Db Eb?"}],"ideal":["Eb Locrian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: E Gb Ab A B Db Eb E?"}],"ideal":["E Ionian","E Major"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: E Gb G A B Db D E?"}],"ideal":["E Dorian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: E F G A B C D E?"}],"ideal":["E Phrygian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: E Gb Ab Bb B Db Eb E?"}],"ideal":["E Lydian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: E Gb Ab A B Db D E?"}],"ideal":["E Mixolydian","E Dominant"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: E Gb G A B C D E?"}],"ideal":["E Aeolian","E Minor"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: E F G A Bb C D E?"}],"ideal":["E Locrian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: F G A Bb C D E F?"}],"ideal":["F Ionian","F Major"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: F G Ab Bb C D Eb F?"}],"ideal":["F Dorian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: F Gb Ab Bb C Db Eb F?"}],"ideal":["F Phrygian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: F G A B C D E F?"}],"ideal":["F Lydian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: F G A Bb C D Eb F?"}],"ideal":["F Mixolydian","F Dominant"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: F G Ab Bb C Db Eb F?"}],"ideal":["F Aeolian","F Minor"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: F Gb Ab Bb B Db Eb F?"}],"ideal":["F Locrian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: Gb Ab Bb B Db Eb F Gb?"}],"ideal":["Gb Ionian","Gb Major"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: Gb Ab A B Db Eb E Gb?"}],"ideal":["Gb Dorian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: Gb G A B Db D E Gb?"}],"ideal":["Gb Phrygian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: Gb Ab Bb C Db Eb F Gb?"}],"ideal":["Gb Lydian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: Gb Ab Bb B Db Eb E Gb?"}],"ideal":["Gb Mixolydian","Gb Dominant"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: Gb Ab A B Db D E Gb?"}],"ideal":["Gb Aeolian","Gb Minor"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: Gb G A B C D E Gb?"}],"ideal":["Gb Locrian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: G A B C D E Gb G?"}],"ideal":["G Ionian","G Major"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: G A Bb C D E F G?"}],"ideal":["G Dorian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: G Ab Bb C D Eb F G?"}],"ideal":["G Phrygian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: G A B Db D E Gb G?"}],"ideal":["G Lydian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: G A B C D E F G?"}],"ideal":["G Mixolydian","G Dominant"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: G A Bb C D Eb F G?"}],"ideal":["G Aeolian","G Minor"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: G Ab Bb C Db Eb F G?"}],"ideal":["G Locrian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: Ab Bb C Db Eb F G Ab?"}],"ideal":["Ab Ionian","Ab Major"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: Ab Bb B Db Eb F Gb Ab?"}],"ideal":["Ab Dorian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: Ab A B Db Eb E Gb Ab?"}],"ideal":["Ab Phrygian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: Ab Bb C D Eb F G Ab?"}],"ideal":["Ab Lydian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: Ab Bb C Db Eb F Gb Ab?"}],"ideal":["Ab Mixolydian","Ab Dominant"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: Ab Bb B Db Eb E Gb Ab?"}],"ideal":["Ab Aeolian","Ab Minor"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: Ab A B Db D E Gb Ab?"}],"ideal":["Ab Locrian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: A B C# D E F# G# A?"}],"ideal":["A Ionian","A Major"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: A B C D E F# G A?"}],"ideal":["A Dorian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: A A# C D E F G A?"}],"ideal":["A Phrygian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: A B C# D# E F# G# A?"}],"ideal":["A Lydian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: A B C# D E F# G A?"}],"ideal":["A Mixolydian","A Dominant"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: A B C D E F G A?"}],"ideal":["A Aeolian","A Minor"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: A A# C D D# F G A?"}],"ideal":["A Locrian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: A# C D D# F G A A#?"}],"ideal":["A# Ionian","A# Major"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: A# C C# D# F G G# A#?"}],"ideal":["A# Dorian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: A# B C# D# F F# G# A#?"}],"ideal":["A# Phrygian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: A# C D E F G A A#?"}],"ideal":["A# Lydian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: A# C D D# F G G# A#?"}],"ideal":["A# Mixolydian","A# Dominant"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: A# C C# D# F F# G# A#?"}],"ideal":["A# Aeolian","A# Minor"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: A# B C# D# E F# G# A#?"}],"ideal":["A# Locrian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: B C# D# E F# G# A# B?"}],"ideal":["B Ionian","B Major"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: B C# D E F# G# A B?"}],"ideal":["B Dorian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: B C D E F# G A B?"}],"ideal":["B Phrygian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: B C# D# F F# G# A# B?"}],"ideal":["B Lydian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: B C# D# E F# G# A B?"}],"ideal":["B Mixolydian","B Dominant"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: B C# D E F# G A B?"}],"ideal":["B Aeolian","B Minor"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: B C D E F G A B?"}],"ideal":["B Locrian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: C D E F G A B C?"}],"ideal":["C Ionian","C Major"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: C D D# F G A A# C?"}],"ideal":["C Dorian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: C C# D# F G G# A# C?"}],"ideal":["C Phrygian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: C D E F# G A B C?"}],"ideal":["C Lydian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: C D E F G A A# C?"}],"ideal":["C Mixolydian","C Dominant"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: C D D# F G G# A# C?"}],"ideal":["C Aeolian","C Minor"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: C C# D# F F# G# A# C?"}],"ideal":["C Locrian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: C# D# F F# G# A# C C#?"}],"ideal":["C# Ionian","C# Major"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: C# D# E F# G# A# B C#?"}],"ideal":["C# Dorian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: C# D E F# G# A B C#?"}],"ideal":["C# Phrygian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: C# D# F G G# A# C C#?"}],"ideal":["C# Lydian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: C# D# F F# G# A# B C#?"}],"ideal":["C# Mixolydian","C# Dominant"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: C# D# E F# G# A B C#?"}],"ideal":["C# Aeolian","C# Minor"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: C# D E F# G A B C#?"}],"ideal":["C# Locrian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: D E F# G A B C# D?"}],"ideal":["D Ionian","D Major"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: D E F G A B C D?"}],"ideal":["D Dorian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: D D# F G A A# C D?"}],"ideal":["D Phrygian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: D E F# G# A B C# D?"}],"ideal":["D Lydian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: D E F# G A B C D?"}],"ideal":["D Mixolydian","D Dominant"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: D E F G A A# C D?"}],"ideal":["D Aeolian","D Minor"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: D D# F G G# A# C D?"}],"ideal":["D Locrian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: D# F G G# A# C D D#?"}],"ideal":["D# Ionian","D# Major"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: D# F F# G# A# C C# D#?"}],"ideal":["D# Dorian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: D# E F# G# A# B C# D#?"}],"ideal":["D# Phrygian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: D# F G A A# C D D#?"}],"ideal":["D# Lydian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: D# F G G# A# C C# D#?"}],"ideal":["D# Mixolydian","D# Dominant"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: D# F F# G# A# B C# D#?"}],"ideal":["D# Aeolian","D# Minor"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: D# E F# G# A B C# D#?"}],"ideal":["D# Locrian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: E F# G# A B C# D# E?"}],"ideal":["E Ionian","E Major"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: E F# G A B C# D E?"}],"ideal":["E Dorian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: E F G A B C D E?"}],"ideal":["E Phrygian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: E F# G# A# B C# D# E?"}],"ideal":["E Lydian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: E F# G# A B C# D E?"}],"ideal":["E Mixolydian","E Dominant"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: E F# G A B C D E?"}],"ideal":["E Aeolian","E Minor"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: E F G A A# C D E?"}],"ideal":["E Locrian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: F G A A# C D E F?"}],"ideal":["F Ionian","F Major"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: F G G# A# C D D# F?"}],"ideal":["F Dorian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: F F# G# A# C C# D# F?"}],"ideal":["F Phrygian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: F G A B C D E F?"}],"ideal":["F Lydian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: F G A A# C D D# F?"}],"ideal":["F Mixolydian","F Dominant"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: F G G# A# C C# D# F?"}],"ideal":["F Aeolian","F Minor"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: F F# G# A# B C# D# F?"}],"ideal":["F Locrian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: F# G# A# B C# D# F F#?"}],"ideal":["F# Ionian","F# Major"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: F# G# A B C# D# E F#?"}],"ideal":["F# Dorian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: F# G A B C# D E F#?"}],"ideal":["F# Phrygian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: F# G# A# C C# D# F F#?"}],"ideal":["F# Lydian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: F# G# A# B C# D# E F#?"}],"ideal":["F# Mixolydian","F# Dominant"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: F# G# A B C# D E F#?"}],"ideal":["F# Aeolian","F# Minor"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: F# G A B C D E F#?"}],"ideal":["F# Locrian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: G A B C D E F# G?"}],"ideal":["G Ionian","G Major"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: G A A# C D E F G?"}],"ideal":["G Dorian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: G G# A# C D D# F G?"}],"ideal":["G Phrygian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: G A B C# D E F# G?"}],"ideal":["G Lydian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: G A B C D E F G?"}],"ideal":["G Mixolydian","G Dominant"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: G A A# C D D# F G?"}],"ideal":["G Aeolian","G Minor"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: G G# A# C C# D# F G?"}],"ideal":["G Locrian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: G# A# C C# D# F G G#?"}],"ideal":["G# Ionian","G# Major"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: G# A# B C# D# F F# G#?"}],"ideal":["G# Dorian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: G# A B C# D# E F# G#?"}],"ideal":["G# Phrygian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: G# A# C D D# F G G#?"}],"ideal":["G# Lydian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: G# A# C C# D# F F# G#?"}],"ideal":["G# Mixolydian","G# Dominant"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: G# A# B C# D# E F# G#?"}],"ideal":["G# Aeolian","G# Minor"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: G# A B C# D E F# G#?"}],"ideal":["G# Locrian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: A B Db D E Gb Ab A?"}],"ideal":["A Ionian","A Major"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: A B C D E Gb G A?"}],"ideal":["A Dorian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: A Bb C D E F G A?"}],"ideal":["A Phrygian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: A B Db Eb E Gb Ab A?"}],"ideal":["A Lydian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: A B Db D E Gb G A?"}],"ideal":["A Mixolydian","A Dominant"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: A B C D E F G A?"}],"ideal":["A Aeolian","A Minor"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: A Bb C D Eb F G A?"}],"ideal":["A Locrian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: Bb C D Eb F G A Bb?"}],"ideal":["Bb Ionian","Bb Major"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: Bb C Db Eb F G Ab Bb?"}],"ideal":["Bb Dorian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: Bb B Db Eb F Gb Ab Bb?"}],"ideal":["Bb Phrygian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: Bb C D E F G A Bb?"}],"ideal":["Bb Lydian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: Bb C D Eb F G Ab Bb?"}],"ideal":["Bb Mixolydian","Bb Dominant"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: Bb C Db Eb F Gb Ab Bb?"}],"ideal":["Bb Aeolian","Bb Minor"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: Bb B Db Eb E Gb Ab Bb?"}],"ideal":["Bb Locrian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: B Db Eb E Gb Ab Bb B?"}],"ideal":["B Ionian","B Major"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: B Db D E Gb Ab A B?"}],"ideal":["B Dorian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: B C D E Gb G A B?"}],"ideal":["B Phrygian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: B Db Eb F Gb Ab Bb B?"}],"ideal":["B Lydian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: B Db Eb E Gb Ab A B?"}],"ideal":["B Mixolydian","B Dominant"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: B Db D E Gb G A B?"}],"ideal":["B Aeolian","B Minor"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: B C D E F G A B?"}],"ideal":["B Locrian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: C D E F G A B C?"}],"ideal":["C Ionian","C Major"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: C D Eb F G A Bb C?"}],"ideal":["C Dorian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: C Db Eb F G Ab Bb C?"}],"ideal":["C Phrygian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: C D E Gb G A B C?"}],"ideal":["C Lydian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: C D E F G A Bb C?"}],"ideal":["C Mixolydian","C Dominant"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: C D Eb F G Ab Bb C?"}],"ideal":["C Aeolian","C Minor"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: C Db Eb F Gb Ab Bb C?"}],"ideal":["C Locrian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: Db Eb F Gb Ab Bb C Db?"}],"ideal":["Db Ionian","Db Major"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: Db Eb E Gb Ab Bb B Db?"}],"ideal":["Db Dorian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: Db D E Gb Ab A B Db?"}],"ideal":["Db Phrygian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: Db Eb F G Ab Bb C Db?"}],"ideal":["Db Lydian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: Db Eb F Gb Ab Bb B Db?"}],"ideal":["Db Mixolydian","Db Dominant"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: Db Eb E Gb Ab A B Db?"}],"ideal":["Db Aeolian","Db Minor"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: Db D E Gb G A B Db?"}],"ideal":["Db Locrian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: D E Gb G A B Db D?"}],"ideal":["D Ionian","D Major"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: D E F G A B C D?"}],"ideal":["D Dorian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: D Eb F G A Bb C D?"}],"ideal":["D Phrygian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: D E Gb Ab A B Db D?"}],"ideal":["D Lydian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: D E Gb G A B C D?"}],"ideal":["D Mixolydian","D Dominant"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: D E F G A Bb C D?"}],"ideal":["D Aeolian","D Minor"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: D Eb F G Ab Bb C D?"}],"ideal":["D Locrian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: Eb F G Ab Bb C D Eb?"}],"ideal":["Eb Ionian","Eb Major"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: Eb F Gb Ab Bb C Db Eb?"}],"ideal":["Eb Dorian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: Eb E Gb Ab Bb B Db Eb?"}],"ideal":["Eb Phrygian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: Eb F G A Bb C D Eb?"}],"ideal":["Eb Lydian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: Eb F G Ab Bb C Db Eb?"}],"ideal":["Eb Mixolydian","Eb Dominant"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: Eb F Gb Ab Bb B Db Eb?"}],"ideal":["Eb Aeolian","Eb Minor"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: Eb E Gb Ab A B Db Eb?"}],"ideal":["Eb Locrian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: E Gb Ab A B Db Eb E?"}],"ideal":["E Ionian","E Major"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: E Gb G A B Db D E?"}],"ideal":["E Dorian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: E F G A B C D E?"}],"ideal":["E Phrygian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: E Gb Ab Bb B Db Eb E?"}],"ideal":["E Lydian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: E Gb Ab A B Db D E?"}],"ideal":["E Mixolydian","E Dominant"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: E Gb G A B C D E?"}],"ideal":["E Aeolian","E Minor"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: E F G A Bb C D E?"}],"ideal":["E Locrian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: F G A Bb C D E F?"}],"ideal":["F Ionian","F Major"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: F G Ab Bb C D Eb F?"}],"ideal":["F Dorian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: F Gb Ab Bb C Db Eb F?"}],"ideal":["F Phrygian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: F G A B C D E F?"}],"ideal":["F Lydian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: F G A Bb C D Eb F?"}],"ideal":["F Mixolydian","F Dominant"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: F G Ab Bb C Db Eb F?"}],"ideal":["F Aeolian","F Minor"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: F Gb Ab Bb B Db Eb F?"}],"ideal":["F Locrian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: Gb Ab Bb B Db Eb F Gb?"}],"ideal":["Gb Ionian","Gb Major"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: Gb Ab A B Db Eb E Gb?"}],"ideal":["Gb Dorian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: Gb G A B Db D E Gb?"}],"ideal":["Gb Phrygian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: Gb Ab Bb C Db Eb F Gb?"}],"ideal":["Gb Lydian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: Gb Ab Bb B Db Eb E Gb?"}],"ideal":["Gb Mixolydian","Gb Dominant"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: Gb Ab A B Db D E Gb?"}],"ideal":["Gb Aeolian","Gb Minor"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: Gb G A B C D E Gb?"}],"ideal":["Gb Locrian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: G A B C D E Gb G?"}],"ideal":["G Ionian","G Major"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: G A Bb C D E F G?"}],"ideal":["G Dorian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: G Ab Bb C D Eb F G?"}],"ideal":["G Phrygian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: G A B Db D E Gb G?"}],"ideal":["G Lydian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: G A B C D E F G?"}],"ideal":["G Mixolydian","G Dominant"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: G A Bb C D Eb F G?"}],"ideal":["G Aeolian","G Minor"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: G Ab Bb C Db Eb F G?"}],"ideal":["G Locrian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: Ab Bb C Db Eb F G Ab?"}],"ideal":["Ab Ionian","Ab Major"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: Ab Bb B Db Eb F Gb Ab?"}],"ideal":["Ab Dorian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: Ab A B Db Eb E Gb Ab?"}],"ideal":["Ab Phrygian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: Ab Bb C D Eb F G Ab?"}],"ideal":["Ab Lydian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: Ab Bb C Db Eb F Gb Ab?"}],"ideal":["Ab Mixolydian","Ab Dominant"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: Ab Bb B Db Eb E Gb Ab?"}],"ideal":["Ab Aeolian","Ab Minor"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: Ab A B Db D E Gb Ab?"}],"ideal":["Ab Locrian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: A B C# D E F# G# A?"}],"ideal":["A Ionian","A Major"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: A B C D E F# G A?"}],"ideal":["A Dorian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: A A# C D E F G A?"}],"ideal":["A Phrygian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: A B C# D# E F# G# A?"}],"ideal":["A Lydian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: A B C# D E F# G A?"}],"ideal":["A Mixolydian","A Dominant"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: A B C D E F G A?"}],"ideal":["A Aeolian","A Minor"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: A A# C D D# F G A?"}],"ideal":["A Locrian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: A# C D D# F G A A#?"}],"ideal":["A# Ionian","A# Major"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: A# C C# D# F G G# A#?"}],"ideal":["A# Dorian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: A# B C# D# F F# G# A#?"}],"ideal":["A# Phrygian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: A# C D E F G A A#?"}],"ideal":["A# Lydian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: A# C D D# F G G# A#?"}],"ideal":["A# Mixolydian","A# Dominant"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: A# C C# D# F F# G# A#?"}],"ideal":["A# Aeolian","A# Minor"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: A# B C# D# E F# G# A#?"}],"ideal":["A# Locrian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: B C# D# E F# G# A# B?"}],"ideal":["B Ionian","B Major"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: B C# D E F# G# A B?"}],"ideal":["B Dorian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: B C D E F# G A B?"}],"ideal":["B Phrygian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: B C# D# F F# G# A# B?"}],"ideal":["B Lydian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: B C# D# E F# G# A B?"}],"ideal":["B Mixolydian","B Dominant"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: B C# D E F# G A B?"}],"ideal":["B Aeolian","B Minor"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: B C D E F G A B?"}],"ideal":["B Locrian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: C D E F G A B C?"}],"ideal":["C Ionian","C Major"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: C D D# F G A A# C?"}],"ideal":["C Dorian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: C C# D# F G G# A# C?"}],"ideal":["C Phrygian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: C D E F# G A B C?"}],"ideal":["C Lydian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: C D E F G A A# C?"}],"ideal":["C Mixolydian","C Dominant"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: C D D# F G G# A# C?"}],"ideal":["C Aeolian","C Minor"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: C C# D# F F# G# A# C?"}],"ideal":["C Locrian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: C# D# F F# G# A# C C#?"}],"ideal":["C# Ionian","C# Major"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: C# D# E F# G# A# B C#?"}],"ideal":["C# Dorian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: C# D E F# G# A B C#?"}],"ideal":["C# Phrygian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: C# D# F G G# A# C C#?"}],"ideal":["C# Lydian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: C# D# F F# G# A# B C#?"}],"ideal":["C# Mixolydian","C# Dominant"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: C# D# E F# G# A B C#?"}],"ideal":["C# Aeolian","C# Minor"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: C# D E F# G A B C#?"}],"ideal":["C# Locrian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: D E F# G A B C# D?"}],"ideal":["D Ionian","D Major"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: D E F G A B C D?"}],"ideal":["D Dorian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: D D# F G A A# C D?"}],"ideal":["D Phrygian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: D E F# G# A B C# D?"}],"ideal":["D Lydian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: D E F# G A B C D?"}],"ideal":["D Mixolydian","D Dominant"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: D E F G A A# C D?"}],"ideal":["D Aeolian","D Minor"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: D D# F G G# A# C D?"}],"ideal":["D Locrian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: D# F G G# A# C D D#?"}],"ideal":["D# Ionian","D# Major"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: D# F F# G# A# C C# D#?"}],"ideal":["D# Dorian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: D# E F# G# A# B C# D#?"}],"ideal":["D# Phrygian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: D# F G A A# C D D#?"}],"ideal":["D# Lydian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: D# F G G# A# C C# D#?"}],"ideal":["D# Mixolydian","D# Dominant"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: D# F F# G# A# B C# D#?"}],"ideal":["D# Aeolian","D# Minor"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: D# E F# G# A B C# D#?"}],"ideal":["D# Locrian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: E F# G# A B C# D# E?"}],"ideal":["E Ionian","E Major"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: E F# G A B C# D E?"}],"ideal":["E Dorian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: E F G A B C D E?"}],"ideal":["E Phrygian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: E F# G# A# B C# D# E?"}],"ideal":["E Lydian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: E F# G# A B C# D E?"}],"ideal":["E Mixolydian","E Dominant"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: E F# G A B C D E?"}],"ideal":["E Aeolian","E Minor"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: E F G A A# C D E?"}],"ideal":["E Locrian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: F G A A# C D E F?"}],"ideal":["F Ionian","F Major"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: F G G# A# C D D# F?"}],"ideal":["F Dorian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: F F# G# A# C C# D# F?"}],"ideal":["F Phrygian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: F G A B C D E F?"}],"ideal":["F Lydian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: F G A A# C D D# F?"}],"ideal":["F Mixolydian","F Dominant"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: F G G# A# C C# D# F?"}],"ideal":["F Aeolian","F Minor"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: F F# G# A# B C# D# F?"}],"ideal":["F Locrian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: F# G# A# B C# D# F F#?"}],"ideal":["F# Ionian","F# Major"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: F# G# A B C# D# E F#?"}],"ideal":["F# Dorian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: F# G A B C# D E F#?"}],"ideal":["F# Phrygian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: F# G# A# C C# D# F F#?"}],"ideal":["F# Lydian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: F# G# A# B C# D# E F#?"}],"ideal":["F# Mixolydian","F# Dominant"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: F# G# A B C# D E F#?"}],"ideal":["F# Aeolian","F# Minor"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: F# G A B C D E F#?"}],"ideal":["F# Locrian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: G A B C D E F# G?"}],"ideal":["G Ionian","G Major"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: G A A# C D E F G?"}],"ideal":["G Dorian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: G G# A# C D D# F G?"}],"ideal":["G Phrygian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: G A B C# D E F# G?"}],"ideal":["G Lydian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: G A B C D E F G?"}],"ideal":["G Mixolydian","G Dominant"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: G A A# C D D# F G?"}],"ideal":["G Aeolian","G Minor"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: G G# A# C C# D# F G?"}],"ideal":["G Locrian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: G# A# C C# D# F G G#?"}],"ideal":["G# Ionian","G# Major"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: G# A# B C# D# F F# G#?"}],"ideal":["G# Dorian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: G# A B C# D# E F# G#?"}],"ideal":["G# Phrygian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: G# A# C D D# F G G#?"}],"ideal":["G# Lydian"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: G# A# C C# D# F F# G#?"}],"ideal":["G# Mixolydian","G# Dominant"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: G# A# B C# D# E F# G#?"}],"ideal":["G# Aeolian","G# Minor"]}
+{"input":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Which scale has the following notes: G# A B C# D E F# G#?"}],"ideal":["G# Locrian"]}

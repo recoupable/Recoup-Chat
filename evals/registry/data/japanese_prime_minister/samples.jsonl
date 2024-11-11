@@ -1,0 +1,15 @@
+{"input": [{"role": "system", "content": "あなたは日本の歴代総理大臣の名前を回答します"}, {"role": "user", "content": "2023年までの通算在職日数が1番目に長い総理大臣"}], "ideal": "安倍晋三"}
+{"input": [{"role": "system", "content": "あなたは日本の歴代総理大臣の名前を回答します"}, {"role": "user", "content": "2023年までの通算在職日数が2番目に長い総理大臣"}], "ideal": "桂太郎"}
+{"input": [{"role": "system", "content": "あなたは日本の歴代総理大臣の名前を回答します"}, {"role": "user", "content": "2023年までの通算在職日数が3番目に長い総理大臣"}], "ideal": "佐藤栄作"}
+{"input": [{"role": "system", "content": "あなたは日本の歴代総理大臣の名前を回答します"}, {"role": "user", "content": "2023年までの通算在職日数が4番目に長い総理大臣"}], "ideal": "伊藤博文"}
+{"input": [{"role": "system", "content": "あなたは日本の歴代総理大臣の名前を回答します"}, {"role": "user", "content": "2023年までの通算在職日数が5番目に長い総理大臣"}], "ideal": "吉田茂"}
+{"input": [{"role": "system", "content": "あなたは日本の歴代総理大臣の名前を回答します"}, {"role": "user", "content": "2023年までの通算在職日数が6番目に長い総理大臣"}], "ideal": "小泉純一郎"}
+{"input": [{"role": "system", "content": "あなたは日本の歴代総理大臣の名前を回答します"}, {"role": "user", "content": "2023年までの通算在職日数が7番目に長い総理大臣"}], "ideal": "中曽根康弘"}
+{"input": [{"role": "system", "content": "あなたは日本の歴代総理大臣の名前を回答します"}, {"role": "user", "content": "2023年までの通算在職日数が8番目に長い総理大臣"}], "ideal": "池田勇人"}
+{"input": [{"role": "system", "content": "あなたは日本の歴代総理大臣の名前を回答します"}, {"role": "user", "content": "2023年までの通算在職日数が9番目に長い総理大臣"}], "ideal": "西園寺公望"}
+{"input": [{"role": "system", "content": "あなたは日本の歴代総理大臣の名前を回答します"}, {"role": "user", "content": "2023年までの通算在職日数が10番目に長い総理大臣"}], "ideal": "岸信介"}
+{"input": [{"role": "system", "content": "あなたは日本の歴代総理大臣の名前を回答します"}, {"role": "user", "content": "2023年までの通算在職日数が11番目に長い総理大臣"}], "ideal": "山縣有朋"}
+{"input": [{"role": "system", "content": "あなたは日本の歴代総理大臣の名前を回答します"}, {"role": "user", "content": "2023年までの通算在職日数が12番目に長い総理大臣"}], "ideal": "原敬"}
+{"input": [{"role": "system", "content": "あなたは日本の歴代総理大臣の名前を回答します"}, {"role": "user", "content": "2023年までの通算在職日数が13番目に長い総理大臣"}], "ideal": "大隈重信"}
+{"input": [{"role": "system", "content": "あなたは日本の歴代総理大臣の名前を回答します"}, {"role": "user", "content": "2023年までの通算在職日数が14番目に長い総理大臣"}], "ideal": "近衛文麿"}
+{"input": [{"role": "system", "content": "あなたは日本の歴代総理大臣の名前を回答します"}, {"role": "user", "content": "2023年までの通算在職日数が15番目に長い総理大臣"}], "ideal": "東條英機"}

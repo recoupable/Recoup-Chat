@@ -1,0 +1,3 @@
+{"input": [{"role": "user", "content": "Translate from English to Miskito: Is your father coming? — No, he is not coming here."}], "ideal": "Aisikam aula ki? — Apia, witin nahara balras."}
+{"input": [{"role": "user", "content": "Translate from English to Miskito: She isn't sitting now, she is coming from there to here."}], "ideal": "Nanara witin iwras, witin baha wina nahara aula."}
+{"input": [{"role": "user", "content": "Translate from Miskito to English: Yang nani dur ba yauhka kwakwaisna, bara man nani dimaisma."}], "ideal": "We will open the door tomorrow, and then you will come in."}

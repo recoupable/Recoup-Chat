@@ -1,0 +1,8 @@
+{"input": [{"role": "system", "content": "Today is March 31st 2023."}, {"role": "user", "content": "Convert 22:00 CET to PT. Output in 24h format hh:mm, no explanation."}], "ideal": "13:00"}
+{"input": [{"role": "system", "content": "Today is March 31st 2023, the current time in CET is 22:00"}, {"role": "user", "content": "Which time is it in PT? Output in 24h format hh:mm, no explanation."}], "ideal": "13:00"}
+{"input": [{"role": "system", "content": "Today is March 21st 2023."}, {"role": "user", "content": "Convert 22:00 CET to PT. Output in 24h format hh:mm, no explanation."}], "ideal": "14:00"}
+{"input": [{"role": "system", "content": "Today is March 21st 2023, the current time in CET is 10pm"}, {"role": "user", "content": "Which time is it in PT? Output in 24h format hh:mm, no explanation."}], "ideal": "14:00"}
+{"input": [{"role": "system", "content": "Today is November 4th 2023."}, {"role": "user", "content": "Convert 14:00 CET to CT. Output in 24h format hh:mm, no explanation."}], "ideal": "07:00"}
+{"input": [{"role": "system", "content": "Today is November 5th 2023, the current time in CET is 14:00"}, {"role": "user", "content": "Which time is it in CT? Output in 24h format hh:mm, no explanation."}], "ideal": "07:00"}
+{"input": [{"role": "system", "content": "Today is November 3rd 2023."}, {"role": "user", "content": "Convert 14:00 CET to CT. Output in 24h format hh:mm, no explanation."}], "ideal": "8:00"}
+{"input": [{"role": "system", "content": "Today is November 2nd 2023, the current time in CET is 2pm"}, {"role": "user", "content": "Which time is it in CT? Output in 24h format hh:mm, no explanation."}], "ideal": "8:00"}

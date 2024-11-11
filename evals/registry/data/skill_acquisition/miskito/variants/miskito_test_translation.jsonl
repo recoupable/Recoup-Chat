@@ -1,0 +1,67 @@
+{"input": [{"role": "user", "content": "Translate from Miskito to English: Witin sirpi sa."}], "ideal": "She/He is small."}
+{"input": [{"role": "user", "content": "Translate from English to Miskito: She/He is small."}], "ideal": "Witin sirpi sa."}
+{"input": [{"role": "user", "content": "Translate from Miskito to English: Tuktiki tiara sa."}], "ideal": "My child is young."}
+{"input": [{"role": "user", "content": "Translate from English to Miskito: My child is young."}], "ideal": "Tuktiki tiara sa."}
+{"input": [{"role": "user", "content": "Translate from Miskito to English: Nini Jan sa."}], "ideal": "My name is John."}
+{"input": [{"role": "user", "content": "Translate from English to Miskito: My name is John."}], "ideal": "Nini Jan sa."}
+{"input": [{"role": "user", "content": "Translate from Miskito to English: Pedro umpira sa."}], "ideal": "Pedro is poor."}
+{"input": [{"role": "user", "content": "Translate from English to Miskito: Pedro is poor."}], "ideal": "Pedro umpira sa."}
+{"input": [{"role": "user", "content": "Translate from Miskito to English: Naha sirpi sa."}], "ideal": "This is small."}
+{"input": [{"role": "user", "content": "Translate from English to Miskito: This is small."}], "ideal": "Naha sirpi sa."}
+{"input": [{"role": "user", "content": "Translate from Miskito to English: Baha nini sa."}], "ideal": "That is my name."}
+{"input": [{"role": "user", "content": "Translate from English to Miskito: That is my name."}], "ideal": "Baha nini sa."}
+{"input": [{"role": "user", "content": "Translate from Miskito to English: Naha yaptiki sa."}], "ideal": "This is my mother."}
+{"input": [{"role": "user", "content": "Translate from English to Miskito: This is my mother."}], "ideal": "Naha yaptiki sa."}
+{"input": [{"role": "user", "content": "Translate from Miskito to English: Waitna ba umpira sa."}], "ideal": "The man is poor."}
+{"input": [{"role": "user", "content": "Translate from English to Miskito: The man is poor."}], "ideal": "Waitna ba umpira sa."}
+{"input": [{"role": "user", "content": "Translate from Miskito to English: Mairin ba sin umpira sa."}], "ideal": "The woman is poor too."}
+{"input": [{"role": "user", "content": "Translate from English to Miskito: The woman is poor too."}], "ideal": "Mairin ba sin umpira sa."}
+{"input": [{"role": "user", "content": "Translate from Miskito to English: Mairin na yaptiki sa."}], "ideal": "This woman is my mother."}
+{"input": [{"role": "user", "content": "Translate from English to Miskito: This woman is my mother."}], "ideal": "Mairin na yaptiki sa."}
+{"input": [{"role": "user", "content": "Translate from Miskito to English: Pedro waitna kum sa."}], "ideal": "Pedro is a man."}
+{"input": [{"role": "user", "content": "Translate from English to Miskito: Pedro is a man."}], "ideal": "Pedro waitna kum sa."}
+{"input": [{"role": "user", "content": "Translate from Miskito to English: Naha yul kum sa."}], "ideal": "This is a dog."}
+{"input": [{"role": "user", "content": "Translate from English to Miskito: This is a dog."}], "ideal": "Naha yul kum sa."}
+{"input": [{"role": "user", "content": "Translate from Miskito to English: Baha daiwan kum sa."}], "ideal": "That is an animal."}
+{"input": [{"role": "user", "content": "Translate from English to Miskito: That is an animal."}], "ideal": "Baha daiwan kum sa."}
+{"input": [{"role": "user", "content": "Translate from Miskito to English: Tibil ba rum ra sa."}], "ideal": "The table is in the room."}
+{"input": [{"role": "user", "content": "Translate from Miskito to English: Tibil nani ba rum ra sa."}], "ideal": "The tables are in the room."}
+{"input": [{"role": "user", "content": "Translate from Miskito to English: Tuktiki ba miriki sa."}], "ideal": "My child is an American."}
+{"input": [{"role": "user", "content": "Translate from Miskito to English, after putting 'nani' after the word in italics: <i>Tibil</i> ba rum ra sa."}], "ideal": "The tables are in the room."}
+{"input": [{"role": "user", "content": "Translate from Miskito to English, after putting 'nani' after the word in italics: Tibil nani ba <i>rum</i> ra sa."}], "ideal": "The tables are in the rooms."}
+{"input": [{"role": "user", "content": "Translate from Miskito to English, after putting 'nani' after the word in italics: <i>Tuktiki</i> ba <i>miriki</i> sa."}], "ideal": "My children are Americans."}
+{"input": [{"role": "user", "content": "Translate from Miskito to English: Witin utla ra sa."}], "ideal": "She/He is in the house."}
+{"input": [{"role": "user", "content": "Translate from Miskito to English: Witin nani rum ra sa."}], "ideal": "They are in the room."}
+{"input": [{"role": "user", "content": "Translate from Miskito to English: Baha nani ba tuktiki nani sa."}], "ideal": "Those are my children."}
+{"input": [{"role": "user", "content": "Translate from Miskito to English: Yawan miriki nani sa."}], "ideal": "We are Americans."}
+{"input": [{"role": "user", "content": "Translate from Miskito to English: Tibil ba rum ra sa."}], "ideal": "The table is in the room."}
+{"input": [{"role": "user", "content": "Translate from Miskito to English: Tuktiki ba utla ra pulisa."}], "ideal": "My child is playing in the house."}
+{"input": [{"role": "user", "content": "Translate from Miskito to English: Mary Miskitu aisisa."}], "ideal": "Mary speaks Miskito."}
+{"input": [{"role": "user", "content": "Translate from Miskito to English: Miguel plun piakisa."}], "ideal": "Miguel is cooking food."}
+{"input": [{"role": "user", "content": "Translate from Miskito to English: Mairin nani ba nanara dia daukisa?"}], "ideal": "What are the women doing now?"}
+{"input": [{"role": "user", "content": "Translate from Miskito to English: Yaptikam anira sa? — Yaptiki nahara sa."}], "ideal": "Where is your mother? — My mother is here."}
+{"input": [{"role": "user", "content": "Translate from English to Miskito: Where is your mother? — My mother is here."}], "ideal": "Yaptikam anira sa? — Yaptiki nahara sa."}
+{"input": [{"role": "user", "content": "Translate from Miskito to English: Aisikam aula ki? — Apia, witin nahara balras."}], "ideal": "Is your father coming? — No, he is not coming here."}
+{"input": [{"role": "user", "content": "Translate from English to Miskito: Is your father coming? — No, he is not coming here."}], "ideal": "Aisikam aula ki? — Apia, witin nahara balras."}
+{"input": [{"role": "user", "content": "Translate from Miskito to English: Yawan bahara auya."}], "ideal": "We are going there."}
+{"input": [{"role": "user", "content": "Translate from English to Miskito: We are going there."}], "ideal": "Yawan bahara auya."}
+{"input": [{"role": "user", "content": "Translate from Miskito to English: Mairin ba bahara dia muni iwisa?"}], "ideal": "Why is the woman sitting there?"}
+{"input": [{"role": "user", "content": "Translate from English to Miskito: Why is the woman sitting there?"}], "ideal": "Mairin ba bahara dia muni iwisa?"}
+{"input": [{"role": "user", "content": "Translate from Miskito to English: Nanara witin iwras, witin baha wina nahara aula."}], "ideal": "She isn't sitting now, she is coming from there to here."}
+{"input": [{"role": "user", "content": "Translate from English to Miskito: She isn't sitting now, she is coming from there to here."}], "ideal": "Nanara witin iwras, witin baha wina nahara aula."}
+{"input": [{"role": "user", "content": "Translate from Miskito to English: Miriki nani ba Bilwi ra dia muni waras ki?"}], "ideal": "Why aren't the Americans going to Bilwi?"}
+{"input": [{"role": "user", "content": "Translate from English to Miskito: Why aren't the Americans going to Bilwi?"}], "ideal": "Miriki nani ba Bilwi ra dia muni waras ki?"}
+{"input": [{"role": "user", "content": "Translate from Miskito to English: Man nani Miskitu aisisma ki?"}], "ideal": "Do you speak Miskito?"}
+{"input": [{"role": "user", "content": "Translate from English to Miskito: Do you (plural) speak Miskito?"}], "ideal": "Man nani Miskitu aisisma ki?"}
+{"input": [{"role": "user", "content": "Translate from Miskito to English: Yang nani krikri ra auna."}], "ideal": "We are going to bed."}
+{"input": [{"role": "user", "content": "Translate from English to Miskito: We (exclusive) are going to bed."}], "ideal": "Yang nani krikri ra auna."}
+{"input": [{"role": "user", "content": "Translate from Miskito to English: Witin nani dia want sa ki?"}], "ideal": "What do they want?"}
+{"input": [{"role": "user", "content": "Translate from English to Miskito: What do they want?"}], "ideal": "Witin nani dia want sa ki?"}
+{"input": [{"role": "user", "content": "Translate from Miskito to English: Man nani dur ba ahkia kwakwaisma?"}], "ideal": "When are you going to open the door?"}
+{"input": [{"role": "user", "content": "Translate from English to Miskito: When are you (pl.) going to open the door?"}], "ideal": "Man nani dur ba ahkia kwakwaisma?"}
+{"input": [{"role": "user", "content": "Translate from Miskito to English: Yang nani dur ba yauhka kwakwaisna, bara man nani dimaisma."}], "ideal": "We will open the door tomorrow, and then you will come in."}
+{"input": [{"role": "user", "content": "Translate from English to Miskito: We will open the door tomorrow, and then you will come in."}], "ideal": "Yang nani dur ba yauhka kwakwaisna, bara man nani dimaisma."}
+{"input": [{"role": "user", "content": "Translate from Miskito to English: Witin nani naha tiarka nani ra dia muni ikan?"}], "ideal": "Why did they kill these youths?"}
+{"input": [{"role": "user", "content": "Translate from English to Miskito: Why did they kill these youths?"}], "ideal": "Witin nani naha tiarka nani ra dia muni ikan?"}
+{"input": [{"role": "user", "content": "Translate from Miskito to English: Yang nani nu apia sna."}], "ideal": "We don't know."}
+{"input": [{"role": "user", "content": "Translate from English to Miskito: We don't know."}], "ideal": "Yang nani nu apia sna."}

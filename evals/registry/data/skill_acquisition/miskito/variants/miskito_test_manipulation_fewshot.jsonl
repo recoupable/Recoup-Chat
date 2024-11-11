@@ -1,0 +1,159 @@
+{"input": [{"role": "user", "content": "Combine the two nouns to form a sentence, then say what it means. E.g. Mary / rum -> Mary rum ra sa. (Mary is in the room.): Pedro / utla"}], "ideal": "Pedro utla ra sa. (Pedro is in the house.)"}
+{"input": [{"role": "user", "content": "Combine the two nouns to form a sentence, then say what it means. E.g. Mary / rum -> Mary rum ra sa. (Mary is in the room.): tibil / rum"}], "ideal": "Tibil ba rum ra sa. (The table is in the room.)"}
+{"input": [{"role": "user", "content": "Combine the two nouns to form a sentence, then say what it means. E.g. Mary / rum -> Mary rum ra sa. (Mary is in the room.): yul / utla"}], "ideal": "Yul ba utla ra sa. (The dog is in the house.)"}
+{"input": [{"role": "user", "content": "Combine the two nouns to form a sentence, then say what it means. E.g. Mary / rum -> Mary rum ra sa. (Mary is in the room.): waitna / dur"}], "ideal": "Waitna ba dur ra sa. (The man is at the door.)"}
+{"input": [{"role": "user", "content": "Combine the two nouns to form a sentence, then say what it means. E.g. Mary / rum -> Mary rum ra sa. (Mary is in the room.): buk / tasba"}], "ideal": "Buk ba tasba ra sa. (The book is on the ground.)"}
+{"input": [{"role": "user", "content": "Combine the two nouns to form a sentence, then say what it means. E.g. Mary / rum -> Mary rum ra sa. (Mary is in the room.): Lucia / windar"}], "ideal": "Lucia windar ra sa. (Lucia is at the window.)"}
+{"input": [{"role": "user", "content": "Negate the following sentence in Miskito: Tibil ba rum ra sa."}], "ideal": "Tibil ba rum ra apia sa."}
+{"input": [{"role": "user", "content": "Given the cue A / B, say that there is an 'A' in/on the B. Then say that there are some 'As' in/on the 'B': buk / tibil"}], "ideal": "Tibil ra buk kum bara sa."}
+{"input": [{"role": "user", "content": "Given the cue A / B, say that there is an 'A' in/on the B. Then say that there are some 'As' in/on the 'B': mangu / sap"}], "ideal": "Sap ra mangu kum bara sa."}
+{"input": [{"role": "user", "content": "Given the cue A / B, say that there is an 'A' in/on the B. Then say that there are some 'As' in/on the 'B': tibil / utla"}], "ideal": "Utla ra tibil kum bara sa."}
+{"input": [{"role": "user", "content": "Given the cue A / B, say that there is an 'A' in/on the B. Then say that there are some 'As' in/on the 'B': yabal / tawan"}], "ideal": "Tawan ra yabal kum bara sa."}
+{"input": [{"role": "user", "content": "Given the cue A / B, say that there is an 'A' in/on the B. Then say that there are some 'As' in/on the 'B': windar / rum"}], "ideal": "Rum ra windar kum bara sa."}
+{"input": [{"role": "user", "content": "Given the cue A / B, say that there is an 'A' in/on the B. Then say that there are some 'As' in/on the 'B': daiwan / yabal"}], "ideal": "Yabal ra daiwan kum bara sa."}
+{"input": [{"role": "user", "content": "Answer these questions with full sentences: Tawan ra sap kum bara sa ki? (au)"}], "ideal": "Au, tawan ra sap kum bara sa."}
+{"input": [{"role": "user", "content": "Answer these questions with full sentences: Yul ba daiwan kum sa ki? (au)"}], "ideal": "Au, yul ba daiwan kum sa."}
+{"input": [{"role": "user", "content": "Answer these questions with full sentences: Yul nani ba yabal ra sa ki? (apia)"}], "ideal": "Apia, yul nani ba yabal ra apia sa."}
+{"input": [{"role": "user", "content": "Answer these questions with full sentences: Maria umpira sa ki? (apia)"}], "ideal": "Apia, Maria umpira apia sa."}
+{"input": [{"role": "user", "content": "Answer the questions with full sentences: Mairin na ya sa ki? (Susan)"}], "ideal": "Mairin na Susan sa."}
+{"input": [{"role": "user", "content": "Answer the questions with full sentences: Baha ya sa? (yaptiki)"}], "ideal": "Baha yaptiki sa."}
+{"input": [{"role": "user", "content": "Answer the questions with full sentences: Naha dia sa ki? (walpa kum)"}], "ideal": "Naha walpa kum sa."}
+{"input": [{"role": "user", "content": "Answer the questions with full sentences: Miguel anira sa ki? (tawan ra)"}], "ideal": "Miguel tawan ra sa."}
+{"input": [{"role": "user", "content": "Answer the questions with full sentences: Mangu nani ba anira sa? (sap ra)"}], "ideal": "Mangu nani ba sap ra sa."}
+{"input": [{"role": "user", "content": "Answer these questions using the words given: Ninam Paula sa ki? (au)"}], "ideal": "Au, nini Paula (sa)."}
+{"input": [{"role": "user", "content": "Answer these questions using the words given: Witin aisikam sa ki? (au)"}], "ideal": "Au, witin aisiki (sa)."}
+{"input": [{"role": "user", "content": "Answer these questions using the words given: Tuktikam anira sa ki? (utla)"}], "ideal": "Tuktiki utla ra sa."}
+{"input": [{"role": "user", "content": "Answer these questions using the words given: Yaptikam sin utla ra sa ki? (apia)"}], "ideal": "Apia, yaptiki utla ra apia sa./Apia, yaptiki tawan ra sa."}
+{"input": [{"role": "user", "content": "Make these sentences negative: Tuktiki ba utla ra pulisa."}], "ideal": "Tuktiki ba utla ra pulras."}
+{"input": [{"role": "user", "content": "Make these sentences negative: Mary Miskitu aisisa."}], "ideal": "Mary Miskitu aisaras."}
+{"input": [{"role": "user", "content": "Make these sentences negative: Miguel plun piakisa."}], "ideal": "Miguel plun piakras."}
+{"input": [{"role": "user", "content": "Make these sentences negative: Yaptiki buk ba plikisa."}], "ideal": "Yaptiki buk ba plikras."}
+{"input": [{"role": "user", "content": "Make these sentences negative: Mairin nani sut naha daukisa."}], "ideal": "Mairin nani sut naha daukras."}
+{"input": [{"role": "user", "content": "Make these sentences negative: Yawan (we) inisa"}], "ideal": "Yawan inras."}
+{"input": [{"role": "user", "content": "Answer the questions using the word provided: Witin anira auya? (skul)"}], "ideal": "Witin skul ra auya."}
+{"input": [{"role": "user", "content": "Answer the questions using the word provided: Mairin ba ani wina aula? (utla)"}], "ideal": "Mairin ba utla wina aula."}
+{"input": [{"role": "user", "content": "Answer the questions using the word provided: Tuktan na ani wina anira auya? (dur, windar)?"}], "ideal": "Tuktan na dur wina windar ra auya."}
+{"input": [{"role": "user", "content": "Answer the questions using the words given (add ra if necessary): Jose dia plikisa? (buk kum)"}], "ideal": "Witin buk kum plikisa."}
+{"input": [{"role": "user", "content": "Answer the questions using the words given (add ra if necessary): Witin yaura plikisa? (aisiki)"}], "ideal": "Witin aisiki ra plikisa."}
+{"input": [{"role": "user", "content": "Answer the questions using the words given (add ra if necessary): Yawan dia daukisa? (plun)"}], "ideal": "Yawan plun daukisa."}
+{"input": [{"role": "user", "content": "Answer the questions using the words given (add ra if necessary): Yawan dia kaikisa? (mangu kum kum)"}], "ideal": "Yawan mangu kum kum kaikisa."}
+{"input": [{"role": "user", "content": "Answer the questions using the words given (add ra if necessary): Yawan yaura kaikisa? (tuktan kum kum)"}], "ideal": "Yawan tuktan kum kum ra kaikisa."}
+{"input": [{"role": "user", "content": "Answer the questions using the words given (add ra if necessary): Witin nani yaura kaikisa? (yawan)"}], "ideal": "Witin nani yawan ra kaikisa."}
+{"input": [{"role": "user", "content": "Answer in the affirmative making a sentence with the word given and wal: Witin tawan ra auya ki? (aisiki)"}], "ideal": "Au, witin (tawan ra) aisiki wal auya."}
+{"input": [{"role": "user", "content": "Answer in the affirmative making a sentence with the word given and wal: Tuktikam pulisa ki? (yul ba)"}], "ideal": "Au, witin yul ba wal pulisa."}
+{"input": [{"role": "user", "content": "Answer in the affirmative making a sentence with the word given and wal: Witin Miskitu aisisa ki? (yang)"}], "ideal": "Au, witin Miskitu yang wal aisisa."}
+{"input": [{"role": "user", "content": "Answer in the affirmative making a sentence with the word given and wal: Aisikam ba wark plikisa ki? (waitna nani sut)"}], "ideal": "Au, witin waitna nani sut wal wark plikisa."}
+{"input": [{"role": "user", "content": "Answer in the affirmative making a sentence with the word given and wal: Mairin ba nahara iwisa ki? (yaptiki)"}], "ideal": "Au, witin yaptiki wal iwisa."}
+{"input": [{"role": "user", "content": "Answer in the negative, and say the person/people will do it tomorrow: Jan nanara wark plikisa ki?"}], "ideal": "Apia. Witin yauhka wark plikaisa."}
+{"input": [{"role": "user", "content": "Answer in the negative, and say the person/people will do it tomorrow: Witin nanara plun piakisa ki?"}], "ideal": "Apia. Witin yauhka plun piakaisa."}
+{"input": [{"role": "user", "content": "Answer in the negative, and say the person/people will do it tomorrow: Yawan Bilwi ra nanara auya ki?"}], "ideal": "Apia. Yawan yauhka waisa."}
+{"input": [{"role": "user", "content": "Answer in the negative, and say the person/people will do it tomorrow: Witin nani yaptikam ra nanara hilp munisa ki?"}], "ideal": "Apia. Witin nani yauhka hilp munaisa."}
+{"input": [{"role": "user", "content": "Answer in the negative, and say the person/people will do it tomorrow: Tuktikam skul ra nanara aula ki?"}], "ideal": "Apia. Witin yauhka balaisa."}
+{"input": [{"role": "user", "content": "Answer in the negative, and say the person/people will do it tomorrow: Tuktan ba nanara aisikam wal sa ki?"}], "ideal": "Apia. Yauhka witin wal kaisa."}
+{"input": [{"role": "user", "content": "Answer in the negative, and say the person/people did it yesterday: Aisikam nanara wark plikisa ki?"}], "ideal": "Apia. Witin nahwala wark plikan."}
+{"input": [{"role": "user", "content": "Answer in the negative, and say the person/people did it yesterday: Karla nanara plun piakisa ki?"}], "ideal": "Apia. Witin nahwala plun piakan."}
+{"input": [{"role": "user", "content": "Answer in the negative, and say the person/people did it yesterday: Yawan tawan ra nanara auya ki?"}], "ideal": "Apia. Yawan nahwala tawan ra wan."}
+{"input": [{"role": "user", "content": "Answer in the negative, and say the person/people did it yesterday: Tuktan nani ba skul ra nanara pulisa ki?"}], "ideal": "Apia. Witin nani nahwala pulan."}
+{"input": [{"role": "user", "content": "Answer in the negative, and say the person/people did it yesterday: Tuktikam buk ba nanara kaikisa ki?"}], "ideal": "Apia. Witin buk ba nahwala kaikan."}
+{"input": [{"role": "user", "content": "Answer in the negative, and say the person/people did it yesterday: Buk ba nanara tibil ra sa ki?"}], "ideal": "Apia. Buk ba nahwala tibil ra kan."}
+{"input": [{"role": "user", "content": "Change the subject form witin to yang: Witin waitna kum sa."}], "ideal": "Yang waitna kum sna."}
+{"input": [{"role": "user", "content": "Change the subject form witin to yang: Witin nahara sa."}], "ideal": "Yang nahara sna."}
+{"input": [{"role": "user", "content": "Change the subject form witin to yang: Witin umpira sa."}], "ideal": "Yang umpira sna."}
+{"input": [{"role": "user", "content": "Change the subject form witin to yang: Witin utla ra sa."}], "ideal": "Yang utla ra sna."}
+{"input": [{"role": "user", "content": "Change the subject form witin to yang: Witin sirpi pali sa."}], "ideal": "Yang sirpi pali sna."}
+{"input": [{"role": "user", "content": "Change the subject form witin to yang: Witin skul ra apia sa."}], "ideal": "Yang skul ra apia sna."}
+{"input": [{"role": "user", "content": "Answer these questions, taking the words in parentheses as cues: Nahara sma ki? (au)"}], "ideal": "Au, nahara sna."}
+{"input": [{"role": "user", "content": "Answer these questions, taking the words in parentheses as cues: Yaptikam ba wal sma ki? (apia)"}], "ideal": "Apia, yaptiki ba wal apia sna."}
+{"input": [{"role": "user", "content": "Answer these questions, taking the words in parentheses as cues: Anira sma? (skul)"}], "ideal": "Skul ra sna."}
+{"input": [{"role": "user", "content": "Answer these questions, taking the words in parentheses as cues: Tuktan kum sma ki? (apia)"}], "ideal": "Apia, tukan kum apia sna."}
+{"input": [{"role": "user", "content": "Answer these questions, taking the words in parentheses as cues: Aisikam anira sa? (tawan)"}], "ideal": "Aisiki tawan ra sa."}
+{"input": [{"role": "user", "content": "Place yang, man or witin at the beginning of the sentence as appropriate: Anira sma?"}], "ideal": "Man anira sma?"}
+{"input": [{"role": "user", "content": "Place yang, man or witin at the beginning of the sentence as appropriate: Miriki apia sna."}], "ideal": "Yang Miriki apia sna."}
+{"input": [{"role": "user", "content": "Place yang, man or witin at the beginning of the sentence as appropriate: Miskitu sa."}], "ideal": "Witin Miskitu sa."}
+{"input": [{"role": "user", "content": "Place yang, man or witin at the beginning of the sentence as appropriate: Prias watla ra sna."}], "ideal": "Yang prias watla ra sna."}
+{"input": [{"role": "user", "content": "Place yang, man or witin at the beginning of the sentence as appropriate: Rum ra sma ki?"}], "ideal": "Man rum ra sma ki?"}
+{"input": [{"role": "user", "content": "Place yang, man or witin at the beginning of the sentence as appropriate: Sirpi pali sna."}], "ideal": "Yang sirpi pali sna."}
+{"input": [{"role": "user", "content": "Place yang, man or witin at the beginning of the sentence as appropriate: Yaptiki wal apia sna."}], "ideal": "Yang yaptiki wal apia sna."}
+{"input": [{"role": "user", "content": "Place yang, man or witin at the beginning of the sentence as appropriate: Bahara sa."}], "ideal": "Witin bahara sa."}
+{"input": [{"role": "user", "content": "Fill the blank with an appropriate present tense form of the verb whose infinitive is given: Yang Inglis __________. (aisaia)"}], "ideal": "Yang Inglis aisisna."}
+{"input": [{"role": "user", "content": "Fill the blank with an appropriate present tense form of the verb whose infinitive is given: Man yul ba __________ ki? (kaikaia)"}], "ideal": "Man yul ba kaikisma ki?"}
+{"input": [{"role": "user", "content": "Fill the blank with an appropriate present tense form of the verb whose infinitive is given: Witin aisiki wal __________. (wark takaia)"}], "ideal": "Witin aisiki wal wark takisa."}
+{"input": [{"role": "user", "content": "Fill the blank with an appropriate present tense form of the verb whose infinitive is given: Yang yul nani ba __________. (walaia)"}], "ideal": "Yang yul nani ba walisna."}
+{"input": [{"role": "user", "content": "Fill the blank with an appropriate present tense form of the verb whose infinitive is given: Man tuktan kum __________. (kaia)"}], "ideal": "Man tuktan kum sma."}
+{"input": [{"role": "user", "content": "Fill the blank with an appropriate present tense form of the verb whose infinitive is given: Yang Miskitu bila baman __________. (aisaia)"}], "ideal": "Yang Miskitu bila baman aisisna."}
+{"input": [{"role": "user", "content": "Fill the blank with an appropriate present tense form of the verb whose infinitive is given: Man yaura __________? (plikaia)"}], "ideal": "Man yaura plikisma?"}
+{"input": [{"role": "user", "content": "Fill the blank with an appropriate present tense form of the verb whose infinitive is given: Witin sap wina __________. (takaia)"}], "ideal": "Witin sap wina takisa."}
+{"input": [{"role": "user", "content": "Answer the questions using the time words given: Truk kum ahkia atkaisma? (tisku)"}], "ideal": "(Truk kum) tisku atkaisna."}
+{"input": [{"role": "user", "content": "Answer the questions using the time words given: Aisikam ba yang wal ahkia aisaisa? (ningkara)"}], "ideal": "Man wal ningkara aisaisa."}
+{"input": [{"role": "user", "content": "Answer the questions using the time words given: Ahkia utla ra kaisma? (yauhka)"}], "ideal": "Yauhka kaisna."}
+{"input": [{"role": "user", "content": "Answer the questions using the time words given: Yawan ahkia takaisa? (ningkara)"}], "ideal": "Yawan ningkara takaisa."}
+{"input": [{"role": "user", "content": "Answer the questions using the time words given: Tuktikam ahkia kaikaisna? (tisku pali)"}], "ideal": "Tisku pali kaikaisma."}
+{"input": [{"role": "user", "content": "Answer the questions using the time words given: Witin nani skul ra ahkia dimaisa? (yauhka)"}], "ideal": "Witin nani skul ra yauhka dimaisa."}
+{"input": [{"role": "user", "content": "Fill in the blank using the correct form of the verb given: Man yang wal __________ ki? "}], "ideal": "Man yang wal aulma ki?"}
+{"input": [{"role": "user", "content": "Fill in the blank using the correct form of the verb given: Man dia muni __________? "}], "ideal": "Man dia muni auma?"}
+{"input": [{"role": "user", "content": "Fill in the blank using the correct form of the verb given: Yang sap kum ra __________. "}], "ideal": "Yang sap kum ra auna."}
+{"input": [{"role": "user", "content": "Fill in the blank using the correct form of the verb given: Sap ra man dia __________? "}], "ideal": "Sap ra man dia want sma?"}
+{"input": [{"role": "user", "content": "Fill in the blank using the correct form of the verb given: Yang diara __________. "}], "ideal": "Yang diara want apia sna."}
+{"input": [{"role": "user", "content": "Fill in the blank using the correct form of the verb given: Tuktiki buk kum kum __________. "}], "ideal": "Tuktiki buk kum kum want sa."}
+{"input": [{"role": "user", "content": "Fill in the blank using the correct form of the verb given: Yang tuktikam ra pain __________. "}], "ideal": "Yang tuktikam ra pain nu sna."}
+{"input": [{"role": "user", "content": "Fill in the blank using the correct form of the verb given: Witin buk nani __________. "}], "ideal": "Witin buk nani laik pali sa."}
+{"input": [{"role": "user", "content": "Make negative: Buk kum plikisma."}], "ideal": "Buk kum plikras sma."}
+{"input": [{"role": "user", "content": "Make negative: Witin kalila nani atkisa."}], "ideal": "Witin kalila nani atkras sa."}
+{"input": [{"role": "user", "content": "Make negative: Utla kum brisna."}], "ideal": "Utla kum briras sna."}
+{"input": [{"role": "user", "content": "Make negative: Naha want sna."}], "ideal": "Naha want apia sna."}
+{"input": [{"role": "user", "content": "Put in the past tense, using the imperfect if possible: Tuktan ba utla ra pulisa."}], "ideal": "Tuktan ba utla ra puli kan."}
+{"input": [{"role": "user", "content": "Put in the past tense, using the imperfect if possible: Witin kalila kum kum brisa."}], "ideal": "Witin kalila kum kum bri kan."}
+{"input": [{"role": "user", "content": "Put in the past tense, using the imperfect if possible: Aisiki inska want sa."}], "ideal": "Aisiki inska want kan."}
+{"input": [{"role": "user", "content": "Put in the past tense, using the imperfect if possible: Yaptiki inska atkras sa."}], "ideal": "Yaptiki inska atkras kan."}
+{"input": [{"role": "user", "content": "Put in the past tense, using the imperfect if possible: Witin inska want apia sa."}], "ideal": "Witin inska want apia kan."}
+{"input": [{"role": "user", "content": "Put in the past tense, using the imperfect if possible: Witin tuktan ra kaikisa."}], "ideal": "Witin tuktan ra kaiki kan."}
+{"input": [{"role": "user", "content": "Put in the past tense, using the imperfect if possible: Witin tuktan ra kaikras sa."}], "ideal": "Witin tuktan ra kaikras kan."}
+{"input": [{"role": "user", "content": "Change these sentences by incorporating naha or baha: Rum ba sirpi sa. (baha)"}], "ideal": "Baha rumka sirpi sa."}
+{"input": [{"role": "user", "content": "Change these sentences by incorporating naha or baha: Witin tawan ra sa. (naha)"}], "ideal": "Witin naha tawanka ra sa."}
+{"input": [{"role": "user", "content": "Change these sentences by incorporating naha or baha: Sap ba kaikisma ki? (baha)"}], "ideal": "Baha sapka kaikisma ki?"}
+{"input": [{"role": "user", "content": "Change these sentences by incorporating naha or baha: Tibil ba tara pali sa. (naha)"}], "ideal": "Naha tibilka tara pali sa."}
+{"input": [{"role": "user", "content": "Say naha instead of na, or baha instead of ba; make all necessary changes: aisa na"}], "ideal": "naha aisika"}
+{"input": [{"role": "user", "content": "Say naha instead of na, or baha instead of ba; make all necessary changes: kalila na"}], "ideal": "naha kalilka"}
+{"input": [{"role": "user", "content": "Say naha instead of na, or baha instead of ba; make all necessary changes: mairin na"}], "ideal": "naha mairka"}
+{"input": [{"role": "user", "content": "Say naha instead of na, or baha instead of ba; make all necessary changes: mangu ba"}], "ideal": "baha manguka"}
+{"input": [{"role": "user", "content": "Say naha instead of na, or baha instead of ba; make all necessary changes: tiara ba"}], "ideal": "baha tiarka"}
+{"input": [{"role": "user", "content": "Say naha instead of na, or baha instead of ba; make all necessary changes: tuktan ba"}], "ideal": "baha tuktika"}
+{"input": [{"role": "user", "content": "Say naha instead of na, or baha instead of ba; make all necessary changes: waitna na"}], "ideal": "naha waitnika"}
+{"input": [{"role": "user", "content": "Say naha instead of na, or baha instead of ba; make all necessary changes: yapti ba"}], "ideal": "baha yaptika"}
+{"input": [{"role": "user", "content": "Insert the word given into the sentences, making all necessary changes: Yang yapti ba nu sna. (ai)"}], "ideal": "Yang ai yaptika ba nu sna."}
+{"input": [{"role": "user", "content": "Insert the word given into the sentences, making all necessary changes: Aisa ba naiwa aula. (wan)"}], "ideal": "Wan aisika ba naiwa aula."}
+{"input": [{"role": "user", "content": "Insert the word given into the sentences, making all necessary changes: Mangu kum want sma ki? (ani)"}], "ideal": "Ani manguka want sma ki?"}
+{"input": [{"role": "user", "content": "Insert the word given into the sentences, making all necessary changes: Krikri ba sirpi sa. (naha)"}], "ideal": "Naha krikrika ba sirpi sa."}
+{"input": [{"role": "user", "content": "Insert the word given into the sentences, making all necessary changes: Kî ba brisma ki? (utla)"}], "ideal": "Utla kîka brisma ki?"}
+{"input": [{"role": "user", "content": "Ask where things or people are, following this pattern:A B kum brisa. → A B-ka ba anira sa: Luisa buk kum brisa."}], "ideal": "Luisa bukka ba anira sa?"}
+{"input": [{"role": "user", "content": "Ask where things or people are, following this pattern:A B kum brisa. → A B-ka ba anira sa: Jan aisa kum brisa."}], "ideal": "Jan aisika ba anira sa?"}
+{"input": [{"role": "user", "content": "Ask where things or people are, following this pattern:A B kum brisa. → A B-ka ba anira sa: Tuktan nani ba yul kum brisa."}], "ideal": "Tuktan nani yulka ba anira sa?"}
+{"input": [{"role": "user", "content": "Ask where things or people are, following this pattern:A B kum brisa. → A B-ka ba anira sa: Naha waitnika ba krikri kum brisa."}], "ideal": "Naha waitnika krikrika ba anira sa?"}
+{"input": [{"role": "user", "content": "Ask where things or people are, following this pattern:A B kum brisa. → A B-ka ba anira sa: Baha tawanka ba sap kum brisa."}], "ideal": "Baha tawanka sapka ba anira sa?"}
+{"input": [{"role": "user", "content": "Ask where things or people are, following this pattern:A B kum brisa. → A B-ka ba anira sa: Wan yaptika tawanka ba skul kum brisa."}], "ideal": "Wan yaptika tawanka skulka anira sa?"}
+{"input": [{"role": "user", "content": "If it is possible to use banghwaia, use it and omit the superfluous pronoun: Witin nani yang nani wal aisisa."}], "ideal": "Yang nani wal aisi banghwisa."}
+{"input": [{"role": "user", "content": "If it is possible to use banghwaia, use it and omit the superfluous pronoun: Man nani yang nani wal aisisma."}], "ideal": "Yang nani wal aisi banghwisma."}
+{"input": [{"role": "user", "content": "If it is possible to use banghwaia, use it and omit the superfluous pronoun: Yang nani man nani wal aisisna."}], "ideal": "Man nani wal aisi banghwisna."}
+{"input": [{"role": "user", "content": "If it is possible to use banghwaia, use it and omit the superfluous pronoun: Yawan dia daukaisa ki?"}], "ideal": "Yawan dia daukaisa ki?"}
+{"input": [{"role": "user", "content": "If it is possible to use banghwaia, use it and omit the superfluous pronoun: Yang nani dia daukaisna ki?"}], "ideal": "Dia dauki banghwaisna ki?"}
+{"input": [{"role": "user", "content": "If it is possible to use banghwaia, use it and omit the superfluous pronoun: Yang nani inska want sna."}], "ideal": "Yang nani inska want sna."}
+{"input": [{"role": "user", "content": "If it is possible to use banghwaia, use it and omit the superfluous pronoun: Man nani sin inska want sma ki?"}], "ideal": "Man nani sin inska want sma ki?"}
+{"input": [{"role": "user", "content": "If it is possible to use banghwaia, use it and omit the superfluous pronoun: Au, yang nani sin."}], "ideal": "Au, yang nani sin."}
+{"input": [{"role": "user", "content": "If it is possible to use banghwaia, use it and omit the superfluous pronoun: Yawan sut inska want sa."}], "ideal": "Yawan sut inska want sa."}
+{"input": [{"role": "user", "content": "Complete the sentence using the right form of the verb given: Man nani Miskitu __________? (aisaia)"}], "ideal": "Man nani Miskitu aisisma?"}
+{"input": [{"role": "user", "content": "Complete the sentence using the right form of the verb given: Apia, yang nani Miskitu __________. (aisaia)"}], "ideal": "Apia, yang nani Miskitu aisaras."}
+{"input": [{"role": "user", "content": "Complete the sentence using the right form of the verb given: Tuktiki nani ba Miskitu __________ banghwisa. (aisaia)"}], "ideal": "Tuktiki nani ba Miskitu aisi banghwisa."}
+{"input": [{"role": "user", "content": "Complete the sentence using the right form of the verb given: Aisikam Bilwi ra naiwa __________ ki? (waia)"}], "ideal": "Aisikam Bilwi ra naiwa auya ki?"}
+{"input": [{"role": "user", "content": "Complete the sentence using the right form of the verb given: Apia, witin naiwa __________. (waia)"}], "ideal": "Apia, witin naiwa waras."}
+{"input": [{"role": "user", "content": "Complete the sentence using the right form of the verb given: Nahwala __________. (waia)"}], "ideal": "Nahwala wan."}
+{"input": [{"role": "user", "content": "Complete the sentence using the right form of the verb given: Baha waitnika nani ba sin witin wal __________ banghwan. (waia)"}], "ideal": "Baha waitnika nani ba sin witin wal wi banghwan."}
+{"input": [{"role": "user", "content": "Complete the sentence using the right form of the verb given: Yauhka man dia __________? (piaia)"}], "ideal": "Yauhka man dia piaisma?"}
+{"input": [{"role": "user", "content": "Complete the sentence using the right form of the verb given: Nu apia sna. Yang diara kum sin __________. (briaia)"}], "ideal": "Nu apia sna. Yang diara kum sin briras."}
+{"input": [{"role": "user", "content": "Complete the sentence using the right form of the verb given: Yang nahwala mangu kum kum __________. (piaia)"}], "ideal": "Yang nahwala mangu kum kum pin."}
+{"input": [{"role": "user", "content": "Complete the sentence using the right form of the verb given: Baha tiarka nani ba plun __________ ki? (briaia)"}], "ideal": "Baha tiarka nani ba plun brisa ki?"}
+{"input": [{"role": "user", "content": "Complete the sentence using the right form of the verb given: Au, witin nani plun __________ banghwisa. (piaia)"}], "ideal": "Au, witin nani plun pi banghwisa."}
+{"input": [{"role": "user", "content": "Follow this example: Maria buk kum brisa. (pain sa) → Maria bukka pain sa: Jan tibil kum brisa. (tara sa)"}], "ideal": "Jan tibilka tara sa."}
+{"input": [{"role": "user", "content": "Follow this example: Maria buk kum brisa. (pain sa) → Maria bukka pain sa: Karla yul kum brisa. (sirpi sa)"}], "ideal": "Karla yula sirpi sa."}
+{"input": [{"role": "user", "content": "Follow this example: Maria buk kum brisa. (pain sa) → Maria bukka pain sa: Yabal ba walpa kum kum brisa. (ailal)"}], "ideal": "Yabal walpaya nani ba ailal sa."}
+{"input": [{"role": "user", "content": "Follow this example: Maria buk kum brisa. (pain sa) → Maria bukka pain sa: Awala ba li brisa. (tawan tuktika nani ba di banghwan)"}], "ideal": "Tawan tuktika nani ba awala laya ba di banghwan."}
+{"input": [{"role": "user", "content": "Follow this example: Maria buk kum brisa. (pain sa) → Maria bukka pain sa: Yawan tasba brisa. (yawan iwras kan)"}], "ideal": "Yawan wan tasbaya ra iwras kan."}

@@ -1,0 +1,3 @@
+{"input": [{"role": "user", "content": "Translate from Miskito to English: Nanara witin iwras, witin baha wina nahara aula."}], "ideal": "[ANSWER She isn't sitting now, she is coming from there to here.]"}
+{"input": [{"role": "user", "content": "Answer in the affirmative making a sentence with the word given and wal: Tuktikam pulisa ki? (yul ba)"}], "ideal": "[ANSWER Au, witin yul ba wal pulisa.]"}
+{"input": [{"role": "user", "content": "Translate from English to Miskito: We (exclusive) are going to bed."}], "ideal": "[ANSWER Yang nani krikri ra auna.]"}

@@ -1,0 +1,82 @@
+{"input": [{"role": "system", "content": "あなたは日本の著名なゲームタイトルの発売元を回答します"}, {"role": "user", "content": "スーパーマリオブラザーズ"}], "ideal": "任天堂"}
+{"input": [{"role": "system", "content": "あなたは日本の著名なゲームタイトルの発売元を回答します"}, {"role": "user", "content": "ゼルダの伝説"}], "ideal": "任天堂"}
+{"input": [{"role": "system", "content": "あなたは日本の著名なゲームタイトルの発売元を回答します"}, {"role": "user", "content": "星のカービィ"}], "ideal": "任天堂"}
+{"input": [{"role": "system", "content": "あなたは日本の著名なゲームタイトルの発売元を回答します"}, {"role": "user", "content": "MOTHER"}], "ideal": "任天堂"}
+{"input": [{"role": "system", "content": "あなたは日本の著名なゲームタイトルの発売元を回答します"}, {"role": "user", "content": "ゼノブレイド"}], "ideal": "任天堂"}
+{"input": [{"role": "system", "content": "あなたは日本の著名なゲームタイトルの発売元を回答します"}, {"role": "user", "content": "ファイアーエムブレム"}], "ideal": "任天堂"}
+{"input": [{"role": "system", "content": "あなたは日本の著名なゲームタイトルの発売元を回答します"}, {"role": "user", "content": "ポケットモンスター"}], "ideal": "任天堂"}
+{"input": [{"role": "system", "content": "あなたは日本の著名なゲームタイトルの発売元を回答します"}, {"role": "user", "content": "マリオカート"}], "ideal": "任天堂"}
+{"input": [{"role": "system", "content": "あなたは日本の著名なゲームタイトルの発売元を回答します"}, {"role": "user", "content": "どうぶつの森"}], "ideal": "任天堂"}
+{"input": [{"role": "system", "content": "あなたは日本の著名なゲームタイトルの発売元を回答します"}, {"role": "user", "content": "大乱闘スマッシュブラザーズ"}], "ideal": "任天堂"}
+{"input": [{"role": "system", "content": "あなたは日本の著名なゲームタイトルの発売元を回答します"}, {"role": "user", "content": "スプラトゥーン"}], "ideal": "任天堂"}
+{"input": [{"role": "system", "content": "あなたは日本の著名なゲームタイトルの発売元を回答します"}, {"role": "user", "content": "スーパードンキーコング"}], "ideal": "任天堂"}
+{"input": [{"role": "system", "content": "あなたは日本の著名なゲームタイトルの発売元を回答します"}, {"role": "user", "content": "ソニックザヘッジホッグ"}], "ideal": "セガ"}
+{"input": [{"role": "system", "content": "あなたは日本の著名なゲームタイトルの発売元を回答します"}, {"role": "user", "content": "バーチャファイター"}], "ideal": "セガ"}
+{"input": [{"role": "system", "content": "あなたは日本の著名なゲームタイトルの発売元を回答します"}, {"role": "user", "content": "シェンムー"}], "ideal": "セガ"}
+{"input": [{"role": "system", "content": "あなたは日本の著名なゲームタイトルの発売元を回答します"}, {"role": "user", "content": "龍が如く"}], "ideal": "セガ"}
+{"input": [{"role": "system", "content": "あなたは日本の著名なゲームタイトルの発売元を回答します"}, {"role": "user", "content": "ぷよぷよ"}], "ideal": "セガ"}
+{"input": [{"role": "system", "content": "あなたは日本の著名なゲームタイトルの発売元を回答します"}, {"role": "user", "content": "ペルソナ"}], "ideal": "セガ"}
+{"input": [{"role": "system", "content": "あなたは日本の著名なゲームタイトルの発売元を回答します"}, {"role": "user", "content": "真・女神転生"}], "ideal": "セガ"}
+{"input": [{"role": "system", "content": "あなたは日本の著名なゲームタイトルの発売元を回答します"}, {"role": "user", "content": "Bloodborne"}], "ideal": "PlayStation Studios"}
+{"input": [{"role": "system", "content": "あなたは日本の著名なゲームタイトルの発売元を回答します"}, {"role": "user", "content": "グランツーリスモ"}], "ideal": "PlayStation Studios"}
+{"input": [{"role": "system", "content": "あなたは日本の著名なゲームタイトルの発売元を回答します"}, {"role": "user", "content": "デスストランディング"}], "ideal": "PlayStation Studios"}
+{"input": [{"role": "system", "content": "あなたは日本の著名なゲームタイトルの発売元を回答します"}, {"role": "user", "content": "テイルズオブファンタジア"}], "ideal": "バンダイナムコエンターテインメント"}
+{"input": [{"role": "system", "content": "あなたは日本の著名なゲームタイトルの発売元を回答します"}, {"role": "user", "content": "パックマン"}], "ideal": "バンダイナムコエンターテインメント"}
+{"input": [{"role": "system", "content": "あなたは日本の著名なゲームタイトルの発売元を回答します"}, {"role": "user", "content": "ゼビウス"}], "ideal": "バンダイナムコエンターテインメント"}
+{"input": [{"role": "system", "content": "あなたは日本の著名なゲームタイトルの発売元を回答します"}, {"role": "user", "content": "ドルアーガの塔"}], "ideal": "バンダイナムコエンターテインメント"}
+{"input": [{"role": "system", "content": "あなたは日本の著名なゲームタイトルの発売元を回答します"}, {"role": "user", "content": "太鼓の達人"}], "ideal": "バンダイナムコエンターテインメント"}
+{"input": [{"role": "system", "content": "あなたは日本の著名なゲームタイトルの発売元を回答します"}, {"role": "user", "content": "スーパーロボット大戦"}], "ideal": "バンダイナムコエンターテインメント"}
+{"input": [{"role": "system", "content": "あなたは日本の著名なゲームタイトルの発売元を回答します"}, {"role": "user", "content": "アイドルマスター"}], "ideal": "バンダイナムコエンターテインメント"}
+{"input": [{"role": "system", "content": "あなたは日本の著名なゲームタイトルの発売元を回答します"}, {"role": "user", "content": "機動戦士ガンダムエクストリームバーサス"}], "ideal": "バンダイナムコエンターテインメント"}
+{"input": [{"role": "system", "content": "あなたは日本の著名なゲームタイトルの発売元を回答します"}, {"role": "user", "content": "塊魂"}], "ideal": "バンダイナムコエンターテインメント"}
+{"input": [{"role": "system", "content": "あなたは日本の著名なゲームタイトルの発売元を回答します"}, {"role": "user", "content": "ことばのパズル　もじぴったん"}], "ideal": "バンダイナムコエンターテインメント"}
+{"input": [{"role": "system", "content": "あなたは日本の著名なゲームタイトルの発売元を回答します"}, {"role": "user", "content": "ミスタードリラー"}], "ideal": "バンダイナムコエンターテインメント"}
+{"input": [{"role": "system", "content": "あなたは日本の著名なゲームタイトルの発売元を回答します"}, {"role": "user", "content": "ファイナルファンタジー"}], "ideal": "スクウェア・エニックス"}
+{"input": [{"role": "system", "content": "あなたは日本の著名なゲームタイトルの発売元を回答します"}, {"role": "user", "content": "ドラゴンクエスト"}], "ideal": "スクウェア・エニックス"}
+{"input": [{"role": "system", "content": "あなたは日本の著名なゲームタイトルの発売元を回答します"}, {"role": "user", "content": "サガ"}], "ideal": "スクウェア・エニックス"}
+{"input": [{"role": "system", "content": "あなたは日本の著名なゲームタイトルの発売元を回答します"}, {"role": "user", "content": "キングダムハーツ"}], "ideal": "スクウェア・エニックス"}
+{"input": [{"role": "system", "content": "あなたは日本の著名なゲームタイトルの発売元を回答します"}, {"role": "user", "content": "スターオーシャン"}], "ideal": "スクウェア・エニックス"}
+{"input": [{"role": "system", "content": "あなたは日本の著名なゲームタイトルの発売元を回答します"}, {"role": "user", "content": "聖剣伝説"}], "ideal": "スクウェア・エニックス"}
+{"input": [{"role": "system", "content": "あなたは日本の著名なゲームタイトルの発売元を回答します"}, {"role": "user", "content": "ニーアオートマタ"}], "ideal": "スクウェア・エニックス"}
+{"input": [{"role": "system", "content": "あなたは日本の著名なゲームタイトルの発売元を回答します"}, {"role": "user", "content": "オクトパストラベラー"}], "ideal": "スクウェア・エニックス"}
+{"input": [{"role": "system", "content": "あなたは日本の著名なゲームタイトルの発売元を回答します"}, {"role": "user", "content": "ライブアライブ"}], "ideal": "スクウェア・エニックス"}
+{"input": [{"role": "system", "content": "あなたは日本の著名なゲームタイトルの発売元を回答します"}, {"role": "user", "content": "ゼノギアス"}], "ideal": "スクウェア・エニックス"}
+{"input": [{"role": "system", "content": "あなたは日本の著名なゲームタイトルの発売元を回答します"}, {"role": "user", "content": "クロノトリガー"}], "ideal": "スクウェア・エニックス"}
+{"input": [{"role": "system", "content": "あなたは日本の著名なゲームタイトルの発売元を回答します"}, {"role": "user", "content": "タクティクスオウガ"}], "ideal": "スクウェア・エニックス"}
+{"input": [{"role": "system", "content": "あなたは日本の著名なゲームタイトルの発売元を回答します"}, {"role": "user", "content": "スペースインベーダー"}], "ideal": "TAITO"}
+{"input": [{"role": "system", "content": "あなたは日本の著名なゲームタイトルの発売元を回答します"}, {"role": "user", "content": "アルカノイド"}], "ideal": "TAITO"}
+{"input": [{"role": "system", "content": "あなたは日本の著名なゲームタイトルの発売元を回答します"}, {"role": "user", "content": "パズルボブル"}], "ideal": "TAITO"}
+{"input": [{"role": "system", "content": "あなたは日本の著名なゲームタイトルの発売元を回答します"}, {"role": "user", "content": "ストリートファイター"}], "ideal": "カプコン"}
+{"input": [{"role": "system", "content": "あなたは日本の著名なゲームタイトルの発売元を回答します"}, {"role": "user", "content": "バイオハザード"}], "ideal": "カプコン"}
+{"input": [{"role": "system", "content": "あなたは日本の著名なゲームタイトルの発売元を回答します"}, {"role": "user", "content": "モンスターハンター"}], "ideal": "カプコン"}
+{"input": [{"role": "system", "content": "あなたは日本の著名なゲームタイトルの発売元を回答します"}, {"role": "user", "content": "ロックマン"}], "ideal": "カプコン"}
+{"input": [{"role": "system", "content": "あなたは日本の著名なゲームタイトルの発売元を回答します"}, {"role": "user", "content": "大神"}], "ideal": "カプコン"}
+{"input": [{"role": "system", "content": "あなたは日本の著名なゲームタイトルの発売元を回答します"}, {"role": "user", "content": "逆転裁判"}], "ideal": "カプコン"}
+{"input": [{"role": "system", "content": "あなたは日本の著名なゲームタイトルの発売元を回答します"}, {"role": "user", "content": "デッドライジング"}], "ideal": "カプコン"}
+{"input": [{"role": "system", "content": "あなたは日本の著名なゲームタイトルの発売元を回答します"}, {"role": "user", "content": "デビルメイクライ"}], "ideal": "カプコン"}
+{"input": [{"role": "system", "content": "あなたは日本の著名なゲームタイトルの発売元を回答します"}, {"role": "user", "content": "ブレスオブファイア"}], "ideal": "カプコン"}
+{"input": [{"role": "system", "content": "あなたは日本の著名なゲームタイトルの発売元を回答します"}, {"role": "user", "content": "THE KING OF FIGHTERS"}], "ideal": "SNK"}
+{"input": [{"role": "system", "content": "あなたは日本の著名なゲームタイトルの発売元を回答します"}, {"role": "user", "content": "三国志"}], "ideal": "コーエーテクモゲームス"}
+{"input": [{"role": "system", "content": "あなたは日本の著名なゲームタイトルの発売元を回答します"}, {"role": "user", "content": "信長の野望"}], "ideal": "コーエーテクモゲームス"}
+{"input": [{"role": "system", "content": "あなたは日本の著名なゲームタイトルの発売元を回答します"}, {"role": "user", "content": "大航海時代"}], "ideal": "コーエーテクモゲームス"}
+{"input": [{"role": "system", "content": "あなたは日本の著名なゲームタイトルの発売元を回答します"}, {"role": "user", "content": "真・三国無双"}], "ideal": "コーエーテクモゲームス"}
+{"input": [{"role": "system", "content": "あなたは日本の著名なゲームタイトルの発売元を回答します"}, {"role": "user", "content": "ウイニングポスト"}], "ideal": "コーエーテクモゲームス"}
+{"input": [{"role": "system", "content": "あなたは日本の著名なゲームタイトルの発売元を回答します"}, {"role": "user", "content": "ライザのアトリエ"}], "ideal": "コーエーテクモゲームス"}
+{"input": [{"role": "system", "content": "あなたは日本の著名なゲームタイトルの発売元を回答します"}, {"role": "user", "content": "仁王"}], "ideal": "コーエーテクモゲームス"}
+{"input": [{"role": "system", "content": "あなたは日本の著名なゲームタイトルの発売元を回答します"}, {"role": "user", "content": "デッドオアアライブ"}], "ideal": "コーエーテクモゲームス"}
+{"input": [{"role": "system", "content": "あなたは日本の著名なゲームタイトルの発売元を回答します"}, {"role": "user", "content": "ウイニングイレブン"}], "ideal": "コナミ"}
+{"input": [{"role": "system", "content": "あなたは日本の著名なゲームタイトルの発売元を回答します"}, {"role": "user", "content": "実況パワフルプロ野球"}], "ideal": "コナミ"}
+{"input": [{"role": "system", "content": "あなたは日本の著名なゲームタイトルの発売元を回答します"}, {"role": "user", "content": "悪魔城ドラキュラ"}], "ideal": "コナミ"}
+{"input": [{"role": "system", "content": "あなたは日本の著名なゲームタイトルの発売元を回答します"}, {"role": "user", "content": "がんばれゴエモン"}], "ideal": "コナミ"}
+{"input": [{"role": "system", "content": "あなたは日本の著名なゲームタイトルの発売元を回答します"}, {"role": "user", "content": "桃太郎電鉄"}], "ideal": "コナミ"}
+{"input": [{"role": "system", "content": "あなたは日本の著名なゲームタイトルの発売元を回答します"}, {"role": "user", "content": "幻想水滸伝"}], "ideal": "コナミ"}
+{"input": [{"role": "system", "content": "あなたは日本の著名なゲームタイトルの発売元を回答します"}, {"role": "user", "content": "ELDEN RING"}], "ideal": "フロムソフトウェア"}
+{"input": [{"role": "system", "content": "あなたは日本の著名なゲームタイトルの発売元を回答します"}, {"role": "user", "content": "SEKIRO"}], "ideal": "フロムソフトウェア"}
+{"input": [{"role": "system", "content": "あなたは日本の著名なゲームタイトルの発売元を回答します"}, {"role": "user", "content": "アーマードコア"}], "ideal": "フロムソフトウェア"}
+{"input": [{"role": "system", "content": "あなたは日本の著名なゲームタイトルの発売元を回答します"}, {"role": "user", "content": "Dark Souls"}], "ideal": "フロムソフトウェア"}
+{"input": [{"role": "system", "content": "あなたは日本の著名なゲームタイトルの発売元を回答します"}, {"role": "user", "content": "妖怪ウォッチ"}], "ideal": "LEVEL-5"}
+{"input": [{"role": "system", "content": "あなたは日本の著名なゲームタイトルの発売元を回答します"}, {"role": "user", "content": "パズル＆ドラゴンズ"}], "ideal": "ガンホー・オンライン・エンターテイメント"}
+{"input": [{"role": "system", "content": "あなたは日本の著名なゲームタイトルの発売元を回答します"}, {"role": "user", "content": "モンスターストライク"}], "ideal": "ミクシィ"}
+{"input": [{"role": "system", "content": "あなたは日本の著名なゲームタイトルの発売元を回答します"}, {"role": "user", "content": "ディズニーツムツム"}], "ideal": "LINE"}
+{"input": [{"role": "system", "content": "あなたは日本の著名なゲームタイトルの発売元を回答します"}, {"role": "user", "content": "グランブルーファンタジー"}], "ideal": "Cygames"}
+{"input": [{"role": "system", "content": "あなたは日本の著名なゲームタイトルの発売元を回答します"}, {"role": "user", "content": "ウマ娘"}], "ideal": "Cygames"}

@@ -1,0 +1,3 @@
+{"input": [{"role": "user", "content": "Answer the questions using the time words given: Ahkia balaisma? (yauhka)"}], "ideal": "Yauhka balaisna."}
+{"input": [{"role": "user", "content": "Fill in the blank using the correct form of the verb given: Yang Bilwi ra __________. "}], "ideal": "Yang Bilwi ra auna."}
+{"input": [{"role": "user", "content": "Make negative: Yaptiki ra kaikisna."}], "ideal": "Yaptiki ra kaikras sna."}
