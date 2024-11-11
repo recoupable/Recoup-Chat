@@ -39,24 +39,15 @@ jobs:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
           echo "Processing recoup"
-          # Save the output to a file
-          oaieval gpt-3.5-turbo recoup > eval_results.txt
+          # Run eval and store output
+          OUTPUT=$(oaieval gpt-3.5-turbo recoup)
+          echo "$OUTPUT"
 
-          # Check the score using Python
-          python - <<EOF
-          import re
-          with open('eval_results.txt', 'r') as f:
-              content = f.read()
+          # Extract score and check threshold
+          SCORE=$(echo "$OUTPUT" | grep "score: " | awk '{print $2}')
+          echo "Found score: $SCORE"
 
-          # Extract the score using regex
-          match = re.search(r'score: (0\.\d+)', content)
-          if match:
-              score = float(match.group(1))
-              print(f"Found score: {score}")
-              if score < 0.555:
-                  print("Score is below threshold of 0.555")
-                  exit(1)
-          else:
-              print("Could not find score in output")
-              exit(1)
-          EOF
+          if (( $(echo "$SCORE < 0.555" | bc -l) )); then
+            echo "Score ($SCORE) is below threshold of 0.555"
+            exit 1
+          fi
