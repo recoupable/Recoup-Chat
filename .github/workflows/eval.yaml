@@ -49,7 +49,7 @@ jobs:
               content = f.read()
 
           # Extract the score using regex
-          match = re.search(r'accuracy: (0\.\d+)', content)
+          match = re.search(r'score: (0\.\d+)', content)
           if match:
               score = float(match.group(1))
               print(f"Found score: {score}")
