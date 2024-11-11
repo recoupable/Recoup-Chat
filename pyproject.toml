@@ -18,7 +18,8 @@ dependencies = [
     "tiktoken",
     "tqdm",
     "blobfile",
-    "lz4"
+    "lz4",
+    "zstandard"
 ]
 
 [project.optional-dependencies]
