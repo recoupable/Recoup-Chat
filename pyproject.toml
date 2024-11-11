@@ -17,7 +17,8 @@ dependencies = [
     "termcolor",
     "tiktoken",
     "tqdm",
-    "blobfile"
+    "blobfile",
+    "lz4"
 ]
 
 [project.optional-dependencies]
