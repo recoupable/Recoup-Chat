@@ -1,6 +1,6 @@
 recoup:
   id: recoup.dev.v0
-  description: Evaluates the model's ability to solve 5th grade level math problems with slightly complicated sentences.
+  description: Evaluates the model's ability to analyze music streaming and fan engagement data, including metrics like premium vs free subscribers, playlist engagement, artist performance, and listener behavior across different streaming platforms.
   metrics: [accuracy]
 
 recoup.dev.v0:
