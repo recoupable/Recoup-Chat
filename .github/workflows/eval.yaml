@@ -34,7 +34,7 @@ jobs:
           # Install the package with core dependencies first
           pip install -e .
 
-      - name: Run oaieval command for recoup YAML file
+      - name: Run Recoup Evals
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
