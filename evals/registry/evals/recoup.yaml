@@ -1,0 +1,13 @@
+recoup:
+  id: recoup.dev.v0
+  description: Evaluates the model's ability to solve 5th grade level math problems with slightly complicated sentences.
+  metrics: [accuracy]
+
+recoup.dev.v0:
+  class: evals.elsuite.modelgraded.classify:ModelBasedClassify
+  args:
+    samples_jsonl: recoup/samples.jsonl
+    eval_type: cot_classify
+    modelgraded_spec: closedqa
+    modelgraded_spec_args:
+      criteria: "correctness: The answer should be numerically correct and include appropriate units (if applicable). The solution should match exactly with the reference answer."
