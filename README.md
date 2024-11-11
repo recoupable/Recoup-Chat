@@ -1,6 +1,5 @@
 # Recoup | AI Agents Made for the Music Industry
 
-
 This is a [Next.js](https://nextjs.org) project made with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Description
@@ -60,6 +59,16 @@ This project uses various configuration files:
 - `tsconfig.json`: TypeScript configuration
 - `.eslintrc.json`: ESLint configuration
 
+## Evals
+
+This project includes OpenAI Evals for testing and evaluating the AI components. Evals help ensure the quality and reliability of our AI responses across different use cases in the music industry.
+
+To run the evals:
+
+```bash
+oaieval gpt-3.5-turbo recoup
+```
+
 ## Learn More
 
 To learn more about the technologies used in this project, check out the following resources:
@@ -72,4 +81,3 @@ To learn more about the technologies used in this project, check out the followi
 ## Deploy on Vercel
 
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
