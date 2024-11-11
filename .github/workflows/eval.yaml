@@ -33,8 +33,8 @@ jobs:
           pip install pyyaml
           # First install without dependencies
           pip install --no-deps -e .
-          # Then install dependencies separately
-          pip install -r requirements.txt
+          # Then install dependencies from pyproject.toml
+          pip install -e .[all]
 
       - name: Get list of new YAML files in evals/registry/evals
         id: get_files
