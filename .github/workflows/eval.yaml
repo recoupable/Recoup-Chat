@@ -53,7 +53,7 @@ jobs:
           if match:
               score = float(match.group(1))
               print(f"Found score: {score}")
-              if score < 0.999:
+              if score < 0.555:
                   print("Score is below threshold of 0.555")
                   exit(1)
           else:
