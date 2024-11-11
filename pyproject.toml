@@ -19,7 +19,8 @@ dependencies = [
     "tqdm",
     "blobfile",
     "lz4",
-    "zstandard"
+    "zstandard",
+    "backoff"
 ]
 
 [project.optional-dependencies]
