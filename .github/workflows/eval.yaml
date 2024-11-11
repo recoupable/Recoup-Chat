@@ -7,7 +7,7 @@ on:
       - main
 
 jobs:
-  check_files:
+  run_evals:
     runs-on: ubuntu-latest
 
     steps:
