@@ -43,8 +43,20 @@ jobs:
           OUTPUT=$(oaieval gpt-3.5-turbo recoup)
           echo "$OUTPUT"
 
-          # Extract score and check threshold
-          SCORE=$(echo "$OUTPUT" | grep "score: " | awk '{print $2}')
+          # Extract the score using Python to parse the final report
+          SCORE=$(python3 - <<EOF
+          import sys, json
+          for line in """$OUTPUT""".splitlines():
+              if "Final report:" in line:
+                  # Get the next line that contains the score
+                  for next_line in """$OUTPUT""".splitlines():
+                      if "score: " in next_line:
+                          score = float(next_line.split("score: ")[1])
+                          print(score)
+                          break
+          EOF
+          )
+
           echo "Found score: $SCORE"
 
           if (( $(echo "$SCORE < 0.555" | bc -l) )); then
