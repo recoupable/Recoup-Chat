@@ -55,7 +55,12 @@ dev = [
     "mypy"
 ]
 
-all = ["ml", "nlp", "models", "dev"]
+all = [
+    "ml",
+    "nlp",
+    "models",
+    "dev"
+]
 
 [project.urls]
 repository = "https://github.com/openai/evals"
