@@ -42,4 +42,4 @@ jobs:
           # Navigate to the directory containing oaieval.py
           cd evals/cli
           # Run the Python script with the required arguments
-          python oaieval.py gpt-3.5-turbo recoup
+          oaieval gpt-3.5-turbo recoup
