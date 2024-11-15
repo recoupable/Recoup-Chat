@@ -34,6 +34,13 @@ jobs:
           # Install the package with core dependencies first
           pip install -e .
 
+      - name: Get list of new YAML files in evals/registry/evals
+        id: get_files
+        run: |
+          # Use environment files to store the output
+          git diff --name-only --diff-filter=A ${{ github.event.pull_request.base.sha }} ${{ github.sha }} | grep '^evals/registry/evals/.*\.yaml$' | xargs > new_files
+          echo "new_files=$(cat new_files)" >> $GITHUB_ENV
+
       - name: Run Recoup Evals
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
