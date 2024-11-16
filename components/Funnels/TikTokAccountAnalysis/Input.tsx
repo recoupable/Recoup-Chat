@@ -5,7 +5,7 @@ import { v4 as uuidV4 } from "uuid";
 import { useChatProvider } from "@/providers/ChatProvider";
 
 const TikTokAccountInput = () => {
-  const { append, setMessages } = useChatProvider();
+  const { append } = useChatProvider();
   const [username, setUsername] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -14,8 +14,6 @@ const TikTokAccountInput = () => {
     
     try {
       setIsLoading(true);
-      // Clear existing chat messages
-      setMessages([]);
       
       // First fetch TikTok trends
       const response = await fetch(`/api/trends?handle=${username}`);
