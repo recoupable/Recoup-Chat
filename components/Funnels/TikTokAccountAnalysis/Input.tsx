@@ -23,12 +23,22 @@ const TikTokAccountInput = () => {
         throw new Error(data.message);
       }
 
-      // Then append to chat with the trends data
+      // Then append to chat using the expected message format
       await append({
         id: uuidV4(),
-        content: `Analyze @${username}'s TikTok account performance and content`,
+        content: `Analyze @${username}`,
         role: "user",
-        trends: data.trends
+        tool_calls: [{
+          id: uuidV4(),
+          type: "function",
+          function: {
+            name: "getArtistAnalysis",
+            arguments: JSON.stringify({
+              user_name: username,
+              trends: data.trends
+            })
+          }
+        }]
       });
     } catch (error) {
       console.error("Analysis failed:", error);
