@@ -1,3 +1,0 @@
-[console_scripts]
-oaieval = evals.cli.oaieval:main
-oaievalset = evals.cli.oaievalset:main
