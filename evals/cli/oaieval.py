@@ -14,6 +14,12 @@ import evals.record
 from evals.eval import Eval
 from evals.record import RecorderBase
 from evals.registry import Registry
+import os
+from slack_sdk import WebClient
+from slack_sdk.errors import SlackApiError
+import ssl
+
+ssl._create_default_https_context = ssl._create_unverified_context
 
 logger = logging.getLogger(__name__)
 
@@ -113,6 +119,37 @@ class OaiEvalArguments(argparse.Namespace):
     http_fail_percent_threshold: int
     dry_run: bool
     dry_run_logging: bool
+
+
+def send_slack_message(result: dict[str, Any]) -> None:
+    """Send evaluation results to Slack."""
+    try:
+        client = WebClient(token=os.environ.get("SLACK_BOT_TOKEN"))
+        
+        # Format the message
+        message_blocks = []
+        message_text = "Evaluation Results:\n"
+        for key, value in result.items():
+            message_text += f"• *{key}*: {value}\n"
+            
+        response = client.chat_postMessage(
+            channel=os.environ.get("SLACK_CHANNEL_ID", ""),
+            text=message_text,
+            blocks=[
+                {
+                    "type": "section",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": message_text
+                    }
+                }
+            ]
+        )
+        logger.info("Slack message sent successfully")
+    except SlackApiError as e:
+        logger.error(f"Failed to send Slack message: {e.response['error']}")
+    except Exception as e:
+        logger.error(f"Error sending Slack message: {e}")
 
 
 def run(args: OaiEvalArguments, registry: Optional[Registry] = None) -> str:
@@ -236,6 +273,10 @@ def run(args: OaiEvalArguments, registry: Optional[Registry] = None) -> str:
     logger.info("Final report:")
     for key, value in result.items():
         logger.info(f"{key}: {value}")
+    
+    # Send results to Slack
+    send_slack_message(result)
+    
     return run_spec.run_id
 
 

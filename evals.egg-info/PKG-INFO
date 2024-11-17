@@ -1,0 +1,139 @@
+Metadata-Version: 2.1
+Name: evals
+Version: 3.0.1.post1
+Project-URL: repository, https://github.com/openai/evals
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+Requires-Dist: docker
+Requires-Dist: fire
+Requires-Dist: flask
+Requires-Dist: numpy
+Requires-Dist: openai>=1.0.0
+Requires-Dist: pandas
+Requires-Dist: playwright
+Requires-Dist: pydantic
+Requires-Dist: pytest
+Requires-Dist: pyyaml
+Requires-Dist: termcolor
+Requires-Dist: tiktoken
+Requires-Dist: tqdm
+Requires-Dist: blobfile
+Requires-Dist: lz4
+Requires-Dist: zstandard
+Requires-Dist: backoff
+Provides-Extra: ml
+Requires-Dist: torch; extra == "ml"
+Requires-Dist: transformers; extra == "ml"
+Requires-Dist: scikit-learn; extra == "ml"
+Requires-Dist: spacy-universal-sentence-encoder; extra == "ml"
+Requires-Dist: statsmodels; extra == "ml"
+Requires-Dist: seaborn; extra == "ml"
+Requires-Dist: matplotlib; extra == "ml"
+Requires-Dist: networkx; extra == "ml"
+Requires-Dist: numexpr; extra == "ml"
+Requires-Dist: nltk; extra == "ml"
+Requires-Dist: evaluate; extra == "ml"
+Requires-Dist: datasets; extra == "ml"
+Provides-Extra: nlp
+Requires-Dist: langchain; extra == "nlp"
+Requires-Dist: langdetect; extra == "nlp"
+Requires-Dist: sacrebleu; extra == "nlp"
+Requires-Dist: jiwer; extra == "nlp"
+Provides-Extra: models
+Requires-Dist: anthropic; extra == "models"
+Requires-Dist: google-generativeai; extra == "models"
+Provides-Extra: dev
+Requires-Dist: black; extra == "dev"
+Requires-Dist: isort; extra == "dev"
+Requires-Dist: autoflake; extra == "dev"
+Requires-Dist: ruff; extra == "dev"
+Requires-Dist: mypy; extra == "dev"
+Provides-Extra: all
+Requires-Dist: ml; extra == "all"
+Requires-Dist: nlp; extra == "all"
+Requires-Dist: models; extra == "all"
+Requires-Dist: dev; extra == "all"
+
+# Recoup | AI Agents Made for the Music Industry
+
+This is a [Next.js](https://nextjs.org) project made with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+
+## Description
+
+Recoup is an AI agent platform fueling smarter song rollouts, unforgettable fan experiences and lasting artist growth -- Empowering music executives with actionable insights and next-gen tools to elevate every artist and engage every fan.
+
+## Features
+
+- AI-powered chatbot
+- Real-time streaming responses
+- Artist Mode for roster analytics
+- User authentication with Privy
+- Integration with Supabase for data storage
+- Tailwind CSS for styling
+- TypeScript for type safety
+
+## Getting Started
+
+First, run the development server:
+
+```bash
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+
+## Project Structure
+
+- `app/`: Contains the main application pages and layout
+- `components/`: Reusable React components
+- `lib/`: Utility functions and services
+- `providers/`: React context providers
+- `hooks/`: Custom React hooks
+- `types/`: TypeScript type definitions
+- `packages/`: Custom packages for shared functionality
+
+## Key Components
+
+- `LandingPage`: The main landing page component
+- `Chat`: The core chat interface component
+- `Suggestions`: Provides chat suggestions to users
+
+## Configuration
+
+This project uses various configuration files:
+
+- `next.config.mjs`: Next.js configuration
+- `tailwind.config.ts`: Tailwind CSS configuration
+- `tsconfig.json`: TypeScript configuration
+- `.eslintrc.json`: ESLint configuration
+
+## Evals
+
+This project includes OpenAI Evals for testing and evaluating the AI components. Evals help ensure the quality and reliability of our AI responses across different use cases in the music industry.
+
+To run the evals:
+
+```bash
+oaieval gpt-3.5-turbo recoup
+```
+
+## Learn More
+
+To learn more about the technologies used in this project, check out the following resources:
+
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Supabase Documentation](https://supabase.io/docs) - learn about Supabase features and API.
+- [Tailwind CSS Documentation](https://tailwindcss.com/docs) - learn about Tailwind CSS features.
+- [TypeScript Documentation](https://www.typescriptlang.org/docs/) - learn about TypeScript.
+
+## Deploy on Vercel
+
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
