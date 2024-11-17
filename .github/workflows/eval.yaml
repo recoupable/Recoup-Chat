@@ -32,6 +32,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install pyyaml
           pip install supabase
+          pip install slack_sdk
           pip install -e .
 
       - name: Run get_premium_fans generator
