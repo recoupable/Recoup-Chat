@@ -2,7 +2,7 @@ import json
 import os
 
 CURRENT_DIR = os.path.dirname(__file__)
-INSTRUCTION_FILE_PATH = os.path.join(CURRENT_DIR, "instructions.json")  # Adjust the path as needed
+INSTRUCTION_FILE_PATH = os.path.join(CURRENT_DIR, "instructions.json")
 
 def load_json(file_path):
     with open(file_path, 'r') as file:

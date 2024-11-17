@@ -40,9 +40,9 @@ Please use this information to provide accurate and relevant responses and don't
     artistId: string,
   ): Promise<string> {
     try {
-      const context = getChatContext(email, artistId);
+      const data = await getChatContext(email, artistId);
 
-      return context;
+      return data.context;
     } catch (error) {
       console.error("Error reading or parsing JSON files:", error);
       return "{}";

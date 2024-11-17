@@ -35,13 +35,20 @@ jobs:
           pip install slack_sdk
           pip install -e .
 
-      - name: Run get_premium_fans generator
+      - name: Run generator files
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
         run: |
-          echo "Running get_premium_fans registry data generator"
-          python evals/scripts/get_premium_fans_generator.py
+          echo "Running all generator files"
+          for script in evals/scripts/*_generator.py; do
+            if [ -f "$script" ]; then
+              echo "Running $script"
+              python "$script"
+            else
+              echo "No generator files found."
+            fi
+          done
 
       - name: Get list of all YAML files in evals/registry/evals
         id: get_files

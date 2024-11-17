@@ -1,0 +1,8 @@
+[
+    {
+        "eval_name": "get_streams_count",
+        "question": "What is the email count for users with an Apple Music account?",
+        "ideal": "streamsCount",
+        "criteria": "The answer should accurately reflect the total streams generated, match exactly with the reference data."
+    }
+]

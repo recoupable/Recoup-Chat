@@ -1,4 +1,4 @@
-import instructions from "@/evals/scripts/instructions.json"
+import instructions from "@/evals/scripts/instructions.json";
 
 import { HTML_RESPONSE_FORMAT_INSTRUCTIONS } from "../consts";
 
