@@ -54,11 +54,13 @@ const useToolCall = (message: Message) => {
           const videoComments = await getVideoComments(
             encodeURIComponent(JSON.stringify(profile?.videos)),
           );
+          setIsSearchingTrends(false);
+          setIsGettingVideos(true);
           setTiktokTrends({
             ...profile,
             video: videoComments,
           });
-          setIsSearchingTrends(false);
+          setIsGettingVideos(false);
         }
         if (toolName === "getVideosInfo") {
           setIsGettingVideos(true);
