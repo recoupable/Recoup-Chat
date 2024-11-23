@@ -12,6 +12,12 @@ export type ArtistRecord = {
   id: string;
   timestamp: number;
   image: string | null;
+  artist_social_links: Array<{
+    id: string;
+    artistId: string;
+    link: string;
+    type: string;
+  }>;
 };
 
 export type CampaignRecord = {

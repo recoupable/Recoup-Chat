@@ -13,11 +13,9 @@ const useToolChat = (question?: string, toolName?: any) => {
   const [tiktokVideos, setTiktokVideos] = useState<any>({});
 
   const toolCallContext = {
-    ...(tiktokTrends !== null && { trends: tiktokTrends }),
+    ...(tiktokTrends !== null && { ...tiktokTrends }),
     ...tiktokVideos,
   };
-
-  console.log(toolCallContext);
 
   const [beginCall, setBeginCall] = useState(false);
 

@@ -58,7 +58,9 @@ const useToolCall = (message: Message) => {
           setIsGettingVideos(true);
           setTiktokTrends({
             ...profile,
-            video: videoComments,
+            videos: videoComments.videos,
+            total_video_comments_count:
+              videoComments.total_video_comments_count,
           });
           setIsGettingVideos(false);
         }

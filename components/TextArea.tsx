@@ -46,7 +46,7 @@ function TextArea({
       <textarea
         {...(id && { id: id })}
         value={value}
-        className={`w-full !outline-none border-gray-700 border-[1px] px-2 py-1 md:p-2 rounded-md text-sm
+        className={`w-full !outline-none border-gray-700 border-[1px] px-2 py-1 md:p-2 rounded-md text-sm !bg-black
           ${className ? className : ""} ${
             hookToForm && fieldError && fieldError?.message ? clasNameError : ""
           }`}

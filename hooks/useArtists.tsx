@@ -55,6 +55,12 @@ const useArtists = () => {
       body: JSON.stringify({
         name: artistSetting.name,
         image: artistSetting.image,
+        tiktok_url: artistSetting.tiktok,
+        youtube_url: artistSetting.youtube,
+        apple_url: artistSetting.appleUrl,
+        instagram_url: artistSetting.instagram,
+        twitter_url: artistSetting.twitter,
+        spotify_url: artistSetting.spotifyUrl,
         artistId: settingMode === SETTING_MODE.CREATE ? "" : selectedArtist?.id,
         email,
       }),
@@ -89,6 +95,20 @@ const useArtists = () => {
     if (selectedArtist) {
       artistSetting.setName(selectedArtist.name || "");
       artistSetting.setImage(selectedArtist.image || "");
+      const socialMediaTypes = {
+        TWITTER: artistSetting.setTwitter,
+        YOUTUBE: artistSetting.setYoutube,
+        APPLE: artistSetting.setAppleUrl,
+        INSTAGRAM: artistSetting.setInstagram,
+        SPOTIFY: artistSetting.setSpotifyUrl,
+        TIKTOK: artistSetting.setTikTok,
+      };
+      Object.entries(socialMediaTypes).forEach(([type, setter]) => {
+        const link = selectedArtist.artist_social_links.find(
+          (item) => item.type === type,
+        )?.link;
+        setter(link || "");
+      });
     }
   }, [selectedArtist]);
 

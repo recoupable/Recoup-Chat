@@ -18,7 +18,9 @@ const MissingVideoUrl = () => {
 
   return (
     <div>
-      <p className="text-sm pb-3">Please provide the video url to proceed.</p>
+      <p className="text-sm pb-3">
+        Please provide the TikTok video url to proceed.
+      </p>
       <fieldset className="flex gap-2 items-center">
         <input
           type="text"

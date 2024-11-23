@@ -17,7 +17,14 @@ export async function GET(req: NextRequest) {
     const artistIds = user.artistIds || [];
     const { data: artists } = await client
       .from("artists")
-      .select("*")
+      .select(
+        `
+        *,
+        artist_social_links (
+          *
+        )
+      `,
+      )
       .in("id", artistIds);
     return Response.json({ artists }, { status: 200 });
   } catch (error) {
