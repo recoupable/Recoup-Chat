@@ -5,6 +5,7 @@ import { useChatProvider } from "@/providers/ChatProvider";
 import { ToolCallProvider } from "@/providers/ToolCallProvider";
 import { Message } from "ai";
 import { ScrollArea, ScrollTo } from "react-scroll-to";
+import ReportSummary from "./ReportSummary";
 
 const TikTokAnalysisReport = () => {
   const { messages } = useChatProvider();
@@ -26,16 +27,7 @@ const TikTokAnalysisReport = () => {
                       scroll({ smooth: true, y: Number.MAX_SAFE_INTEGER })
                     }
                   >
-                    <section>
-                      <div
-                        className="text-sm font-sans max-w-[500px] text-pretty break-words "
-                        dangerouslySetInnerHTML={{
-                          __html: decodeURIComponent(
-                            answer?.content?.replaceAll("%", "&#37;") || "",
-                          ),
-                        }}
-                      />
-                    </section>
+                    <ReportSummary />
                   </ToolCallProvider>
                 </ScrollArea>
               )}
