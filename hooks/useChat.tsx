@@ -26,11 +26,11 @@ const useChat = () => {
     setCurrentQuestion,
   } = useMessages();
 
-  const goToNewConversation = async (name: string) => {
+  const goToNewConversation = async (path?: string) => {
     if (conversationId && !pathname.includes("funnels")) return;
     const newId = uuidV4();
     conversationRef.current = newId;
-    push(`/${newId}`);
+    push(`/${path || ""}/${newId}`);
   };
 
   const clearQuery = async () => {
@@ -45,11 +45,11 @@ const useChat = () => {
     return true;
   };
 
-  const append = async (message: Message) => {
+  const append = async (message: Message, redirectTo?: string) => {
     if (!isPrepared()) return;
     setCurrentQuestion(message);
     appendAiChat(message);
-    await goToNewConversation(message.content);
+    await goToNewConversation(redirectTo);
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
