@@ -1,3 +1,5 @@
+"use client"
+
 import ChatInput from "@/components/Chat/ChatInput";
 import Answer from "@/components/Tools/Answer";
 import { useChatProvider } from "@/providers/ChatProvider";
