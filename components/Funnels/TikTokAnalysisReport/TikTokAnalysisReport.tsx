@@ -9,9 +9,9 @@ import ReportSummary from "./ReportSummary";
 
 const TikTokAnalysisReport = () => {
   const { messages } = useChatProvider();
-  console.log("ZIAD", messages);
-
-  const answer = messages.find((message: Message) => message.role === "system");
+  const answer = messages
+    .reverse()
+    .find((message: Message) => message.role === "assistant");
 
   return (
     <main className="flex-1 flex md:p-4 bg-background">
