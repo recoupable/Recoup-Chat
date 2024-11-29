@@ -1,7 +1,6 @@
-"use client"
+"use client";
 
 import ChatInput from "@/components/Chat/ChatInput";
-import Answer from "@/components/Tools/Answer";
 import { useChatProvider } from "@/providers/ChatProvider";
 import { Message } from "ai";
 import { ScrollArea, ScrollTo } from "react-scroll-to";
@@ -9,7 +8,6 @@ import { ScrollArea, ScrollTo } from "react-scroll-to";
 const TikTokAnalysisReport = () => {
   const { messages } = useChatProvider();
 
-  console.log("ZIAD", messages);
   const answer = messages.find((message: Message) => message.role === "system");
 
   return (
@@ -20,7 +18,16 @@ const TikTokAnalysisReport = () => {
             <ScrollTo>
               {() => (
                 <ScrollArea className="w-full mt-4 max-w-3xl mx-auto overflow-y-auto">
-                  <Answer content={answer?.content || ""} role={"system"} />
+                  <section>
+                    <div
+                      className="text-sm font-sans max-w-[500px] text-pretty break-words "
+                      dangerouslySetInnerHTML={{
+                        __html: decodeURIComponent(
+                          answer?.content?.replaceAll("%", "&#37;") || "",
+                        ),
+                      }}
+                    />
+                  </section>
                 </ScrollArea>
               )}
             </ScrollTo>

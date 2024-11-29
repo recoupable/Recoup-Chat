@@ -30,7 +30,7 @@ const useChat = () => {
     if (conversationId && !pathname.includes("funnels")) return;
     const newId = uuidV4();
     conversationRef.current = newId;
-    push(`/${path || ""}/${newId}`);
+    push(`${path || ""}/${newId}`);
   };
 
   const clearQuery = async () => {
