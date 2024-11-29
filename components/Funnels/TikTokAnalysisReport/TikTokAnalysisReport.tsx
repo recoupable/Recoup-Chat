@@ -7,7 +7,8 @@ import { ScrollArea, ScrollTo } from "react-scroll-to";
 
 const TikTokAnalysisReport = () => {
   const { messages } = useChatProvider();
-
+  console.log("ZIAD",  messages)
+  
   const answer = messages.find((message: Message) => message.role === "system");
 
   return (
