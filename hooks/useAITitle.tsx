@@ -9,6 +9,7 @@ const useAITitle = () => {
 
   useEffect(() => {
     const fetchTitle = async () => {
+      console.log("ZIAD", converstaionId, messages);
       if (!converstaionId || messages.length > 1) return;
       setTitle("Recoup");
       const response = await fetch("/api/title", {
@@ -18,8 +19,11 @@ const useAITitle = () => {
       const data = await response.json();
       setTitle(data.title);
     };
-    if (chat_id) setTitle("TikTok Analysis Account | Recoup");
-    if (converstaionId) fetchTitle();
+    if (chat_id) {
+      setTitle("TikTok Analysis Account | Recoup");
+      return;
+    }
+    fetchTitle();
   }, [chat_id, messages, converstaionId]);
 
   return {
