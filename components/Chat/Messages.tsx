@@ -6,7 +6,7 @@ import Message from "./Message";
 import { Message as AIMessage } from "ai";
 import { ToolCallProvider } from "@/providers/ToolCallProvider";
 import Suggestions from "./Suggestions";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import { Copy } from "lucide-react";
 
 const Messages = ({
@@ -21,6 +21,8 @@ const Messages = ({
   const { messages, pending, suggestions } = useChatProvider();
   const scrollTo = () => scroll({ smooth: true, y: Number.MAX_SAFE_INTEGER });
   const { conversation: conversationId } = useParams();
+  const searchParams = useSearchParams();
+  const reportEnabled = searchParams.get("report");
 
   useEffect(() => {
     scrollTo();
@@ -32,11 +34,13 @@ const Messages = ({
       className={`w-full mt-4 max-w-3xl mx-auto overflow-y-auto ${messages.length && "grow"} ${className}`}
     >
       {children || <div />}
-      {messages.map((message: AIMessage, index: number) => (
-        <ToolCallProvider message={message} scrollTo={scrollTo} key={index}>
-          <Message message={message} />
-        </ToolCallProvider>
-      ))}
+      {messages
+        .slice(reportEnabled ? 1 : 0)
+        .map((message: AIMessage, index: number) => (
+          <ToolCallProvider message={message} scrollTo={scrollTo} key={index}>
+            <Message message={message} />
+          </ToolCallProvider>
+        ))}
       {pending && <Thinking />}
       {conversationId && !pending && messages.length > 0 && (
         <div className="flex gap-2 items-center md:px-9 py-4">
