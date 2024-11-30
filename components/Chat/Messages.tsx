@@ -13,14 +13,12 @@ const Messages = ({
   scroll,
   className,
   children,
-  messages,
 }: {
   scroll: ({ smooth, y }: { smooth: boolean; y: number }) => void;
   className?: string;
   children?: React.ReactNode;
-  messages: AIMessage[];
 }) => {
-  const { pending, suggestions } = useChatProvider();
+  const { messages, pending, suggestions } = useChatProvider();
   const scrollTo = () => scroll({ smooth: true, y: Number.MAX_SAFE_INTEGER });
   const { conversation: conversationId } = useParams();
 
