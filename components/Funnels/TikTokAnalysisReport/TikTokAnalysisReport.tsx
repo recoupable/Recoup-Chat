@@ -1,44 +1,22 @@
 "use client";
 
 import ChatInput from "@/components/Chat/ChatInput";
+import { ScrollTo } from "react-scroll-to";
+import Messages from "@/components/Chat/Messages";
 import { useChatProvider } from "@/providers/ChatProvider";
-import { ToolCallProvider } from "@/providers/ToolCallProvider";
-import { Message } from "ai";
-import { ScrollArea, ScrollTo } from "react-scroll-to";
-import ReportSummary from "./ReportSummary";
 
 const TikTokAnalysisReport = () => {
   const { messages } = useChatProvider();
-  const answer = messages
-    .reverse()
-    .find((message: Message) => message.role === "assistant");
 
   return (
-    <main className="flex-1 flex md:p-4 bg-background">
-      <div className="h-[calc(100vh-64px)] md:h-full bg-white rounded-xl w-full">
-        <div className="px-4 max-w-3xl mx-auto w-full h-full mx-auto md:pt-4 flex flex-col bg-white">
-          <div className="grow flex flex-col pb-4 h-full">
-            <ScrollTo>
-              {({ scroll }) => (
-                <ScrollArea className="w-full mt-4 max-w-3xl mx-auto overflow-y-auto">
-                  <ToolCallProvider
-                    message={answer as Message}
-                    scrollTo={() =>
-                      scroll({ smooth: true, y: Number.MAX_SAFE_INTEGER })
-                    }
-                  >
-                    <ReportSummary />
-                  </ToolCallProvider>
-                </ScrollArea>
-              )}
-            </ScrollTo>
-            <div className="space-y-2">
-              <ChatInput />
-            </div>
-          </div>
-        </div>
+    <div className="grow h-[calc(100vh-56px)] md:h-screen bg-background p-4">
+      <div
+        className={`size-full flex flex-col items-center justify-center bg-white rounded-xl overflow-hidden flex flex-col ${messages.length ? "px-4 pb-5 md:pt-20" : "items-center justify-center"}`}
+      >
+        <ScrollTo>{({ scroll }) => <Messages scroll={scroll} />}</ScrollTo>
+        <ChatInput />
       </div>
-    </main>
+    </div>
   );
 };
 
