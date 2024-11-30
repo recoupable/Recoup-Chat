@@ -20,14 +20,12 @@ const useTikTokAnalysis = () => {
   const { setSettingMode, saveSetting, setSelectedArtist, setArtistActive } =
     useArtistProvider();
   const { email, isPrepared } = useUserProvider();
-  const { conversation: conversationId } = useParams();
+  const { chat_id: chatId } = useParams();
   const { push } = useRouter();
 
   useEffect(() => {
     const init = async () => {
-      const response = await fetch(
-        `/api/tiktok_analysis?chatId=${conversationId}`,
-      );
+      const response = await fetch(`/api/tiktok_analysis?chatId=${chatId}`);
       const data = await response.json();
       if (data?.data) {
         setResult(data.data);
@@ -36,9 +34,9 @@ const useTikTokAnalysis = () => {
         setThought(STEP_OF_ANALYSIS.FINISHED);
       }
     };
-    if (!conversationId) return;
+    if (!chatId) return;
     init();
-  }, [conversationId]);
+  }, [chatId]);
 
   const handleRetry = () => {
     setResult(null);
@@ -53,7 +51,7 @@ const useTikTokAnalysis = () => {
     if (!isPrepared()) return;
     if (!username || isLoading) return;
     let newId = "";
-    if (!conversationId) {
+    if (!chatId) {
       newId = uuidV4();
       push(`/funnels/tiktok-account-analysis/${newId}`);
     }
