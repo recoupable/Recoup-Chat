@@ -2,8 +2,11 @@ import ChatInput from "@/components/Chat/ChatInput";
 import Messages from "@/components/Chat/Messages";
 import { ScrollTo } from "react-scroll-to";
 import FanSegmentResult from "./FanSegmentResult";
+import { useChatProvider } from "@/providers/ChatProvider";
 
 const AnalysisChat = () => {
+  const { messages } = useChatProvider();
+
   return (
     <main className="flex-1 flex md:p-4 bg-background">
       <div className="h-[calc(100vh-64px)] md:h-full bg-white rounded-xl w-full">
@@ -12,7 +15,11 @@ const AnalysisChat = () => {
             <ScrollTo>
               {({ scroll }) => (
                 <>
-                  <Messages scroll={scroll} className="!grow">
+                  <Messages
+                    scroll={scroll}
+                    className="!grow"
+                    messages={messages}
+                  >
                     <FanSegmentResult />
                   </Messages>
                 </>

@@ -10,7 +10,9 @@ const Chat = () => {
       <div
         className={`size-full flex flex-col items-center justify-center bg-white rounded-xl overflow-hidden flex flex-col ${messages.length ? "px-4 pb-5 md:pt-20" : "items-center justify-center"}`}
       >
-        <ScrollTo>{({ scroll }) => <Messages scroll={scroll} />}</ScrollTo>
+        <ScrollTo>
+          {({ scroll }) => <Messages scroll={scroll} messages={messages} />}
+        </ScrollTo>
         <ChatInput />
       </div>
     </div>

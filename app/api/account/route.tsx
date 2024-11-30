@@ -7,6 +7,9 @@ export async function POST(req: NextRequest) {
   const client = getSupabaseServerAdminClient();
 
   try {
+    const { data } = await client.from("tiktok_analysis").select("*");
+    console.log("ZIAD OKAY", data);
+
     const { data: found } = await client
       .from("accounts")
       .select("*")

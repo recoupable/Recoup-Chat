@@ -3,18 +3,15 @@ import { useTikTokAnalysisProvider } from "@/providers/TIkTokAnalysisProvider";
 import { v4 as uuidV4 } from "uuid";
 
 const Segments = () => {
-  const { segments } = useTikTokAnalysisProvider();
+  const { segments, result } = useTikTokAnalysisProvider();
   const { append } = useChatProvider();
 
-  const handleGenerateReport = async () => {
-    append(
-      {
-        id: uuidV4(),
-        role: "user",
-        content: `Please create a tiktok fan segment report summary.`,
-      },
-      "/funnels/tiktok-account-analysis/report",
-    );
+  const handleGenerateReport = async (segmentName: string) => {
+    append({
+      id: uuidV4(),
+      role: "user",
+      content: `Please create a tiktok fan segment report for ${result.id} using this segment ${segmentName}.`,
+    });
   };
 
   return (
@@ -31,7 +28,7 @@ const Segments = () => {
             className="w-full border-grey-light border-[1px] rounded-md px-3 py-2 flex gap-2 items-center shadow-grey"
             type="button"
             key={segment.name}
-            onClick={handleGenerateReport}
+            onClick={() => handleGenerateReport(segment.name)}
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
