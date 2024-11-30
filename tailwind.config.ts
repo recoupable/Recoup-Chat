@@ -31,7 +31,8 @@ const config: Config = {
           DEFAULT: "#345A5D"
         },
         purple: {
-          DEFAULT: "#BD99B3"
+          DEFAULT: "#BD99B3",
+          dark: "#720762"
         }
       },
       boxShadow: {

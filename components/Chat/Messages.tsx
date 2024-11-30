@@ -6,7 +6,7 @@ import Message from "./Message";
 import { Message as AIMessage } from "ai";
 import { ToolCallProvider } from "@/providers/ToolCallProvider";
 import Suggestions from "./Suggestions";
-import { useParams, useSearchParams } from "next/navigation";
+import { useParams } from "next/navigation";
 import { Copy } from "lucide-react";
 
 const Messages = ({
@@ -18,11 +18,9 @@ const Messages = ({
   className?: string;
   children?: React.ReactNode;
 }) => {
-  const { messages, pending, suggestions } = useChatProvider();
+  const { messages, pending, suggestions, reportEnabled } = useChatProvider();
   const scrollTo = () => scroll({ smooth: true, y: Number.MAX_SAFE_INTEGER });
   const { conversation: conversationId } = useParams();
-  const searchParams = useSearchParams();
-  const reportEnabled = searchParams.get("report");
 
   useEffect(() => {
     scrollTo();
@@ -38,7 +36,7 @@ const Messages = ({
         .slice(reportEnabled ? 1 : 0)
         .map((message: AIMessage, index: number) => (
           <ToolCallProvider message={message} scrollTo={scrollTo} key={index}>
-            <Message message={message} />
+            <Message message={message} index={index} />
           </ToolCallProvider>
         ))}
       {pending && <Thinking />}

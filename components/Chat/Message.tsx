@@ -3,9 +3,12 @@ import ToolContent from "../Tools/ToolContent";
 import { useToolCallProvider } from "@/providers/ToolCallProvider";
 import ToolFollowUp from "../Tools/ToolFollowUp";
 import Icon from "../Icon";
+import { useChatProvider } from "@/providers/ChatProvider";
 
-const Message = ({ message }: { message: AIMessage }) => {
+const Message = ({ message, index }: { message: AIMessage; index: number }) => {
   const { context } = useToolCallProvider();
+  const { reportEnabled } = useChatProvider();
+
   return (
     <div className="p-3 rounded-lg flex w-full gap-2">
       {message.role === "assistant" && (
@@ -16,6 +19,12 @@ const Message = ({ message }: { message: AIMessage }) => {
       <div className={`grow ${message.role === "user" && "flex justify-end"}`}>
         {context && <ToolContent />}
         <ToolFollowUp message={message} />
+        {reportEnabled && index === 0 && (
+          <button
+            type="button"
+            className="text-purple-dark mt-6"
+          >{`[Download Full Report PDF]`}</button>
+        )}
       </div>
     </div>
   );

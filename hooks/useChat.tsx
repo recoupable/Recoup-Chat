@@ -1,6 +1,6 @@
 import { Message } from "ai/react";
 import { v4 as uuidV4 } from "uuid";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import useConversations from "./useConversations";
 import useMessages from "./useMessages";
 import { useUserProvider } from "@/providers/UserProvder";
@@ -9,6 +9,9 @@ const useChat = () => {
   const { login, address } = useUserProvider();
   const { push } = useRouter();
   const { conversationId } = useConversations();
+  const searchParams = useSearchParams();
+  const reportEnabled = searchParams.get("report");
+
   const {
     conversationRef,
     input,
@@ -73,6 +76,7 @@ const useChat = () => {
     finalCallback,
     clearQuery,
     toolCall,
+    reportEnabled,
   };
 };
 
