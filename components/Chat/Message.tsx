@@ -6,8 +6,8 @@ import Icon from "../Icon";
 import { useChatProvider } from "@/providers/ChatProvider";
 
 const Message = ({ message, index }: { message: AIMessage; index: number }) => {
-  const { context } = useToolCallProvider();
-  const { reportEnabled } = useChatProvider();
+  const { context, loading } = useToolCallProvider();
+  const { reportEnabled, pending } = useChatProvider();
 
   return (
     <div className="p-3 rounded-lg flex w-full gap-2">
@@ -19,7 +19,7 @@ const Message = ({ message, index }: { message: AIMessage; index: number }) => {
       <div className={`grow ${message.role === "user" && "flex justify-end"}`}>
         {context && <ToolContent />}
         <ToolFollowUp message={message} />
-        {reportEnabled && index === 0 && (
+        {reportEnabled && index === 0 && !pending && !loading && (
           <button
             type="button"
             className="text-purple-dark mt-6"
