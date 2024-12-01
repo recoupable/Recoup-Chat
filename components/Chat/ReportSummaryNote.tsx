@@ -1,5 +1,6 @@
 import useDownloadReport from "@/hooks/useDownloadReport";
 import { useToolCallProvider } from "@/providers/ToolCallProvider";
+import Icon from "../Icon";
 
 const ReportSummaryNote = () => {
   const { downloadReport } = useDownloadReport();
@@ -39,6 +40,9 @@ const ReportSummaryNote = () => {
                 __html: tiktokReportContent,
               }}
             />
+            <div className="flex justify-center items-center py-10">
+              <Icon name="logo" />
+            </div>
           </div>
         </div>
       )}
