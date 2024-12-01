@@ -78,7 +78,7 @@ const useTikTokAnalysis = () => {
         fanSegments = await getFanSegments(profileWithComments);
         const fanSegmentsWithIcons = await getSegmentsIcons(fanSegments);
         console.log("ZIAD", fanSegmentsWithIcons);
-        setSegments([...fanSegments]);
+        setSegments([...fanSegmentsWithIcons]);
       }
       setThought(STEP_OF_ANALYSIS.SAVING_ANALYSIS);
       const data = await saveAnalysis({

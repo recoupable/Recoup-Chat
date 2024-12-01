@@ -21,10 +21,9 @@ const getSegmentsIcons = async (fanSegments: any) => {
       const iconName = data.data[`${Object.keys(segment)[0]}`];
       const icon = ICONS.find((name: string) => name.includes(iconName));
       return {
-        [`${Object.keys(segment)[0]}`]: {
-          name: Object.values(segment)[0],
-          icon: icon || "",
-        },
+        name: Object.keys(segment)[0],
+        icon: icon || "",
+        count: Object.values(segment)[0],
       };
     });
 
