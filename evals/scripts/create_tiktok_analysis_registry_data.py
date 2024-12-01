@@ -3,7 +3,7 @@ import string
 from get_instruction import get_instruction
 from get_tiktok_demo_context import get_demo_comments, get_demo_profile
 
-def create_tiktok_analysis_registry_data(ideal_key_or_value, question):
+def create_tiktok_analysis_registry_data(ideal_key_or_value, instruction_key, question):
     registry_data = ""
     instruction = get_instruction()
 
@@ -25,7 +25,7 @@ def create_tiktok_analysis_registry_data(ideal_key_or_value, question):
             f"\n"
             f"Context: {context_str}\n\n"
             f"Question: ${question}\n\n"
-            f"{instruction['get_tiktok_analysis']}"
+            f"{instruction[instruction_key]}"
         ),
         "ideal": ideal_value_str
     }

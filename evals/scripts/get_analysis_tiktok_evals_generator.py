@@ -7,7 +7,8 @@ for item in evals_questions_ideals:
     ideal = item["ideal"]
     eval_name = item["eval_name"]
     criteria = item["criteria"]
+    instruction = item["instruction"]
 
     create_yaml(eval_name, criteria, question)
-    registry_data = create_tiktok_analysis_registry_data(ideal, question)
+    registry_data = create_tiktok_analysis_registry_data(ideal, instruction, question)
     create_data(eval_name, registry_data)
