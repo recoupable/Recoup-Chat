@@ -1,3 +1,5 @@
+import Icon from "@/components/Icon";
+import LucideIcon from "@/components/LucideIcon";
 import { useChatProvider } from "@/providers/ChatProvider";
 import { useTikTokAnalysisProvider } from "@/providers/TIkTokAnalysisProvider";
 import { v4 as uuidV4 } from "uuid";
@@ -13,7 +15,6 @@ const Segments = () => {
       content: `Please create a tiktok fan segment report for ${result.id} using this segment ${segmentName}.`,
     });
   };
-
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 pt-4 gap-3">
       {segments.slice(0, 10).map((segment) => (
@@ -23,12 +24,13 @@ const Segments = () => {
           key={segment?.name}
           onClick={() => handleGenerateReport(segment?.name)}
         >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={"/segment.svg"}
-            alt="not found logo"
-            className="!w-5 !h-5"
-          />
+          {segment?.icon ? (
+            <LucideIcon name={segment.icon} />
+          ) : (
+            // eslint-disable-next-line @next/next/no-img-element
+            <Icon name="logo-xs" />
+          )}
+
           <p className="font-bold text-xs text-center">
             {segment?.name} {`(${segment?.count})`}
           </p>
