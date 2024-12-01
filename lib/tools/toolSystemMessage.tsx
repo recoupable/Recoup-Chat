@@ -32,7 +32,7 @@ const toolSystemMessage = (context: any, question: any, toolName: string) => {
     ${HTML_RESPONSE_FORMAT_INSTRUCTIONS}
     NOTE: 
     - For **lists of data**, use **commas** as separators instead of <li> tags.
-    - **Sub-title** of sections should be 14px & font-bold.
+    - **Sub-titles** for sections such as **Size**, **Demo**, **Trends**, **Top Brands** should be 14px & font-bold & <span />.
     - **Title** of response should be 18px & font-bold and bottom padding 12px.`;
 
   return "";
