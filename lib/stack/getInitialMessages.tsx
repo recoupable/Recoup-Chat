@@ -20,19 +20,26 @@ const getInitialMessages = async (
       .offset(0)
       .build(),
   });
-  const messages: StackMessage[] = events.map((event) => {
-    const data = {
-      id: event.metadata.id,
-      content: event.metadata.content,
-      role: event.metadata.role as Message["role"],
-      createdAt: new Date(event.timestamp),
-    } as StackMessage;
-    if (event.metadata.role === "assistant")
-      data.questionId = event.metadata.questionId;
-    return data;
-  });
+  const titleMessage = events.find((event) => event.metadata?.title);
+
+  const messages: StackMessage[] = events
+    .filter((event) => event.metadata?.title)
+    .map((event) => {
+      const data = {
+        id: event.metadata.id,
+        content: event.metadata.content,
+        role: event.metadata.role as Message["role"],
+        createdAt: new Date(event.timestamp),
+      } as StackMessage;
+      if (event.metadata.role === "assistant")
+        data.questionId = event.metadata.questionId;
+      return data;
+    });
   messages.sort((a, b) => a.createdAt!.getTime() - b.createdAt!.getTime());
-  return messages;
+  return {
+    messages,
+    title: titleMessage?.metadata?.title,
+  };
 };
 
 export default getInitialMessages;

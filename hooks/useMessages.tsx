@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import useSuggestions from "./useSuggestions";
+import usePrompts from "./usePrompts";
 import { useChat as useAiChat } from "ai/react";
 import { useCsrfToken } from "@/packages/shared/src/hooks";
 import useInitialMessages from "./useInitialMessages";
@@ -8,20 +8,20 @@ import { usePathname } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 import { useUserProvider } from "@/providers/UserProvder";
 import { useArtistProvider } from "@/providers/ArtistProvider";
+import useAiTitle from "./useAititle";
 
 const useMessages = () => {
-  const { finalCallback, suggestions, setCurrentQuestion } = useSuggestions();
   const csrfToken = useCsrfToken();
-  const { initialMessages, fetchInitialMessages } = useInitialMessages();
+  const { initialMessages, fetchInitialMessages, initialTitle } =
+    useInitialMessages();
   const { conversationRef } = useConversations();
   const queryClient = useQueryClient();
   const { email } = useUserProvider();
   const [toolCall, setToolCall] = useState<any>(null);
   const { selectedArtist, artistActive } = useArtistProvider();
-
+  const { finalCallback, suggestions, setCurrentQuestion } = usePrompts();
   const pathname = usePathname();
   const isNewChat = pathname === "/";
-
   const {
     messages,
     input,
@@ -56,6 +56,7 @@ const useMessages = () => {
       });
     },
   });
+  const { title } = useAiTitle(messages);
 
   const messagesRef = useRef(messages);
 
@@ -87,6 +88,7 @@ const useMessages = () => {
     suggestions,
     setCurrentQuestion,
     finalCallback,
+    title: initialTitle || title,
   };
 };
 

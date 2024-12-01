@@ -45,6 +45,9 @@ const getConversations = async (walletAddress: Address) => {
     if (!aggregation[event]) {
       aggregation[event] = item;
     }
+    if (item?.metadata?.title) {
+      aggregation[event].title = item.metadata.title;
+    }
   });
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return Object.values(aggregation) as any;

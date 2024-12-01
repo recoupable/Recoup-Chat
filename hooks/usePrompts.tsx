@@ -10,7 +10,7 @@ import { useArtistProvider } from "@/providers/ArtistProvider";
 import removeHtmlTags from "@/lib/removeHTMLTags";
 import formattedContent from "@/lib/formattedContent";
 
-const useSuggestions = () => {
+const usePrompts = () => {
   const { address } = useUserProvider();
   const { artistActive, selectedArtist } = useArtistProvider();
   const [suggestions, setSuggestions] = useState(SUGGESTIONS);
@@ -66,4 +66,4 @@ const useSuggestions = () => {
   };
 };
 
-export default useSuggestions;
+export default usePrompts;

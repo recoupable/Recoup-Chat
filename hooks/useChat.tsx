@@ -11,7 +11,6 @@ const useChat = () => {
   const { conversationId } = useConversations();
   const searchParams = useSearchParams();
   const reportEnabled = searchParams.get("report");
-
   const {
     conversationRef,
     input,
@@ -25,6 +24,7 @@ const useChat = () => {
     suggestions,
     finalCallback,
     setCurrentQuestion,
+    title,
   } = useMessages();
 
   const goToNewConversation = () => {
@@ -77,6 +77,7 @@ const useChat = () => {
     clearQuery,
     toolCall,
     reportEnabled,
+    title,
   };
 };
 

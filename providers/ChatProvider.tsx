@@ -12,7 +12,12 @@ const ChatProvider = ({ children }: { children: React.ReactNode }) => {
 
   const value = useMemo(() => ({ ...chat }), [chat]);
 
-  return <ChatContext.Provider value={value}>{children}</ChatContext.Provider>;
+  return (
+    <ChatContext.Provider value={value}>
+      <title>{chat.title}</title>
+      {children}
+    </ChatContext.Provider>
+  );
 };
 
 const useChatProvider = () => {

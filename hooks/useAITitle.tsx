@@ -1,11 +1,13 @@
-import { useChatProvider } from "@/providers/ChatProvider";
+import trackChatTitle from "@/lib/stack/trackChatTitle";
+import { useUserProvider } from "@/providers/UserProvder";
+import { Message } from "ai";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
-const useAITitle = () => {
+const useAiTitle = (messages: Message[]) => {
   const [title, setTitle] = useState("Recoup");
   const { chat_id, conversation: conversationId } = useParams();
-  const { messages } = useChatProvider();
+  const { address } = useUserProvider();
 
   useEffect(() => {
     const fetchTitle = async () => {
@@ -16,7 +18,9 @@ const useAITitle = () => {
         body: JSON.stringify({ question: messages[0].content }),
       });
       const data = await response.json();
-      setTitle(data.title.replaceAll('"', ""));
+      const aiTitle = data.title.replaceAll('"', "");
+      setTitle(aiTitle);
+      trackChatTitle(address, aiTitle, conversationId as string);
     };
     if (chat_id) {
       setTitle("TikTok Analysis Account | Recoup");
@@ -30,4 +34,4 @@ const useAITitle = () => {
   };
 };
 
-export default useAITitle;
+export default useAiTitle;
