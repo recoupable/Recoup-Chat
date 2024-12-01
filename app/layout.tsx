@@ -9,7 +9,6 @@ import { CircleHelp } from "lucide-react";
 import ArtistSettingModal from "@/components/ArtistSettingModal";
 
 export const metadata: Metadata = {
-  title: TITLE,
   description: DESCRIPTION,
   openGraph: {
     title: TITLE,

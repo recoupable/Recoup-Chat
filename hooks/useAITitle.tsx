@@ -16,8 +16,7 @@ const useAITitle = () => {
         body: JSON.stringify({ question: messages[0].content }),
       });
       const data = await response.json();
-      console.log("ZIAD", data)
-      setTitle(data.title);
+      setTitle(data.title.replaceAll('"', ""));
     };
     if (chat_id) {
       setTitle("TikTok Analysis Account | Recoup");
