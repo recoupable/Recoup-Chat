@@ -14,7 +14,7 @@ export async function POST(req: NextRequest) {
       messages: [
         {
           role: "user",
-          content: `Provide a brief title reflecting the core elements of the given context. (More formal).
+          content: `Provide a brief title of no more than 20 characters that reflects the key elements of the given context (more formal).
           Context: ${question}`,
         },
       ],

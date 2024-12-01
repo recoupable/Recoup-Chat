@@ -16,6 +16,7 @@ const useAITitle = () => {
         body: JSON.stringify({ question: messages[0].content }),
       });
       const data = await response.json();
+      console.log("ZIAD", data)
       setTitle(data.title);
     };
     if (chat_id) {
