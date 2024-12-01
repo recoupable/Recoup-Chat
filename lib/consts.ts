@@ -19,7 +19,7 @@ export const SUGGESTIONS = [
 
 export const HTML_RESPONSE_FORMAT_INSTRUCTIONS = `
   Please provide a wide range of HTML formats with embedded HTML tags such as <div>, <p>, <ul>, <li>, and <span>, along with CSS styles including font size, margin, and padding. 
-   - Please do not include any color styles. The font size for all text should be 14px. Paragraph should be left padding 8px & top padding 4px for indentation, while the font size for heading tags (h1 to h6) should be always 14px & font-bold.
+   - Please do not include any color styles. The font size for all text should be 14px. Paragraph should be left padding 8px & top padding 4px for indentation.
    - All Numbers & Proper nouns should bold using <span>.
    - Don't INCLUDE <br/> tags.
    - If there is a LIST OF DATA of the same type, BE SURE to use the <ul> <li> tags. The CSS [list-style] for <li> should be set to "inside".
