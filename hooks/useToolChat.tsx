@@ -1,3 +1,4 @@
+import getFullReport from "@/lib/getFullReport";
 import { useChatProvider } from "@/providers/ChatProvider";
 import { Message, useChat } from "ai/react";
 import { useParams } from "next/navigation";
@@ -12,6 +13,7 @@ const useToolChat = (question?: string, toolName?: any) => {
   const [isGettingVideos, setIsGettingVideos] = useState(false);
   const [tiktokVideos, setTiktokVideos] = useState<any>({});
   const [tiktokAnalysis, setTiktokAnalysis] = useState<any>(null);
+  const [tiktokReportContent, setTikTokReportContent] = useState("");
 
   const toolCallContext = {
     ...(tiktokTrends !== null && { ...tiktokTrends }),
@@ -58,6 +60,9 @@ const useToolChat = (question?: string, toolName?: any) => {
         content: question as string,
         role: "user",
       });
+      const reportContent = await getFullReport(tiktokAnalysis);
+      console.log("ZIAD", reportContent);
+      setTikTokReportContent(reportContent);
       setTiktokAnalysis(null);
       setTiktokTrends(null);
       setTiktokVideos({});
@@ -82,6 +87,7 @@ const useToolChat = (question?: string, toolName?: any) => {
     setTiktokVideos,
     tiktokVideos,
     setTiktokAnalysis,
+    tiktokReportContent,
   };
 };
 

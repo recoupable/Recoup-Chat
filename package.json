@@ -23,6 +23,7 @@
     "framer-motion": "^11.11.9",
     "geist": "^1.3.1",
     "gpt-tokenizer": "^2.2.1",
+    "html2pdf.js": "^0.10.2",
     "joi": "^17.13.3",
     "loops": "^3.4.0",
     "lucide-react": "^0.446.0",
