@@ -14,12 +14,12 @@ export async function POST(req: NextRequest) {
       messages: [
         {
           role: "user",
-          content: `Icon Names List: ${JSON.stringify(ICONS)}
-          Segment Names: ${JSON.stringify(body)}`,
+          content: `**Icon Names List**: ${JSON.stringify(ICONS)}\n
+          **Segment Names**: ${JSON.stringify(body)}`,
         },
         {
           role: "system",
-          content: `${instructions.get_segments_icons} \n Response should be in JSON format. {"data": [{ "string": "string" }, { "string": "string" }]}.`,
+          content: `${instructions.get_segments_icons} \n Response should be in JSON format. {"data": {"segment_name1": "icon_name1", "segment_name2": "icon_name2", ...}}`,
         },
       ],
     });
