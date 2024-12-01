@@ -14,8 +14,8 @@ export type Conversation = {
     conversationId: string;
     questionId: string;
     uniqueId: string;
-    title?: string;
   };
+  title?: string;
   points: number;
   timestamp: string;
 };

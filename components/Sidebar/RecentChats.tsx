@@ -28,8 +28,7 @@ const RecentChats = ({ toggleModal }: { toggleModal: () => void }) => {
               }}
             />
             <p className="text-sm truncate max-w-[200px]">
-              {conversation?.metadata?.title ||
-                `${conversation?.metadata.content}...`}
+              {conversation?.title || `${conversation?.metadata.content}...`}
             </p>
           </button>
         ))}

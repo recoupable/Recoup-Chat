@@ -36,6 +36,7 @@ const getConversations = async (walletAddress: Address) => {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const chats = events.filter((event: any) => event?.metadata?.conversationId);
+  console.log("ZIAD", chats);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const aggregation: any = {};
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -43,7 +44,10 @@ const getConversations = async (walletAddress: Address) => {
     const event = item.event;
 
     if (!aggregation[event]) {
-      aggregation[event] = item;
+      aggregation[event] = {
+        ...item,
+        title: item?.metadata?.title || "",
+      };
     }
     if (item?.metadata?.title) {
       aggregation[event].title = item.metadata.title;
