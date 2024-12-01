@@ -19,8 +19,8 @@ const useAiTitle = (messages: Message[]) => {
       });
       const data = await response.json();
       const aiTitle = data.title.replaceAll('"', "");
-      setTitle(aiTitle);
       trackChatTitle(address, aiTitle, conversationId as string);
+      setTitle(aiTitle);
     };
     if (chat_id) {
       setTitle("TikTok Analysis Account | Recoup");
