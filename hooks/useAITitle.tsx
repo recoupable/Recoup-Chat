@@ -4,13 +4,12 @@ import { useEffect, useState } from "react";
 
 const useAITitle = () => {
   const [title, setTitle] = useState("Recoup");
-  const { chat_id, converstaion: converstaionId } = useParams();
+  const { chat_id, conversation: conversationId } = useParams();
   const { messages } = useChatProvider();
 
   useEffect(() => {
     const fetchTitle = async () => {
-      console.log("ZIAD", converstaionId, messages);
-      if (!converstaionId || messages.length > 1) return;
+      if (!conversationId || messages.length > 1) return;
       setTitle("Recoup");
       const response = await fetch("/api/title", {
         method: "POST",
@@ -24,7 +23,7 @@ const useAITitle = () => {
       return;
     }
     fetchTitle();
-  }, [chat_id, messages, converstaionId]);
+  }, [chat_id, messages, conversationId]);
 
   return {
     title,
