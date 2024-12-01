@@ -15,14 +15,19 @@ export async function POST(req: NextRequest) {
 
     const response = await openai.chat.completions.create({
       model: AI_MODEL,
+      max_tokens: 1111,
+      temperature: 0.7,
       messages: [
         {
           role: "user",
           content: `Context: ${JSON.stringify(body)}
-            Question: Please, create a tiktok fan segment report.
-            ${instructions.get_segements_report}
-            ${HTML_RESPONSE_FORMAT_INSTRUCTIONS}
-            Note: ${FULL_REPORT_NOTE}`,
+          Question: Please, create a tiktok fan segment report.`,
+        },
+        {
+          role: "system",
+          content: `${instructions.get_segements_report}
+          ${HTML_RESPONSE_FORMAT_INSTRUCTIONS}
+          NOTE: ${FULL_REPORT_NOTE}`,
         },
       ],
       store: true,
