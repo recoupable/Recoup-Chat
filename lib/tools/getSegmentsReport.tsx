@@ -34,7 +34,7 @@ For Example:
           analysis: {
             ...data,
             segment_name: segment_name,
-            segment_size: segment[`${segment_name}`],
+            segment_size: segment.count,
           },
         },
         question,
