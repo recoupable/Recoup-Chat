@@ -25,6 +25,11 @@ export const HTML_RESPONSE_FORMAT_INSTRUCTIONS = `
    - If there is a LIST OF DATA of the same type, BE SURE to use the <ul> <li> tags. The CSS [list-style] for <li> should be set to "inside".
    - Make sure to present the HTML response as plain HTML without any enclosing code markers or delimiters.`;
 
+export const REPORT_SUMMARY_NOTE = `
+  - For **lists of data**, use **commas** as separators instead of <li> tags.
+  - **Sub-titles** for sections such as **Size**, **Demo**, **Trends**, **Top Brands** should be 14px & font-bold & <span />.
+  - **Title** of response should be 18px & font-bold and bottom padding 12px.`;
+
 export const ICONS = [
   "AArrowDown",
   "AArrowUp",

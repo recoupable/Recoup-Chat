@@ -1,6 +1,9 @@
 import instructions from "@/evals/scripts/instructions.json";
 
-import { HTML_RESPONSE_FORMAT_INSTRUCTIONS } from "../consts";
+import {
+  HTML_RESPONSE_FORMAT_INSTRUCTIONS,
+  REPORT_SUMMARY_NOTE,
+} from "../consts";
 
 // eslint-disable-next-line  @typescript-eslint/no-explicit-any
 const toolSystemMessage = (context: any, question: any, toolName: string) => {
@@ -30,10 +33,7 @@ const toolSystemMessage = (context: any, question: any, toolName: string) => {
     Question: ${question}
     ${instructions.get_segments_report_summary}
     ${HTML_RESPONSE_FORMAT_INSTRUCTIONS}
-    NOTE: 
-    - For **lists of data**, use **commas** as separators instead of <li> tags.
-    - **Sub-titles** for sections such as **Size**, **Demo**, **Trends**, **Top Brands** should be 14px & font-bold & <span />.
-    - **Title** of response should be 18px & font-bold and bottom padding 12px.`;
+    NOTE: ${REPORT_SUMMARY_NOTE}`;
 
   return "";
 };
