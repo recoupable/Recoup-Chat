@@ -29,7 +29,7 @@ const ReportSummaryNote = () => {
         </li>
       </ul>
       {tiktokReportContent && (
-        <div className="bg-white w-full min-h-screen fixed top-[99999999px] left-0 flex justify-center">
+        <div className="bg-white w-full min-h-screen fixed top-[99999999px] left-0 flex justify-center z-[99999999]">
           <div
             id="segment-report"
             className="text-black max-w-[9.5in] w-full bg-white p-[0.3in] text-[11pt] leading-normal relative box-border min-h-[11in]"

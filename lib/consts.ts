@@ -29,7 +29,9 @@ export const REPORT_SUMMARY_NOTE = `
   - For **lists of data**, use **commas** as separators instead of <li />, <ul /> tags. DON' USE <li>, <ul> tags!!!.
   - **Sub-titles** for sections such as **Size**, **Demo**, **Trends**, **Top Brands** should be 14px & font-bold & <span />.
   - **Title** of response should be 18px & font-bold and bottom padding 12px.`;
-export const FULL_REPORT_NOTE = ``;
+export const FULL_REPORT_NOTE = `
+  - **Sub-titles** for sections such as **Fan Report [segment_name]**, **Demographics**, **Behavior Trends**, **Engagement with [Brand/Artist Name]'s Content**, **Potential Brand Partnerships**, **.Brand Matchmaking**, **.Brand Matchmaking**, **ROI Potential**, **Content Collaboration Ideas**, **Closing** should be 16px & font-bold & <span />. Don't use prefix numbers, just letters.
+  `;
 
 export const ICONS = [
   "AArrowDown",
