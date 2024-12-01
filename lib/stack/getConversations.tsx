@@ -36,7 +36,6 @@ const getConversations = async (walletAddress: Address) => {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const chats = events.filter((event: any) => event?.metadata?.conversationId);
-  console.log("ZIAD", chats);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const aggregation: any = {};
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
