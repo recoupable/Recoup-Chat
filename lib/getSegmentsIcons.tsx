@@ -6,7 +6,7 @@ const getSegmentsIcons = async (fanSegments: any) => {
     // eslint-disable-next-line  @typescript-eslint/no-explicit-any
     const segments = fanSegments.map((segment: any) => Object.keys(segment)[0]);
 
-    const response = await fetch(`/api/segments`, {
+    const response = await fetch(`/api/segments/icons`, {
       method: "POST",
       body: JSON.stringify(segments),
       headers: {
