@@ -8,7 +8,7 @@ import { usePathname } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 import { useUserProvider } from "@/providers/UserProvder";
 import { useArtistProvider } from "@/providers/ArtistProvider";
-import useAiTitle from "./useAititle";
+import useAiTitle from "./useAiTitle";
 
 const useMessages = () => {
   const csrfToken = useCsrfToken();
