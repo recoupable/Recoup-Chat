@@ -1,4 +1,8 @@
-import { AI_MODEL, HTML_RESPONSE_FORMAT_INSTRUCTIONS } from "@/lib/consts";
+import {
+  AI_MODEL,
+  FULL_REPORT_NOTE,
+  HTML_RESPONSE_FORMAT_INSTRUCTIONS,
+} from "@/lib/consts";
 import { NextRequest } from "next/server";
 import OpenAI from "openai";
 import instructions from "@/evals/scripts/instructions.json";
@@ -17,7 +21,8 @@ export async function POST(req: NextRequest) {
           content: `Context: ${JSON.stringify(body)}
             Question: Please, create a tiktok fan segment report.
             ${instructions.get_segements_report}
-            ${HTML_RESPONSE_FORMAT_INSTRUCTIONS}`,
+            ${HTML_RESPONSE_FORMAT_INSTRUCTIONS}
+            Note: ${FULL_REPORT_NOTE}`,
         },
       ],
       store: true,

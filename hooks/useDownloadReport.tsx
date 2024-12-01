@@ -13,7 +13,7 @@ const useDownloadReport = () => {
         pdfDomElementId: "segment-report",
         name: `${title}.pdf`,
       });
-      doc?.save("contract-agreement.pdf");
+      doc?.save(`${title}.pdf`);
     } catch (error) {
       console.error("Error generating PDF:", error);
     } finally {

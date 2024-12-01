@@ -2,7 +2,7 @@ import useDownloadReport from "@/hooks/useDownloadReport";
 import { useToolCallProvider } from "@/providers/ToolCallProvider";
 
 const ReportSummaryNote = () => {
-  const { downloading, downloadReport } = useDownloadReport();
+  const { downloadReport } = useDownloadReport();
   const { tiktokReportContent } = useToolCallProvider();
 
   return (
@@ -28,16 +28,18 @@ const ReportSummaryNote = () => {
           opportunities. Ongoing Tracking Enabled ✅
         </li>
       </ul>
-      {downloading && (
-        <div
-          id="segment-report"
-          className="text-black max-w-[9.5in] w-full bg-white p-[0.3in] text-[11pt] leading-normal relative box-border min-h-[11in]"
-        >
+      {tiktokReportContent && (
+        <div className="bg-white w-full min-h-screen fixed top-[99999999px] left-0 flex justify-center">
           <div
-            dangerouslySetInnerHTML={{
-              __html: tiktokReportContent,
-            }}
-          />
+            id="segment-report"
+            className="text-black max-w-[9.5in] w-full bg-white p-[0.3in] text-[11pt] leading-normal relative box-border min-h-[11in]"
+          >
+            <div
+              dangerouslySetInnerHTML={{
+                __html: tiktokReportContent,
+              }}
+            />
+          </div>
         </div>
       )}
     </>
