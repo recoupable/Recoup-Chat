@@ -72,18 +72,17 @@ const useTikTokAnalysis = () => {
         total_video_comments_count: videoComments.total_video_comments_count,
       };
       setResult(profileWithComments);
-      let fanSegments = [];
+      let fanSegmentsWithIcons = [];
       if (videoComments.videos.length > 0) {
         setThought(STEP_OF_ANALYSIS.SEGMENTS);
-        fanSegments = await getFanSegments(profileWithComments);
-        const fanSegmentsWithIcons = await getSegmentsIcons(fanSegments);
-        console.log("ZIAD", fanSegmentsWithIcons);
+        const fanSegments = await getFanSegments(profileWithComments);
+        fanSegmentsWithIcons = await getSegmentsIcons(fanSegments);
         setSegments([...fanSegmentsWithIcons]);
       }
       setThought(STEP_OF_ANALYSIS.SAVING_ANALYSIS);
       const data = await saveAnalysis({
         ...profileWithComments,
-        segments: [...fanSegments],
+        segments: [...fanSegmentsWithIcons],
         chat_id: newId,
       });
       setResult({
