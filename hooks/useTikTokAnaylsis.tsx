@@ -9,6 +9,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { v4 as uuidV4 } from "uuid";
 import { STEP_OF_ANALYSIS } from "@/types/Thought";
+import getSegmentsIcons from "@/lib/getSegmentsIcons";
 
 const useTikTokAnalysis = () => {
   const [username, setUsername] = useState("");
@@ -75,6 +76,8 @@ const useTikTokAnalysis = () => {
       if (videoComments.videos.length > 0) {
         setThought(STEP_OF_ANALYSIS.SEGMENTS);
         fanSegments = await getFanSegments(profileWithComments);
+        const segmentsIcons = await getSegmentsIcons(fanSegments);
+        console.log("ZIAD", segmentsIcons);
         setSegments([...fanSegments]);
       }
       setThought(STEP_OF_ANALYSIS.SAVING_ANALYSIS);

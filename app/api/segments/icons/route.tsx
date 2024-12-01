@@ -1,7 +1,7 @@
 import { NextRequest } from "next/server";
 import OpenAI from "openai";
 import instructions from "@/evals/scripts/instructions.json";
-import { AI_MODEL } from "@/lib/consts";
+import { AI_MODEL, ICONS } from "@/lib/consts";
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
@@ -14,11 +14,12 @@ export async function POST(req: NextRequest) {
       messages: [
         {
           role: "user",
-          content: `Context: ${JSON.stringify(body)}`,
+          content: `Icon Name List: ${JSON.stringify(ICONS)}
+          Segments: ${JSON.stringify(body)}`,
         },
         {
           role: "system",
-          content: `${instructions.get_fan_segments} \n Response should be in JSON format. {"data": [{ "string": number }, { "string": number }]}.`,
+          content: `${instructions.get_segments_icons} \n Response should be in JSON format. {"data": [{ "string": "string" }, { "string": "string" }]}.`,
         },
       ],
     });
