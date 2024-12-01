@@ -76,7 +76,9 @@ const useTikTokAnalysis = () => {
       if (videoComments.videos.length > 0) {
         setThought(STEP_OF_ANALYSIS.SEGMENTS);
         fanSegments = await getFanSegments(profileWithComments);
-        const segmentsIcons = await getSegmentsIcons(fanSegments);
+        const segmentsIcons = await getSegmentsIcons(
+          fanSegments.map((segment: any) => Object.keys(segment)[0]),
+        );
         console.log("ZIAD", segmentsIcons);
         setSegments([...fanSegments]);
       }

@@ -14,8 +14,8 @@ export async function POST(req: NextRequest) {
       messages: [
         {
           role: "user",
-          content: `Icon Name List: ${JSON.stringify(ICONS)}
-          Segments: ${JSON.stringify(body)}`,
+          content: `Icon Names List: ${JSON.stringify(ICONS)}
+          Segment Names: ${JSON.stringify(body)}`,
         },
         {
           role: "system",
