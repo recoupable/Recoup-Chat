@@ -4,10 +4,24 @@ import { Message } from "ai";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
+let titleIndex = 1;
+let timer: any = null;
+
 const useAiTitle = (messages: Message[]) => {
   const [title, setTitle] = useState("Recoup");
   const { chat_id, conversation: conversationId } = useParams();
   const { address } = useUserProvider();
+
+  const updateTitle = (title: string) => {
+    timer = setInterval(() => {
+      setTitle(title.slice(0, titleIndex));
+      if (titleIndex === title.length - 1) {
+        clearInterval(timer);
+        return;
+      }
+      titleIndex++;
+    }, 200);
+  };
 
   useEffect(() => {
     const fetchTitle = async () => {
@@ -20,10 +34,10 @@ const useAiTitle = (messages: Message[]) => {
       const data = await response.json();
       const aiTitle = data.title.replaceAll('"', "");
       trackChatTitle(address, aiTitle, conversationId as string);
-      setTitle(aiTitle);
+      updateTitle(aiTitle);
     };
     if (chat_id) {
-      setTitle("TikTok Analysis Account | Recoup");
+      updateTitle("TikTok Analysis Account | Recoup");
       return;
     }
     fetchTitle();
