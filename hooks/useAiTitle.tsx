@@ -13,6 +13,7 @@ const useAiTitle = (messages: Message[]) => {
   const { address } = useUserProvider();
 
   const updateTitle = (title: string) => {
+    titleIndex = 1;
     timer = setInterval(() => {
       setTitle(title.slice(0, titleIndex));
       if (titleIndex === title.length - 1) {
