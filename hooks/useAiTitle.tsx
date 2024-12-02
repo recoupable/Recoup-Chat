@@ -14,6 +14,7 @@ const useAiTitle = (messages: Message[]) => {
 
   const updateTitle = (title: string) => {
     titleIndex = 1;
+    clearInterval(timer);
     timer = setInterval(() => {
       setTitle(title.slice(0, titleIndex));
       if (titleIndex === title.length - 1) {
