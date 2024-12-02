@@ -21,7 +21,7 @@ const useAiTitle = (messages: Message[]) => {
         return;
       }
       titleIndex++;
-    }, 200);
+    }, 100);
   };
 
   useEffect(() => {
