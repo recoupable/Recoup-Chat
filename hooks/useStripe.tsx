@@ -17,35 +17,34 @@ const useStripe = () => {
 
   const createStripeAccount = async () => {
     setLoading(true);
+    let accountId = stripeAccountId;
+    if (!stripeAccountId) {
+      const createData = {
+        type: "standard",
+        default_currency: "usd",
+        business_type: "individual",
+      };
 
-    const createData = {
-      type: "standard",
-      default_currency: "usd",
-      business_type: "individual",
-    };
+      const stripeAccount = await createAccount(createData);
 
-    const stripeAccount = await createAccount(createData);
-
-    const response: any = await addStripeAccountId(
-      encodeURIComponent(email || ""),
-      stripeAccount.id,
-    );
-    if (!response) {
-      handleError("creation failed!");
-      setLoading(false);
-      return;
+      const response: any = await addStripeAccountId(
+        encodeURIComponent(email || ""),
+        stripeAccount.id,
+      );
+      if (!response) {
+        handleError("creation failed!");
+        setLoading(false);
+        return;
+      }
+      accountId = stripeAccount.id;
     }
-    const newAccountId = stripeAccount.id;
-
     const createLinkData = {
-      account: newAccountId,
+      account: accountId,
       refresh_url: `${window.location.origin}/funnels/tiktok-account-analysis/${chatId}`,
       return_url: `${window.location.origin}/funnels/tiktok-account-analysis/${chatId}`,
       type: "account_onboarding",
     };
-
     const linkResponse = await createAccountLink(createLinkData);
-
     window.open(linkResponse.url, "_self");
     setLoading(false);
   };
