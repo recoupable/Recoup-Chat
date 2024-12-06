@@ -3,12 +3,18 @@ import { useTikTokAnalysisProvider } from "@/providers/TIkTokAnalysisProvider";
 import { v4 as uuidV4 } from "uuid";
 import Icon from "@/components/Icon";
 import LucideIcon from "@/components/LucideIcon";
+import { useStripeProvider } from "@/providers/StripeProvider";
 
 const Segments = () => {
   const { segments, result } = useTikTokAnalysisProvider();
+  const { stripeConnected, createStripeAccount } = useStripeProvider();
   const { append } = useChatProvider();
 
   const handleGenerateReport = async (segmentName: string) => {
+    if (!stripeConnected) {
+      await createStripeAccount();
+      return;
+    }
     append(
       {
         id: uuidV4(),
