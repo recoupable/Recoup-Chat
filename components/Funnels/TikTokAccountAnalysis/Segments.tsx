@@ -31,7 +31,6 @@ const Segments = () => {
     if (!credits?.remaining_credits) {
       await createCheckoutSession(
         `${result?.name || username}'s fan segment report: ${segmentName}`,
-        window.location.href,
       );
       return;
     }

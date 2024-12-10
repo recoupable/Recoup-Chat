@@ -12,9 +12,11 @@ import { v4 as uuidV4 } from "uuid";
 import useSaveTiktokArtist from "./useSaveTiktokArtist";
 import saveTiktokAnalysis from "@/lib/saveTiktokAnalysis";
 import getSegments from "@/lib/getSegments";
+import getArtistTikTokHandle from "@/lib/getArtistTikTokHandle";
+import getTikTokAnalysisByArtistId from "@/lib/getTikTokAnalysisByArtistId";
 
 const useChainOfThought = () => {
-  const { setSettingMode } = useArtistProvider();
+  const { setSettingMode, selectedArtist } = useArtistProvider();
   const [username, setUsername] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [thought, setThought] = useState(STEP_OF_ANALYSIS.INITITAL);
@@ -43,6 +45,20 @@ const useChainOfThought = () => {
         },
         newId,
       );
+      const handle = username.replaceAll("@", "");
+      const artistHandle = getArtistTikTokHandle(selectedArtist);
+      if (artistHandle === handle) {
+        const existedAnalysis = await getTikTokAnalysisByArtistId(
+          selectedArtist?.id || "",
+        );
+        if (existedAnalysis) {
+          setResult(existedAnalysis);
+          setSegments(existedAnalysis.segments);
+          setThought(STEP_OF_ANALYSIS.FINISHED);
+          return;
+        }
+      }
+
       await new Promise((resolve) => setTimeout(resolve, 1900));
       const profile = await getTikTokProfile(
         username.replaceAll("@", ""),
