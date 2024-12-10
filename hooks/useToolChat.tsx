@@ -1,5 +1,7 @@
+import saveReportReferenece from "@/lib/saveReportReference";
 import { useChatProvider } from "@/providers/ChatProvider";
 import { useTikTokReportProvider } from "@/providers/TikTokReportProvider";
+import { useUserProvider } from "@/providers/UserProvder";
 import { Tools } from "@/types/Tool";
 import { Message, useChat } from "ai/react";
 import { useParams } from "next/navigation";
@@ -10,6 +12,7 @@ const useToolChat = (question?: string, toolName?: any) => {
   const { finalCallback, clearQuery } = useChatProvider();
   const { conversation: conversationId } = useParams();
   const { tiktokNextSteps, tiktokRawReportContent } = useTikTokReportProvider();
+  const { address } = useUserProvider();
   const {
     tiktokTrends,
     tiktokVideos,
@@ -17,15 +20,12 @@ const useToolChat = (question?: string, toolName?: any) => {
     initReport,
     isSearchingTrends,
   } = useTikTokReportProvider();
-
+  const [beginCall, setBeginCall] = useState(false);
   const toolCallContext = {
     ...(tiktokTrends !== null && { ...tiktokTrends }),
     ...tiktokVideos,
     ...(tiktokAnalysis !== null && { ...tiktokAnalysis }),
   };
-
-  const [beginCall, setBeginCall] = useState(false);
-
   const {
     messages,
     append,
@@ -39,7 +39,7 @@ const useToolChat = (question?: string, toolName?: any) => {
     },
     onError: console.error,
     onFinish: async (message) => {
-      console.log("ZIAD", toolName);
+      if (toolName === Tools.getSegmentsReport) return;
       await finalCallback(
         message,
         {
@@ -72,15 +72,36 @@ const useToolChat = (question?: string, toolName?: any) => {
   }, [beginCall, question]);
 
   useEffect(() => {
+    const save = async () => {
+      const uniqueId = `${address}-${Date.now()}`;
+      const response = await saveReportReferenece(
+        uniqueId,
+        messages[1].content,
+        tiktokRawReportContent,
+        tiktokNextSteps,
+      );
+      if (response?.error) return;
+      const referenceId = response.id;
+      await finalCallback(
+        messages[1],
+        {
+          id: uuidV4(),
+          content: question as string,
+          role: "user",
+        },
+        conversationId as string,
+        referenceId,
+        uniqueId,
+      );
+    };
     if (
       !loading &&
       messages?.length === 2 &&
       tiktokRawReportContent &&
       tiktokNextSteps &&
       toolName === Tools.getSegmentsReport
-    ) {
-      console.log("ZIAD HERE");
-    }
+    )
+      save();
   }, [loading, messages, tiktokNextSteps, tiktokRawReportContent]);
 
   return {
