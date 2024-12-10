@@ -35,7 +35,7 @@ const Message = ({ message, index }: { message: AIMessage; index: number }) => {
         )}
         {reportEnabled &&
           index === 0 &&
-          (!isLoading || messages.length > 2) &&
+          (!isLoading || messages.length > 0) &&
           tiktokNextSteps && <ReportSummaryNote />}
       </div>
     </div>
