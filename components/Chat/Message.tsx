@@ -28,7 +28,7 @@ const Message = ({ message, index }: { message: AIMessage; index: number }) => {
         className={`grow ${message.role === "user" && "flex justify-end"} max-w-[90%]`}
       >
         {context && <ToolContent />}
-        {reportActive ? (
+        {reportActive && index === 0 ? (
           <Answer content={summary} role="assistant" />
         ) : (
           <ToolFollowUp message={message} />
