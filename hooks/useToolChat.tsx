@@ -104,7 +104,7 @@ const useToolChat = (question?: string, toolName?: any) => {
     };
     if (
       !loading &&
-      chatMessages?.length === 0 &&
+      chatMessages?.length === 2 &&
       toolMessages?.length === 2 &&
       tiktokRawReportContent &&
       tiktokNextSteps &&
