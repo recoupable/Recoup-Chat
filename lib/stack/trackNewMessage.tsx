@@ -12,6 +12,7 @@ const trackNewMessage = async (
   message: StackMessage,
   conversationId: string,
   artistId: string,
+  referenceId?: string,
 ) => {
   try {
     const stackClient = getStackClient(CHAT_POINT_SYSTEM_ID);
@@ -25,6 +26,7 @@ const trackNewMessage = async (
         ...message,
         conversationId,
         artistId,
+        referenceId: referenceId || "",
       },
     });
     return uniqueId;

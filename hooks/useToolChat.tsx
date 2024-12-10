@@ -17,7 +17,7 @@ const useToolChat = (question?: string, toolName?: any) => {
     initReport,
     isSearchingTrends,
   } = useTikTokReportProvider();
-  
+
   const toolCallContext = {
     ...(tiktokTrends !== null && { ...tiktokTrends }),
     ...tiktokVideos,
@@ -39,7 +39,7 @@ const useToolChat = (question?: string, toolName?: any) => {
     },
     onError: console.error,
     onFinish: async (message) => {
-      console.log("ZIAD", toolName )
+      console.log("ZIAD", toolName);
       await finalCallback(
         message,
         {
@@ -79,7 +79,7 @@ const useToolChat = (question?: string, toolName?: any) => {
       tiktokNextSteps &&
       toolName === Tools.getSegmentsReport
     ) {
-      
+      console.log("ZIAD HERE");
     }
   }, [loading, messages, tiktokNextSteps, tiktokRawReportContent]);
 
