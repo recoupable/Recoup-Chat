@@ -12,7 +12,8 @@ import { useConversationsProvider } from "@/providers/ConverstaionsProvider";
 const useMessages = () => {
   const { finalCallback, suggestions, setCurrentQuestion } = useSuggestions();
   const csrfToken = useCsrfToken();
-  const { initialMessages, fetchInitialMessages } = useInitialMessages();
+  const { initialMessages, fetchInitialMessages, titleMessage } =
+    useInitialMessages();
   const { conversationRef } = useConversationsProvider();
   const queryClient = useQueryClient();
   const { email } = useUserProvider();
@@ -81,6 +82,7 @@ const useMessages = () => {
     handleInputChange,
     input,
     messagesRef,
+    titleMessage,
     pending,
     fetchInitialMessages,
     toolCall,

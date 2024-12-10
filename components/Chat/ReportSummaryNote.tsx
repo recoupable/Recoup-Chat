@@ -38,7 +38,7 @@ const ReportSummaryNote = () => {
               <div className="w-full aspect-[757/146] rounded-lg flex items-center justify-center overflow-hidden relative mb-6">
                 {/* eslint-disable-next-line  @next/next/no-img-element */}
                 <img
-                  src={tiktokAnalysis?.avatar || ""}
+                  src={tiktokAnalysis?.avatar}
                   alt="not found pic"
                   className="w-full"
                 />

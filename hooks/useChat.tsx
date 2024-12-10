@@ -26,6 +26,7 @@ const useChat = () => {
     suggestions,
     finalCallback,
     setCurrentQuestion,
+    titleMessage,
   } = useMessages();
 
   const goToNewConversation = async (
@@ -83,6 +84,7 @@ const useChat = () => {
     clearQuery,
     toolCall,
     reportEnabled,
+    titleMessage,
   };
 };
 

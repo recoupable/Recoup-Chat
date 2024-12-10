@@ -1,4 +1,6 @@
+import useIsMobile from "@/hooks/useIsMobile";
 import { useConversationsProvider } from "@/providers/ConverstaionsProvider";
+import { useTikTokReportProvider } from "@/providers/TikTokReportProvider";
 import { Conversation } from "@/types/Stack";
 import { useRouter } from "next/navigation";
 
@@ -6,13 +8,20 @@ const RecentChats = ({ toggleModal }: { toggleModal: () => void }) => {
   const { conversations, streamingTitle, streaming } =
     useConversationsProvider();
   const { push } = useRouter();
+  const isMobile = useIsMobile();
+  const { initReport } = useTikTokReportProvider();
 
   const handleClick = (conversation: Conversation) => {
-    toggleModal();
+    if (isMobile) toggleModal();
+    initReport();
     if (conversation.isTikTokAnalysis) {
       push(
         `/funnels/tiktok-account-analysis/${conversation.metadata.conversationId}`,
       );
+      return;
+    }
+    if (conversation?.metadata?.referenceId) {
+      push(`/${conversation.metadata.conversationId}?report=true`);
       return;
     }
     push(`/${conversation.metadata.conversationId}`);

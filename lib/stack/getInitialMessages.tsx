@@ -26,13 +26,23 @@ const getInitialMessages = async (
       content: event.metadata.content,
       role: event.metadata.role as Message["role"],
       createdAt: new Date(event.timestamp),
+      metadata: {
+        ...event.metadata,
+      },
     } as StackMessage;
     if (event.metadata.role === "assistant")
       data.questionId = event.metadata.questionId;
     return data;
   });
   messages.sort((a, b) => a.createdAt!.getTime() - b.createdAt!.getTime());
-  return messages;
+  const titleMessage = messages.find(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (message: any) => message?.metadata?.title,
+  );
+  return {
+    messages,
+    titleMessage,
+  };
 };
 
 export default getInitialMessages;

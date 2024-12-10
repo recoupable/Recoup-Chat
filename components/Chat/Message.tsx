@@ -6,11 +6,15 @@ import { useChatProvider } from "@/providers/ChatProvider";
 import Icon from "../Icon";
 import ReportSummaryNote from "./ReportSummaryNote";
 import { useTikTokReportProvider } from "@/providers/TikTokReportProvider";
+import useTikTokReference from "@/hooks/useTikTokReference";
+import Answer from "../Tools/Answer";
 
 const Message = ({ message, index }: { message: AIMessage; index: number }) => {
   const { context, loading } = useToolCallProvider();
   const { tiktokNextSteps } = useTikTokReportProvider();
   const { reportEnabled, pending } = useChatProvider();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { reportActive, summary } = useTikTokReference(message as any);
 
   return (
     <div className="p-3 rounded-lg flex w-full gap-2">
@@ -23,7 +27,11 @@ const Message = ({ message, index }: { message: AIMessage; index: number }) => {
         className={`grow ${message.role === "user" && "flex justify-end"} max-w-[90%]`}
       >
         {context && <ToolContent />}
-        <ToolFollowUp message={message} />
+        {reportActive ? (
+          <Answer content={summary} role="assistant" />
+        ) : (
+          <ToolFollowUp message={message} />
+        )}
         {reportEnabled &&
           index === 0 &&
           !pending &&

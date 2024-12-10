@@ -28,6 +28,10 @@ const useTikTokReport = () => {
   const initReport = () => {
     setTiktokTrends(null);
     setTiktokVideos({});
+    setTiktokNextSteps("");
+    setTiktokRawReportContent("");
+    setTiktokAnalysis(null);
+    setTiktokReportContent("");
   };
 
   return {
