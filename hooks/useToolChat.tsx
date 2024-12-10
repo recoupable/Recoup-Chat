@@ -1,29 +1,23 @@
-import getFullReport from "@/lib/getFullReport";
 import { useChatProvider } from "@/providers/ChatProvider";
 import { useTikTokReportProvider } from "@/providers/TikTokReportProvider";
+import { Tools } from "@/types/Tool";
 import { Message, useChat } from "ai/react";
-import { useParams, useSearchParams } from "next/navigation";
+import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { v4 as uuidV4 } from "uuid";
 
 const useToolChat = (question?: string, toolName?: any) => {
   const { finalCallback, clearQuery } = useChatProvider();
   const { conversation: conversationId } = useParams();
-  const searchParams = useSearchParams();
-  const reportEnabled = searchParams.get("report");
   const { tiktokNextSteps, tiktokRawReportContent } = useTikTokReportProvider();
-
   const {
     tiktokTrends,
     tiktokVideos,
     tiktokAnalysis,
     initReport,
     isSearchingTrends,
-    setTiktokReportContent,
-    setIsGeneratingReport,
-    setTiktokRawReportContent,
   } = useTikTokReportProvider();
-
+  
   const toolCallContext = {
     ...(tiktokTrends !== null && { ...tiktokTrends }),
     ...tiktokVideos,
@@ -45,6 +39,7 @@ const useToolChat = (question?: string, toolName?: any) => {
     },
     onError: console.error,
     onFinish: async (message) => {
+      console.log("ZIAD", toolName )
       await finalCallback(
         message,
         {
@@ -77,22 +72,16 @@ const useToolChat = (question?: string, toolName?: any) => {
   }, [beginCall, question]);
 
   useEffect(() => {
-    const init = async () => {
-      setIsGeneratingReport(true);
-      const { reportContent, rawContent } = await getFullReport(tiktokAnalysis);
-      setTiktokReportContent(reportContent);
-      setTiktokRawReportContent(rawContent);
-      setIsGeneratingReport(false);
-    };
-    if (!tiktokAnalysis) return;
-    init();
-  }, [tiktokAnalysis]);
-
-  useEffect(() => {
-    if (!loading && messages?.length === 2) {
-      console.log("ZIAD HERE");
+    if (
+      !loading &&
+      messages?.length === 2 &&
+      tiktokRawReportContent &&
+      tiktokNextSteps &&
+      toolName === Tools.getSegmentsReport
+    ) {
+      
     }
-  }, [loading, messages]);
+  }, [loading, messages, tiktokNextSteps, tiktokRawReportContent]);
 
   return {
     messages,
