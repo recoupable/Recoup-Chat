@@ -31,8 +31,12 @@ const Messages = ({
       {messages
         .slice(reportEnabled ? 1 : 0)
         .map((message: AIMessage, index: number) => (
-          <ToolCallProvider message={message} scrollTo={scrollTo} key={index}>
-            <Message message={message} index={index} />
+          <ToolCallProvider
+            message={message}
+            scrollTo={scrollTo}
+            key={message.id}
+          >
+            <Message message={message} index={index} key={message.id} />
           </ToolCallProvider>
         ))}
       {pending && <Thinking />}

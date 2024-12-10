@@ -65,7 +65,10 @@ const useMessages = () => {
   }, [messages]);
 
   useEffect(() => {
-    if (initialMessages.length) setMessages(initialMessages);
+    if (initialMessages.length) {
+      setMessages(initialMessages);
+      messagesRef.current = initialMessages;
+    }
   }, [initialMessages]);
 
   useEffect(() => {

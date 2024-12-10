@@ -14,7 +14,6 @@ const useInitialMessages = () => {
 
   useEffect(() => {
     if (address) {
-      setInitialMessages([]);
       fetchInitialMessages(address);
     }
   }, [address, pathId]);
