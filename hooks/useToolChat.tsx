@@ -1,6 +1,6 @@
-import getFullReport from "@/lib/getFullReport";
 import { useChatProvider } from "@/providers/ChatProvider";
 import { useTikTokReportProvider } from "@/providers/TikTokReportProvider";
+import { Tools } from "@/types/Tool";
 import { Message, useChat } from "ai/react";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -9,15 +9,13 @@ import { v4 as uuidV4 } from "uuid";
 const useToolChat = (question?: string, toolName?: any) => {
   const { finalCallback, clearQuery } = useChatProvider();
   const { conversation: conversationId } = useParams();
+  const { tiktokNextSteps, tiktokRawReportContent } = useTikTokReportProvider();
   const {
     tiktokTrends,
     tiktokVideos,
     tiktokAnalysis,
     initReport,
     isSearchingTrends,
-    setTiktokReportContent,
-    setIsGeneratingReport,
-    setTiktokRawReportContent,
   } = useTikTokReportProvider();
 
   const toolCallContext = {
@@ -41,6 +39,7 @@ const useToolChat = (question?: string, toolName?: any) => {
     },
     onError: console.error,
     onFinish: async (message) => {
+      console.log("ZIAD", toolName);
       await finalCallback(
         message,
         {
@@ -65,17 +64,24 @@ const useToolChat = (question?: string, toolName?: any) => {
         content: question as string,
         role: "user",
       });
-      setIsGeneratingReport(true);
-      const { reportContent, rawContent } = await getFullReport(tiktokAnalysis);
-      setTiktokReportContent(reportContent);
-      setTiktokRawReportContent(rawContent);
-      setIsGeneratingReport(false);
       initReport();
       setBeginCall(false);
     };
     if (!beginCall || !question) return;
     init();
   }, [beginCall, question]);
+
+  useEffect(() => {
+    if (
+      !loading &&
+      messages?.length === 2 &&
+      tiktokRawReportContent &&
+      tiktokNextSteps &&
+      toolName === Tools.getSegmentsReport
+    ) {
+      console.log("ZIAD HERE");
+    }
+  }, [loading, messages, tiktokNextSteps, tiktokRawReportContent]);
 
   return {
     messages,

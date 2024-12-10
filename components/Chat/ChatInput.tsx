@@ -1,18 +1,11 @@
 import SubmitButton from "./SubmitButton";
 import { useChatProvider } from "@/providers/ChatProvider";
-import Suggestions from "./Suggestions";
 import { useEffect, useRef } from "react";
-import { usePathname } from "next/navigation";
 import SideSuggestions from "./SideSuggestions";
 
 const ChatInput: React.FC = () => {
-  const { input, handleInputChange, handleSubmit, suggestions } =
-    useChatProvider();
+  const { input, handleInputChange, handleSubmit } = useChatProvider();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const pathname = usePathname();
-
-  const isNewChat = pathname === "/";
-
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
@@ -36,11 +29,9 @@ const ChatInput: React.FC = () => {
   return (
     <div className="w-full">
       <div className="w-full px-2 z-[10]">
-        {!isNewChat && suggestions.length > 2 && (
-          <div className="max-w-3xl mx-auto">
-            <SideSuggestions />
-          </div>
-        )}
+        <div className="max-w-3xl mx-auto">
+          <SideSuggestions />
+        </div>
         <div className="border-grey  border-[1px] shadow-grey rounded-md p-2 max-w-3xl mx-auto">
           <form onSubmit={handleSubmit} className="w-full">
             <textarea
@@ -58,11 +49,6 @@ const ChatInput: React.FC = () => {
           </form>
         </div>
       </div>
-      {isNewChat && (
-        <div className="max-w-3xl mx-auto w-full px-2 mt-4 flex gap-3 justify-center">
-          <Suggestions />
-        </div>
-      )}
     </div>
   );
 };

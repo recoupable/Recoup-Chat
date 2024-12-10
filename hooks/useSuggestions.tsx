@@ -34,6 +34,7 @@ const useSuggestions = () => {
     message: Message,
     lastQuestion?: Message,
     newConversationId?: string,
+    referenceId?: string,
   ) => {
     const convId = newConversationId || (pathId as string);
     const question = lastQuestion || currentQuestion;
@@ -43,8 +44,9 @@ const useSuggestions = () => {
       question,
       convId,
       selectedArtist?.id || "",
+      referenceId,
     );
-    await trackNewMessage(
+    const uniqueId = await trackNewMessage(
       address as Address,
       {
         content: formattedContent(message.content),
@@ -54,6 +56,7 @@ const useSuggestions = () => {
       },
       convId,
       selectedArtist?.id || "",
+      referenceId,
     );
     setCurrentQuestion(null);
     const response = await fetch(
@@ -62,6 +65,7 @@ const useSuggestions = () => {
     const data = await response.json();
 
     setSuggestions(() => [...data.questions]);
+    return uniqueId;
   };
 
   return {
