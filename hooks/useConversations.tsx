@@ -46,7 +46,7 @@ const useConversations = () => {
     await trackChatTitle(
       address,
       {
-        title: titlemetadata,
+        ...titlemetadata,
         isTikTokAnalysis: isFunnelPage,
       },
       conversationId,

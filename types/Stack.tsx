@@ -16,6 +16,7 @@ export type Conversation = {
     uniqueId: string;
     referenceId?: string;
     artistId?: string;
+    title?: string;
   };
   points: number;
   timestamp: string;

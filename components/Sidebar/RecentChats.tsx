@@ -38,18 +38,20 @@ const RecentChats = ({ toggleModal }: { toggleModal: () => void }) => {
             </p>
           </button>
         )}
-        {conversations.map((conversation: Conversation) => (
-          <button
-            className="flex gap-2 items-center"
-            key={conversation.metadata.id}
-            type="button"
-            onClick={() => handleClick(conversation)}
-          >
-            <p className="text-sm truncate max-w-[200px]">
-              {conversation?.title || `${conversation?.metadata.content}`}
-            </p>
-          </button>
-        ))}
+        {conversations.map((conversation: Conversation) => {
+          return (
+            <button
+              className="flex gap-2 items-center"
+              key={conversation.metadata.id}
+              type="button"
+              onClick={() => handleClick(conversation)}
+            >
+              <p className="text-sm truncate max-w-[200px]">
+                {conversation?.title || `${conversation?.metadata.content}`}
+              </p>
+            </button>
+          );
+        })}
       </div>
     </div>
   );
