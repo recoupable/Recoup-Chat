@@ -21,9 +21,9 @@ const useTikTokReport = () => {
       setTiktokRawReportContent(rawContent);
       setIsGeneratingReport(false);
     };
-    if (!tiktokAnalysis) return;
+    if (!tiktokAnalysis || !tiktokRawReportContent) return;
     init();
-  }, [tiktokAnalysis]);
+  }, [tiktokAnalysis, tiktokRawReportContent]);
 
   const initReport = () => {
     setTiktokTrends(null);
