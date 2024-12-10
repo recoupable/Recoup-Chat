@@ -102,6 +102,7 @@ const useToolChat = (question?: string, toolName?: any) => {
         uniqueId,
       );
     };
+    console.log("ZIAD", chatMessages);
     if (
       !loading &&
       chatMessages?.length === 0 &&
