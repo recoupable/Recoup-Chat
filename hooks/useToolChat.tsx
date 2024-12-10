@@ -83,7 +83,11 @@ const useToolChat = (question?: string, toolName?: any) => {
       if (response?.error) return;
       const referenceId = response.id;
       await finalCallback(
-        messages[1],
+        {
+          id: uuidV4(),
+          content: "TikTok Report",
+          role: "assistant",
+        },
         {
           id: uuidV4(),
           content: question as string,
