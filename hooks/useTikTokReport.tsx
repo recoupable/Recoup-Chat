@@ -28,6 +28,9 @@ const useTikTokReport = () => {
   const initReport = () => {
     setTiktokTrends(null);
     setTiktokVideos({});
+  };
+
+  const clearReport = () => {
     setTiktokNextSteps("");
     setTiktokRawReportContent("");
     setTiktokAnalysis(null);
@@ -56,6 +59,7 @@ const useTikTokReport = () => {
     tiktokAnalysis,
     setTiktokRawReportContent,
     tiktokRawReportContent,
+    clearReport,
   };
 };
 

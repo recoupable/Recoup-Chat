@@ -9,11 +9,11 @@ const RecentChats = ({ toggleModal }: { toggleModal: () => void }) => {
     useConversationsProvider();
   const { push } = useRouter();
   const isMobile = useIsMobile();
-  const { initReport } = useTikTokReportProvider();
+  const { clearReport } = useTikTokReportProvider();
 
   const handleClick = (conversation: Conversation) => {
     if (isMobile) toggleModal();
-    initReport();
+    clearReport();
     if (conversation.isTikTokAnalysis) {
       push(
         `/funnels/tiktok-account-analysis/${conversation.metadata.conversationId}`,
