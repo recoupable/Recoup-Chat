@@ -104,19 +104,12 @@ const useToolChat = (question?: string, toolName?: any) => {
     };
     if (
       !loading &&
-      toolMessages?.length === 2 &&
       tiktokRawReportContent &&
       tiktokNextSteps &&
       toolName === Tools.getSegmentsReport
     )
       save();
-  }, [
-    loading,
-    toolMessages,
-    tiktokNextSteps,
-    tiktokRawReportContent,
-    chatMessages,
-  ]);
+  }, [loading, toolMessages, tiktokNextSteps, tiktokRawReportContent]);
 
   return {
     toolMessages,
