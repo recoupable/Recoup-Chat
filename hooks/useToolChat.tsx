@@ -31,7 +31,7 @@ const useToolChat = (question?: string, toolName?: any) => {
     ...(tiktokAnalysis !== null && { ...tiktokAnalysis }),
   };
   const {
-    messages,
+    messages: toolMessages,
     append,
     isLoading: loading,
   } = useChat({
@@ -57,7 +57,7 @@ const useToolChat = (question?: string, toolName?: any) => {
     },
   });
 
-  const answer = messages.filter(
+  const answer = toolMessages.filter(
     (message: Message) => message.role === "assistant",
   )?.[0]?.content;
 
@@ -80,7 +80,7 @@ const useToolChat = (question?: string, toolName?: any) => {
       const uniqueId = `${address}-${Date.now()}`;
       const response = await saveReportReferenece(
         uniqueId,
-        messages[1].content,
+        toolMessages[1].content,
         tiktokRawReportContent,
         tiktokNextSteps,
       );
@@ -102,11 +102,10 @@ const useToolChat = (question?: string, toolName?: any) => {
         uniqueId,
       );
     };
-    console.log("ZIAD", chatMessages);
     if (
       !loading &&
       chatMessages?.length === 0 &&
-      messages?.length === 2 &&
+      toolMessages?.length === 2 &&
       tiktokRawReportContent &&
       tiktokNextSteps &&
       toolName === Tools.getSegmentsReport
@@ -114,14 +113,14 @@ const useToolChat = (question?: string, toolName?: any) => {
       save();
   }, [
     loading,
-    messages,
+    toolMessages,
     tiktokNextSteps,
     tiktokRawReportContent,
     chatMessages,
   ]);
 
   return {
-    messages,
+    toolMessages,
     append,
     loading: loading || isSearchingTrends,
     answer,
