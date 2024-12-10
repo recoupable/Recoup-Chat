@@ -65,17 +65,24 @@ const useToolChat = (question?: string, toolName?: any) => {
         content: question as string,
         role: "user",
       });
-      setIsGeneratingReport(true);
-      const { reportContent, rawContent } = await getFullReport(tiktokAnalysis);
-      setTiktokReportContent(reportContent);
-      setTiktokRawReportContent(rawContent);
-      setIsGeneratingReport(false);
       initReport();
       setBeginCall(false);
     };
     if (!beginCall || !question) return;
     init();
   }, [beginCall, question]);
+
+  useEffect(() => {
+    const init = async () => {
+      setIsGeneratingReport(true);
+      const { reportContent, rawContent } = await getFullReport(tiktokAnalysis);
+      setTiktokReportContent(reportContent);
+      setTiktokRawReportContent(rawContent);
+      setIsGeneratingReport(false);
+    };
+    if (!tiktokAnalysis) return;
+    init();
+  }, [tiktokAnalysis]);
 
   return {
     messages,
