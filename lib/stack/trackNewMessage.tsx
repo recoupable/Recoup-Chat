@@ -27,6 +27,7 @@ const trackNewMessage = async (
         artistId,
       },
     });
+    return uniqueId;
   } catch (error) {
     return { error };
   }

@@ -45,13 +45,6 @@ const useToolChat = (question?: string, toolName?: any) => {
     },
     onError: console.error,
     onFinish: async (message) => {
-      console.log(
-        "ZIAD",
-        reportEnabled,
-        tiktokAnalysis,
-        tiktokRawReportContent,
-        tiktokRawReportContent,
-      );
       await finalCallback(
         message,
         {
@@ -94,6 +87,12 @@ const useToolChat = (question?: string, toolName?: any) => {
     if (!tiktokAnalysis) return;
     init();
   }, [tiktokAnalysis]);
+
+  useEffect(() => {
+    if (!loading && messages?.length === 2) {
+      console.log("ZIAD HERE");
+    }
+  }, [loading, messages]);
 
   return {
     messages,

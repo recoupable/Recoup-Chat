@@ -44,7 +44,7 @@ const useSuggestions = () => {
       convId,
       selectedArtist?.id || "",
     );
-    await trackNewMessage(
+    const uniqueId = await trackNewMessage(
       address as Address,
       {
         content: formattedContent(message.content),
@@ -62,6 +62,7 @@ const useSuggestions = () => {
     const data = await response.json();
 
     setSuggestions(() => [...data.questions]);
+    return uniqueId;
   };
 
   return {
