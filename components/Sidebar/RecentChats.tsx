@@ -38,8 +38,7 @@ const RecentChats = ({ toggleModal }: { toggleModal: () => void }) => {
             </p>
           </button>
         )}
-        {conversations.map((conversation: Conversation) => {
-          return (
+        {conversations.map((conversation: Conversation) => (
             <button
               className="flex gap-2 items-center"
               key={conversation.metadata.id}
@@ -50,8 +49,8 @@ const RecentChats = ({ toggleModal }: { toggleModal: () => void }) => {
                 {conversation?.title || `${conversation?.metadata.content}`}
               </p>
             </button>
-          );
-        })}
+          )
+        )}
       </div>
     </div>
   );
