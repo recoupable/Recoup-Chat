@@ -97,6 +97,7 @@ const useToolChat = (question?: string, toolName?: any) => {
         referenceId,
         uniqueId,
       );
+      clearQuery();
     };
     if (
       !loading &&
