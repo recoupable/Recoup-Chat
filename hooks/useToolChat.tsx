@@ -2,13 +2,17 @@ import getFullReport from "@/lib/getFullReport";
 import { useChatProvider } from "@/providers/ChatProvider";
 import { useTikTokReportProvider } from "@/providers/TikTokReportProvider";
 import { Message, useChat } from "ai/react";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { v4 as uuidV4 } from "uuid";
 
 const useToolChat = (question?: string, toolName?: any) => {
   const { finalCallback, clearQuery } = useChatProvider();
   const { conversation: conversationId } = useParams();
+  const searchParams = useSearchParams();
+  const reportEnabled = searchParams.get("report");
+  const { tiktokNextSteps, tiktokRawReportContent } = useTikTokReportProvider();
+
   const {
     tiktokTrends,
     tiktokVideos,
@@ -41,6 +45,13 @@ const useToolChat = (question?: string, toolName?: any) => {
     },
     onError: console.error,
     onFinish: async (message) => {
+      console.log(
+        "ZIAD",
+        reportEnabled,
+        tiktokAnalysis,
+        tiktokRawReportContent,
+        tiktokRawReportContent,
+      );
       await finalCallback(
         message,
         {
