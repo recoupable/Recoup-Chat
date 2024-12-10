@@ -12,9 +12,10 @@ import Answer from "../Tools/Answer";
 const Message = ({ message, index }: { message: AIMessage; index: number }) => {
   const { context, loading } = useToolCallProvider();
   const { tiktokNextSteps } = useTikTokReportProvider();
-  const { reportEnabled, pending } = useChatProvider();
+  const { reportEnabled, pending, messages } = useChatProvider();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { reportActive, summary } = useTikTokReference(message as any);
+  const isLoading = pending || loading;
 
   return (
     <div className="p-3 rounded-lg flex w-full gap-2">
@@ -34,8 +35,7 @@ const Message = ({ message, index }: { message: AIMessage; index: number }) => {
         )}
         {reportEnabled &&
           index === 0 &&
-          !pending &&
-          !loading &&
+          (!isLoading || messages.length > 2) &&
           tiktokNextSteps && <ReportSummaryNote />}
       </div>
     </div>
