@@ -9,7 +9,11 @@ import { useEffect, useState } from "react";
 import { v4 as uuidV4 } from "uuid";
 
 const useToolChat = (question?: string, toolName?: any) => {
-  const { finalCallback, clearQuery } = useChatProvider();
+  const {
+    finalCallback,
+    clearQuery,
+    messages: chatMessages,
+  } = useChatProvider();
   const { conversation: conversationId } = useParams();
   const { tiktokNextSteps, tiktokRawReportContent } = useTikTokReportProvider();
   const { address } = useUserProvider();
@@ -100,13 +104,20 @@ const useToolChat = (question?: string, toolName?: any) => {
     };
     if (
       !loading &&
+      chatMessages?.length === 0 &&
       messages?.length === 2 &&
       tiktokRawReportContent &&
       tiktokNextSteps &&
       toolName === Tools.getSegmentsReport
     )
       save();
-  }, [loading, messages, tiktokNextSteps, tiktokRawReportContent]);
+  }, [
+    loading,
+    messages,
+    tiktokNextSteps,
+    tiktokRawReportContent,
+    chatMessages,
+  ]);
 
   return {
     messages,
