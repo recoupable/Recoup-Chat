@@ -33,7 +33,9 @@ const RecentChats = ({ toggleModal }: { toggleModal: () => void }) => {
       <div className="max-h-[110px] md:max-h-[140px] overflow-y-auto space-y-2">
         {streamingTitle && streaming && (
           <button className="flex gap-2 items-center" type="button">
-            <p className="text-sm truncate max-w-[200px]">{streamingTitle}</p>
+            <p className="text-sm truncate max-w-[200px]">
+              {streamingTitle?.title}
+            </p>
           </button>
         )}
         {conversations.map((conversation: Conversation) => (

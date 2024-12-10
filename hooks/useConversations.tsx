@@ -2,7 +2,7 @@ import { Address } from "viem";
 import { useEffect, useRef, useState } from "react";
 import { Conversation } from "@/types/Stack";
 import getConversations from "@/lib/stack/getConversations";
-import { useParams } from "next/navigation";
+import { useParams, usePathname } from "next/navigation";
 import { useUserProvider } from "@/providers/UserProvder";
 import trackChatTitle from "@/lib/stack/trackChatTitle";
 import { useArtistProvider } from "@/providers/ArtistProvider";
@@ -15,10 +15,15 @@ const useConversations = () => {
   const { address } = useUserProvider();
   const { conversation } = useParams();
   const conversationRef = useRef(conversation as string);
-  const [streamingTitle, setStreamingTitle] = useState("");
+  const [streamingTitle, setStreamingTitle] = useState({
+    title: "",
+    isTikTokAnalysis: false,
+  });
   const [streaming, setStreaming] = useState(false);
   const { selectedArtist } = useArtistProvider();
   const [allConverstaions, setAllConverstaions] = useState<Conversation[]>([]);
+  const pathname = usePathname();
+  const isFunnelPage = pathname.includes("/funnels/tiktok-account-analysis");
 
   useEffect(() => {
     if (address) {
@@ -40,7 +45,10 @@ const useConversations = () => {
   const trackNewTitle = async (titlemetadata: any, conversationId: string) => {
     await trackChatTitle(
       address,
-      titlemetadata,
+      {
+        title: titlemetadata,
+        isTikTokAnalysis: isFunnelPage,
+      },
       conversationId,
       selectedArtist?.id || "",
     );
@@ -51,7 +59,10 @@ const useConversations = () => {
         clearInterval(timer);
         return;
       }
-      setStreamingTitle(titlemetadata.title.slice(0, streamedIndex));
+      setStreamingTitle({
+        title: titlemetadata.title.slice(0, streamedIndex),
+        isTikTokAnalysis: isFunnelPage,
+      });
       streamedIndex++;
     }, 50);
     setStreaming(true);

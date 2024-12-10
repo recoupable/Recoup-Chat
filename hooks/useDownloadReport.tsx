@@ -18,7 +18,7 @@ const useDownloadReport = () => {
   const downloadReport = async () => {
     setDownloading(true);
     try {
-      const title = streamingTitle || titleMessage?.metadata?.title;
+      const title = streamingTitle?.title || titleMessage?.metadata?.title;
 
       sendReportEmail(
         tiktokRawReportContent,
