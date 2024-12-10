@@ -16,6 +16,7 @@ const Message = ({ message, index }: { message: AIMessage; index: number }) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { reportActive, summary } = useTikTokReference(message as any);
 
+  console.log(reportEnabled, pending, index, loading, tiktokNextSteps, "ZIAD")
   return (
     <div className="p-3 rounded-lg flex w-full gap-2">
       {message.role === "assistant" && (
