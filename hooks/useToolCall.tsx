@@ -1,9 +1,8 @@
 import { useChatProvider } from "@/providers/ChatProvider";
-import { FAN_TYPE } from "@/types/fans";
 import { Message } from "ai";
 import { useEffect, useState } from "react";
 import { v4 as uuidV4 } from "uuid";
-import useToolChat from "./useToolChat";
+import useToolMessages from "./useToolMessages";
 import { useParams } from "next/navigation";
 import getToolCallMessage from "@/lib/getToolCallMessage";
 import useToolCallParams from "./useToolCallParams";
@@ -21,8 +20,10 @@ const useToolCall = (message: Message) => {
   const { conversation: conversationId } = useParams();
   const [isCalled, setIsCalled] = useState(false);
   const { toolName, context, question } = useToolCallParams(message);
-  const fans = context?.fans?.filter((fan: FAN_TYPE) => fan.name !== "Unknown");
-  const { setBeginCall, answer, loading } = useToolChat(question, toolName);
+  const { setBeginCall, answer, loading, messages } = useToolMessages(
+    question,
+    toolName,
+  );
   const { setSelectedArtist, artists } = useArtistProvider();
   const {
     setIsSearchingTrends,
@@ -98,7 +99,7 @@ const useToolCall = (message: Message) => {
     toolName,
     question,
     context,
-    fans,
+    messages,
   };
 };
 

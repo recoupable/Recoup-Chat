@@ -13,3 +13,9 @@ export const validation = JoiBase.object({
   youtube: JoiBase.allow(),
   twitter: JoiBase.allow(),
 });
+
+export const accountValidation = JoiBase.object({
+  name: JoiBase.string().allow(),
+  instruction: JoiBase.allow(),
+  organization: JoiBase.allow(),
+});

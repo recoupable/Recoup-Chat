@@ -1,4 +1,5 @@
-import { useState } from "react";
+import getFullReport from "@/lib/getFullReport";
+import { useEffect, useState } from "react";
 
 const useTikTokReport = () => {
   const [tiktokTrends, setTiktokTrends] = useState<any>(null);
@@ -11,6 +12,19 @@ const useTikTokReport = () => {
   const [tiktokNextSteps, setTiktokNextSteps] = useState("");
   const [tiktokReportContent, setTiktokReportContent] = useState("");
   const [tiktokRawReportContent, setTiktokRawReportContent] = useState("");
+  const [tiktokSummary, setTikTokSummary] = useState("");
+
+  useEffect(() => {
+    const init = async () => {
+      setIsGeneratingReport(true);
+      const { reportContent, rawContent } = await getFullReport(tiktokAnalysis);
+      setTiktokReportContent(reportContent);
+      setTiktokRawReportContent(rawContent);
+      setIsGeneratingReport(false);
+    };
+    if (!tiktokAnalysis) return;
+    init();
+  }, [tiktokAnalysis]);
 
   const initReport = () => {
     setTiktokTrends(null);
@@ -39,6 +53,8 @@ const useTikTokReport = () => {
     tiktokAnalysis,
     setTiktokRawReportContent,
     tiktokRawReportContent,
+    tiktokSummary,
+    setTikTokSummary,
   };
 };
 

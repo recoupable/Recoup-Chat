@@ -10,7 +10,12 @@ import { useTikTokReportProvider } from "@/providers/TikTokReportProvider";
 const Message = ({ message, index }: { message: AIMessage; index: number }) => {
   const { context, loading } = useToolCallProvider();
   const { tiktokNextSteps } = useTikTokReportProvider();
-  const { reportEnabled, pending } = useChatProvider();
+  const { reportEnabled, pending, messages } = useChatProvider();
+  const summaryShown =
+    reportEnabled &&
+    index === 0 &&
+    (messages.length >= 2 || (messages.length === 0 && !pending && !loading)) &&
+    tiktokNextSteps;
 
   return (
     <div className="p-3 rounded-lg flex w-full gap-2">
@@ -24,11 +29,7 @@ const Message = ({ message, index }: { message: AIMessage; index: number }) => {
       >
         {context && <ToolContent />}
         <ToolFollowUp message={message} />
-        {reportEnabled &&
-          index === 0 &&
-          !pending &&
-          !loading &&
-          tiktokNextSteps && <ReportSummaryNote />}
+        {summaryShown && <ReportSummaryNote />}
       </div>
     </div>
   );

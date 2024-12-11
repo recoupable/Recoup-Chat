@@ -11,7 +11,11 @@ const usePayment = () => {
   const { chat_id: chatId } = useParams();
   const { userData } = useUserProvider();
 
-  const createCheckoutSession = async (productName: string) => {
+  const createCheckoutSession = async (
+    productName: string,
+    successUrl: string,
+    segmentName: string,
+  ) => {
     const priceResponse = await createPrice(productName);
 
     if (priceResponse.error) {
@@ -21,7 +25,7 @@ const usePayment = () => {
 
     const referenceId = uuidV4();
     const sessionResponse = await createSession(
-      `${window.origin}/credits?referenceId=${referenceId}`,
+      `${successUrl}?referenceId=${referenceId}&segmentName=${segmentName}`,
       priceResponse.id,
       referenceId,
       chatId as string,

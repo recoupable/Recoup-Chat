@@ -31,7 +31,11 @@ const Messages = ({
       {messages
         .slice(reportEnabled ? 1 : 0)
         .map((message: AIMessage, index: number) => (
-          <ToolCallProvider message={message} scrollTo={scrollTo} key={index}>
+          <ToolCallProvider
+            message={message}
+            scrollTo={scrollTo}
+            key={message.id}
+          >
             <Message message={message} index={index} />
           </ToolCallProvider>
         ))}

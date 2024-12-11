@@ -7,12 +7,14 @@ import getCredits from "@/lib/supabase/getCredits";
 import { useUserProvider } from "@/providers/UserProvder";
 import { v4 as uuidV4 } from "uuid";
 import { useChatProvider } from "@/providers/ChatProvider";
+import useCredits from "@/hooks/useCredits";
 
 const Segments = () => {
   const { append } = useChatProvider();
   const { segments, username, result } = useTikTokAnalysisProvider();
   const { createCheckoutSession } = usePaymentProvider();
   const { userData, isPrepared } = useUserProvider();
+  useCredits();
 
   const handleGenerateReport = (segmentName: string) => {
     append(
@@ -31,6 +33,8 @@ const Segments = () => {
     if (!credits?.remaining_credits) {
       await createCheckoutSession(
         `${result?.name || username}'s fan segment report: ${segmentName}`,
+        window.location.href,
+        segmentName,
       );
       return;
     }
