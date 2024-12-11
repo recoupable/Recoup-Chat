@@ -1,8 +1,7 @@
 import { usePathname, useRouter } from "next/navigation";
 import { useUserProvider } from "@/providers/UserProvder";
 import RecentChats from "../Sidebar/RecentChats";
-import Introducing from "../Sidebar/Introducing";
-import { useState } from "react";
+import UnlockPro from "./UnlockPro";
 import UserInfo from "../Sidebar/UserInfo";
 import Logo from "../Logo";
 import Icon from "../Icon";
@@ -11,7 +10,6 @@ const Menu = ({ toggleMenuExpanded }: { toggleMenuExpanded: () => void }) => {
   const { push } = useRouter();
   const pathname = usePathname();
   const { email, isPrepared } = useUserProvider();
-  const [isIntroOpen, setIsIntroOpen] = useState(true);
   const activeClasses = "bg-background-dark";
   const itemClasses = "flex gap-2 items-center rounded-md px-3 py-2";
   const isAgents = pathname.includes("/agents");
@@ -65,9 +63,7 @@ const Menu = ({ toggleMenuExpanded }: { toggleMenuExpanded: () => void }) => {
       <div className="h-[0.1px] bg-greyw-full my-4" />
       {email && <RecentChats toggleModal={toggleMenuExpanded} />}
       <div className="grow flex flex-col gap-1 md:gap-3 justify-end">
-        {isIntroOpen && (
-          <Introducing toggleVisible={() => setIsIntroOpen(!isIntroOpen)} />
-        )}
+        <UnlockPro />
         <UserInfo toggleMenuExpanded={toggleMenuExpanded} />
       </div>
     </div>

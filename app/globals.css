@@ -7,6 +7,10 @@
   src: url("/fonts/Inter-Medium.ttf") format("truetype");
 }
 @font-face {
+  font-family: "Inter Bold";
+  src: url("/fonts/Inter-Bold.ttf") format("truetype");
+}
+@font-face {
   font-family: "PlusJakartaSans Bold";
   src: url("/fonts/PlusJakartaSans-Bold.ttf") format("truetype");
 }
