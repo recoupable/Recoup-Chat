@@ -1,14 +1,20 @@
 import { checkSession } from "@/lib/stripe/checkSession";
 import { getSession } from "@/lib/stripe/getSession";
-import increaseCredits from "@/lib/supabase/increaseCredits";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useChatProvider } from "@/providers/ChatProvider";
+import { useTikTokAnalysisProvider } from "@/providers/TIkTokAnalysisProvider";
+import { useUserProvider } from "@/providers/UserProvder";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useRef } from "react";
+import { v4 as uuidV4 } from "uuid";
 
 const useCredits = () => {
   const searchParams = useSearchParams();
   const referenceId = searchParams.get("referenceId");
-  const { push } = useRouter();
+  const segmentName = searchParams.get("segmentName");
   const initialized = useRef(false);
+  const { append } = useChatProvider();
+  const { result } = useTikTokAnalysisProvider();
+  const { email } = useUserProvider();
 
   useEffect(() => {
     const init = async () => {
@@ -18,26 +24,26 @@ const useCredits = () => {
       const paymentStatus = session?.payment_status;
       if (paymentStatus === "paid") {
         if (!session?.metadata?.credit_updated) {
-          await increaseCredits(session?.metadata?.accountId);
           await checkSession(
             session.id,
             session?.metadata?.chatId,
             session?.metadata?.accountId,
           );
+          append(
+            {
+              id: uuidV4(),
+              role: "user",
+              content: `Please create a tiktok fan segment report for ${result.id} using this segment ${segmentName}.`,
+            },
+            true,
+          );
         }
-
-        push(`/funnels/tiktok-account-analysis/${session?.metadata?.chatId}`);
-        return;
       }
-
-      push("/funnels/tiktok-account-analysis/");
     };
-    if (!referenceId) {
-      push("/funnels/tiktok-account-analysis/");
-      return;
-    }
+    if (!referenceId || !result?.id || !segmentName || !email) return;
+
     init();
-  }, [referenceId]);
+  }, [referenceId, result, segmentName, email]);
 };
 
 export default useCredits;
