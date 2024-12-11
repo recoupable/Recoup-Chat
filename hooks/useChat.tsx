@@ -5,6 +5,7 @@ import useMessages from "./useMessages";
 import { useUserProvider } from "@/providers/UserProvder";
 import { useConversationsProvider } from "@/providers/ConverstaionsProvider";
 import getAiTitle from "@/lib/getAiTitle";
+import { useState } from "react";
 
 const useChat = () => {
   const { login, address } = useUserProvider();
@@ -12,6 +13,7 @@ const useChat = () => {
   const { conversationId, trackNewTitle } = useConversationsProvider();
   const searchParams = useSearchParams();
   const reportEnabled = searchParams.get("report");
+  const [quotaExceeded, setQuotaExceeded] = useState(false);
 
   const {
     conversationRef,
@@ -35,8 +37,17 @@ const useChat = () => {
     if (conversationId) return;
     const newId = uuidV4();
     conversationRef.current = newId;
-    const title = await getAiTitle(content);
-    trackNewTitle({ title: title.replaceAll(`\"`, ""), reportedActive }, newId);
+    const response = await getAiTitle(content);
+    if (response?.error) {
+      setQuotaExceeded(true);
+      push("/");
+      return;
+    }
+    setQuotaExceeded(false);
+    trackNewTitle(
+      { title: response.replaceAll(`\"`, ""), reportedActive },
+      newId,
+    );
     push(`/${newId}${reportedActive ? "?report=enabled" : ""}`);
   };
 
@@ -83,6 +94,8 @@ const useChat = () => {
     clearQuery,
     toolCall,
     reportEnabled,
+    quotaExceeded,
+    setQuotaExceeded,
   };
 };
 

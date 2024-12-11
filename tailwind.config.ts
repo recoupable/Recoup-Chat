@@ -10,6 +10,7 @@ const config: Config = {
     extend: {
       fontFamily: {
         inter_medium: ["Inter Medium", "sans-serif"],
+        inter_bold: ["Inter Bold", "sans-serif"],
         plus_jakarta_sans_bold: ["PlusJakartaSans Bold", "sans-serif"]
       },
       colors: {
@@ -37,6 +38,7 @@ const config: Config = {
       },
       boxShadow: {
         grey: "1px 1px 1px 1px #E6E6E6",
+        "grey-light": "1px 3px 8px 1px #E6E6E6"
       },
     },
   },

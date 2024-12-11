@@ -8,10 +8,12 @@ const getAiTitle = async (question: string) => {
       },
     });
     const data = await response.json();
+
+    if (!response.ok) return { error: true };
     return data.title;
   } catch (error) {
-    console.error(error);
-    return "";
+    console.error(error, "ZIAD");
+    return { error };
   }
 };
 

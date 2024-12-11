@@ -1,5 +1,5 @@
 const useSideMenuAnimation = (menuExpanded: boolean) => {
-  const desktopAnimate = { width: menuExpanded ? 350 : 80 };
+  const desktopAnimate = { width: menuExpanded ? 280 : 80 };
   const desktopInitial = { width: 80 };
 
   return {

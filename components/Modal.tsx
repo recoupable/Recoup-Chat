@@ -5,9 +5,10 @@ interface IModal {
   onClose: () => any;
   children: ReactNode;
   className?: string;
+  containerClasses?: string;
 }
 
-const Modal = ({ children, onClose, className }: IModal) => (
+const Modal = ({ children, onClose, className, containerClasses }: IModal) => (
   // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
   <div
     className={`fixed left-0 top-0 w-screen h-screen z-[1000] flex items-center justify-center bg-[#6262626b] bg-[url('/circle.png')] bg-center bg-cover px-3 md:px-0 ${className || ""}`}
@@ -16,7 +17,9 @@ const Modal = ({ children, onClose, className }: IModal) => (
       if (e.target === e.currentTarget) onClose();
     }}
   >
-    <div className="relative z-[2] max-h-[95%] md:max-h-[85%] overflow-y-auto rounded-2xl md:rounded-md w-full md:w-[500px] bg-background border-grey  border px-4 py-3 md:p-4">
+    <div
+      className={`relative z-[2] max-h-[95%] md:max-h-[85%] overflow-y-auto rounded-2xl md:rounded-md w-full md:w-[500px] bg-background border-grey border px-4 py-3 md:p-4 ${containerClasses}`}
+    >
       {children}
     </div>
   </div>
