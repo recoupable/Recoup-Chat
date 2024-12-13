@@ -22,7 +22,9 @@ export async function GET(req: NextRequest) {
           ...found[0],
           artistIds: [...artistIds, artistId],
         })
-        .eq("id", found[0].id);
+        .eq("id", found[0].id)
+        .select("*")
+        .single();
       return Response.json({ success: true }, { status: 200 });
     }
     return Response.json({ message: "Not found account." }, { status: 400 });

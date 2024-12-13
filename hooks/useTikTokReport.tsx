@@ -14,6 +14,7 @@ const useTikTokReport = () => {
   const [tiktokRawReportContent, setTiktokRawReportContent] = useState("");
   const [tiktokSummary, setTikTokSummary] = useState("");
 
+  console.log("ZIAD", tiktokAnalysis)
   useEffect(() => {
     const init = async () => {
       setIsGeneratingReport(true);

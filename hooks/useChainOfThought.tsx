@@ -16,7 +16,7 @@ import getArtistTikTokHandle from "@/lib/getArtistTikTokHandle";
 import getTikTokAnalysisByArtistId from "@/lib/getTikTokAnalysisByArtistId";
 
 const useChainOfThought = () => {
-  const { setSettingMode, selectedArtist, artists } = useArtistProvider();
+  const { setSettingMode, artists } = useArtistProvider();
   const [username, setUsername] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [thought, setThought] = useState(STEP_OF_ANALYSIS.INITITAL);
