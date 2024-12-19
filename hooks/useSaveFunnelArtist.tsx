@@ -15,10 +15,13 @@ const useSaveFunnelArtist = () => {
     const socialUrls = {
       twitter_url: "",
       tiktok_url: "",
+      spoitfy_url: "",
+      instagram_url: "",
     } as any;
     if (funnelType === Funnel_Type.TIKTOK) socialUrls.tiktok_url = url;
     if (funnelType === Funnel_Type.TWITTER) socialUrls.twitter_url = url;
     if (funnelType === Funnel_Type.SPOTIFY) socialUrls.spotify_url = url;
+    if (funnelType === Funnel_Type.INSTAGRAM) socialUrls.instagram_url = url;
 
     while (1) {
       const artistInfo = await saveSetting(

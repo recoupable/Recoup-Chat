@@ -5,6 +5,7 @@ import React, { createContext, useContext, useMemo } from "react";
 import { TikTokAnalysisProvider } from "./TIkTokAnalysisProvider";
 import { TwitterAnalysisProvider } from "./TwitterAnalysisProvider";
 import { SpotifyAnalysisProvider } from "./SpotifyAnalysisProvider";
+import { InstagramAnalysisProvider } from "./InstagramAnalysisProvider";
 
 const FunnelAnalysisContext = createContext<
   ReturnType<typeof useFunnelAnalysis>
@@ -21,11 +22,13 @@ const FunnelAnalysisProvider = ({
 
   return (
     <FunnelAnalysisContext.Provider value={value}>
-      <SpotifyAnalysisProvider>
-        <TwitterAnalysisProvider>
-          <TikTokAnalysisProvider>{children}</TikTokAnalysisProvider>
-        </TwitterAnalysisProvider>
-      </SpotifyAnalysisProvider>
+      <InstagramAnalysisProvider>
+        <SpotifyAnalysisProvider>
+          <TwitterAnalysisProvider>
+            <TikTokAnalysisProvider>{children}</TikTokAnalysisProvider>
+          </TwitterAnalysisProvider>
+        </SpotifyAnalysisProvider>
+      </InstagramAnalysisProvider>
     </FunnelAnalysisContext.Provider>
   );
 };

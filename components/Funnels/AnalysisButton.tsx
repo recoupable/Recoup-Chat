@@ -1,4 +1,5 @@
 import { useFunnelAnalysisProvider } from "@/providers/FunnelAnalysisProvider";
+import { useInstagramAnalysisProvider } from "@/providers/InstagramAnalysisProvider";
 import { useSpotifyAnalysisProvider } from "@/providers/SpotifyAnalysisProvider";
 import { useTikTokAnalysisProvider } from "@/providers/TIkTokAnalysisProvider";
 import { useTwitterAnalysisProvider } from "@/providers/TwitterAnalysisProvider";
@@ -15,11 +16,14 @@ const AnalysisButton = ({
   const { handleAnalyze: handleTiktokAnalysis } = useTikTokAnalysisProvider();
   const { handleAnalyze: handleTwitterAnalysis } = useTwitterAnalysisProvider();
   const { handleAnalyze: handleSpotifyAnalysis } = useSpotifyAnalysisProvider();
+  const { handleAnalyze: handleInstagramAnalysis } =
+    useInstagramAnalysisProvider();
 
   const handleClick = () => {
     if (funnelType === Funnel_Type.TIKTOK) handleTiktokAnalysis();
     if (funnelType === Funnel_Type.TWITTER) handleTwitterAnalysis();
     if (funnelType === Funnel_Type.SPOTIFY) handleSpotifyAnalysis();
+    if (funnelType === Funnel_Type.INSTAGRAM) handleInstagramAnalysis();
   };
   return (
     <div className={`space-y-3 ${containerClasses}`}>

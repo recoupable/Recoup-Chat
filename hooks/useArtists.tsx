@@ -47,6 +47,7 @@ const useArtists = () => {
       tiktok_url?: string;
       twitter_url?: string;
       spotify_url?: string;
+      instagram_url?: string;
     },
     mode?: string,
   ) => {
@@ -59,7 +60,9 @@ const useArtists = () => {
         tiktok_url: socialUrls ? socialUrls?.tiktok_url : artistSetting.tiktok,
         youtube_url: artistSetting.youtube,
         apple_url: artistSetting.appleUrl,
-        instagram_url: artistSetting.instagram,
+        instagram_url: socialUrls
+          ? socialUrls?.instagram_url
+          : artistSetting.instagram,
         twitter_url: socialUrls
           ? socialUrls?.twitter_url
           : artistSetting.twitter,

@@ -3,4 +3,5 @@ export enum Funnel_Type {
   TIKTOK = "tiktok",
   TWITTER = "twitter",
   SPOTIFY = "spotify",
+  INSTAGRAM = "instagram",
 }
