@@ -1,4 +1,4 @@
-const getTikTokAnalysisByArtistId = async (artistId: string) => {
+const getFunnelAnalysisByArtistId = async (artistId: string) => {
   try {
     const response = await fetch(
       `/api/tiktok_analysis/get_by_artist_id?artistId=${artistId}`,
@@ -10,4 +10,4 @@ const getTikTokAnalysisByArtistId = async (artistId: string) => {
   }
 };
 
-export default getTikTokAnalysisByArtistId;
+export default getFunnelAnalysisByArtistId;

@@ -10,10 +10,11 @@ import useSaveFunnelArtist from "./useSaveFunnelArtist";
 import saveFunnelAnalysis from "@/lib/saveFunnelAnalysis";
 import { v4 as uuidV4 } from "uuid";
 import getSegments from "@/lib/getSegments";
-import getArtistTikTokHandle from "@/lib/getArtistTikTokHandle";
-import getTikTokAnalysisByArtistId from "@/lib/getTikTokAnalysisByArtistId";
+import getArtistFunnelHandle from "@/lib/getArtistFunnelHandle";
+import getFunnelAnalysisByArtistId from "@/lib/getFunnelAnalysisByArtistId";
 import { useFunnelAnalysisProvider } from "@/providers/FunnelAnalysisProvider";
 import { useRouter } from "next/navigation";
+import { Funnel_Type } from "@/types/Funnel";
 
 const useTikTokAnalysis = () => {
   const { setSettingMode, artists } = useArtistProvider();
@@ -42,10 +43,12 @@ const useTikTokAnalysis = () => {
       const newId = uuidV4();
       push(`/funnels/${funnelType}/${newId}`);
       const artistSelected = artists.find(
-        (artist) => artistHandle === getArtistTikTokHandle(artist),
+        (artist) =>
+          artistHandle ===
+          getArtistFunnelHandle(artist, Funnel_Type.TIKTOK.toUpperCase()),
       );
       if (artistSelected) {
-        const analysisCache = await getTikTokAnalysisByArtistId(
+        const analysisCache = await getFunnelAnalysisByArtistId(
           artistSelected?.id || "",
         );
         await trackFunnelAnalysisChat(

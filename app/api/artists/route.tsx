@@ -26,7 +26,10 @@ export async function GET(req: NextRequest) {
       `,
       )
       .in("id", artistIds);
-    return Response.json({ artists }, { status: 200 });
+    return Response.json(
+      { artists: artists?.reverse() || [] },
+      { status: 200 },
+    );
   } catch (error) {
     console.error(error);
     const message = error instanceof Error ? error.message : "failed";

@@ -11,6 +11,9 @@ import saveFunnelAnalysis from "@/lib/saveFunnelAnalysis";
 import { useConversationsProvider } from "@/providers/ConverstaionsProvider";
 import { useRouter } from "next/navigation";
 import { v4 as uuidV4 } from "uuid";
+import getArtistFunnelHandle from "@/lib/getArtistFunnelHandle";
+import getFunnelAnalysisByArtistId from "@/lib/getFunnelAnalysisByArtistId";
+import { Funnel_Type } from "@/types/Funnel";
 
 const useTwitterAnalysis = () => {
   const {
@@ -25,7 +28,7 @@ const useTwitterAnalysis = () => {
     funnelType,
   } = useFunnelAnalysisProvider();
   const { saveFunnelArtist } = useSaveFunnelArtist();
-  const { setSettingMode } = useArtistProvider();
+  const { setSettingMode, artists } = useArtistProvider();
   const { isPrepared } = useUserProvider();
   const { trackFunnelAnalysisChat } = useConversationsProvider();
   const { push } = useRouter();
@@ -37,6 +40,28 @@ const useTwitterAnalysis = () => {
       if (!username || isLoading) return;
       const newId = uuidV4();
       push(`/funnels/${funnelType}/${newId}`);
+      const artistSelected = artists.find(
+        (artist) =>
+          artistHandle ===
+          getArtistFunnelHandle(artist, Funnel_Type.TWITTER.toUpperCase()),
+      );
+      if (artistSelected) {
+        const analysisCache = await getFunnelAnalysisByArtistId(
+          artistSelected?.id || "",
+        );
+        await trackFunnelAnalysisChat(
+          username,
+          artistSelected?.id,
+          analysisCache?.chat_id,
+          funnelName,
+        );
+        if (analysisCache) {
+          setResult(analysisCache);
+          setSegments(analysisCache.segments);
+          setThought(STEP_OF_ANALYSIS.FINISHED);
+          return;
+        }
+      }
       await new Promise((resolve) => setTimeout(resolve, 1900));
       setThought(STEP_OF_ANALYSIS.PROFILE);
       const profile = await getTwitterProfile(artistHandle);
