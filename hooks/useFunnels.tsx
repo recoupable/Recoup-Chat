@@ -7,10 +7,14 @@ const useFunnels = () => {
   const [funnelContext, setFunnelContext] = useState("");
   const searchParams = useSearchParams();
   const funnel_report = searchParams.get("funnel_report");
-  const pathname = usePathname()
+  const pathname = usePathname();
 
   useEffect(() => {
-    if (pathname.includes("tiktok") || pathname.includes("twitter") || funnel_report) {
+    if (
+      pathname.includes("tiktok") ||
+      pathname.includes("twitter") ||
+      funnel_report
+    ) {
       setFunnelContext(
         funnelRawReportContent || JSON.stringify(funnelAnalysis),
       );

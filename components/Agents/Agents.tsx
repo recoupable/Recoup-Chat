@@ -10,6 +10,7 @@ const Agents = () => {
           agents.
         </p>
         <div className="pt-8 flex flex-col md:flex-row md:flex-wrap gap-8">
+          <FunnelCard funnelName="spotify" />
           <FunnelCard funnelName="twitter" />
           <FunnelCard funnelName="tiktok" />
           <button

@@ -7,19 +7,23 @@ const useSaveFunnelArtist = () => {
   const { saveSetting, setSelectedArtist } = useArtistProvider();
   const { funnelType } = useFunnelAnalysisProvider();
 
-  const saveFunnelArtist = async (profileWithComments: any) => {
+  const saveFunnelArtist = async (
+    nickname: string,
+    avatar: string,
+    url: string,
+  ) => {
     const socialUrls = {
       twitter_url: "",
       tiktok_url: "",
     } as any;
-    const url = `https://${funnelType === Funnel_Type.TWITTER ? "x" : funnelType}.com/@${profileWithComments.name}`;
     if (funnelType === Funnel_Type.TIKTOK) socialUrls.tiktok_url = url;
     if (funnelType === Funnel_Type.TWITTER) socialUrls.twitter_url = url;
+    if (funnelType === Funnel_Type.SPOTIFY) socialUrls.spotify_url = url;
 
     while (1) {
       const artistInfo = await saveSetting(
-        profileWithComments.nickname,
-        profileWithComments.avatar,
+        nickname,
+        avatar,
         socialUrls,
         SETTING_MODE.CREATE,
       );

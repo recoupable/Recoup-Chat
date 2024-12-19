@@ -1,8 +1,6 @@
 import { useUserProvider } from "@/providers/UserProvder";
 import { STEP_OF_ANALYSIS } from "@/types/TikTok";
 import { useFunnelAnalysisProvider } from "@/providers/FunnelAnalysisProvider";
-import getTwitterProfile from "@/lib/twitter/getTwitterProfile";
-import getComments from "@/lib/twitter/getComments";
 import getSegments from "@/lib/getSegments";
 import { SETTING_MODE } from "@/types/Setting";
 import useSaveFunnelArtist from "./useSaveFunnelArtist";
@@ -11,8 +9,11 @@ import saveFunnelAnalysis from "@/lib/saveFunnelAnalysis";
 import { useConversationsProvider } from "@/providers/ConverstaionsProvider";
 import { useRouter } from "next/navigation";
 import { v4 as uuidV4 } from "uuid";
+import getArtistProfile from "@/lib/spotify/getArtistProfile";
+import getArtistAlbums from "@/lib/spotify/getArtistAlbums";
+import getArtistTracks from "@/lib/spotify/getArtistTracks";
 
-const useTwitterAnalysis = () => {
+const useSpotifyAnalysis = () => {
   const {
     setIsLoading,
     setThought,
@@ -39,40 +40,46 @@ const useTwitterAnalysis = () => {
       push(`/funnels/${funnelType}/${newId}`);
       await new Promise((resolve) => setTimeout(resolve, 1900));
       setThought(STEP_OF_ANALYSIS.PROFILE);
-      const profile = await getTwitterProfile(artistHandle);
-      if (profile?.error) {
+      const data = await getArtistProfile(artistHandle);
+      if (data?.error) {
         setThought(STEP_OF_ANALYSIS.UNKNOWN_PROFILE);
         return;
       }
-      const comments = await getComments(artistHandle);
-      const profileWithComments = {
+      const profile = data.profile;
+      const artistUri = data.artistId;
+      setThought(STEP_OF_ANALYSIS.ALBUMS);
+      const albums = await getArtistAlbums(artistUri);
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      setThought(STEP_OF_ANALYSIS.TRACKS);
+      const tracks = await getArtistTracks(artistUri);
+      const profileWithTracks = {
         ...profile,
-        comments,
-        total_comments_count: comments?.length,
+        albums,
+        tracks,
       };
       let fanSegmentsWithIcons = [];
-      if (comments.length > 0) {
+      if (tracks.length > 0) {
         setThought(STEP_OF_ANALYSIS.SEGMENTS);
-        fanSegmentsWithIcons = await getSegments(profileWithComments);
+        fanSegmentsWithIcons = await getSegments(profileWithTracks);
         if (fanSegmentsWithIcons?.error) {
           setThought(STEP_OF_ANALYSIS.ERROR);
           return;
         }
         setSegments([...fanSegmentsWithIcons]);
       }
-      setResult(profileWithComments);
+      setResult(profileWithTracks);
       setSettingMode(SETTING_MODE.CREATE);
       setThought(STEP_OF_ANALYSIS.CREATING_ARTIST);
       const artistId = await saveFunnelArtist(
-        profile?.nickname,
+        profile?.name,
         profile?.avatar,
-        `https://x.com/@${artistHandle}`,
+        `https://open.spotify.com/artist/${artistUri}`,
       );
       setThought(STEP_OF_ANALYSIS.SAVING_ANALYSIS);
       const analysis = {
         ...profile,
-        videos: comments,
-        total_video_comments_count: comments?.length,
+        videos: [...albums, ...tracks],
+        total_video_comments_count: tracks.length,
         segments: [...fanSegmentsWithIcons],
         chat_id: newId,
         artistId,
@@ -94,4 +101,4 @@ const useTwitterAnalysis = () => {
   };
 };
 
-export default useTwitterAnalysis;
+export default useSpotifyAnalysis;

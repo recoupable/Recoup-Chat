@@ -13,9 +13,14 @@ const Completion = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [result]);
 
+  const isFinishedAnalsysis =
+    result?.videos?.length ||
+    result?.comments?.length ||
+    result?.tracks?.length;
+
   return (
     <div>
-      {result?.videos?.length || result?.comments?.length ? (
+      {isFinishedAnalsysis ? (
         <>
           <p className="text-xl font-bold pb-4">
             <span className="capitalize">{funnelName}</span> Analysis complete✅

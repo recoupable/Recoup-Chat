@@ -7,7 +7,7 @@ const HandleInput = () => {
       type="text"
       placeholder={`@${funnelType}username`}
       value={username}
-      onChange={(e) => setUsername(e.target.value.trim())}
+      onChange={(e) => setUsername(e.target.value)}
       className="
                 w-full
                 h-full

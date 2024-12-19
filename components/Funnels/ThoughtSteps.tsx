@@ -12,6 +12,12 @@ const ThoughtSteps = () => {
       {thought === STEP_OF_ANALYSIS.PROFILE && (
         <StreamingThought text={`Looking at ${artistHandle}’s profile.`} />
       )}
+      {thought === STEP_OF_ANALYSIS.TRACKS && (
+        <StreamingThought text={`Looking at ${artistHandle}’s tracks.`} />
+      )}
+      {thought === STEP_OF_ANALYSIS.ALBUMS && (
+        <StreamingThought text={`Looking at ${artistHandle}’s albums.`} />
+      )}
       {thought === STEP_OF_ANALYSIS.POSTURLS && (
         <StreamingThought
           text={`Reviewing ${artistHandle}’s top-performing videos.`}

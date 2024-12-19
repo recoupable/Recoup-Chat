@@ -96,7 +96,11 @@ const useTikTokAnalysis = () => {
       }
       setSettingMode(SETTING_MODE.CREATE);
       setThought(STEP_OF_ANALYSIS.CREATING_ARTIST);
-      const artistId = await saveFunnelArtist(profileWithComments);
+      const artistId = await saveFunnelArtist(
+        profile?.nickname,
+        avatar,
+        `https://tiktok.com/@${artistHandle}`,
+      );
       setThought(STEP_OF_ANALYSIS.SAVING_ANALYSIS);
       const analysis = {
         ...profileWithComments,
