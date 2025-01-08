@@ -1,3 +1,5 @@
+import getAggregatedSocials from "@/lib/agent/getAggregatedSocials";
+import getExistingHandles from "@/lib/getExistingHandles";
 import getHandles from "@/lib/getHandles";
 import socketIo from "@/lib/socket/client";
 import { useArtistProvider } from "@/providers/ArtistProvider";
@@ -11,11 +13,17 @@ import { v4 as uuidV4 } from "uuid";
 const useAgentSocket = () => {
   const [socketId, setSocketId] = useState<any>(undefined);
   const { chat_id: chatId } = useParams();
-  const { artistHandle, setIsLoading, getAnalysis, setThoughts, thoughts } =
-    useFunnelAnalysisProvider();
+  const {
+    artistHandle,
+    setIsLoading,
+    getAnalysis,
+    setThoughts,
+    thoughts,
+    funnelType,
+  } = useFunnelAnalysisProvider();
   const { push } = useRouter();
   const { userData, address, isPrepared } = useUserProvider();
-  const { setSelectedArtist } = useArtistProvider();
+  const { setSelectedArtist, selectedArtist } = useArtistProvider();
 
   useEffect(() => {
     socketIo.on("connect", () => {
@@ -29,8 +37,22 @@ const useAgentSocket = () => {
     socketIo.on(chatId as string, async (dataGot) => {
       if (typeof dataGot?.status === "number") {
         setIsLoading(true);
-        if (dataGot.status === STEP_OF_ANALYSIS.CREATED_ARTIST)
-          setSelectedArtist(dataGot.extra_data);
+        if (dataGot.status === STEP_OF_ANALYSIS.CREATED_ARTIST) {
+          if (funnelType === "wrapped") {
+            setSelectedArtist({
+              ...dataGot.extra_data,
+              ...selectedArtist,
+              artist_social_links: getAggregatedSocials([
+                ...dataGot?.extra_data?.artist_social_links,
+                ...(selectedArtist?.artist_social_links || []),
+              ]),
+              isWrapped: true,
+            });
+          } else {
+            setSelectedArtist(dataGot.extra_data);
+          }
+        }
+
         if (dataGot.status === STEP_OF_ANALYSIS.FINISHED) await getAnalysis();
         const tempThoughts: any = { ...thoughts };
         tempThoughts[`${dataGot.funnel_type}`].status = dataGot?.status;
@@ -52,11 +74,15 @@ const useAgentSocket = () => {
       });
       setIsLoading(true);
       push(`/funnels/${funnelType}/${newChatId}`);
-      const handles = await getHandles(artistHandle);
+      const existingHandles = getExistingHandles(selectedArtist);
+      const handles = await getHandles(selectedArtist?.name || artistHandle);
       const funnels = ["twitter", "spotify", "tiktok", "instagram"];
       funnels.map((funnel) => {
         socketIo.emit(`${funnel.toUpperCase()}_ANALYSIS`, socketId, {
-          handle: handles[`${funnel}`].replaceAll("@", ""),
+          handle:
+            existingHandles[`${funnel}`] ||
+            handles[`${funnel}`].replaceAll("@", "") ||
+            artistHandle,
           chat_id: newChatId,
           account_id: userData?.id,
           address,

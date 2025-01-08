@@ -51,7 +51,6 @@ const getAggregatedArtist = (funnel_analyses: Array<FUNNEL_ANALYSIS>) => {
     id,
     profile,
     handle: funnel_analyses[0]?.handle || "",
-    isWrapped: true,
   };
 };
 

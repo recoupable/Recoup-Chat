@@ -11,8 +11,8 @@ const Agents = () => {
   const { openAgentSocket } = useAgentSocketProvider();
 
   const handleClickWrapped = () => {
-    if (selectedArtist?.isWrapped) {
-      setUsername(selectedArtist?.handle || selectedArtist?.name);
+    if (selectedArtist) {
+      setUsername(selectedArtist?.name);
       openAgentSocket("wrapped");
       return;
     }

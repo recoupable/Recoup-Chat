@@ -46,7 +46,7 @@ const useInitialArtists = (
       const currentArtist = artists.find(
         (artist: ArtistRecord) => artist.id === selectedArtist.id,
       );
-      if (currentArtist && !selectedArtist.isWrapped) {
+      if (currentArtist && !selectedArtist?.isWrapped) {
         setSelectedArtist(currentArtist);
       }
     }
