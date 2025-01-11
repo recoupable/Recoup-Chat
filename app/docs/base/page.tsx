@@ -1,130 +1,37 @@
 "use client";
 
 import { useState } from "react";
-import { Copy, Check } from "lucide-react";
-
-const languages = [
-  { name: "cURL", value: "curl" },
-  { name: "Python", value: "python" },
-  { name: "JavaScript", value: "javascript" },
-  { name: "TypeScript", value: "typescript" },
-];
-
-const codeExamples = {
-  curl: `curl -X GET "https://api.recoupable.com/v1/agent" \\
-  -H "campaignId: YOUR_CAMPAIGN_ID" \\
-  -H "Content-Type: application/json"`,
-  python: `import requests
-
-headers = {
-    "campaignId": "YOUR_CAMPAIGN_ID",
-    "Content-Type": "application/json"
-}
-
-response = requests.get("https://api.recoupable.com/v1/agent", headers=headers)
-data = response.json()`,
-  javascript: `fetch("https://api.recoupable.com/v1/agent", {
-  headers: {
-    "campaignId": "YOUR_CAMPAIGN_ID",
-    "Content-Type": "application/json"
-  }
-})
-.then(response => response.json())
-.then(data => console.log(data));`,
-  typescript: `const fetchAgent = async () => {
-  const response = await fetch("https://api.recoupable.com/v1/agent", {
-    headers: {
-      "campaignId": "YOUR_CAMPAIGN_ID",
-      "Content-Type": "application/json"
-    }
-  });
-  const data: AgentResponse = await response.json();
-  return data;
-};`,
-};
-
-const exampleResponse = {
-  status: "success",
-  message: "Agent completed execution (33s timeout reached)",
-  walletAddress: "0xBC0F483b793EAD92F015a2cd27C819F0b7722308",
-};
-
-const CodeBlock = ({ code }: { code: string }) => {
-  const [copied, setCopied] = useState(false);
-
-  const handleCopy = async () => {
-    try {
-      await navigator.clipboard.writeText(code);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch (err) {
-      console.error("Failed to copy text: ", err);
-    }
-  };
-
-  return (
-    <div className="relative">
-      <button
-        onClick={handleCopy}
-        className="absolute right-2 top-2 p-2 rounded bg-gray-800 hover:bg-gray-700"
-      >
-        {copied ? (
-          <Check className="w-4 h-4 text-green-400" />
-        ) : (
-          <Copy className="w-4 h-4 text-gray-400" />
-        )}
-      </button>
-      <pre className="bg-gray-900 text-gray-100 p-6 rounded-lg overflow-x-auto">
-        <code>{code}</code>
-      </pre>
-    </div>
-  );
-};
+import { CodeBlock } from "@/components/docs/CodeBlock";
+import { LanguageSelector } from "@/components/docs/LanguageSelector";
+import { ResponseTable } from "@/components/docs/ResponseTable";
+import { AuthSection } from "@/components/docs/AuthSection";
+import { ViewAgentSection } from "@/components/docs/ViewAgentSection";
+import {
+  languages,
+  codeExamples,
+  exampleResponse,
+  responseProperties,
+} from "./constants";
 
 export default function AgentKitDocs() {
-  const [selectedLanguage, setSelectedLanguage] = useState(languages[0]);
+  const [selectedLanguage, setSelectedLanguage] = useState<
+    (typeof languages)[0]
+  >(languages[0]);
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8 h-screen overflow-y-auto">
       <h1 className="text-4xl font-bold mb-8">AgentKit Documentation</h1>
 
-      <section className="mb-12">
-        <h2 className="text-2xl font-semibold mb-4">Authentication</h2>
-        <p className="mb-4">
-          To use the AgentKit API, you&apos;ll need a campaign ID. You can find
-          your campaign ID in your{" "}
-          <a href="/dashboard" className="text-blue-500 hover:text-blue-600">
-            dashboard settings
-          </a>
-          .
-        </p>
-        <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6">
-          <p className="text-yellow-700">
-            Keep your campaign ID secure and never share it publicly. If you
-            believe your campaign ID has been compromised, you can generate a
-            new one in your dashboard.
-          </p>
-        </div>
-      </section>
+      <AuthSection />
 
       <section className="mb-12">
         <h2 className="text-2xl font-semibold mb-4">Making Requests</h2>
         <div className="mb-4">
-          <div className="flex gap-2 mb-4">
-            {languages.map((lang) => (
-              <button
-                key={lang.value}
-                onClick={() => setSelectedLanguage(lang)}
-                className={`px-4 py-2 rounded ${
-                  selectedLanguage.value === lang.value
-                    ? "bg-gray-800 text-white"
-                    : "bg-gray-100 hover:bg-gray-200"
-                }`}
-              >
-                {lang.name}
-              </button>
-            ))}
-          </div>
+          <LanguageSelector
+            languages={languages}
+            selectedLanguage={selectedLanguage}
+            onLanguageSelect={(language) => setSelectedLanguage(language)}
+          />
           <CodeBlock
             code={
               codeExamples[selectedLanguage.value as keyof typeof codeExamples]
@@ -143,61 +50,10 @@ export default function AgentKitDocs() {
 
       <section className="mb-12">
         <h2 className="text-2xl font-semibold mb-4">Available Properties</h2>
-        <div className="space-y-4">
-          <div>
-            <h3 className="text-lg font-semibold mb-2">Response Object</h3>
-            <table className="w-full border-collapse">
-              <thead>
-                <tr className="bg-gray-100">
-                  <th className="text-left p-4 border">Property</th>
-                  <th className="text-left p-4 border">Type</th>
-                  <th className="text-left p-4 border">Description</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td className="p-4 border">status</td>
-                  <td className="p-4 border">string</td>
-                  <td className="p-4 border">
-                    Status of the agent execution (&quot;success&quot; or
-                    &quot;error&quot;)
-                  </td>
-                </tr>
-                <tr>
-                  <td className="p-4 border">message</td>
-                  <td className="p-4 border">string</td>
-                  <td className="p-4 border">
-                    Detailed message about the agent execution
-                  </td>
-                </tr>
-                <tr>
-                  <td className="p-4 border">walletAddress</td>
-                  <td className="p-4 border">string</td>
-                  <td className="p-4 border">
-                    The Base wallet address associated with the agent
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
+        <ResponseTable properties={responseProperties} />
       </section>
 
-      <section className="mb-12">
-        <h2 className="text-2xl font-semibold mb-4">View Your Agent</h2>
-        <p className="mb-4">
-          You can view and manage your agent through the Recoup dashboard. Visit
-          your{" "}
-          <a
-            href="/dashboard/agents"
-            className="text-blue-500 hover:text-blue-600"
-          >
-            agents page
-          </a>{" "}
-          to see your agent&apos;s performance, adjust settings, and monitor
-          usage.
-        </p>
-      </section>
+      <ViewAgentSection />
     </div>
   );
 }
