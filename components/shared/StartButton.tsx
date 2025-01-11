@@ -37,7 +37,7 @@ export function StartButton() {
         className="px-12 py-6 text-lg font-semibold hover:scale-105 transition-transform"
         disabled={isLoading}
       >
-        {isLoading ? "Running..." : authenticated ? "Start" : "Connect Wallet"}
+        {isLoading ? "Running..." : "Start"}
       </Button>
       {walletAddress && (
         <div className="mt-4 p-4 bg-gray-50 rounded-lg border">
