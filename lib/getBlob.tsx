@@ -1,13 +1,8 @@
-import axios from "axios";
-
 const getBlob = async (imageUrl: string) => {
   try {
-    const response = await axios.get(imageUrl, {
-      responseType: "arraybuffer",
-    });
-    const type = response.headers["content-type"];
-    const blob = new Blob([response.data], { type });
-
+    const response = await fetch(imageUrl);
+    const type = response.headers.get("content-type") || "";
+    const blob = await response.blob();
     return { blob, type };
   } catch (error) {
     return { error };
