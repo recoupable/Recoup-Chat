@@ -17,3 +17,7 @@ export async function GET() {
     return NextResponse.json({ error: "Failed to fetch" }, { status: 500 });
   }
 }
+
+export const dynamic = "force-dynamic";
+export const fetchCache = "force-no-store";
+export const revalidate = 0;
