@@ -44,12 +44,9 @@ data = response.json()`,
 };
 
 const exampleResponse = {
-  id: "agent_123",
-  name: "Music Marketing Assistant",
-  description: "AI-powered assistant for music marketing strategies",
-  capabilities: ["Campaign Analysis", "Fan Engagement", "Content Strategy"],
-  status: "active",
-  created_at: "2024-01-15T12:00:00Z",
+  status: "success",
+  message: "Agent completed execution (33s timeout reached)",
+  walletAddress: "0xBC0F483b793EAD92F015a2cd27C819F0b7722308",
 };
 
 const CodeBlock = ({ code }: { code: string }) => {
@@ -148,7 +145,7 @@ export default function AgentKitDocs() {
         <h2 className="text-2xl font-semibold mb-4">Available Properties</h2>
         <div className="space-y-4">
           <div>
-            <h3 className="text-lg font-semibold mb-2">Agent Object</h3>
+            <h3 className="text-lg font-semibold mb-2">Response Object</h3>
             <table className="w-full border-collapse">
               <thead>
                 <tr className="bg-gray-100">
@@ -159,39 +156,25 @@ export default function AgentKitDocs() {
               </thead>
               <tbody>
                 <tr>
-                  <td className="p-4 border">id</td>
-                  <td className="p-4 border">string</td>
-                  <td className="p-4 border">
-                    Unique identifier for the agent
-                  </td>
-                </tr>
-                <tr>
-                  <td className="p-4 border">name</td>
-                  <td className="p-4 border">string</td>
-                  <td className="p-4 border">Name of the agent</td>
-                </tr>
-                <tr>
-                  <td className="p-4 border">description</td>
-                  <td className="p-4 border">string</td>
-                  <td className="p-4 border">
-                    Description of the agent&apos;s capabilities
-                  </td>
-                </tr>
-                <tr>
-                  <td className="p-4 border">capabilities</td>
-                  <td className="p-4 border">string[]</td>
-                  <td className="p-4 border">List of agent capabilities</td>
-                </tr>
-                <tr>
                   <td className="p-4 border">status</td>
                   <td className="p-4 border">string</td>
-                  <td className="p-4 border">Current status of the agent</td>
+                  <td className="p-4 border">
+                    Status of the agent execution (&quot;success&quot; or
+                    &quot;error&quot;)
+                  </td>
                 </tr>
                 <tr>
-                  <td className="p-4 border">created_at</td>
+                  <td className="p-4 border">message</td>
                   <td className="p-4 border">string</td>
                   <td className="p-4 border">
-                    ISO 8601 timestamp of when the agent was created
+                    Detailed message about the agent execution
+                  </td>
+                </tr>
+                <tr>
+                  <td className="p-4 border">walletAddress</td>
+                  <td className="p-4 border">string</td>
+                  <td className="p-4 border">
+                    The Base wallet address associated with the agent
                   </td>
                 </tr>
               </tbody>
