@@ -12,12 +12,12 @@ const languages = [
 
 const codeExamples = {
   curl: `curl -X GET "https://api.recoupable.com/v1/agent" \\
-  -H "Authorization: Bearer YOUR_API_KEY" \\
+  -H "campaignId: YOUR_CAMPAIGN_ID" \\
   -H "Content-Type: application/json"`,
   python: `import requests
 
 headers = {
-    "Authorization": "Bearer YOUR_API_KEY",
+    "campaignId": "YOUR_CAMPAIGN_ID",
     "Content-Type": "application/json"
 }
 
@@ -25,7 +25,7 @@ response = requests.get("https://api.recoupable.com/v1/agent", headers=headers)
 data = response.json()`,
   javascript: `fetch("https://api.recoupable.com/v1/agent", {
   headers: {
-    "Authorization": "Bearer YOUR_API_KEY",
+    "campaignId": "YOUR_CAMPAIGN_ID",
     "Content-Type": "application/json"
   }
 })
@@ -34,7 +34,7 @@ data = response.json()`,
   typescript: `const fetchAgent = async () => {
   const response = await fetch("https://api.recoupable.com/v1/agent", {
     headers: {
-      "Authorization": "Bearer YOUR_API_KEY",
+      "campaignId": "YOUR_CAMPAIGN_ID",
       "Content-Type": "application/json"
     }
   });
@@ -94,8 +94,8 @@ export default function AgentKitDocs() {
       <section className="mb-12">
         <h2 className="text-2xl font-semibold mb-4">Authentication</h2>
         <p className="mb-4">
-          To use the AgentKit API, you&apos;ll need an API key. You can find
-          your API key in your{" "}
+          To use the AgentKit API, you&apos;ll need a campaign ID. You can find
+          your campaign ID in your{" "}
           <a href="/dashboard" className="text-blue-500 hover:text-blue-600">
             dashboard settings
           </a>
@@ -103,9 +103,9 @@ export default function AgentKitDocs() {
         </p>
         <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6">
           <p className="text-yellow-700">
-            Keep your API key secure and never share it publicly. If you believe
-            your key has been compromised, you can generate a new one in your
-            dashboard.
+            Keep your campaign ID secure and never share it publicly. If you
+            believe your campaign ID has been compromised, you can generate a
+            new one in your dashboard.
           </p>
         </div>
       </section>
