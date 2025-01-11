@@ -88,7 +88,7 @@ export default function AgentKitDocs() {
   const [selectedLanguage, setSelectedLanguage] = useState(languages[0]);
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8">
+    <div className="max-w-4xl mx-auto px-4 py-8 h-screen overflow-y-auto">
       <h1 className="text-4xl font-bold mb-8">AgentKit Documentation</h1>
 
       <section className="mb-12">
