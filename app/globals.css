@@ -27,10 +27,20 @@ html,
 body {
   font-family: "Inter Medium";
   width: 100vw;
-  height: 100vh;
-  overflow: hidden;
+  min-height: 100vh;
   color: black;
   background: white;
+}
+
+/* Add specific styles for pages that need overflow hidden */
+.no-scroll {
+  overflow: hidden;
+}
+
+/* Add specific styles for pages that need scrolling */
+.allow-scroll {
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 @layer utilities {
