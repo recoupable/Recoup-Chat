@@ -4,9 +4,9 @@ export function AuthSection() {
       <h2 className="text-2xl font-semibold mb-4">Authentication</h2>
       <p className="mb-4">
         To use the AgentKit API, you&apos;ll need a campaign ID. You can find
-        your campaign ID in your{" "}
-        <a href="/dashboard" className="text-blue-500 hover:text-blue-600">
-          dashboard settings
+        your campaign ID in{" "}
+        <a href="/artists" className="text-blue-500 hover:text-blue-600">
+          Artist Settings → Campaign ID
         </a>
         .
       </p>
