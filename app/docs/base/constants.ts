@@ -6,7 +6,7 @@ export const languages = [
 ];
 
 export const codeExamples = {
-  curl: `curl -X GET "https://api.recoupable.com/v1/agent" \\
+  curl: `curl -X GET "http://143.198.164.177:3000/api/agentkit/run" \\
   -H "campaignId: YOUR_CAMPAIGN_ID" \\
   -H "Content-Type: application/json"`,
   python: `import requests
@@ -16,9 +16,9 @@ headers = {
     "Content-Type": "application/json"
 }
 
-response = requests.get("https://api.recoupable.com/v1/agent", headers=headers)
+response = requests.get("http://143.198.164.177:3000/api/agentkit/run", headers=headers)
 data = response.json()`,
-  javascript: `fetch("https://api.recoupable.com/v1/agent", {
+  javascript: `fetch("http://143.198.164.177:3000/api/agentkit/run", {
   headers: {
     "campaignId": "YOUR_CAMPAIGN_ID",
     "Content-Type": "application/json"
@@ -27,7 +27,7 @@ data = response.json()`,
 .then(response => response.json())
 .then(data => console.log(data));`,
   typescript: `const fetchAgent = async () => {
-  const response = await fetch("https://api.recoupable.com/v1/agent", {
+  const response = await fetch("http://143.198.164.177:3000/api/agentkit/run", {
     headers: {
       "campaignId": "YOUR_CAMPAIGN_ID",
       "Content-Type": "application/json"
