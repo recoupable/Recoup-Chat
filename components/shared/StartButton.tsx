@@ -10,14 +10,7 @@ export function StartButton() {
   const handleClick = async () => {
     try {
       setIsLoading(true);
-      const response = await fetch(
-        "http://143.198.164.177:3000/api/agentkit/run",
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await fetch("/api/agentkit/run");
       const data = await response.json();
       if (data.walletAddress) {
         setWalletAddress(data.walletAddress);
