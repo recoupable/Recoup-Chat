@@ -19,6 +19,7 @@
 # misc
 .DS_Store
 instructions.md
+public/sw.js.map
 
 # debug
 npm-debug.log*

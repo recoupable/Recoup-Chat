@@ -3,22 +3,24 @@
 import { usePrivy } from "@privy-io/react-auth";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import Loading from "@/components/Loading";
 
 export default function SignInPage() {
   const { login, authenticated } = usePrivy();
   const router = useRouter();
 
   useEffect(() => {
-    // If user is already authenticated, redirect to home
     if (authenticated) {
       router.push("/");
       return;
     }
 
-    // Show login modal on page load
     login();
   }, [authenticated]);
 
-  // Return an empty div as per requirements
-  return <div />;
+  return (
+    <div className="flex items-center justify-center min-h-screen">
+      <Loading className="w-8 h-8" />
+    </div>
+  );
 }
