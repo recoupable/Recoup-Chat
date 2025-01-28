@@ -22,6 +22,11 @@ instructions.md
 public/sw.js.map
 yarn-error.log
 
+# Service Worker and Workbox
+public/sw.js
+public/workbox-*.js
+public/workbox-*.js.map
+
 # debug
 npm-debug.log*
 pnpm-debug.log*
