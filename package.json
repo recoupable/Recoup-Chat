@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "format": "prettier --write app components providers types hooks lib && yarn lint"
+    "format": "prettier --write app components providers types hooks lib && pnpm lint"
   },
   "dependencies": {
     "@ai-sdk/openai": "^0.0.28",
