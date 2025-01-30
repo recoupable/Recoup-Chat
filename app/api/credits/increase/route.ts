@@ -1,32 +1,27 @@
-import { getSupabaseServerAdminClient } from "@/packages/supabase/src/clients/server-admin-client";
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+import { increaseCredits } from "@/lib/supabase/credits";
 
 export async function GET(req: NextRequest) {
-  const accountId = req.nextUrl.searchParams.get("accountId");
-
   try {
-    const client = getSupabaseServerAdminClient();
-    const { data: found } = await client
-      .from("credits_usage")
-      .select("*")
-      .eq("account_id", accountId);
+    const accountId = req.nextUrl.searchParams.get("accountId");
+    const amount = req.nextUrl.searchParams.get("amount");
 
-    if (found?.length) {
-      await client
-        .from("credits_usage")
-        .update({
-          ...found[0],
-          remaining_credits: found[0].remaining_credits + 1,
-        })
-        .eq("account_id", accountId);
-      return Response.json({ success: true }, { status: 200 });
+    if (!accountId) {
+      return NextResponse.json(
+        { error: "Account ID is required" },
+        { status: 400 }
+      );
     }
 
-    return Response.json({ success: false }, { status: 200 });
+    const credits = await increaseCredits(
+      accountId,
+      amount ? parseInt(amount, 10) : undefined
+    );
+    return NextResponse.json({ credits });
   } catch (error) {
     console.error(error);
-    const message = error instanceof Error ? error.message : "failed";
-    return Response.json({ message }, { status: 400 });
+    const message = error instanceof Error ? error.message : "Unknown error";
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
 
