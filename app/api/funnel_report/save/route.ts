@@ -1,23 +1,19 @@
-import { getSupabaseServerAdminClient } from "@/packages/supabase/src/clients/server-admin-client";
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+import { saveFunnelReport } from "@/lib/supabase/funnelReport";
 
 export async function POST(req: NextRequest) {
-  const body = await req.json();
   try {
-    const client = getSupabaseServerAdminClient();
-    const { data, error } = await client
-      .from("funnel_reports")
-      .insert({
-        ...body,
-      })
-      .select("*")
-      .single();
-    if (error)
-      return Response.json({ id: null, success: false }, { status: 500 });
-    return Response.json({ success: true, id: data?.id }, { status: 200 });
+    const body = await req.json();
+    const report = await saveFunnelReport(body);
+
+    return NextResponse.json({
+      success: true,
+      id: report.id,
+    });
   } catch (error) {
     console.error(error);
-    return Response.json({ id: null, success: false }, { status: 500 });
+    const message = error instanceof Error ? error.message : "Unknown error";
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
 

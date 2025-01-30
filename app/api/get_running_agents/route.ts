@@ -1,23 +1,35 @@
+import { NextRequest, NextResponse } from "next/server";
 import { getSupabaseServerAdminClient } from "@/packages/supabase/src/clients/server-admin-client";
 import { STEP_OF_ANALYSIS } from "@/types/Funnel";
-import { NextRequest } from "next/server";
 
 export async function GET(req: NextRequest) {
-  const artistId = req.nextUrl.searchParams.get("artistId");
   try {
+    const artistId = req.nextUrl.searchParams.get("artistId");
+
+    if (!artistId) {
+      return NextResponse.json(
+        { error: "Artist ID is required" },
+        { status: 400 }
+      );
+    }
+
     const client = getSupabaseServerAdminClient();
-    const { data } = await client
+    const { data, error } = await client
       .from("funnel_analytics")
       .select("*")
       .gt("status", STEP_OF_ANALYSIS.UNKNOWN_PROFILE)
       .eq("artistId", artistId)
       .order("timestamp", { ascending: false });
 
-    return Response.json({ data }, { status: 200 });
+    if (error) {
+      throw error;
+    }
+
+    return NextResponse.json({ data });
   } catch (error) {
     console.error(error);
-    const message = error instanceof Error ? error.message : "failed";
-    return Response.json({ message }, { status: 400 });
+    const message = error instanceof Error ? error.message : "Unknown error";
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
 

@@ -1,20 +1,32 @@
+import { NextRequest, NextResponse } from "next/server";
 import { getSupabaseServerAdminClient } from "@/packages/supabase/src/clients/server-admin-client";
-import { NextRequest } from "next/server";
 
 export async function GET(req: NextRequest) {
-  const artistId = req.nextUrl.searchParams.get("artistId");
   try {
+    const artistId = req.nextUrl.searchParams.get("artistId");
+
+    if (!artistId) {
+      return NextResponse.json(
+        { error: "Artist ID is required" },
+        { status: 400 }
+      );
+    }
+
     const client = getSupabaseServerAdminClient();
-    const { data } = await client
-      .from("fans_segments")
+    const { data, error } = await client
+      .from("fan_segment")
       .select("*")
       .eq("artistId", artistId);
 
-    return Response.json({ data }, { status: 200 });
+    if (error) {
+      throw error;
+    }
+
+    return NextResponse.json({ data });
   } catch (error) {
     console.error(error);
-    const message = error instanceof Error ? error.message : "failed";
-    return Response.json({ message }, { status: 400 });
+    const message = error instanceof Error ? error.message : "Unknown error";
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
 

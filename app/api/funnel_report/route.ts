@@ -1,22 +1,27 @@
-import { getSupabaseServerAdminClient } from "@/packages/supabase/src/clients/server-admin-client";
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+import { getFunnelReport } from "@/lib/supabase/funnelReport";
 
 export async function GET(req: NextRequest) {
-  const id = req.nextUrl.searchParams.get("id");
-
   try {
-    const client = getSupabaseServerAdminClient();
-    const { data, error } = await client
-      .from("funnel_reports")
-      .select("*")
-      .eq("id", id)
-      .single();
-    if (error)
-      return Response.json({ id: null, success: false }, { status: 500 });
-    return Response.json({ success: true, data }, { status: 200 });
+    const id = req.nextUrl.searchParams.get("id");
+
+    if (!id) {
+      return NextResponse.json(
+        { error: "Report ID is required" },
+        { status: 400 }
+      );
+    }
+
+    const report = await getFunnelReport(id);
+    if (!report) {
+      return NextResponse.json({ error: "Report not found" }, { status: 404 });
+    }
+
+    return NextResponse.json({ report });
   } catch (error) {
     console.error(error);
-    return Response.json({ id: null, success: false }, { status: 500 });
+    const message = error instanceof Error ? error.message : "Unknown error";
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
 
