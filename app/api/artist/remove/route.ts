@@ -1,17 +1,23 @@
-import { getSupabaseServerAdminClient } from "@/packages/supabase/src/clients/server-admin-client";
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+import { removeArtist } from "@/lib/supabase/removeArtist";
 
 export async function GET(req: NextRequest) {
-  const artistId = req.nextUrl.searchParams.get("artistId");
-
   try {
-    const client = getSupabaseServerAdminClient();
-    await client.from("accounts").delete().eq("id", artistId);
-    return Response.json({ success: true }, { status: 200 });
+    const artistId = req.nextUrl.searchParams.get("artistId");
+
+    if (!artistId) {
+      return NextResponse.json(
+        { error: "Artist ID is required" },
+        { status: 400 }
+      );
+    }
+
+    const success = await removeArtist(artistId);
+    return NextResponse.json({ success });
   } catch (error) {
     console.error(error);
-    const message = error instanceof Error ? error.message : "failed";
-    return Response.json({ message }, { status: 400 });
+    const message = error instanceof Error ? error.message : "Unknown error";
+    return NextResponse.json({ error: message }, { status: 400 });
   }
 }
 
