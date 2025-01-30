@@ -1,20 +1,27 @@
-import getBaseCampaign from "@/lib/chat/getBaseCampaign";
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+import { getCampaignContext } from "@/lib/supabase/getCampaignContext";
 
 export async function GET(req: NextRequest) {
-  const email = req.nextUrl.searchParams.get("email");
-  const artistId = req.nextUrl.searchParams.get("artistId");
-
   try {
-    const context = await getBaseCampaign(artistId as string, email as string);
-    return Response.json({
+    const email = req.nextUrl.searchParams.get("email");
+    const artistId = req.nextUrl.searchParams.get("artistId");
+
+    if (!email || !artistId) {
+      return NextResponse.json(
+        { error: "Email and artist ID are required" },
+        { status: 400 }
+      );
+    }
+
+    const data = await getCampaignContext(artistId, email);
+    return NextResponse.json({
       success: true,
-      data: context,
+      data,
     });
   } catch (error) {
     console.error(error);
-    const message = error instanceof Error ? error.message : "failed";
-    return Response.json({ message }, { status: 400 });
+    const message = error instanceof Error ? error.message : "Unknown error";
+    return NextResponse.json({ error: message }, { status: 400 });
   }
 }
 
