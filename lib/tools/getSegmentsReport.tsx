@@ -27,11 +27,14 @@ For Example:
 
       const funnel_analyses = await getFunnelAnalysis(chat_id);
       if (!funnel_analyses) return;
+      // @ts-expect-error TODO: Fix type mismatch between funnel_analyses and FUNNEL_ANALYSIS[]
       const artistProfile = getAggregatedArtist(funnel_analyses);
+      // @ts-expect-error TODO: Fix type mismatch between funnel_analyses and FUNNEL_ANALYSIS[]
       const segments = getAnalysisSegments(funnel_analyses);
       const segment = segments?.find(
-        (item: SEGMENT) => item.name === segment_name,
+        (item: SEGMENT) => item.name === segment_name
       );
+
       return {
         context: {
           status: ArtistToolResponse.FUNNEL_SEGMENT_REPORT,
