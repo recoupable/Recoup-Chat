@@ -15,13 +15,13 @@ import { getSupabaseClientKeys } from '../get-supabase-client-keys';
  * @name getSupabaseServerAdminClient
  * @description Get a Supabase client for use in the Server with admin access to the database.
  */
-export function getSupabaseServerAdminClient<GenericSchema = Database>() {
+export function getSupabaseServerAdminClient() {
   noStore();
   warnServiceRoleKeyUsage();
 
   const url = getSupabaseClientKeys().url;
 
-  return createClient<GenericSchema>(url, getServiceRoleKey(), {
+  return createClient<Database>(url, getServiceRoleKey(), {
     auth: {
       persistSession: false,
       detectSessionInUrl: false,
