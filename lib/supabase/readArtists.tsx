@@ -1,35 +1,32 @@
 import { getSupabaseServerAdminClient } from "@/packages/supabase/src/clients/server-admin-client";
+import { Database } from "@/packages/supabase/src/database.types";
+import { getOrCreateAccountByEmail } from "./getAccountByEmail";
 
-const readArtists = async (userEmail: string) => {
-  const client = getSupabaseServerAdminClient();
-  const { data: userData } = await client
-    .from("accounts")
-    .select("*")
-    .eq("email", userEmail);
+type AccountArtistId =
+  Database["public"]["Tables"]["account_artist_ids"]["Row"];
 
-  let user = userData?.[0];
+const readArtists = async (userEmail: string): Promise<AccountArtistId[]> => {
+  try {
+    const client = getSupabaseServerAdminClient();
 
-  if (!userData?.length) {
-    const newUserData = await client
-      .from("accounts")
-      .insert({
-        email: userEmail,
-        timestamp: Date.now(),
-        artistIds: [],
-      })
+    // Get or create user account
+    const account = await getOrCreateAccountByEmail(userEmail);
+
+    // Get artist IDs for the account
+    const { data: artistIds, error: artistError } = await client
+      .from("account_artist_ids")
       .select("*")
-      .single();
-    user = newUserData;
+      .eq("account_id", account.account_id);
+
+    if (artistError) {
+      throw artistError;
+    }
+
+    return artistIds || [];
+  } catch (error) {
+    console.error("Error in readArtists:", error);
+    throw error;
   }
-
-  const { data: artists, error } = await client
-    .from("artists")
-    .select("*")
-    .in("id", user.artistIds || []);
-
-  if (error) throw error;
-
-  return artists || [];
 };
 
 export default readArtists;

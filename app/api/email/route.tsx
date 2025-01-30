@@ -1,29 +1,24 @@
-import { NextRequest, NextResponse } from "next/server";
 import loopsClient from "@/lib/loops/client";
+import { NextRequest } from "next/server";
 
 export async function GET(req: NextRequest) {
   const email = req.nextUrl.searchParams.get("email");
-
-  if (!email) {
-    return NextResponse.json({ error: "Email is required" }, { status: 400 });
-  }
 
   try {
     const resp: {
       success: boolean;
       id?: string;
       message?: string;
-    } = await loopsClient.updateContact(email, {});
-
-    return NextResponse.json({
+    } = await loopsClient.updateContact(email as string, {});
+    return Response.json({
       success: resp.success,
       message: resp.message || "",
       id: resp.id || "",
     });
   } catch (error) {
     console.error(error);
-    const message = error instanceof Error ? error.message : "Unknown error";
-    return NextResponse.json({ error: message }, { status: 500 });
+    const message = error instanceof Error ? error.message : "failed";
+    return Response.json({ message }, { status: 400 });
   }
 }
 
