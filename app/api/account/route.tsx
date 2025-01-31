@@ -1,5 +1,6 @@
 import { getSupabaseServerAdminClient } from "@/packages/supabase/src/clients/server-admin-client";
 import { NextRequest } from "next/server";
+import { getAccountByPhone } from "@/lib/supabase/getAccountByPhone";
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
@@ -26,7 +27,7 @@ export async function POST(req: NextRequest) {
             ...account,
           },
         },
-        { status: 200 },
+        { status: 200 }
       );
     }
 
@@ -61,12 +62,38 @@ export async function POST(req: NextRequest) {
           organization: "",
         },
       },
-      { status: 200 },
+      { status: 200 }
     );
   } catch (error) {
     console.error(error);
     const message = error instanceof Error ? error.message : "failed";
     return Response.json({ message }, { status: 400 });
+  }
+}
+
+export async function GET(request: NextRequest) {
+  try {
+    const phone = request.nextUrl.searchParams.get("phone");
+
+    if (!phone) {
+      return Response.json(
+        { error: "Phone number is required" },
+        { status: 400 }
+      );
+    }
+
+    try {
+      const data = await getAccountByPhone(phone);
+      return Response.json({ data });
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Unknown error";
+      // Return 404 for "No account found" message, 500 for other errors
+      const status = message.includes("No account found") ? 404 : 500;
+      return Response.json({ error: message }, { status });
+    }
+  } catch (error) {
+    console.error("Error in /api/account:", error);
+    return Response.json({ error: "Internal server error" }, { status: 500 });
   }
 }
 
