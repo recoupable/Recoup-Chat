@@ -18,7 +18,6 @@ const AutoPilot = () => {
   const showSkeleton = !selectedArtist || !email;
 
   useEffect(() => {
-    // Only try to open the sign-in popup once if not logged in
     if (!email && !hasTriedLogin.current) {
       hasTriedLogin.current = true;
       login();
