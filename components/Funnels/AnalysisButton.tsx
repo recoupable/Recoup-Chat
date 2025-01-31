@@ -13,17 +13,11 @@ const AnalysisButton = ({
   const { lookupProfiles } = useAgentSocketProvider();
 
   const handleClick = async () => {
-    // Reset state
     setThoughts({});
     setResult(null);
     setIsLoading(true);
-
     try {
-      // First lookup profiles on all platforms
       await lookupProfiles(funnelType as string);
-
-      // Then open the socket connection
-      // openAgentSocket();
     } catch (error) {
       console.error("Error during analysis:", error);
       setIsLoading(false);
