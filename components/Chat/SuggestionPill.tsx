@@ -23,8 +23,8 @@ const SuggestionPill = ({ suggestion }: { suggestion: string }) => {
         className="text-center"
         dangerouslySetInnerHTML={{
           __html: suggestion.replaceAll(
-            selectedArtist?.name || "",
-            `<span style="color:#aa7fdb;">${selectedArtist?.name || ""}</span>`,
+            selectedArtist?.artist.name || "",
+            `<span style="color:#aa7fdb;">${selectedArtist?.artist.name || ""}</span>`,
           ),
         }}
       />

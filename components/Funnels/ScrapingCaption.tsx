@@ -14,7 +14,7 @@ const ScrapingCaption = () => {
     <div className="text-sm !w-[calc(100vw-95px)] md:w-full">
       {isCheckingHandles ? (
         <div className="flex gap-2 items-center">
-          Verifying @{selectedArtist?.name || artistHandle}
+          Verifying @{selectedArtist?.artist.name || artistHandle}
           ’s Social Handles...
           <Loading />
         </div>
@@ -25,7 +25,7 @@ const ScrapingCaption = () => {
             <div className="flex gap-2 items-center">
               Scraping @
               {funnelType === "wrapped"
-                ? selectedArtist?.name || artistHandle
+                ? selectedArtist?.artist.name || artistHandle
                 : artistHandle}
               ’s {funnelName}...
               <Loading />

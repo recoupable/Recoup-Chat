@@ -11,15 +11,11 @@ const Thought = ({ funnel, thought }: { funnel: string; thought: any }) => {
     useFunnelAnalysisProvider();
   const { selectedArtist, toggleSettingModal } = useArtistProvider();
 
-  const socialLink = selectedArtist?.account_socials?.find(
-    (social) => social.type === funnel.toUpperCase() && social.link,
-  );
   const isError = thought.status === STEP_OF_ANALYSIS.ERROR;
-  const isComplete =
-    thought.status === STEP_OF_ANALYSIS.FINISHED || (socialLink && isError);
+  const isComplete = thought.status === STEP_OF_ANALYSIS.FINISHED;
   const handle =
     funnelType === "wrapped"
-      ? selectedArtist?.name || artistHandle
+      ? selectedArtist?.artist.name || artistHandle
       : artistHandle;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const statusMessages: any = {
@@ -42,7 +38,7 @@ const Thought = ({ funnel, thought }: { funnel: string; thought: any }) => {
           `${funnel.toUpperCase()}: `}
       </span>
       <StreamingThought text={statusMessages[thought.status] || ""} />
-      {isError && !isFinishedScraping(thoughts) && !socialLink && (
+      {isError && !isFinishedScraping(thoughts) && (
         <span onClick={toggleSettingModal} className="underline cursor-pointer">
           Click here to retry.
         </span>
