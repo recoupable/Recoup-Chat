@@ -1,4 +1,4 @@
-import { ArtistRecord, CampaignRecord } from "@/types/Artist";
+import { ARTIST_INFO, CampaignRecord } from "@/types/Artist";
 import { ArtistToolResponse } from "@/types/Tool";
 import { v4 as uuidV4 } from "uuid";
 
@@ -16,7 +16,7 @@ const getToolCallMessage = (toolName: string | undefined, context: any) => {
   if (toolName === "getArtists")
     return {
       id: uuidV4(),
-      content: `${context.artists.length ? context.artists.map((artist: ArtistRecord) => artist.name).join(",") : "You don't manage any artists."}`,
+      content: `${context.artists.length ? context.artists.map((artist: ARTIST_INFO) => artist.artist.name).join(",") : "You don't manage any artists."}`,
       role: "assistant",
     };
 

@@ -11,7 +11,7 @@ const ToolContent = () => {
         toolName === "getArtists" ||
         toolName === "getArtistAnalysis" ||
         toolName === "getVideosInfo" ||
-        toolName === "updateArtistInfo") && <Artist />}
+        toolName === "updateARTIST_INFO") && <Artist />}
       {(toolName === "createCampaign" || toolName === "getCampaigns") && (
         <Campaign />
       )}

@@ -1,11 +1,11 @@
-import { ArtistRecord } from "@/types/Artist";
+import { ARTIST_INFO } from "@/types/Artist";
 import { Dispatch, SetStateAction, useEffect } from "react";
 import { useLocalStorage } from "usehooks-ts";
 
 const useInitialArtists = (
-  artists: ArtistRecord[],
-  selectedArtist: ArtistRecord | null,
-  setSelectedArtist: Dispatch<SetStateAction<ArtistRecord | null>>,
+  artists: ARTIST_INFO[],
+  selectedArtist: ARTIST_INFO | null,
+  setSelectedArtist: Dispatch<SetStateAction<ARTIST_INFO | null>>,
 ) => {
   const [artistCookie, setArtistCookie] = useLocalStorage("RECOUP_ARTIST", {});
 
@@ -24,15 +24,14 @@ const useInitialArtists = (
   useEffect(() => {
     if (selectedArtist && artists.length > 0) {
       const currentArtist = artists.find(
-        (artist: ArtistRecord) =>
-          artist.account_id === selectedArtist.account_id,
+        (artist: ARTIST_INFO) => artist.artist_id === selectedArtist.artist_id,
       );
       if (currentArtist && !selectedArtist?.isWrapped)
         setSelectedArtist(currentArtist);
     }
   }, [artists, selectedArtist]);
 
-  const handleSelectArtist = (artist: ArtistRecord | null) => {
+  const handleSelectArtist = (artist: ARTIST_INFO | null) => {
     setSelectedArtist(artist);
     if (artist) setArtistCookie(artist);
   };

@@ -1,7 +1,7 @@
 import { useArtistProvider } from "@/providers/ArtistProvider";
 import { useChatProvider } from "@/providers/ChatProvider";
 import { useToolCallProvider } from "@/providers/ToolCallProvider";
-import { ArtistRecord } from "@/types/Artist";
+import { ARTIST_INFO } from "@/types/Artist";
 import { useEffect, useState } from "react";
 import { v4 as uuidV4 } from "uuid";
 
@@ -23,7 +23,7 @@ const MissingArtistClient = () => {
     if (!clientId || !artistId) return;
     append({
       id: uuidV4(),
-      content: `Create a new campaign. CampaignName: ${clientId} ArtistId: ${selectedArtist?.account_id || artistId}`,
+      content: `Create a new campaign. CampaignName: ${clientId} ArtistId: ${selectedArtist?.artist_id || artistId}`,
       role: "user",
     });
   };
@@ -35,19 +35,19 @@ const MissingArtistClient = () => {
         <fieldset className="flex gap-2 items-center">
           <p className="text-sm">Artist Id:</p>
           {selectedArtist ? (
-            <p className="text-sm">{selectedArtist?.name}</p>
+            <p className="text-sm">{selectedArtist?.artist.name}</p>
           ) : (
             <select
               className="!bg-transparent border-grey border-[1px] rounded-md px-2 text-center text-sm"
               onChange={(e) => setArtistId(e.target.value)}
             >
-              {artists.map((artist: ArtistRecord, index: number) => (
+              {artists.map((artist: ARTIST_INFO, index: number) => (
                 <option
                   key={index}
                   className="!bg-black text-sm"
                   value={artist.id}
                 >
-                  {artist.name}
+                  {artist.artist.name}
                 </option>
               ))}
             </select>

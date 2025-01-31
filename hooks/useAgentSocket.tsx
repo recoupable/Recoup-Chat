@@ -7,7 +7,7 @@ import { STEP_OF_ANALYSIS } from "@/types/Funnel";
 import { useParams, useRouter } from "next/navigation";
 import { v4 as uuidV4 } from "uuid";
 import useSockets from "./useSockets";
-import { ArtistRecord } from "@/types/Artist";
+import { ARTIST_INFO } from "@/types/Artist";
 
 const useAgentSocket = () => {
   const {
@@ -27,14 +27,17 @@ const useAgentSocket = () => {
 
   const lookupProfiles = async (
     funnelType: string,
-    scrapingArtist: ArtistRecord | null = null,
+    scrapingArtist: ARTIST_INFO | null = null,
   ) => {
     if (!isPrepared()) return;
     setHandles({});
     setIsCheckingHandles(true);
     const newChatId = uuidV4();
     push(`/funnels/${funnelType}/${newChatId}`);
-    const handle = scrapingArtist?.name || selectedArtist?.name || artistHandle;
+    const handle =
+      scrapingArtist?.artist.name ||
+      selectedArtist?.artist.name ||
+      artistHandle;
     const socialHandles = await getHandles(handle);
     if (funnelType === "wrapped") {
       setHandles(socialHandles);
@@ -64,7 +67,7 @@ const useAgentSocket = () => {
           account_id: userData?.account_id,
           address,
           isWrapped,
-          existingArtistId: selectedArtist?.account_id,
+          existingArtistId: selectedArtist?.artist_id,
         });
       });
     } else {
@@ -85,7 +88,7 @@ const useAgentSocket = () => {
         account_id: userData?.account_id,
         address,
         isWrapped,
-        existingArtistId: selectedArtist?.account_id,
+        existingArtistId: selectedArtist?.artist_id,
       });
     }
   };

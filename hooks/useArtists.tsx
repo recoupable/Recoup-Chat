@@ -1,17 +1,18 @@
 import { useUserProvider } from "@/providers/UserProvder";
-import { ArtistRecord } from "@/types/Artist";
+import { ARTIST_INFO } from "@/types/Artist";
 import { useCallback, useEffect, useState } from "react";
 import useArtistSetting from "./useArtistSetting";
 import { SETTING_MODE } from "@/types/Setting";
 import useArtistMode from "./useArtistMode";
-import saveArtist from "@/lib/saveArtist";
+import saveArtist from "@/lib/client/saveArtist";
 import useInitialArtists from "./useInitialArtists";
+import getArtistsOfAccount from "@/lib/client/getArtistsOfAccount";
 
 const useArtists = () => {
   const artistSetting = useArtistSetting();
   const { email } = useUserProvider();
-  const [artists, setArtists] = useState<ArtistRecord[]>([]);
-  const [selectedArtist, setSelectedArtist] = useState<ArtistRecord | null>(
+  const [artists, setArtists] = useState<ARTIST_INFO[]>([]);
+  const [selectedArtist, setSelectedArtist] = useState<ARTIST_INFO | null>(
     null,
   );
   const [updating, setUpdating] = useState(false);
@@ -27,7 +28,7 @@ const useArtists = () => {
   );
   const [menuVisibleArtistId, setMenuVisibleArtistId] = useState<any>("");
   const activeArtistIndex = artists.findIndex(
-    (artist: ArtistRecord) => artist.account_id === selectedArtist?.account_id,
+    (artist: ARTIST_INFO) => artist.artist_id === selectedArtist?.artist_id,
   );
 
   const sorted =
@@ -45,63 +46,44 @@ const useArtists = () => {
         setArtists([]);
         return;
       }
-      const response = await fetch(
-        `/api/artists?email=${encodeURIComponent(email as string)}`,
-      );
-      const data = await response.json();
-      setArtists(data.artists);
-      if (data.artists.length === 0) {
-        setSelectedArtist(null);
-        return;
-      }
-      if (artistId) {
-        const newUpdatedInfo = data.artists.find(
-          (artist: ArtistRecord) => artist.account_id === artistId,
+      const artists = await getArtistsOfAccount(email);
+      setArtists(artists);
+      if (artistId && artists.length > 0) {
+        const newUpdatedInfo = artists.find(
+          (artist: ARTIST_INFO) => artist.artist_id === artistId,
         );
-        if (newUpdatedInfo) setSelectedArtist(newUpdatedInfo);
+        setSelectedArtist(newUpdatedInfo || null);
+        return;
       }
     },
     [email],
   );
-  const saveSetting = async (
-    name?: string,
-    image?: string,
-    socialUrls?: {
-      tiktok_url?: string;
-      twitter_url?: string;
-      spotify_url?: string;
-      instagram_url?: string;
-    },
-    mode?: string,
-  ) => {
+  const saveSetting = async () => {
     setUpdating(true);
-    const saveMode = mode || artistMode.settingMode;
+    const saveMode = artistMode.settingMode;
     try {
+      const profileUrls = [
+        artistSetting.twitter,
+        artistSetting.tiktok,
+        artistSetting.youtube,
+        artistSetting.instagram,
+        artistSetting.spotifyUrl,
+        artistSetting.appleUrl,
+      ];
       const data = await saveArtist({
-        name: name || artistSetting.name,
-        image: image || artistSetting.image,
-        tiktok_url: socialUrls ? socialUrls?.tiktok_url : artistSetting.tiktok,
-        youtube_url: artistSetting.youtube,
-        apple_url: artistSetting.appleUrl,
-        instagram_url: socialUrls
-          ? socialUrls?.instagram_url
-          : artistSetting.instagram,
-        twitter_url: socialUrls
-          ? socialUrls?.twitter_url
-          : artistSetting.twitter,
-        spotify_url: socialUrls
-          ? socialUrls?.spotify_url
-          : artistSetting.spotifyUrl,
+        name: artistSetting.name,
+        image: artistSetting.image,
+        profileUrls,
         instruction: artistSetting.instruction,
         label: artistSetting.label,
-        knowledges: artistSetting.bases,
+        knowledges: artistSetting.knowledges,
         artistId:
           saveMode === SETTING_MODE.CREATE
             ? ""
-            : artistSetting.editableArtist?.account_id,
+            : artistSetting.editableArtist?.artist_id,
         email,
       });
-      await getArtists(data.artist?.account_id);
+      await getArtists(data.artist?.artist_id);
       setUpdating(false);
       if (artistMode.settingMode === SETTING_MODE.CREATE)
         artistMode.setSettingMode(SETTING_MODE.UPDATE);

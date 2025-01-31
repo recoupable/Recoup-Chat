@@ -2,9 +2,10 @@ import getIpfsLink from "@/lib/ipfs/getIpfsLink";
 import { uploadFile } from "@/lib/ipfs/uploadToIpfs";
 import { useParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { ArtistRecord } from "@/types/Artist";
+import { ARTIST_INFO } from "@/types/Artist";
 import { v4 as uuidV4 } from "uuid";
 import { useMessagesProvider } from "@/providers/MessagesProvider";
+import getSocialPlatformByLink from "@/lib/getSocialPlatformByLink";
 
 const useArtistSetting = () => {
   const { finalCallback } = useMessagesProvider();
@@ -21,22 +22,22 @@ const useArtistSetting = () => {
   const [instagram, setInstagram] = useState("");
   const [youtube, setYoutube] = useState("");
   const [twitter, setTwitter] = useState("");
-  const [bases, setBases] = useState<any>([]);
+  const [knowledges, setKnowledges] = useState<any>([]);
   const [imageUploading, setImageUploading] = useState(false);
   const [knowledgeUploading, setKnowledgeUploading] = useState(false);
   const [question, setQuestion] = useState("");
-  const [editableArtist, setEditableArtist] = useState<ArtistRecord | null>(
+  const [editableArtist, setEditableArtist] = useState<ARTIST_INFO | null>(
     null,
   );
 
   const handleDeleteKnowledge = (index: number) => {
-    let temp = [...bases];
+    let temp = [...knowledges];
     if (temp.length === 1) {
-      setBases([]);
+      setKnowledges([]);
       return;
     }
     temp = temp.splice(index, 1);
-    setBases([...temp]);
+    setKnowledges([...temp]);
   };
   const handleImageSelected = async (e: any) => {
     setImageUploading(true);
@@ -66,16 +67,16 @@ const useArtistSetting = () => {
         type,
       });
     }
-    setBases(temp);
+    setKnowledges(temp);
     setKnowledgeUploading(false);
   };
 
-  const updateCallback = (artistInfo: ArtistRecord) => {
+  const updateCallback = (artistInfo: ARTIST_INFO) => {
     finalCallback(
       {
         role: "assistant",
         id: uuidV4(),
-        content: `Artist Information: Name - ${artistInfo.name} Image - ${artistInfo.image}`,
+        content: `Artist Information: Name - ${artistInfo.artist.name} Image - ${artistInfo.artist.name}`,
       },
       { id: uuidV4(), content: question, role: "user" },
       conversationId as string,
@@ -93,17 +94,17 @@ const useArtistSetting = () => {
     setTikTok("");
     setYoutube("");
     setTwitter("");
-    setBases([]);
+    setKnowledges([]);
     setEditableArtist(null);
   };
 
   useEffect(() => {
     if (editableArtist) {
-      setName(editableArtist?.name || "");
-      setImage(editableArtist?.image || "");
-      setLabel(editableArtist?.label || "");
-      setInstruction(editableArtist?.instruction || "");
-      setBases(editableArtist?.knowledges || "");
+      setName(editableArtist?.artist.name || "");
+      setImage(editableArtist?.artist.account_info[0].image || "");
+      setLabel(editableArtist?.artist.account_info[0].label || "");
+      setInstruction(editableArtist?.artist.account_info[0].instruction || "");
+      setKnowledges(editableArtist?.artist.account_info[0].knowledges || []);
       const socialMediaTypes = {
         TWITTER: setTwitter,
         YOUTUBE: setYoutube,
@@ -113,9 +114,12 @@ const useArtistSetting = () => {
         TIKTOK: setTikTok,
       };
       Object.entries(socialMediaTypes).forEach(([type, setter]) => {
-        const link = editableArtist?.account_socials?.find(
-          (item) => item.type === type,
-        )?.link;
+        const link = editableArtist.artist.account_socials.find((item) => {
+          const socialPlatform = getSocialPlatformByLink(
+            item.social.profile_url,
+          );
+          return type === socialPlatform;
+        })?.social.profile_url;
         setter(link || "");
       });
     }
@@ -144,8 +148,8 @@ const useArtistSetting = () => {
     setYoutube,
     twitter,
     setTwitter,
-    bases,
-    setBases,
+    knowledges,
+    setKnowledges,
     imageRef,
     baseRef,
     imageUploading,

@@ -1,10 +1,10 @@
-import { ArtistRecord } from "@/types/Artist";
+import { ARTIST_INFO } from "@/types/Artist";
 import { SETTING_MODE } from "@/types/Setting";
 import { Dispatch, SetStateAction, useState } from "react";
 
 const useArtistMode = (
   clearParams: () => void,
-  setEditableArtist: Dispatch<SetStateAction<ArtistRecord | null>>,
+  setEditableArtist: Dispatch<SetStateAction<ARTIST_INFO | null>>,
 ) => {
   const [settingMode, setSettingMode] = useState(SETTING_MODE.UPDATE);
   const [isOpenSettingModal, setIsOpenSettingModal] = useState(false);
@@ -15,7 +15,7 @@ const useArtistMode = (
     toggleSettingModal();
   };
 
-  const toggleUpdate = (artist: ArtistRecord) => {
+  const toggleUpdate = (artist: ARTIST_INFO) => {
     setSettingMode(SETTING_MODE.UPDATE);
     setEditableArtist(artist);
   };

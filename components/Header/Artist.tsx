@@ -1,5 +1,5 @@
 import { useArtistProvider } from "@/providers/ArtistProvider";
-import { ArtistRecord } from "@/types/Artist";
+import { ARTIST_INFO } from "@/types/Artist";
 import ImageWithFallback from "../ImageWithFallback";
 import { EllipsisVertical } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
@@ -9,7 +9,7 @@ const Artist = ({
   toggleDropDown,
   isMini,
 }: {
-  artist: ArtistRecord | null;
+  artist: ARTIST_INFO | null;
   toggleDropDown: () => void;
   isMini?: boolean;
 }) => {
@@ -20,13 +20,13 @@ const Artist = ({
     toggleSettingModal,
   } = useArtistProvider();
 
-  const isSelectedArtist = selectedArtist?.account_id === artist?.account_id;
+  const isSelectedArtist = selectedArtist?.artist_id === artist?.artist_id;
   const pathname = usePathname();
   const { push } = useRouter();
   const handleClick = () => {
     toggleDropDown();
     if (pathname.includes("/funnels") && selectedArtist) {
-      if (selectedArtist.account_id !== artist?.account_id) push("/");
+      if (selectedArtist.artist_id !== artist?.artist_id) push("/");
     }
     setSelectedArtist(artist);
   };
@@ -44,15 +44,17 @@ const Artist = ({
       <div
         className={`w-8 aspect-1/1 rounded-full overflow-hidden flex items-center justify-center ${isSelectedArtist && "shadow-[1px_1px_1px_1px_#E6E6E6]"}`}
       >
-        <ImageWithFallback src={artist?.image || ""} />
+        <ImageWithFallback
+          src={artist?.artist.account_info?.[0]?.image || ""}
+        />
       </div>
       {!isMini && (
         <>
           <div
-            key={artist?.account_id}
+            key={artist?.artist_id}
             className="text-left max-w-[100px] truncate"
           >
-            {artist?.name}
+            {artist?.artist.name}
           </div>
           <button
             type="button"

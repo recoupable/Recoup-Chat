@@ -4,7 +4,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { useArtistProvider } from "@/providers/ArtistProvider";
 import Artist from "../Header/Artist";
-import { ArtistRecord } from "@/types/Artist";
+import { ARTIST_INFO } from "@/types/Artist";
 import { Plus } from "lucide-react";
 import useIsMobile from "@/hooks/useIsMobile";
 import { useUserProvider } from "@/providers/UserProvder";
@@ -36,11 +36,11 @@ const ArtistsSidebar = () => {
     >
       <div className="no-scrollbar grow flex flex-col overflow-y-auto overflow-x-hidden">
         {email &&
-          sorted.map((artist: ArtistRecord | null) => (
+          sorted.map((artist: ARTIST_INFO | null) => (
             <Artist
               artist={artist}
               toggleDropDown={() => {}}
-              key={artist?.account_id}
+              key={artist?.artist_id}
               isMini={!menuExpanded}
             />
           ))}

@@ -33,7 +33,7 @@ const Artists = () => {
                 onClick={() => setSelectedArtist(artist)}
                 className="text-xs"
               >
-                {artist.name}
+                {artist.artist.name}
               </button>
             ))}
           </div>

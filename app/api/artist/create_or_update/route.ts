@@ -1,5 +1,5 @@
+import createSocialByLink from "@/lib/supabase/createSocialByLink";
 import updateArtistProfile from "@/lib/supabase/updateArtistProfile";
-import updateArtistSocials from "@/lib/supabase/updateArtistSocials";
 import { getSupabaseServerAdminClient } from "@/packages/supabase/src/clients/server-admin-client";
 import { NextRequest } from "next/server";
 
@@ -9,12 +9,7 @@ export async function POST(req: NextRequest) {
   const name = body.name;
   const artistId = body.artistId;
   const email = body.email;
-  const tiktok_url = body.tiktok_url;
-  const youtube_url = body.youtube_url;
-  const apple_url = body.apple_url;
-  const instagram_url = body.instagram_url;
-  const twitter_url = body.twitter_url;
-  const spotify_url = body.spotify_url;
+  const profileUrls = body.profileUrls;
   const label = body.label;
   const instruction = body.instruction;
   const knowledges = body.knowledges;
@@ -31,19 +26,15 @@ export async function POST(req: NextRequest) {
       knowledges,
     );
 
-    await updateArtistSocials(
-      artistAccountId,
-      tiktok_url,
-      youtube_url,
-      apple_url,
-      instagram_url,
-      twitter_url,
-      spotify_url,
+    await Promise.all(
+      profileUrls.map(
+        async (url: string) => await createSocialByLink(artistId, url),
+      ),
     );
 
     const { data: account } = await client
       .from("accounts")
-      .select("*, account_info(*), account_emails(*), account_socials(*)")
+      .select("*, account_info(*), account_socials(*, socials(*))")
       .eq("id", artistAccountId)
       .single();
 
@@ -51,11 +42,8 @@ export async function POST(req: NextRequest) {
 
     return Response.json(
       {
-        artist: {
-          ...account.account_info[0],
-          ...account,
-          account_id: account.id,
-        },
+        artist: account,
+        artist_id: artistAccountId,
       },
       { status: 200 },
     );

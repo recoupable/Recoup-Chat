@@ -1,13 +1,13 @@
 import { useArtistProvider } from "@/providers/ArtistProvider";
-import { ArtistRecord } from "@/types/Artist";
+import { ARTIST_INFO } from "@/types/Artist";
 
-const UpdateArtistInfo = ({ toggleModal }: { toggleModal: () => void }) => {
+const UpdateARTIST_INFO = ({ toggleModal }: { toggleModal: () => void }) => {
   const { artists, setSelectedArtist } = useArtistProvider();
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleSelectArtist = (e: any) => {
     const currentArtist = artists.find(
-      (artist: ArtistRecord) => artist.id === e.target.value,
+      (artist: ARTIST_INFO) => artist.id === e.target.value,
     );
     if (currentArtist) setSelectedArtist(currentArtist);
   };
@@ -22,13 +22,13 @@ const UpdateArtistInfo = ({ toggleModal }: { toggleModal: () => void }) => {
             className="!bg-transparent border-grey border-[1px] rounded-md px-2 text-center text-sm"
             onChange={handleSelectArtist}
           >
-            {artists.map((artist: ArtistRecord, index: number) => (
+            {artists.map((artist: ARTIST_INFO, index: number) => (
               <option
                 key={index}
                 className="!bg-black text-sm"
                 value={artist.id}
               >
-                {artist.name}
+                {artist.artist.name}
               </option>
             ))}
           </select>
@@ -45,4 +45,4 @@ const UpdateArtistInfo = ({ toggleModal }: { toggleModal: () => void }) => {
   );
 };
 
-export default UpdateArtistInfo;
+export default UpdateARTIST_INFO;

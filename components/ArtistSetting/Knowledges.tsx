@@ -4,11 +4,12 @@ import Icon from "../Icon";
 import getKnowledgeIcon from "@/lib/getKnowledgeIcon";
 
 const Knowledges = () => {
-  const { bases, handleDeleteKnowledge } = useArtistProvider();
+  const { knowledges: knowledges_info, handleDeleteKnowledge } =
+    useArtistProvider();
   return (
     <>
       {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-      {bases.map((base: any, index: number) => (
+      {knowledges_info.map((base: any, index: number) => (
         <div
           className="flex gap-2 justify-between items-center w-full"
           key={index}

@@ -36,7 +36,7 @@ const useAutopilot = () => {
     await trackAction(
       address,
       actions[index],
-      selectedArtist?.account_id || "",
+      selectedArtist?.artist_id || "",
       false,
       {},
     );

@@ -1,8 +1,7 @@
-import { SOCIAL } from "@/types/Agent";
-import { ArtistRecord } from "@/types/Artist";
-import { Funnel_Type } from "@/types/Funnel";
+import { ACCOUNT_SOCIAL, ARTIST_INFO } from "@/types/Artist";
+import getSocialPlatformByLink from "./getSocialPlatformByLink";
 
-const getExistingHandles = (artist: ArtistRecord | null) => {
+const getExistingHandles = (artist: ARTIST_INFO | null) => {
   if (!artist)
     return {
       twitter: "",
@@ -11,19 +10,24 @@ const getExistingHandles = (artist: ArtistRecord | null) => {
       instagram: "",
     };
 
-  const socials = artist.account_socials.filter(
-    (link: SOCIAL) => link.type !== "YOUTUBE" && link.type !== "APPLE",
+  const socials = artist.artist.account_socials.filter(
+    (ele: ACCOUNT_SOCIAL) => {
+      const profileUrl = ele.social.profile_url;
+      const socialPlatform = getSocialPlatformByLink(profileUrl);
+      return socialPlatform !== "APPPLE" && socialPlatform !== "YOUTUBE";
+    },
   );
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handles: any = {};
 
-  socials.map((social: SOCIAL) => {
-    const link = social.link;
-    let match = link.match(/\/\/[^/]+\/([^\/?#]+)/);
-    if (social.type === Funnel_Type.SPOTIFY.toUpperCase())
-      match = link.match(/\/artists\/([a-zA-Z0-9]+)\/?$/);
-    handles[`${social.type.toLowerCase()}`] = match ? match[1] : "";
+  socials.map((social: ACCOUNT_SOCIAL) => {
+    const profileUrl = social.social.profile_url;
+    const socialPlatform = getSocialPlatformByLink(profileUrl);
+    let match = profileUrl.match(/\/\/[^/]+\/([^\/?#]+)/);
+    if (socialPlatform === "YOUTUBE")
+      match = profileUrl.match(/\/artists\/([a-zA-Z0-9]+)\/?$/);
+    handles[`${socialPlatform.toLowerCase()}`] = match ? match[1] : "";
   });
 
   return handles;

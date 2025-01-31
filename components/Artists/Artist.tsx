@@ -1,5 +1,5 @@
 import { useArtistProvider } from "@/providers/ArtistProvider";
-import { ArtistRecord } from "@/types/Artist";
+import { ARTIST_INFO } from "@/types/Artist";
 import ImageWithFallback from "../ImageWithFallback";
 import DropDown from "./DropDown";
 
@@ -7,7 +7,7 @@ const Artist = ({
   artist,
   isVisibleDropDown,
 }: {
-  artist: ArtistRecord;
+  artist: ARTIST_INFO;
   isVisibleDropDown: boolean;
 }) => {
   const { setSelectedArtist, setMenuVisibleArtistId } = useArtistProvider();
@@ -32,10 +32,10 @@ const Artist = ({
         onContextMenu={handleDropDown}
       >
         <ImageWithFallback
-          src={artist.image || "https://i.imgur.com/QCdc8Ai.jpg"}
+          src={artist.artist.name || "https://i.imgur.com/QCdc8Ai.jpg"}
         />
         <div className="rounded-full flex items-center justify-center text-white absolute left-4 bottom-4">
-          {artist.name}
+          {artist.artist.name}
         </div>
       </button>
       {isVisibleDropDown && <DropDown artist={artist} />}

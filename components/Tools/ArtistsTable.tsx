@@ -1,5 +1,5 @@
 import { useToolCallProvider } from "@/providers/ToolCallProvider";
-import { ArtistRecord } from "@/types/Artist";
+import { ARTIST_INFO } from "@/types/Artist";
 import { useEffect, useState } from "react";
 
 const ArtistsTable = () => {
@@ -23,7 +23,7 @@ const ArtistsTable = () => {
             <th className="text-xs text-left p-1">Action</th>
           </thead>
           <tbody>
-            {artistsList?.map((artist: ArtistRecord, index: number) => (
+            {artistsList?.map((artist: ARTIST_INFO, index: number) => (
               <tr key={index}>
                 <td className="text-xs p-1">{artist.id}</td>
                 <td className="text-xs p-1">{artist.name}</td>

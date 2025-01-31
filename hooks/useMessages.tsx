@@ -42,7 +42,7 @@ const useMessages = () => {
     },
     body: {
       email,
-      artistId: selectedArtist?.account_id || "",
+      artistId: selectedArtist?.artist_id || "",
       context: funnelContext || "",
       active_analaysis_id: active_analaysis_id || "",
     },
@@ -81,7 +81,7 @@ const useMessages = () => {
     await trackNewMessage(
       address as Address,
       question,
-      selectedArtist?.account_id || "",
+      selectedArtist?.artist_id || "",
       convId,
     );
     await trackNewMessage(
@@ -91,7 +91,7 @@ const useMessages = () => {
         content: formattedContent(message.content),
         questionId: question.id,
       },
-      selectedArtist?.account_id || "",
+      selectedArtist?.artist_id || "",
       convId,
       referenceId,
     );

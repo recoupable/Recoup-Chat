@@ -1,4 +1,4 @@
-import { ArtistRecord } from "@/types/Artist";
+import { ARTIST_INFO } from "@/types/Artist";
 import Artist from "./Artist";
 import { useArtistProvider } from "@/providers/ArtistProvider";
 import { Plus } from "lucide-react";
@@ -27,11 +27,11 @@ const ArtistDropDown = ({
         onMouseOut={() => setIsVisibleDropDown(false)}
       >
         <div className="border mt-2 bg-white p-2 rounded-md space-y-1 shadow-[0px_0px_7px_0px_#80808063] max-h-[200px] overflow-y-auto">
-          {sorted.map((artist: ArtistRecord | null) => (
+          {sorted.map((artist: ARTIST_INFO | null) => (
             <Artist
               artist={artist}
               toggleDropDown={() => setIsVisibleDropDown(false)}
-              key={artist?.account_id}
+              key={artist?.artist_id}
             />
           ))}
           <button

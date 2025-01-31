@@ -8,12 +8,12 @@ const useFansProfiles = () => {
   const { email } = useUserProvider();
 
   const getFansProfiles = useCallback(async () => {
-    if (!selectedArtist?.account_id) {
+    if (!selectedArtist?.artist_id) {
       setFansProfiles([]);
       return;
     }
     const response = await fetch(
-      `/api/get_fans_profiles?artistId=${selectedArtist?.account_id}`,
+      `/api/get_fans_profiles?artistId=${selectedArtist?.artist_id}`,
     );
     const data = await response.json();
     setFansProfiles(data.data || []);
