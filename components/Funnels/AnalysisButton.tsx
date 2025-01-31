@@ -8,14 +8,28 @@ const AnalysisButton = ({
   className?: string;
   containerClasses?: string;
 }) => {
-  const { username, setThoughts, setResult } = useFunnelAnalysisProvider();
-  const { openAgentSocket } = useAgentSocketProvider();
+  const { username, setThoughts, setResult, funnelType, setIsLoading } =
+    useFunnelAnalysisProvider();
+  const { lookupProfiles } = useAgentSocketProvider();
 
-  const handleClick = () => {
+  const handleClick = async () => {
+    // Reset state
     setThoughts({});
     setResult(null);
-    openAgentSocket();
+    setIsLoading(true);
+
+    try {
+      // First lookup profiles on all platforms
+      await lookupProfiles(funnelType as string);
+
+      // Then open the socket connection
+      // openAgentSocket();
+    } catch (error) {
+      console.error("Error during analysis:", error);
+      setIsLoading(false);
+    }
   };
+
   return (
     <div className={`space-y-3 ${containerClasses}`}>
       <button
