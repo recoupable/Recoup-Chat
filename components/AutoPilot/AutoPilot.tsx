@@ -11,8 +11,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 const AutoPilot = () => {
   const { selectedArtist } = useArtistProvider();
   const { email } = useUserProvider();
-
-  // Show skeleton in any case where we would have shown the Artists component
   const showSkeleton = !selectedArtist || !email;
 
   return (
