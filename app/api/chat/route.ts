@@ -1,39 +1,27 @@
-import { OpenAIStream, StreamingTextResponse } from "ai";
-import OpenAI from "openai";
-import { ChatCompletionMessage } from "openai/resources/chat";
-
-// Initialize OpenAI client
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-  baseURL: process.env.OPENAI_API_BASE_URL,
-});
+import {
+  createChatLLMService,
+  StreamResponseSchema,
+} from "@/lib/server/chat-llm.service";
+import { enhanceRouteHandler } from "@/packages/next/src/routes";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 export const fetchCache = "force-no-store";
 
-export async function POST(req: Request) {
-  try {
-    const { messages } = (await req.json()) as {
-      messages: ChatCompletionMessage[];
-    };
+export const POST = enhanceRouteHandler(
+  async ({ body }) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const service = createChatLLMService();
 
-    const response = await openai.chat.completions.create({
-      model: "o3-mini",
-      stream: true,
-      messages: messages,
-    });
-
-    const stream = OpenAIStream(response);
-    return new StreamingTextResponse(stream);
-  } catch (error) {
-    console.error("[CHAT] Error:", error);
-    return new Response(
-      JSON.stringify({ error: "Failed to generate response" }),
-      {
-        status: 500,
-        headers: { "Content-Type": "application/json" },
-      }
-    );
-  }
-}
+    try {
+      return await service.streamResponse(body);
+    } catch (error) {
+      console.error(error);
+      const message = error instanceof Error ? error.message : "Unknown error";
+      return new Response(message, { status: 500 });
+    }
+  },
+  {
+    schema: StreamResponseSchema,
+  },
+);
