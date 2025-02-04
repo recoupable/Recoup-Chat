@@ -20,7 +20,7 @@ export const SOCIAL_DEFAULT_PLATFORMS = [
 ];
 
 // Vercel AI SDK
-export const AI_MODEL = "gpt-4o-mini";
+export const AI_MODEL = "o3-mini";
 
 export const TITLE = "Recoup";
 export const DESCRIPTION =
