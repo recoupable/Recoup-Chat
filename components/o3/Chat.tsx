@@ -1,10 +1,10 @@
-import { Message, useChat } from "ai/react";
+import { useChat } from "ai/react";
 import ChatInput from "./ChatInput";
 import Messages from "./Messages";
 
 export default function Chat() {
   const { messages, input, handleInputChange, handleSubmit } = useChat({
-    api: "/api/chat",
+    api: "/api/chat/o3",
   });
 
   return (
