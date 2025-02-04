@@ -23,14 +23,15 @@ const analyzeArtist = (question: string) =>
       return {
         context: {
           args: {
-            handle,
-            social_platform,
+            handle: handle || "",
+            social_platform: social_platform || "",
           },
           status: ArtistToolResponse.ANALYZE_ARTIST,
         },
         question,
       };
     },
+    type: "function",
   });
 
 export default analyzeArtist;

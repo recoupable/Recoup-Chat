@@ -1,18 +1,18 @@
 import "server-only";
 
 import { AI_MODEL, HTML_RESPONSE_FORMAT_INSTRUCTIONS } from "../consts";
-import createArtist from "../tools/createArtist";
-import getArtists from "../tools/getArtists";
+// import createArtist from "../tools/createArtist";
+// import getArtists from "../tools/getArtists";
 import analyzeArtist from "../tools/analyzeArtist";
-import createCampaign from "../tools/createCampaign";
-import getCampaigns from "../tools/getCampaigns";
-import updateArtistInfo from "../tools/updateArtistInfo";
-import getScoreInfo from "../tools/getScoreInfo";
+// import createCampaign from "../tools/createCampaign";
+// import getCampaigns from "../tools/getCampaigns";
+// import updateArtistInfo from "../tools/updateArtistInfo";
+// import getScoreInfo from "../tools/getScoreInfo";
 import getBaseCampaign from "../chat/getBaseCampaign";
-import getVideosInfo from "../tools/getVideosInfo";
-import getSegmentsReport from "../tools/getSegmentsReport";
-import getPitchReport from "../tools/getPitchReport";
-import getInstrumentalStyleSuggestions from "../tools/getInstrumentalStyleSuggestions";
+// import getVideosInfo from "../tools/getVideosInfo";
+// import getSegmentsReport from "../tools/getSegmentsReport";
+// import getPitchReport from "../tools/getPitchReport";
+// import getInstrumentalStyleSuggestions from "../tools/getInstrumentalStyleSuggestions";
 
 export function createChatMessagesService() {
   return new ChatMessagesService();
@@ -27,7 +27,7 @@ class ChatMessagesService {
     artistId: string,
     context: string,
   ) {
-    const tools = this.fetchRelevantTools(question, email, artistId);
+    const tools = this.fetchRelevantTools(question);
     const systemMessage = `
 *****
 [Context]: ${context}
@@ -65,21 +65,21 @@ ${HTML_RESPONSE_FORMAT_INSTRUCTIONS}
 
   private fetchRelevantTools(
     question: string,
-    email: string,
-    artistId: string,
+    // email: string,
+    // artistId: string,
   ) {
     return [
-      getVideosInfo(question),
-      getScoreInfo(question),
-      createArtist(question),
-      getArtists(question, email),
+      // getVideosInfo(question),
+      // getScoreInfo(question),
+      // createArtist(question),
+      // getArtists(question, email),
       analyzeArtist(question),
-      createCampaign(question, email),
-      getCampaigns(question, email, artistId),
-      updateArtistInfo(question),
-      getSegmentsReport(question),
-      getPitchReport(question),
-      getInstrumentalStyleSuggestions(question),
+      // createCampaign(question, email),
+      // getCampaigns(question, email, artistId),
+      // updateArtistInfo(question),
+      // getSegmentsReport(question),
+      // getPitchReport(question),
+      // getInstrumentalStyleSuggestions(question),
     ];
   }
 }
