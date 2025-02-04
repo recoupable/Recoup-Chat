@@ -1,6 +1,5 @@
 import { OpenAIStream, StreamingTextResponse } from "ai";
 import OpenAI from "openai";
-import { ChatCompletionMessage } from "openai/resources/chat";
 
 // Initialize OpenAI client
 const openai = new OpenAI({
@@ -14,9 +13,8 @@ export const fetchCache = "force-no-store";
 
 export async function POST(req: Request) {
   try {
-    const { messages } = (await req.json()) as {
-      messages: ChatCompletionMessage[];
-    };
+    // Use the OpenAI types directly
+    const { messages } = await req.json();
 
     const response = await openai.chat.completions.create({
       model: "o3-mini",
