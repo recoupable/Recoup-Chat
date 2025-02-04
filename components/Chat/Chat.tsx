@@ -1,16 +1,22 @@
+import { Message, useChat } from "ai/react";
 import ChatInput from "./ChatInput";
 import Messages from "./Messages";
-import { ScrollTo } from "react-scroll-to";
 
-const Chat = () => {
+export default function Chat() {
+  const { messages, input, handleInputChange, handleSubmit } = useChat({
+    api: "/api/chat",
+  });
+
   return (
-    <div
-      className={`size-full flex flex-col items-center justify-center bg-white rounded-xl overflow-hidden flex flex-col px-4 pb-5 md:pt-[14px]`}
-    >
-      <ScrollTo>{({ scroll }) => <Messages scroll={scroll} />}</ScrollTo>
-      <ChatInput />
+    <div className="flex flex-col h-full">
+      <div className="flex-1 overflow-y-auto">
+        <Messages messages={messages} />
+      </div>
+      <ChatInput
+        input={input}
+        handleInputChange={handleInputChange}
+        handleSubmit={handleSubmit}
+      />
     </div>
   );
-};
-
-export default Chat;
+}

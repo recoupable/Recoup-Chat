@@ -1,15 +1,11 @@
-import ToolContent from "../Tools/ToolContent";
-import { useToolCallProvider } from "@/providers/ToolCallProvider";
-import { useChatProvider } from "@/providers/ChatProvider";
+import { Message as AIMessage } from "ai/react";
 import Icon from "../Icon";
-import ToolFollowUp from "../Tools/ToolFollowUp";
-import SegmentReport from "./SegmentReport";
 
-// eslint-disable-next-line
-const Message = ({ message, index }: { message: any; index: number }) => {
-  const { context } = useToolCallProvider();
-  const { isReportChat } = useChatProvider();
+interface MessageProps {
+  message: AIMessage;
+}
 
+const Message = ({ message }: MessageProps) => {
   return (
     <div className="p-3 rounded-lg flex w-full gap-2">
       {message.role === "assistant" && (
@@ -20,15 +16,13 @@ const Message = ({ message, index }: { message: any; index: number }) => {
       <div
         className={`grow ${message.role === "user" && "flex justify-end"} max-w-[90%]`}
       >
-        {context && <ToolContent />}
-        {isReportChat && !index ? (
-          <SegmentReport
-            artistId={message?.metadata?.accountId}
-            referenceId={message?.metadata?.referenceId}
-          />
-        ) : (
-          <ToolFollowUp message={message} />
-        )}
+        <section>
+          <div
+            className={`text-sm font-sans max-w-[500px] text-pretty break-words ${message.role === "user" ? "bg-grey px-4 p-2 rounded-full" : ""}`}
+          >
+            {message.content}
+          </div>
+        </section>
       </div>
     </div>
   );

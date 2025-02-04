@@ -1,7 +1,13 @@
 "use client";
 
-import InitialChat from "@/components/Chat/InitialChat";
+import Chat from "@/components/Chat";
 
-const NewChatPage = () => <InitialChat />;
+const NewChatPage = () => {
+  return (
+    <div className="w-full h-full flex flex-col">
+      <Chat />
+    </div>
+  );
+};
 
 export default NewChatPage;
