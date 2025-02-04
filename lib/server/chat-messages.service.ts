@@ -42,7 +42,7 @@ ${HTML_RESPONSE_FORMAT_INSTRUCTIONS}
 `;
 
     return {
-      maxTokens: 1111,
+      maxTokens: 200000,
       systemMessage,
       model: AI_MODEL,
       tools,

@@ -2,11 +2,8 @@ import "server-only";
 
 import { openai } from "@ai-sdk/openai";
 import { CoreTool, LanguageModelV1, streamText } from "ai";
-import { encodeChat } from "gpt-tokenizer";
 import { z } from "zod";
-
 import { createChatMessagesService } from "./chat-messages.service";
-import { AI_MODEL } from "../consts";
 
 export const ChatMessagesSchema = z.object({
   messages: z.array(
@@ -58,10 +55,6 @@ class ChatLLMService {
       throw new Error("No messages provided");
     }
 
-    // // make sure the user has enough credits
-    // await this.assertEnoughCredits(accountId);
-
-    // retrieve the chat settings
     const chatContext =
       messages.length > 2
         ? context || messages[messages.length - 2].content
@@ -72,25 +65,8 @@ class ChatLLMService {
       artistId,
       chatContext,
     );
-    const systemMessage = settings.systemMessage;
-    const maxTokens = settings.maxTokens;
     const tools = settings.tools;
-    // we need to limit the history length so not to exceed the max tokens of the model
-    // let's assume for simplicity that all models have a max tokens of 128000
-    // so we need to make sure that the history doesn't exceed output length + system message length
-    const maxModelTokens = 228000;
 
-    const maxHistoryLength = maxModelTokens - systemMessage.length - maxTokens;
-    let decodedHistory = encodeChat(messages, AI_MODEL);
-
-    if (decodedHistory.length > maxHistoryLength) {
-      while (decodedHistory.length > maxHistoryLength) {
-        messages.shift();
-        decodedHistory = encodeChat(messages, AI_MODEL);
-      }
-    }
-
-    // we use the openai model to generate a response
     const result = await streamText({
       model: openai(settings.model) as LanguageModelV1,
       system: settings.systemMessage,
