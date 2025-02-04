@@ -68,19 +68,18 @@ ${HTML_RESPONSE_FORMAT_INSTRUCTIONS}
     email: string,
     artistId: string,
   ) {
-    return {
-      getVideosInfo: getVideosInfo(question),
-      getScoreInfo: getScoreInfo(question),
-      createArtist: createArtist(question),
-      getArtists: getArtists(question, email),
-      analyzeArtist: analyzeArtist(question),
-      createCampaign: createCampaign(question, email),
-      getCampaigns: getCampaigns(question, email, artistId),
-      updateArtistInfo: updateArtistInfo(question),
-      getSegmentsReport: getSegmentsReport(question),
-      getPitchReport: getPitchReport(question),
-      getInstrumentalStyleSuggestions:
-        getInstrumentalStyleSuggestions(question),
-    };
+    return [
+      getVideosInfo(question),
+      getScoreInfo(question),
+      createArtist(question),
+      getArtists(question, email),
+      analyzeArtist(question),
+      createCampaign(question, email),
+      getCampaigns(question, email, artistId),
+      updateArtistInfo(question),
+      getSegmentsReport(question),
+      getPitchReport(question),
+      getInstrumentalStyleSuggestions(question),
+    ];
   }
 }
