@@ -45,7 +45,7 @@ class ChatLLMService {
       messages.length > 2
         ? context || messages[messages.length - 2].content
         : context;
-    await chatMessagesService.getChatSettings(
+    const settings = await chatMessagesService.getChatSettings(
       lastMessage.content,
       email,
       artistId,
@@ -57,7 +57,13 @@ class ChatLLMService {
     const response = await openai.chat.completions.create({
       model: AI_MODEL,
       stream: true,
-      messages: messages,
+      messages: [
+        ...messages,
+        {
+          role: "assistant",
+          content: settings.systemMessage,
+        },
+      ],
     });
 
     const stream = OpenAIStream(response);
