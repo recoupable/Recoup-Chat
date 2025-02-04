@@ -6,7 +6,7 @@ import trackAction from "@/lib/stack/trackAction";
 import { useUserProvider } from "@/providers/UserProvder";
 import useStackActions from "./useStackActions";
 import useRunningAgents from "./useRunningAgents";
-import useFansProfiles from "./useFansProfiles";
+import useFansSegments from "./useFansSegments";
 import useSocialActions from "./useSocialActions";
 import useArtistComments from "./useArtistComments";
 
@@ -14,7 +14,7 @@ const useAutopilot = () => {
   const { selectedArtist } = useArtistProvider();
   const { address, email } = useUserProvider();
   const { curLiveAgent } = useRunningAgents();
-  const { fansProfiles } = useFansProfiles();
+  const { fansSegments } = useFansSegments();
   const {
     analyses,
     segmentName,
@@ -60,13 +60,13 @@ const useAutopilot = () => {
       return true;
     });
     setActions([...filtered]);
-    if (fansProfiles.length > 0) {
+    if (fansSegments.length > 0) {
       // eslint-disable-next-line
       const stackProfilesEvent = stackActions.filter(
         (event: any) =>
           event.metadata.id === ACTIONS.FANS_PROFILES &&
           event.metadata.isApproved &&
-          event.metadata?.fansCount === fansProfiles.length,
+          event.metadata?.fansCount === fansSegments.length,
       );
       if (stackProfilesEvent.length === 0)
         setActions([
@@ -82,7 +82,7 @@ const useAutopilot = () => {
     analysisActions,
     socialActions,
     stackActions,
-    fansProfiles,
+    fansSegments,
     email,
     comments,
   ]);
@@ -98,7 +98,7 @@ const useAutopilot = () => {
     stackActions,
     eventsLogs,
     getStackActions,
-    fansProfiles,
+    fansSegments,
     curLiveAgent,
   };
 };

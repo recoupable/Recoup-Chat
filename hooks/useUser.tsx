@@ -47,6 +47,9 @@ const useUser = () => {
         image,
         accountId: userData?.account_id,
       }),
+      headers: {
+        "Content-Type": "application/json",
+      },
     });
     const data = await response.json();
     setUserData(data.data);

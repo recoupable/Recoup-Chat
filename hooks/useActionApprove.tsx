@@ -22,7 +22,7 @@ const useActionApprove = () => {
     funnelType,
     reportId,
     getStackActions,
-    fansProfiles,
+    fansSegments,
   } = useAutopilotProvider();
   const [copied, setCopied] = useState(false);
   const { handleGenerateReport } = useGenerateSegmentReport();
@@ -56,8 +56,8 @@ const useActionApprove = () => {
       );
     }
     if (action.type === ACTIONS.FANS_PROFILES) {
-      metadata = { fansCount: fansProfiles.length };
-      exportCSV(fansProfiles);
+      metadata = { fansCount: fansSegments.length };
+      exportCSV(fansSegments);
     }
     await trackAction(
       address,
