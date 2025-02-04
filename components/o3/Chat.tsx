@@ -8,8 +8,8 @@ export default function Chat() {
   });
 
   return (
-    <div className="flex flex-col h-full">
-      <div className="flex-1 overflow-y-auto">
+    <div className="size-full flex flex-col items-center justify-center bg-white rounded-xl overflow-hidden flex flex-col px-4 pb-5 md:pt-[14px]">
+      <div className="w-[calc(100vw-90px)] max-w-3xl mx-auto flex-1 overflow-y-auto">
         <Messages messages={messages} />
       </div>
       <ChatInput
