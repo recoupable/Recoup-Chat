@@ -11,7 +11,7 @@ const analyzeArtist = (question: string) => ({
     - "Analyze my artists' [social platform] account."
     - "Analyze [handle]."`,
     parameters: {
-      type: "object",
+      type: "string",
       properties: {
         handle: {
           type: "handle",
