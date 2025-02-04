@@ -5,6 +5,7 @@ import { z } from "zod";
 import OpenAI from "openai";
 
 import { createChatMessagesService } from "./chat-messages.service";
+import { AI_MODEL } from "../consts";
 
 export const ChatMessagesSchema = z.object({
   messages: z.array(
@@ -54,7 +55,7 @@ class ChatLLMService {
     const openai = new OpenAI();
 
     const response = await openai.chat.completions.create({
-      model: "o3-mini",
+      model: AI_MODEL,
       stream: true,
       messages: messages,
     });
