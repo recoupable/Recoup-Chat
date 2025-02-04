@@ -64,6 +64,8 @@ class ChatLLMService {
           content: settings.systemMessage,
         },
       ],
+      // eslint-disable-next-line
+      tools: settings.tools as any,
     });
 
     const stream = OpenAIStream(response);

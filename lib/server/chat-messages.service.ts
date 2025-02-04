@@ -68,24 +68,19 @@ ${HTML_RESPONSE_FORMAT_INSTRUCTIONS}
     email: string,
     artistId: string,
   ) {
-    try {
-      return {
-        getVideosInfo: getVideosInfo(question),
-        getScoreInfo: getScoreInfo(question),
-        createArtist: createArtist(question),
-        getArtists: getArtists(question, email),
-        analyzeArtist: analyzeArtist(question),
-        createCampaign: createCampaign(question, email),
-        getCampaigns: getCampaigns(question, email, artistId),
-        updateArtistInfo: updateArtistInfo(question),
-        getSegmentsReport: getSegmentsReport(question),
-        getPitchReport: getPitchReport(question),
-        getInstrumentalStyleSuggestions:
-          getInstrumentalStyleSuggestions(question),
-      };
-    } catch (error) {
-      console.error("Error reading or parsing JSON files:", error);
-      return [];
-    }
+    return {
+      getVideosInfo: getVideosInfo(question),
+      getScoreInfo: getScoreInfo(question),
+      createArtist: createArtist(question),
+      getArtists: getArtists(question, email),
+      analyzeArtist: analyzeArtist(question),
+      createCampaign: createCampaign(question, email),
+      getCampaigns: getCampaigns(question, email, artistId),
+      updateArtistInfo: updateArtistInfo(question),
+      getSegmentsReport: getSegmentsReport(question),
+      getPitchReport: getPitchReport(question),
+      getInstrumentalStyleSuggestions:
+        getInstrumentalStyleSuggestions(question),
+    };
   }
 }
