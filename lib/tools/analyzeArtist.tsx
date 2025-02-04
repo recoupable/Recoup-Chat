@@ -1,9 +1,7 @@
-import { z } from "zod";
-import { tool } from "ai";
-import { ArtistToolResponse } from "@/types/Tool";
-
-const analyzeArtist = (question: string) =>
-  tool({
+const analyzeArtist = (question: string) => ({
+  type: "function",
+  function: {
+    name: "analyzeArtist",
     description: `Please only trigger this tool for questions in the example format below.
     Questions must begin with the word **Analyze** to trigger this tool.
 
@@ -12,26 +10,20 @@ const analyzeArtist = (question: string) =>
     - "Analyze my musician."
     - "Analyze my artists' [social platform] account."
     - "Analyze [handle]."`,
-    parameters: z.object({
-      handle: z.string().optional().describe("The handle to be analyzed."),
-      social_platform: z
-        .string()
-        .optional()
-        .describe("The social platform to be analyzed."),
-    }),
-    execute: async ({ handle, social_platform }) => {
-      return {
-        context: {
-          args: {
-            handle: handle || "",
-            social_platform: social_platform || "",
-          },
-          status: ArtistToolResponse.ANALYZE_ARTIST,
+    parameters: {
+      type: "object",
+      properties: {
+        handle: {
+          type: "handle",
+          description: "The handle to be analyzed.",
+        },
+        social_platform: {
+          type: "social_platform",
+          description: "The social platform to be analyzed.",
         },
         question,
-      };
+      },
     },
-    type: "function",
-  });
-
+  },
+});
 export default analyzeArtist;
