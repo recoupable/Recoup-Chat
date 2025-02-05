@@ -1,4 +1,4 @@
-const getIpfsLink = (uri: string) => {
+const getIpfsLink = (uri: string): string => {
   if (!uri) return "";
   // Remove ipfs:// prefix if present
   const cid = uri.replace("ipfs://", "");
