@@ -1,17 +1,16 @@
-import { getSupabaseServerAdminClient } from "@/packages/supabase/src/clients/server-admin-client";
 import getSocialPlatformByLink from "../getSocialPlatformByLink";
 import getUserNameByProfileLink from "../getUserNameByProfileLink";
+import supabase from "./serverClient";
 
 const updateArtistSocials = async (artistId: string, profileUrls: string) => {
-  const client = getSupabaseServerAdminClient();
-  const { data: account_socials } = await client
+  const { data: account_socials } = await supabase
     .from("account_socials")
     .select("*, social:socials(*)")
     .eq("account_id", artistId);
 
   const profilePromises = Object.entries(profileUrls).map(
     async ([type, value]) => {
-      const { data: social } = await client
+      const { data: social } = await supabase
         .from("socials")
         .select("*")
         .eq("profile_url", value)
@@ -24,7 +23,7 @@ const updateArtistSocials = async (artistId: string, profileUrls: string) => {
       );
 
       if (existingSocial) {
-        await client
+        await supabase
           .from("account_socials")
           .delete()
           .eq("account_id", artistId)
@@ -32,19 +31,19 @@ const updateArtistSocials = async (artistId: string, profileUrls: string) => {
       }
       if (value) {
         if (social) {
-          const { data: socials } = await client
+          const { data: socials } = await supabase
             .from("account_socials")
             .select("*")
             .eq("account_id", artistId)
             .eq("social_id", social.id);
           if (!socials?.length) {
-            await client.from("account_socials").insert({
+            await supabase.from("account_socials").insert({
               account_id: artistId,
               social_id: social.id,
             });
           }
         } else {
-          const { data: new_social } = await client
+          const { data: new_social } = await supabase
             .from("socials")
             .insert({
               username: getUserNameByProfileLink(value),
@@ -54,7 +53,7 @@ const updateArtistSocials = async (artistId: string, profileUrls: string) => {
             .single();
 
           if (new_social)
-            await client.from("account_social").insert({
+            await supabase.from("account_social").insert({
               account_id: artistId,
               social_id: new_social.id,
             });

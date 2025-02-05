@@ -1,8 +1,7 @@
-import { getSupabaseServerAdminClient } from "@/packages/supabase/src/clients/server-admin-client";
+import supabase from "./serverClient";
 
 const readArtists = async (userEmail: string) => {
-  const client = getSupabaseServerAdminClient();
-  const { data: userData } = await client
+  const { data: userData } = await supabase
     .from("accounts")
     .select("*")
     .eq("email", userEmail);
@@ -10,7 +9,7 @@ const readArtists = async (userEmail: string) => {
   let user = userData?.[0];
 
   if (!userData?.length) {
-    const newUserData = await client
+    const newUserData = await supabase
       .from("accounts")
       .insert({
         email: userEmail,
@@ -22,7 +21,7 @@ const readArtists = async (userEmail: string) => {
     user = newUserData;
   }
 
-  const { data: artists, error } = await client
+  const { data: artists, error } = await supabase
     .from("artists")
     .select("*")
     .in("id", user.artistIds || []);

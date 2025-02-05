@@ -14,10 +14,7 @@ const createArtist = (question: string) =>
     - "Create an artist."
     - "I wanna create a new artist."`,
     parameters: z.object({
-      artist_name: z
-        .string()
-        .optional()
-        .describe("The name of the artist to be created."),
+      artist_name: z.string().describe("The name of the artist to be created."),
     }),
     execute: async ({ artist_name }) => {
       return {

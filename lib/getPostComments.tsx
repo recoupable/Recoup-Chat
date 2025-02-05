@@ -1,9 +1,7 @@
-import { getSupabaseServerAdminClient } from "@/packages/supabase/src/clients/server-admin-client";
+import supabase from "./supabase/serverClient";
 
 // eslint-disable-next-line
 const getPostComments = async (agent_status: any) => {
-  const client = getSupabaseServerAdminClient();
-
   // eslint-disable-next-line
   const comments: any = [];
   // eslint-disable-next-line
@@ -17,7 +15,7 @@ const getPostComments = async (agent_status: any) => {
       parseInt(Number(post_ids.length / chunkSize).toFixed(0), 10) + 1;
     for (let i = 0; i < chunkCount; i++) {
       const chunkPostIds = post_ids.slice(chunkSize * i, chunkSize * (i + 1));
-      const { data: posts } = await client
+      const { data: posts } = await supabase
         .from("posts")
         .select("*, post_comments(*, social:socials(*))")
         .in("id", chunkPostIds);

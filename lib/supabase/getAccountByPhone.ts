@@ -1,4 +1,4 @@
-import { getSupabaseServerAdminClient } from "@/packages/supabase/src/clients/server-admin-client";
+import supabase from "./serverClient";
 
 type AccountResponse = {
   id: string;
@@ -17,8 +17,6 @@ export async function getAccountByPhone(
   if (!phone) {
     throw new Error("Phone number is required");
   }
-
-  const supabase = getSupabaseServerAdminClient();
 
   // Find account ID from phone number
   const { data: phoneData, error: phoneError } = await supabase

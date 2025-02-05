@@ -1,13 +1,11 @@
-import { getSupabaseServerAdminClient } from "@/packages/supabase/src/clients/server-admin-client";
 import { FAN_TYPE } from "@/types/fans";
-import { SupabaseClient } from "@supabase/supabase-js";
 import getStreamsCount from "./getStreamsCount";
 import limitCollection from "../limitCollection";
 import getTopSongListeningFansCount from "./getTopSongListeningFansCount";
+import supabase from "../supabase/serverClient";
 
 const getBaseCampaign = async (artistId: string, email: string) => {
-  const client = getSupabaseServerAdminClient() as SupabaseClient;
-  const { data: campaign } = await client.rpc("get_campaign", {
+  const { data: campaign } = await supabase.rpc("get_campaign", {
     email,
     artistid: artistId,
     campaignid: "",
@@ -28,7 +26,7 @@ const getBaseCampaign = async (artistId: string, email: string) => {
     (episode: any) => episode.description,
   );
   const { average_count, total_count } = await getStreamsCount(
-    client,
+    supabase,
     artistId,
     email,
   );

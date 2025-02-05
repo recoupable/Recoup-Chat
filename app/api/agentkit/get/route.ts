@@ -1,12 +1,11 @@
 import getPostComments from "@/lib/getPostComments";
-import { getSupabaseServerAdminClient } from "@/packages/supabase/src/clients/server-admin-client";
+import supabase from "@/lib/supabase/serverClient";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
   const agentId = req.nextUrl.searchParams.get("agentId");
   try {
-    const client = getSupabaseServerAdminClient();
-    const { data } = await client
+    const { data } = await supabase
       .from("agents")
       .select(
         `

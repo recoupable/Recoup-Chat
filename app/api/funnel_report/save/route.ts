@@ -1,11 +1,10 @@
-import { getSupabaseServerAdminClient } from "@/packages/supabase/src/clients/server-admin-client";
+import supabase from "@/lib/supabase/serverClient";
 import { NextRequest } from "next/server";
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
   try {
-    const client = getSupabaseServerAdminClient();
-    const { data, error } = await client
+    const { data, error } = await supabase
       .from("funnel_reports")
       .insert({
         ...body,

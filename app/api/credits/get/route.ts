@@ -1,12 +1,11 @@
-import { getSupabaseServerAdminClient } from "@/packages/supabase/src/clients/server-admin-client";
+import supabase from "@/lib/supabase/serverClient";
 import { NextRequest } from "next/server";
 
 export async function GET(req: NextRequest) {
   const accountId = req.nextUrl.searchParams.get("accountId");
 
   try {
-    const client = getSupabaseServerAdminClient();
-    const { data: found } = await client
+    const { data: found } = await supabase
       .from("credits_usage")
       .select("*")
       .eq("account_id", accountId);

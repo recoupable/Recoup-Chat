@@ -1,12 +1,11 @@
-import { getSupabaseServerAdminClient } from "@/packages/supabase/src/clients/server-admin-client";
+import supabase from "../supabase/serverClient";
 
 const getTopSongListeningFansCount = async (
   artistId: string,
   email: string,
 ) => {
   try {
-    const client = getSupabaseServerAdminClient();
-    const { data } = await client.rpc("get_fans_listening_top_songs", {
+    const { data } = await supabase.rpc("get_fans_listening_top_songs", {
       artistid: artistId,
       email: email,
     });

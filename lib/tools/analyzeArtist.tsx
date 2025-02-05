@@ -8,23 +8,20 @@ const analyzeArtist = (question: string) =>
     Questions must begin with the word **Analyze** to trigger this tool.
 
     Example questions that MUST trigger this tool:
-    - "Analyze [handles]'s [social platform] posts from this week."
+    - "Analyze [handles]'s [platform] posts from this week."
     - "Analyze my musician."
-    - "Analyze my artists' [social platform] account."
+    - "Analyze my artists' [platform] account."
     - "Analyze [handle]."`,
     parameters: z.object({
-      handle: z.string().optional().describe("The handle to be analyzed."),
-      social_platform: z
-        .string()
-        .optional()
-        .describe("The social platform to be analyzed."),
+      handle: z.string().describe("The handle to be analyzed."),
+      platform: z.string().describe("The platform to be analyzed."),
     }),
-    execute: async ({ handle, social_platform }) => {
+    execute: async ({ handle, platform }) => {
       return {
         context: {
           args: {
             handle,
-            social_platform,
+            platform,
           },
           status: ArtistToolResponse.ANALYZE_ARTIST,
         },

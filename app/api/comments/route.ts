@@ -1,12 +1,11 @@
-import { getSupabaseServerAdminClient } from "@/packages/supabase/src/clients/server-admin-client";
+import supabase from "@/lib/supabase/serverClient";
 import { NextRequest } from "next/server";
 
 export async function GET(req: NextRequest) {
   const artistId = req.nextUrl.searchParams.get("artistId");
 
   try {
-    const client = getSupabaseServerAdminClient();
-    const { data: account } = await client
+    const { data: account } = await supabase
       .from("accounts")
       .select("*, account_socials(*)")
       .eq("id", artistId)
@@ -19,7 +18,7 @@ export async function GET(req: NextRequest) {
       (account_social: any) => account_social.social_id,
     );
 
-    const { data: social_posts } = await client
+    const { data: social_posts } = await supabase
       .from("social_posts")
       .select("*")
       .in("social_id", socialIds);
@@ -34,7 +33,7 @@ export async function GET(req: NextRequest) {
       parseInt(Number(postIds.length / chunkSize).toFixed(0), 10) + 1;
     for (let i = 0; i < chunkCount; i++) {
       const chunkPostIds = postIds.slice(chunkSize * i, chunkSize * (i + 1));
-      const { data: posts } = await client
+      const { data: posts } = await supabase
         .from("posts")
         .select("*, post_comments(*, social:socials(*), post:posts(*))")
         .in("id", chunkPostIds);

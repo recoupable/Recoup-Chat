@@ -1,16 +1,15 @@
-import { getSupabaseServerAdminClient } from "@/packages/supabase/src/clients/server-admin-client";
 import getFormattedArtist from "../getFormattedArtist";
+import supabase from "./serverClient";
 
 const getArtistsByEmail = async (email: string) => {
-  const client = getSupabaseServerAdminClient();
-  const { data: accountEmail } = await client
+  const { data: accountEmail } = await supabase
     .from("account_emails")
     .select("*")
     .eq("email", email)
     .single();
   if (!accountEmail) return [];
   const accountId = accountEmail.account_id;
-  const { data: artists } = await client
+  const { data: artists } = await supabase
     .from("account_artist_ids")
     .select(
       `*,

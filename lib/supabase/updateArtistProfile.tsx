@@ -1,4 +1,4 @@
-import { getSupabaseServerAdminClient } from "@/packages/supabase/src/clients/server-admin-client";
+import supabase from "./serverClient";
 
 const updateArtistProfile = async (
   artistId: string,
@@ -9,10 +9,8 @@ const updateArtistProfile = async (
   label: string,
   knowledges: string,
 ) => {
-  const client = getSupabaseServerAdminClient();
-
   if (artistId) {
-    const { data } = await client
+    const { data } = await supabase
       .from("accounts")
       .update({
         name,
@@ -24,13 +22,13 @@ const updateArtistProfile = async (
 
     if (!data) throw Error("artist does not exist.");
 
-    const { data: account_info } = await client
+    const { data: account_info } = await supabase
       .from("account_info")
       .select("*")
       .eq("account_id", artistId)
       .single();
     if (account_info) {
-      await client
+      await supabase
         .from("account_info")
         .update({
           ...account_info,
@@ -42,7 +40,7 @@ const updateArtistProfile = async (
         .eq("account_id", artistId)
         .select("*");
     } else {
-      await client
+      await supabase
         .from("account_info")
         .insert({
           image,
@@ -56,13 +54,13 @@ const updateArtistProfile = async (
     }
     return artistId;
   } else {
-    const { data } = await client
+    const { data } = await supabase
       .from("account_emails")
       .select("*")
       .eq("email", email)
       .single();
 
-    const { data: newArtistAccount } = await client
+    const { data: newArtistAccount } = await supabase
       .from("accounts")
       .insert({
         name,
@@ -70,7 +68,7 @@ const updateArtistProfile = async (
       .select("*")
       .single();
 
-    await client
+    await supabase
       .from("account_artist_ids")
       .insert({
         account_id: data.account_id,
@@ -78,7 +76,7 @@ const updateArtistProfile = async (
       })
       .select("*")
       .single();
-    await client.from("account_info").insert({
+    await supabase.from("account_info").insert({
       image,
       instruction,
       knowledges,

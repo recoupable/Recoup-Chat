@@ -1,13 +1,11 @@
-import { getSupabaseServerAdminClient } from "@/packages/supabase/src/clients/server-admin-client";
+import supabase from "@/lib/supabase/serverClient";
 import { NextRequest } from "next/server";
 
 export async function GET(req: NextRequest) {
   const email = req.nextUrl.searchParams.get("email");
   const artistId = req.nextUrl.searchParams.get("artistId");
-  const client = getSupabaseServerAdminClient();
-
   try {
-    const { data: found } = await client
+    const { data: found } = await supabase
       .from("accounts")
       .select("*")
       .eq("email", email);
@@ -16,7 +14,7 @@ export async function GET(req: NextRequest) {
       const artistIds = found[0].artistIds;
       if (artistIds.includes(artistId))
         return Response.json({ success: true }, { status: 200 });
-      await client
+      await supabase
         .from("accounts")
         .update({
           ...found[0],

@@ -1,4 +1,4 @@
-import { getSupabaseServerAdminClient } from "@/packages/supabase/src/clients/server-admin-client";
+import supabase from "@/lib/supabase/serverClient";
 import { NextRequest } from "next/server";
 
 export async function POST(req: NextRequest) {
@@ -9,17 +9,15 @@ export async function POST(req: NextRequest) {
   const accountId = body.accountId;
   const image = body.image;
 
-  const client = getSupabaseServerAdminClient();
-
   try {
-    const { data: found } = await client
+    const { data: found } = await supabase
       .from("accounts")
       .select("*, account_emails(email), account_info(*)")
       .eq("id", accountId)
       .single();
 
     if (found) {
-      await client
+      await supabase
         .from("accounts")
         .update({
           id: accountId,
@@ -30,7 +28,7 @@ export async function POST(req: NextRequest) {
         .single();
       const account_info = found.account_info?.[0];
       if (!account_info) {
-        await client
+        await supabase
           .from("account_info")
           .insert({
             organization,
@@ -55,7 +53,7 @@ export async function POST(req: NextRequest) {
           { status: 200 },
         );
       }
-      const { data: updated_account_info } = await client
+      const { data: updated_account_info } = await supabase
         .from("account_info")
         .update({
           ...account_info,

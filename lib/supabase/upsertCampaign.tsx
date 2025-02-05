@@ -1,6 +1,6 @@
-import { getSupabaseServerAdminClient } from "@/packages/supabase/src/clients/server-admin-client";
 import readArtists from "./readArtists";
 import { validate } from "uuid";
+import supabase from "./serverClient";
 
 const upsertCampaign = async (
   artist_id: string | undefined,
@@ -13,8 +13,7 @@ const upsertCampaign = async (
       return { error: "invalid values.", artists };
     }
 
-    const client = getSupabaseServerAdminClient();
-    const { data: artist } = await client
+    const { data: artist } = await supabase
       .from("artists")
       .select("*")
       .eq("id", artist_id)
@@ -23,7 +22,7 @@ const upsertCampaign = async (
       return { error: "artist is not existed", artists };
     }
 
-    const { data, error: insertError } = await client
+    const { data, error: insertError } = await supabase
       .from("campaigns")
       .insert({
         artistId: artist_id,

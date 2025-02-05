@@ -1,13 +1,11 @@
-import { getSupabaseServerAdminClient } from "@/packages/supabase/src/clients/server-admin-client";
+import supabase from "./serverClient";
 
 const createSocialLink = async (
   artistId: string,
   social_type: string,
   social_link: string,
 ) => {
-  const client = getSupabaseServerAdminClient();
-
-  const { data } = await client
+  const { data } = await supabase
     .from("account_socials")
     .select("*")
     .eq("account_id", artistId)
@@ -15,7 +13,7 @@ const createSocialLink = async (
     .single();
 
   if (data) {
-    await client
+    await supabase
       .from("account_socials")
       .update({
         ...data,
@@ -27,7 +25,7 @@ const createSocialLink = async (
     return;
   }
 
-  await client.from("account_socials").insert({
+  await supabase.from("account_socials").insert({
     link: social_link,
     type: social_type,
     account_id: artistId,

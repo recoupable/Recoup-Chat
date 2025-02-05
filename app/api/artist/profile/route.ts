@@ -1,7 +1,7 @@
 import getFormattedArtist from "@/lib/getFormattedArtist";
+import supabase from "@/lib/supabase/serverClient";
 import updateArtistProfile from "@/lib/supabase/updateArtistProfile";
 import updateArtistSocials from "@/lib/supabase/updateArtistSocials";
-import { getSupabaseServerAdminClient } from "@/packages/supabase/src/clients/server-admin-client";
 import { NextRequest } from "next/server";
 
 export async function POST(req: NextRequest) {
@@ -16,7 +16,6 @@ export async function POST(req: NextRequest) {
   const knowledges = body.knowledges;
 
   try {
-    const client = getSupabaseServerAdminClient();
     const artistAccountId = await updateArtistProfile(
       artistId,
       email,
@@ -28,7 +27,7 @@ export async function POST(req: NextRequest) {
     );
 
     await updateArtistSocials(artistAccountId, profileUrls);
-    const { data: account } = await client
+    const { data: account } = await supabase
       .from("accounts")
       .select("*, account_info(*), account_socials(*, social:socials(*))")
       .eq("id", artistAccountId)

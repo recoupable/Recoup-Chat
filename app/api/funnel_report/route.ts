@@ -1,12 +1,11 @@
-import { getSupabaseServerAdminClient } from "@/packages/supabase/src/clients/server-admin-client";
+import supabase from "@/lib/supabase/serverClient";
 import { NextRequest } from "next/server";
 
 export async function GET(req: NextRequest) {
   const id = req.nextUrl.searchParams.get("id");
 
   try {
-    const client = getSupabaseServerAdminClient();
-    const { data, error } = await client
+    const { data, error } = await supabase
       .from("funnel_reports")
       .select("*")
       .eq("id", id)

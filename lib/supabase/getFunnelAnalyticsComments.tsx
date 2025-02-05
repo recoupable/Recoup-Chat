@@ -1,16 +1,14 @@
-import { getSupabaseServerAdminClient } from "@/packages/supabase/src/clients/server-admin-client";
+import supabase from "./serverClient";
 
 const getFunnelAnalyticsComments = async (ids: Array<string>) => {
-  const client = getSupabaseServerAdminClient();
-
-  const { data: analytics } = await client
+  const { data: analytics } = await supabase
     .from("funnel_analytics")
     .select("*")
     .in("chat_id", ids);
 
   const analysesIds = analytics?.map((analysis) => analysis.id);
 
-  const { data } = await client
+  const { data } = await supabase
     .from("funnel_analytics_comments")
     .select("*")
     .in("analysis_id", analysesIds || [])

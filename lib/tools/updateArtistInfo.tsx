@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { tool } from "ai";
-import { getSupabaseServerAdminClient } from "@/packages/supabase/src/clients/server-admin-client";
 import { ArtistToolResponse } from "@/types/Tool";
+import supabase from "../supabase/serverClient";
 
 const updateArtistInfo = (question: string) =>
   tool({
@@ -17,8 +17,7 @@ const updateArtistInfo = (question: string) =>
       artist_name: z.string().optional().describe("Name of artist"),
     }),
     execute: async ({ artist_name }) => {
-      const client = getSupabaseServerAdminClient();
-      const { data } = await client
+      const { data } = await supabase
         .from("artists")
         .select("*")
         .eq("name", artist_name);

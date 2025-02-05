@@ -1,12 +1,11 @@
-import { getSupabaseServerAdminClient } from "@/packages/supabase/src/clients/server-admin-client";
+import supabase from "@/lib/supabase/serverClient";
 import { NextRequest } from "next/server";
 
 export async function GET(req: NextRequest) {
   const artistId = req.nextUrl.searchParams.get("artistId");
 
   try {
-    const client = getSupabaseServerAdminClient();
-    const { data: account_socials } = await client
+    const { data: account_socials } = await supabase
       .from("account_socials")
       .select("*, social:socials(*)")
       .eq("account_id", artistId);
@@ -16,7 +15,7 @@ export async function GET(req: NextRequest) {
       (account_social) => account_social.social.id,
     );
 
-    const { data: fan_segments } = await client
+    const { data: fan_segments } = await supabase
       .from("artist_fan_segment")
       .select("*, socials!artist_fan_segment_fan_social_id_fkey(*)")
       .in("artist_social_id", account_social_ids);

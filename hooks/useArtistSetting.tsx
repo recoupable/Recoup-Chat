@@ -1,14 +1,9 @@
 import getIpfsLink from "@/lib/ipfs/getIpfsLink";
 import { uploadFile } from "@/lib/ipfs/uploadToIpfs";
-import { useParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { ArtistRecord } from "@/types/Artist";
-import { v4 as uuidV4 } from "uuid";
-import { useMessagesProvider } from "@/providers/MessagesProvider";
 
 const useArtistSetting = () => {
-  const { finalCallback } = useMessagesProvider();
-  const { chat_id: chatId } = useParams();
   const imageRef = useRef() as any;
   const baseRef = useRef() as any;
   const [image, setImage] = useState("");
@@ -68,18 +63,6 @@ const useArtistSetting = () => {
     }
     setBases(temp);
     setKnowledgeUploading(false);
-  };
-
-  const updateCallback = (artistInfo: ArtistRecord) => {
-    finalCallback(
-      {
-        role: "assistant",
-        id: uuidV4(),
-        content: `Artist Information: Name - ${artistInfo.name} Image - ${artistInfo.image}`,
-      },
-      { id: uuidV4(), content: question, role: "user" },
-      chatId as string,
-    );
   };
 
   const clearParams = () => {
@@ -151,7 +134,6 @@ const useArtistSetting = () => {
     imageUploading,
     question,
     setQuestion,
-    updateCallback,
     clearParams,
     knowledgeUploading,
     handleDeleteKnowledge,

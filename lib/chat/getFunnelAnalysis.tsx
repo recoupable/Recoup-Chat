@@ -1,8 +1,7 @@
-import { getSupabaseServerAdminClient } from "@/packages/supabase/src/clients/server-admin-client";
+import supabase from "../supabase/serverClient";
 
 const getFunnelAnalysis = async (pilotId: string) => {
-  const client = getSupabaseServerAdminClient();
-  const { data } = await client
+  const { data } = await supabase
     .from("funnel_analytics")
     .select(
       `*,

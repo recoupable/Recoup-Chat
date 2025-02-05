@@ -1,12 +1,11 @@
-import { getSupabaseServerAdminClient } from "@/packages/supabase/src/clients/server-admin-client";
+import supabase from "@/lib/supabase/serverClient";
 import { STEP_OF_AGENT } from "@/types/Funnel";
 import { NextRequest } from "next/server";
 
 export async function GET(req: NextRequest) {
   const artistId = req.nextUrl.searchParams.get("artistId");
   try {
-    const client = getSupabaseServerAdminClient();
-    const { data: account } = await client
+    const { data: account } = await supabase
       .from("accounts")
       .select("*, account_socials(*)")
       .eq("id", artistId)
@@ -19,7 +18,7 @@ export async function GET(req: NextRequest) {
       (account_social: any) => account_social.social_id,
     );
 
-    const { data: agent_status } = await client
+    const { data: agent_status } = await supabase
       .from("agent_status")
       .select("*, social:socials(*), agent:agents(*)")
       .in("social_id", social_ids)

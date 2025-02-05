@@ -1,20 +1,19 @@
-import { getSupabaseServerAdminClient } from "@/packages/supabase/src/clients/server-admin-client";
 import { NextRequest } from "next/server";
 import { getAccountByPhone } from "@/lib/supabase/getAccountByPhone";
+import supabase from "@/lib/supabase/serverClient";
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
   const email = body.email;
-  const client = getSupabaseServerAdminClient();
 
   try {
-    const { data: found } = await client
+    const { data: found } = await supabase
       .from("account_emails")
       .select("*")
       .eq("email", email)
       .single();
     if (found) {
-      const { data: account } = await client
+      const { data: account } = await supabase
         .from("accounts")
         .select("*, account_info(*), account_emails(*)")
         .eq("id", found.account_id)
@@ -31,7 +30,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { data: newAccount } = await client
+    const { data: newAccount } = await supabase
       .from("accounts")
       .insert({
         name: "",
@@ -39,7 +38,7 @@ export async function POST(req: NextRequest) {
       .select("*")
       .single();
 
-    await client
+    await supabase
       .from("account_emails")
       .insert({
         account_id: newAccount.id,
@@ -48,7 +47,7 @@ export async function POST(req: NextRequest) {
       .select("*")
       .single();
 
-    await client.from("credits_usage").insert({
+    await supabase.from("credits_usage").insert({
       account_id: newAccount.id,
       remaining_credits: 1,
     });
