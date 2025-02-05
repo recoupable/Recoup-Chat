@@ -1,5 +1,5 @@
-import { useArtistProvider } from "@/providers/ArtistProvider";
 import { Plus } from "lucide-react";
+import { useArtistProvider } from "@/providers/ArtistProvider";
 
 const KnowledgeSelect = () => {
   const { baseRef, knowledgeUploading, handleKnowledgesSelected } =
@@ -10,7 +10,7 @@ const KnowledgeSelect = () => {
       <button
         type="button"
         className="w-full flex gap-2 items-center border-grey rounded-md p-2 border-[1px]"
-        onClick={() => baseRef.current.click()}
+        onClick={() => baseRef.current?.click()}
         disabled={knowledgeUploading}
       >
         <Plus className="size-5 md:size-8" />
