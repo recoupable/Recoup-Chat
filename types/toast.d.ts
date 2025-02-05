@@ -1,3 +1,5 @@
+/// <reference types="next" />
+
 export {};
 
 declare global {

@@ -8,7 +8,11 @@ const nextConfig = {
     swcMinify: true,
     transpilePackages: ["geist"],
     images: {
-      domains: ["i.imgur.com", "ipfs.decentralized-content.com"]
+      domains: [
+        "i.imgur.com", 
+        "ipfs.decentralized-content.com",
+        "gateway.pinata.cloud"
+      ]
     },
 };
 
