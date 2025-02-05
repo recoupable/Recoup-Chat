@@ -1,8 +1,9 @@
-const getIpfsLink = (hash: string): string => {
-  if (!hash) return "";
-  return hash?.indexOf?.("ipfs://") > -1
-    ? hash.replace("ipfs://", `https://ipfs.decentralized-content.com/ipfs/`)
-    : hash;
+const getIpfsLink = (uri: string) => {
+  if (!uri) return "";
+  // Remove ipfs:// prefix if present
+  const cid = uri.replace("ipfs://", "");
+  // Use Pinata's dedicated gateway
+  return `https://gateway.pinata.cloud/ipfs/${cid}`;
 };
 
 export default getIpfsLink;
