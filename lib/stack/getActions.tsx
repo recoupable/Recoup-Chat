@@ -35,7 +35,6 @@ const getActions = async (eventType: string, walletAddress: Address) => {
     });
     events = events.concat(data);
   }
-
   return (
     events
       // eslint-disable-next-line
