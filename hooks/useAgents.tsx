@@ -22,7 +22,7 @@ const useAgents = () => {
   const { push } = useRouter();
   const { address, isPrepared } = useUserProvider();
   const { selectedArtist } = useArtistProvider();
-  const { addConversations } = useConversationsProvider();
+  const { addConversation } = useConversationsProvider();
 
   const lookupProfiles = async (
     funnelType: string,
@@ -59,7 +59,7 @@ const useAgents = () => {
     if (!agentId) return;
     push(`/funnels/${funnelType}/${agentId}`);
     runAgentTimer();
-    addConversations({
+    addConversation({
       conversationId: agentId,
       accountId: agentArtistId,
       title: `${new String(funnelType as string).toUpperCase()} Analysis: ${agentArtistName}`,

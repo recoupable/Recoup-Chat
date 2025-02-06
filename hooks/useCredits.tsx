@@ -28,14 +28,11 @@ const useCredits = () => {
       if (paymentStatus === "paid") {
         if (!session?.metadata?.credit_updated) {
           await checkSession(session.id, session?.metadata?.accountId);
-          append(
-            {
-              id: uuidV4(),
-              role: "user",
-              content: `Please create a ${funnelType || ""} fan segment report for ${funnelReportId} using this segment ${segmentName}.`,
-            },
-            true,
-          );
+          append({
+            id: uuidV4(),
+            role: "user",
+            content: `Please create a ${funnelType || ""} fan segment report for ${funnelReportId} using this segment ${segmentName}.`,
+          });
         }
       }
     };

@@ -2,20 +2,18 @@ import supabase from "@/lib/supabase/serverClient";
 import { NextRequest } from "next/server";
 
 export async function GET(req: NextRequest) {
-  const id = req.nextUrl.searchParams.get("id");
+  const reportId = req.nextUrl.searchParams.get("reportId");
 
   try {
     const { data, error } = await supabase
-      .from("funnel_reports")
-      .select("*")
-      .eq("id", id)
+      .from("segment_reports")
+      .select("*, artist:accounts(*, account_info(*))")
+      .eq("id", reportId)
       .single();
-    if (error)
-      return Response.json({ id: null, success: false }, { status: 500 });
-    return Response.json({ success: true, data }, { status: 200 });
+    return Response.json({ data, error }, { status: 200 });
   } catch (error) {
     console.error(error);
-    return Response.json({ id: null, success: false }, { status: 500 });
+    return Response.json({ data: null, error }, { status: 500 });
   }
 }
 

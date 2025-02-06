@@ -4,14 +4,13 @@ import addPageBreak from "@/lib/pdf/addPageBreak";
 import { useFunnelReportProvider } from "@/providers/FunnelReportProvider";
 import SocialSharing from "../SocialSharing";
 
-const ReportNextSteps = ({
-  nextSteps,
-  reportContent,
-}: {
-  nextSteps: string;
-  reportContent: string;
-}) => {
-  const { bannerImage, bannerArtistName } = useFunnelReportProvider();
+const ReportNextSteps = () => {
+  const {
+    bannerImage,
+    bannerArtistName,
+    funnelNextSteps,
+    funnelReportContent,
+  } = useFunnelReportProvider();
   const { downloadReport } = useDownloadReport();
 
   return (
@@ -20,10 +19,10 @@ const ReportNextSteps = ({
       <p className="pt-4 text-[18px]">Next Steps</p>
       <div
         dangerouslySetInnerHTML={{
-          __html: nextSteps,
+          __html: funnelNextSteps,
         }}
       />
-      {reportContent && (
+      {funnelReportContent && (
         <div className="bg-white w-full min-h-screen fixed top-[99999999px] left-0 flex justify-center z-[99999999]">
           <div
             id="segment-report"
@@ -49,7 +48,7 @@ const ReportNextSteps = ({
               </div>
               <div
                 dangerouslySetInnerHTML={{
-                  __html: addPageBreak(reportContent),
+                  __html: addPageBreak(funnelReportContent),
                 }}
               />
             </div>

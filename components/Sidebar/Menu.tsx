@@ -50,6 +50,14 @@ const Menu = ({ toggleMenuExpanded }: { toggleMenuExpanded: () => void }) => {
         <MenuItemIcon name="robot" />
         Agents
       </button>
+      <button
+        type="button"
+        onClick={() => goToItem("segments")}
+        className={`${itemClasses} ${isAgents && activeClasses}`}
+      >
+        <MenuItemIcon name="segments" />
+        Segments
+      </button>
       {email && <RecentChats toggleModal={toggleMenuExpanded} />}
       <div className="grow flex flex-col gap-1 md:gap-3 justify-end">
         {email && <UnlockPro />}

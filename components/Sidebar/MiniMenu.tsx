@@ -1,4 +1,3 @@
-import Tooltip from "../Tooltip";
 import { useUserProvider } from "@/providers/UserProvder";
 import { useRouter } from "next/navigation";
 import { ArrowRightFromLine } from "lucide-react";
@@ -21,41 +20,34 @@ const MiniMenu = ({
         <button type="button" onClick={() => push(`/`)} className="p-2">
           <Icon name="logo" />
         </button>
-        <Tooltip
-          id={"new-conversation-tooltip"}
-          message="New Chat"
-          className="!z-[100]"
+        <button
+          type="button"
+          className="p-2 rounded-md mt-2"
+          onClick={() => goToItem("new")}
         >
-          <button
-            type="button"
-            className="p-2 rounded-md mt-2"
-            onClick={() => goToItem("new")}
-          >
-            <Icon name="plus" />
-          </button>
-        </Tooltip>
-        <Tooltip
-          id={"autopilot-tooltip"}
-          message="Autopilot"
-          className="!z-[100]"
+          <Icon name="plus" />
+        </button>
+        <button
+          type="button"
+          className=" p-2 rounded-md mt-2"
+          onClick={() => push("/")}
         >
-          <button
-            type="button"
-            className=" p-2 rounded-md mt-2"
-            onClick={() => push("/")}
-          >
-            <Icon name="dashboard" />
-          </button>
-        </Tooltip>
-        <Tooltip id={"agents-tooltip"} message="Agents" className="!z-[100]">
-          <button
-            type="button"
-            className=" p-2 rounded-md"
-            onClick={() => goToItem("agents")}
-          >
-            <Icon name="robot" />
-          </button>
-        </Tooltip>
+          <Icon name="dashboard" />
+        </button>
+        <button
+          type="button"
+          className=" p-2 rounded-md"
+          onClick={() => goToItem("agents")}
+        >
+          <Icon name="robot" />
+        </button>
+        <button
+          type="button"
+          className=" p-2 rounded-md"
+          onClick={() => goToItem("agents")}
+        >
+          <Icon name="segments" />
+        </button>
         <div className="grow flex items-end justify-center">
           <button type="button" onClick={toggleMenuExpanded}>
             <ArrowRightFromLine />

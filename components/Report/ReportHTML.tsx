@@ -1,8 +1,9 @@
 import { useFunnelReportProvider } from "@/providers/FunnelReportProvider";
 import Icon from "../Icon";
 
-const ReportHTML = ({ rawContent }: { rawContent: string }) => {
-  const { bannerImage, bannerArtistName } = useFunnelReportProvider();
+const ReportHTML = () => {
+  const { bannerImage, bannerArtistName, funnelRawReportContent } =
+    useFunnelReportProvider();
 
   return (
     <div className="w-full segment-report">
@@ -17,7 +18,7 @@ const ReportHTML = ({ rawContent }: { rawContent: string }) => {
       </div>
       <div
         dangerouslySetInnerHTML={{
-          __html: rawContent,
+          __html: funnelRawReportContent,
         }}
       />
     </div>

@@ -24,7 +24,7 @@ const useConversations = () => {
   const { push } = useRouter();
   const [isLoading, setIsLoading] = useState(true);
 
-  const addConversations = (newmetadata: any) => {
+  const addConversation = (newmetadata: any) => {
     setAllConverstaions([
       { metadata: newmetadata, timestamp: new Date().getTime() } as any,
       ...allConverstaions,
@@ -46,11 +46,7 @@ const useConversations = () => {
     setConversations([...filtered]);
   }, [selectedArtist, allConverstaions]);
 
-  const trackGeneralChat = async (
-    content: string,
-    chatId: string,
-    is_funnel_report: boolean,
-  ) => {
+  const trackGeneralChat = async (content: string, chatId: string) => {
     const response = await getAiTitle(content);
     if (response?.error) {
       setQuotaExceeded(true);
@@ -60,7 +56,6 @@ const useConversations = () => {
     setQuotaExceeded(false);
     trackChat({
       title: response.replaceAll(`\"`, ""),
-      is_funnel_report,
       conversationId: chatId,
       accountId: selectedArtist?.account_id,
     });
@@ -78,7 +73,7 @@ const useConversations = () => {
       streamedIndex++;
     }, 50);
     setStreaming(true);
-    addConversations(titlemetadata);
+    addConversation(titlemetadata);
     setStreaming(false);
     trackNewChatEvent(address, titlemetadata);
   };
@@ -95,7 +90,7 @@ const useConversations = () => {
   };
 
   return {
-    addConversations,
+    addConversation,
     fetchConversations,
     conversations,
     conversationRef,

@@ -56,6 +56,14 @@ const SideMenu = ({
         <MenuItemIcon name="robot" />
         Agents
       </button>
+      <button
+        type="button"
+        onClick={() => goToItem("segments")}
+        className="flex gap-3 items-center mb-2"
+      >
+        <MenuItemIcon name="segments" />
+        Segments
+      </button>
       {email && <RecentChats toggleModal={toggleModal} />}
       <div className="grow flex flex-col gap-1 md:gap-3 justify-end">
         <UnlockPro />

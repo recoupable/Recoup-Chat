@@ -21,7 +21,7 @@ const getHandles = async (handle: string) => {
       tiktok: handles?.tiktok?.replaceAll("@", "") || "",
     };
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return {
       spotify: "",
       twitter: "",
