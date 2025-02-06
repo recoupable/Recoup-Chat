@@ -4,25 +4,16 @@ import { type NextPage } from "next";
 import { Skeleton } from "@/components/ui/skeleton";
 import BaseSegments from "@/components/Segments/BaseSegments";
 import { useArtistProvider } from "@/providers/ArtistProvider";
+import { useArtistSegments } from "@/hooks/useArtistSegments";
 
 const SegmentsWrapper = () => {
   const { selectedArtist } = useArtistProvider();
+  const socialIds =
+    selectedArtist?.account_socials?.map((social) => social.id) || [];
 
-  const segments = [
-    { name: "Super Fans", size: 15, icon: "star" },
-    { name: "Active Engagers", size: 25, icon: "star" },
-    { name: "Regular Listeners", size: 20, icon: "star" },
-    { name: "Concert Goers", size: 10, icon: "star" },
-    { name: "Playlist Curators", size: 5, icon: "star" },
-    { name: "Social Sharers", size: 8, icon: "star" },
-    { name: "New Followers", size: 7, icon: "star" },
-    { name: "Merchandise Buyers", size: 4, icon: "star" },
-    { name: "Content Creators", size: 3, icon: "star" },
-    { name: "Industry Professionals", size: 2, icon: "star" },
-    { name: "International Fans", size: 1, icon: "star" },
-  ];
+  const { data: segments, isLoading, error } = useArtistSegments(socialIds);
 
-  if (!selectedArtist) {
+  if (!selectedArtist || isLoading) {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 pt-4 gap-3">
         <Skeleton className="w-full h-16" />
@@ -33,14 +24,28 @@ const SegmentsWrapper = () => {
     );
   }
 
+  if (error) {
+    return (
+      <div className="text-center text-red-500 py-4">
+        Failed to load segments
+      </div>
+    );
+  }
+
+  if (!segments?.length) {
+    return (
+      <div className="text-center py-4">No segments found for this artist.</div>
+    );
+  }
+
   return <BaseSegments segments={segments} />;
 };
 
 const SegmentsPage: NextPage = () => {
   return (
-    <main className="max-h-[555px] p-4">
+    <div className="max-w-screen min-h-screen px-4">
       <SegmentsWrapper />
-    </main>
+    </div>
   );
 };
 

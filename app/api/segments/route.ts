@@ -1,7 +1,31 @@
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import OpenAI from "openai";
 import instructions from "@/evals/scripts/instructions.json";
 import { AI_MODEL } from "@/lib/consts";
+import { getArtistSegments } from "@/lib/supabase/getArtistSegments";
+
+export async function GET(request: NextRequest) {
+  const { searchParams } = new URL(request.url);
+  const artistIds = searchParams.getAll("artistId");
+
+  if (!artistIds.length) {
+    return NextResponse.json(
+      { error: "At least one Artist ID is required" },
+      { status: 400 }
+    );
+  }
+
+  try {
+    const segments = await getArtistSegments(artistIds);
+    return NextResponse.json(segments);
+  } catch (error) {
+    console.error("Error fetching segments:", error);
+    return NextResponse.json(
+      { error: "Failed to fetch segments" },
+      { status: 500 }
+    );
+  }
+}
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
@@ -25,25 +49,25 @@ export async function POST(req: NextRequest) {
 
     try {
       const answer = response.choices[0].message!.content!.toString();
-      return Response.json(
+      return NextResponse.json(
         {
           data:
             JSON.parse(
               answer
                 ?.replaceAll("\n", "")
                 ?.replaceAll("json", "")
-                ?.replaceAll("```", ""),
+                ?.replaceAll("```", "")
             )?.data || [],
         },
-        { status: 200 },
+        { status: 200 }
       );
     } catch (error) {
       console.error(error);
-      return Response.json({ data: [], answer: response }, { status: 500 });
+      return NextResponse.json({ data: [], answer: response }, { status: 500 });
     }
   } catch (error) {
     console.error(error);
-    return Response.json({ data: [], error }, { status: 500 });
+    return NextResponse.json({ data: [], error }, { status: 500 });
   }
 }
 
