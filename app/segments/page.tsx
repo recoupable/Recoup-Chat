@@ -38,7 +38,7 @@ const SegmentsWrapper = () => {
 
 const SegmentsPage: NextPage = () => {
   return (
-    <main className="min-h-screen p-4">
+    <main className="max-h-[555px] p-4">
       <SegmentsWrapper />
     </main>
   );
