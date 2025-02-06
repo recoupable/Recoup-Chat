@@ -11,7 +11,7 @@ import { useParams } from "next/navigation";
 const Segments = () => {
   useCredits();
   const { handleGenerateReport } = useGenerateSegmentReport();
-  const { segments, funnelType } = useFunnelAnalysisProvider();
+  const { segments } = useFunnelAnalysisProvider();
   const { selectedArtist } = useArtistProvider();
   const { agent_id: agentId } = useParams();
   const { followerCount } = getAggregatedSocialProfiles(selectedArtist);
@@ -25,11 +25,7 @@ const Segments = () => {
           type="button"
           key={segment.name}
           onClick={() =>
-            handleGenerateReport(
-              (agentId as string) || "",
-              segment.name,
-              funnelType as string,
-            )
+            handleGenerateReport((agentId as string) || "", segment.name)
           }
         >
           {segment.icon ? (
