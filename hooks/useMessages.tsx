@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Message, useChat as useAiChat } from "ai/react";
+import { useChat as useAiChat } from "ai/react";
 import { useCsrfToken } from "./useCsrfToken";
 import { useArtistProvider } from "@/providers/ArtistProvider";
 import useChatContext from "./useChatContext";
