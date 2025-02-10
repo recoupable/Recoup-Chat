@@ -49,7 +49,6 @@ const useArtistSetting = () => {
       setImage(uri);
     } catch (error) {
       console.error("Failed to upload image:", error);
-      // TODO: Add proper error handling UI
     }
     setImageUploading(false);
   };
@@ -76,7 +75,6 @@ const useArtistSetting = () => {
       setBases(temp);
     } catch (error) {
       console.error("Failed to upload knowledge files:", error);
-      // TODO: Add proper error handling UI
     }
     setKnowledgeUploading(false);
   };
