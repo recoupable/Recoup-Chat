@@ -83,10 +83,18 @@ Key findings:
    - Transaction ID display and gateway links
    - Proper stream handling for file upload
 
-Next steps:
-[ ] Add @ardrive/turbo-sdk dependency to the main project
-[ ] Set up environment variable for ARWEAVE_KEY
-[ ] Create API endpoint for Arweave upload
-[ ] Update artist popup component with new upload functionality
+[X] Add @ardrive/turbo-sdk dependency to the main project
+[X] Create API endpoint for Arweave upload
+[X] Update artist popup component with new upload functionality
 
-Current focus: Adding required dependencies and setting up environment variables.
+- Created lib/arweave/uploadToArweave.tsx for Arweave upload function
+- Updated useArtistSetting hook to use Arweave instead of IPFS
+- Added proper TypeScript types and error handling
+
+Next steps:
+[ ] Set up environment variable for ARWEAVE_KEY
+[ ] Test the implementation
+[ ] Clean up old IPFS code
+[ ] Add proper error handling UI for upload failures
+
+Current focus: Setting up the ARWEAVE_KEY environment variable.
