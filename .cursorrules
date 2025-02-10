@@ -85,8 +85,10 @@ Key findings:
 
 [X] Add @ardrive/turbo-sdk dependency to the main project
 [X] Create API endpoint for Arweave upload
-[X] Update artist popup component with new upload functionality
 
+- Created app/api/upload/route.ts for handling file uploads
+- Fixed duplicate route issue by removing route.tsx
+  [X] Update artist popup component with new upload functionality
 - Created lib/arweave/uploadToArweave.tsx for Arweave upload function
 - Updated useArtistSetting hook to use Arweave instead of IPFS
 - Added proper TypeScript types and error handling
