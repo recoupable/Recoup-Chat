@@ -6,7 +6,6 @@ if (!process.env.ARWEAVE_KEY) {
   throw new Error("ARWEAVE_KEY environment variable is not set");
 }
 
-// Parse the base64 encoded key
 const ARWEAVE_KEY = JSON.parse(
   Buffer.from(
     process.env.ARWEAVE_KEY.replace("ARWEAVE_KEY=", ""),
@@ -23,24 +22,19 @@ export async function POST(request: Request) {
       throw new Error("No file provided");
     }
 
-    // Initialize authenticated Turbo client with the key from env
     const turbo = TurboFactory.authenticated({
       privateKey: ARWEAVE_KEY,
     });
 
-    // Get the file buffer
     const fileBuffer = Buffer.from(await file.arrayBuffer());
     const fileSize = fileBuffer.length;
 
-    // Get upload costs
     const [{ winc: fileSizeCost }] = await turbo.getUploadCosts({
       bytes: [fileSize],
     });
 
-    // Create a file stream from the Buffer
     const fileStreamFactory = () => Readable.from(fileBuffer);
 
-    // Upload the file with content type metadata
     const { id, dataCaches } = await turbo.uploadFile({
       fileStreamFactory,
       fileSizeFactory: () => fileSize,
@@ -66,7 +60,6 @@ export async function POST(request: Request) {
       },
     });
 
-    // Return the Arweave transaction ID and gateway URLs
     return NextResponse.json({
       success: true,
       id,
