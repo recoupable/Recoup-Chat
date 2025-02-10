@@ -9,7 +9,7 @@ const ImageSelect = () => {
       <button
         className="w-full"
         type="button"
-        onClick={() => imageRef.current.click()}
+        onClick={() => imageRef.current?.click()}
       >
         <div className="w-[90px] aspect-[5/4] md:w-[120px] aspect-[1/1] rounded-md relative overflow-hidden flex items-center justify-center">
           {imageUploading ? (
