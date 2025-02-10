@@ -1,46 +1,92 @@
-Here's the text from the image:
+# Instructions
 
-You are an expert TypeScript/Next.js developer focused on writing clean, maintainable code. Prioritize these qualities:
+During your interaction with the user, if you find anything reusable in this project (e.g. version of a library, model name), especially about a fix to a mistake you made or a correction you received, you should take note in the `Lessons` section in the `.cursorrules` file so you will not make the same mistake again.
 
-1. **Minimal** - Absolute minimum code needed
-2. **Self-documenting** - Code explains itself through:
-   - Precise naming (verbs for functions, nouns for variables)
-   - Single-responsibility components
-   - Obvious data flow
-   - Add short comments when necessary
-3. **Type-Exact** - Strict TypeScript types with zero 'any'
-4. **Secure** - Built-in security for auth/data handling
-5. **Performant** - Follows Next.js optimization guides
+You should also use the `.cursorrules` file as a Scratchpad to organize your thoughts. Especially when you receive a new task, you should first review the content of the Scratchpad, clear old different task if necessary, first explain the task, and plan the steps you need to take to complete the task. You can use todo markers to indicate the progress, e.g.
+[X] Task 1
+[ ] Task 2
 
-Before coding, make a plan inside a <thinking> tag.
+Also update the progress of the task in the Scratchpad when you finish a subtask.
+Especially when you finished a milestone, it will help to improve your depth of task accomplishment to use the Scratchpad to reflect and plan.
+The goal is to help you maintain a big picture as well as the progress of the task. Always refer to the Scratchpad when you plan the next step.
 
-1. Identify core requirement
-2. Consider 3 implementation approaches
-3. Choose simplest that meets needs
-4. Verify with these questions:
-   - Can this be split into smaller functions?
-   - Are there unnecessary abstractions?
-   - Will this be clear to a junior dev?
+# Lessons
 
-For example:
-<thinking>
-Let me think through this step by step.
-...
-</thinking>
+## User Specified Lessons
 
-Good vs Bad code examples:
+- You have a python venv in ./venv. Use it.
+- Include info useful for debugging in the program output.
+- Read the file before you try to edit it.
+- Due to Cursor's limit, when you use `git` and `gh` and need to submit a multiline commit message, first write the message in a file, and then use `git commit -F <filename>` or similar command to commit. And then remove the file. Include "[Cursor] " in the commit message and PR title.
 
-```typescript
-// Bad
-const processData = (input: unknown) => {
-  /* ... */
-};
+## Cursor learned
 
-// Good
-const formatUserDisplayName = (user: User): string => {
-  // Combines first/last names with fallback to email
-  return (
-    [user.firstName, user.lastName].filter(Boolean).join(" ") || user.email
-  );
-};
-```
+- For search results, ensure proper handling of different character encodings (UTF-8) for international queries
+- Add debug information to stderr while keeping the main output clean in stdout for better pipeline integration
+- When using seaborn styles in matplotlib, use 'seaborn-v0_8' instead of 'seaborn' as the style name due to recent seaborn version changes
+- Use 'gpt-4o' as the model name for OpenAI's GPT-4 with vision capabilities
+- When using TurboFactory from @ardrive/turbo-sdk, the fileStreamFactory must return a Web API compatible ReadableStream from node:stream/web, not Node.js streams
+- For logging in production code, use template literals with specific identifiers (e.g. handle, artistId) to make debugging easier
+- When handling image uploads, implement proper fallback mechanisms and clear error messages
+
+# Scratchpad
+
+## Current Task: Artist Popup Image Upload Migration to Arweave
+
+### Task Description
+
+Migrate the artist popup's image upload functionality from IPFS to Arweave for improved permanence and reliability.
+
+### Reference Implementation
+
+- Temporary reference implementation available in @zero-to-arweave directory
+- Need to extract and adapt relevant code to the main application
+- Reference implementation will be removed before deployment
+
+### Analysis & Requirements
+
+1. Current State:
+
+   - Artist popup uses IPFS for image uploads
+   - Need to maintain/improve current UX and error handling
+
+2. Target State:
+   - Use Arweave for permanent storage
+   - Maintain existing upload flow
+   - Ensure proper error handling
+   - Keep or improve user experience
+
+### Action Plan
+
+[X] Review reference implementation in zero-to-arweave
+[ ] Identify required dependencies and configurations
+[ ] Extract and adapt necessary code from reference implementation
+[ ] Update artist popup frontend components
+[ ] Implement Arweave upload functionality
+[ ] Add proper error handling and loading states
+[ ] Test the implementation
+[ ] Clean up and documentation
+
+### Progress
+
+[X] Review reference implementation in zero-to-arweave
+Key findings:
+
+1. Uses @ardrive/turbo-sdk for Arweave integration
+2. Requires ARWEAVE_KEY environment variable (base64 encoded JSON key)
+3. Implementation consists of:
+   - Frontend: File selection and upload UI with progress/status
+   - API: /api/upload endpoint handling file upload to Arweave
+4. Key features to port:
+   - File upload with metadata (Content-Type, File-Name)
+   - Progress tracking and error handling
+   - Transaction ID display and gateway links
+   - Proper stream handling for file upload
+
+Next steps:
+[ ] Add @ardrive/turbo-sdk dependency to the main project
+[ ] Set up environment variable for ARWEAVE_KEY
+[ ] Create API endpoint for Arweave upload
+[ ] Update artist popup component with new upload functionality
+
+Current focus: Adding required dependencies and setting up environment variables.
