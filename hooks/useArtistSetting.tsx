@@ -1,11 +1,10 @@
-import getIpfsLink from "@/lib/ipfs/getIpfsLink";
-import { uploadFile } from "@/lib/ipfs/uploadToIpfs";
+import { uploadFile } from "@/lib/arweave/uploadToArweave";
 import { useEffect, useRef, useState } from "react";
 import { ArtistRecord } from "@/types/Artist";
 
 const useArtistSetting = () => {
-  const imageRef = useRef() as any;
-  const baseRef = useRef() as any;
+  const imageRef = useRef<HTMLInputElement>(null);
+  const baseRef = useRef<HTMLInputElement>(null);
   const [image, setImage] = useState("");
   const [instruction, setInstruction] = useState("");
   const [name, setName] = useState("");
@@ -16,12 +15,14 @@ const useArtistSetting = () => {
   const [instagram, setInstagram] = useState("");
   const [youtube, setYoutube] = useState("");
   const [twitter, setTwitter] = useState("");
-  const [bases, setBases] = useState<any>([]);
+  const [bases, setBases] = useState<
+    Array<{ name: string; url: string; type: string }>
+  >([]);
   const [imageUploading, setImageUploading] = useState(false);
   const [knowledgeUploading, setKnowledgeUploading] = useState(false);
   const [question, setQuestion] = useState("");
   const [editableArtist, setEditableArtist] = useState<ArtistRecord | null>(
-    null,
+    null
   );
 
   const handleDeleteKnowledge = (index: number) => {
@@ -33,35 +34,50 @@ const useArtistSetting = () => {
     temp = temp.splice(index, 1);
     setBases([...temp]);
   };
-  const handleImageSelected = async (e: any) => {
+
+  const handleImageSelected = async (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
     setImageUploading(true);
-    const file = e.target.files[0];
+    const file = e.target.files?.[0];
     if (!file) {
       setImageUploading(false);
       return;
     }
-    if (file) {
+    try {
       const { uri } = await uploadFile(file);
-      setImage(getIpfsLink(uri));
+      setImage(uri);
+    } catch (error) {
+      console.error("Failed to upload image:", error);
+      // TODO: Add proper error handling UI
     }
     setImageUploading(false);
   };
 
-  const handleKnowledgesSelected = async (e: any) => {
+  const handleKnowledgesSelected = async (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
     setKnowledgeUploading(true);
     const files = e.target.files;
     const temp = [];
-    for (const file of files) {
-      const name = file.name;
-      const type = file.type;
-      const { uri } = await uploadFile(file);
-      temp.push({
-        name,
-        url: getIpfsLink(uri),
-        type,
-      });
+    try {
+      if (files) {
+        for (const file of files) {
+          const name = file.name;
+          const type = file.type;
+          const { uri } = await uploadFile(file);
+          temp.push({
+            name,
+            url: uri,
+            type,
+          });
+        }
+      }
+      setBases(temp);
+    } catch (error) {
+      console.error("Failed to upload knowledge files:", error);
+      // TODO: Add proper error handling UI
     }
-    setBases(temp);
     setKnowledgeUploading(false);
   };
 
@@ -86,7 +102,7 @@ const useArtistSetting = () => {
       setImage(editableArtist?.image || "");
       setLabel(editableArtist?.label || "");
       setInstruction(editableArtist?.instruction || "");
-      setBases(editableArtist?.knowledges || "");
+      setBases(editableArtist?.knowledges || []);
       const socialMediaTypes = {
         TWITTER: setTwitter,
         YOUTUBE: setYoutube,
@@ -97,7 +113,7 @@ const useArtistSetting = () => {
       };
       Object.entries(socialMediaTypes).forEach(([type, setter]) => {
         const link = editableArtist?.account_socials?.find(
-          (item) => item.type === type,
+          (item) => item.type === type
         )?.link;
         setter(link || "");
       });
