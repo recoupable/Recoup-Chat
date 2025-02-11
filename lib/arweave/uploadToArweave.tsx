@@ -4,7 +4,7 @@ export type ArweaveUploadResponse = {
 };
 
 export const uploadFile = async (
-  file: File
+  file: File,
 ): Promise<ArweaveUploadResponse> => {
   try {
     const data = new FormData();

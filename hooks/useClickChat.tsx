@@ -8,7 +8,7 @@ const useClickChat = () => {
   const handleClick = (conversation: any, toggleModal: () => void) => {
     if (isMobile) toggleModal();
     if (conversation?.agentId) {
-      push(`/funnels/${conversation?.type}/${conversation.agentId}`);
+      push(`/funnels/${conversation?.platform}/${conversation.agentId}`);
       return;
     }
     push(`/${conversation.id}`);
