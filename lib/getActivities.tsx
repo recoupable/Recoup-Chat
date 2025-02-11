@@ -1,15 +1,9 @@
-import { Conversation } from "@/types/Stack";
+import { Conversation } from "@/types/Chat";
 
 const getActivities = (conversations: Array<Conversation>) => {
-  const funnelAnalyses = conversations.filter(
-    (conversation: Conversation) =>
-      conversation?.metadata?.conversationId &&
-      conversation?.metadata?.is_funnel_analysis,
-  );
-
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const activities = funnelAnalyses.reduce((acc: any, item: any) => {
-    const date = new Date(item.timestamp);
+  const activities = conversations.reduce((acc: any, item: Conversation) => {
+    const date = new Date(item.updated_at);
     const formattedDate = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

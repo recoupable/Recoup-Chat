@@ -3,7 +3,7 @@ import { useUserProvider } from "@/providers/UserProvder";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect } from "react";
 import useFunnelAnalysisParams from "./useFunnelAnalysisParams";
-import getAgent from "@/lib/supabase/getAgent";
+import getAgent from "@/lib/agent/getAgent";
 import getAgentsStatus from "@/lib/agent/getAgentsStatus";
 import isFinishedScraping from "@/lib/agent/isFinishedScraping";
 import getAgentsInfoFromStack from "@/lib/stack/getAgentsInfoFromStack";

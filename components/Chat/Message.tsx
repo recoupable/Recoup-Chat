@@ -1,12 +1,7 @@
-import ToolContent from "../Tools/ToolContent";
-import { useToolCallProvider } from "@/providers/ToolCallProvider";
 import Icon from "../Icon";
-import ToolFollowUp from "../Tools/ToolFollowUp";
 
 // eslint-disable-next-line
 const Message = ({ message }: { message: any; index: number }) => {
-  const { context } = useToolCallProvider();
-
   return (
     <div className="p-3 rounded-lg flex w-full gap-2">
       {message.role === "assistant" && (
@@ -17,8 +12,16 @@ const Message = ({ message }: { message: any; index: number }) => {
       <div
         className={`grow ${message.role === "user" && "flex justify-end"} max-w-[90%]`}
       >
-        {context && <ToolContent />}
-        <ToolFollowUp message={message} />
+        <section>
+          <div
+            className={`text-sm font-sans max-w-[500px] text-pretty break-words ${message.role === "user" ? "bg-grey px-4 p-2 rounded-full" : ""}`}
+            dangerouslySetInnerHTML={{
+              __html: decodeURIComponent(
+                message.content.replaceAll("%", "&#37;") || "",
+              ),
+            }}
+          />
+        </section>
       </div>
     </div>
   );

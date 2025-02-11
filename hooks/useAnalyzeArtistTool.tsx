@@ -11,7 +11,7 @@ const useAnalyzeArtistTool = (
   toolArgs: any,
 ) => {
   const { lookupProfiles } = useAgentsProvider();
-  const { finalCallback } = useMessagesProvider();
+  // const { finalCallback } = useMessagesProvider();
   const { chat_id: chatId } = useParams();
 
   useEffect(() => {
@@ -20,15 +20,15 @@ const useAnalyzeArtistTool = (
       const agentType = socialPlatform
         ? socialPlatform.toLowerCase()
         : "wrapped";
-      await finalCallback(
-        {
-          role: "assistant",
-          id: uuidV4(),
-          content: `I am trying here. https://chat.recoupable.com/funnels/${agentType}`,
-        },
-        { id: uuidV4(), content: question || "", role: "user" },
-        chatId as string,
-      );
+      // await finalCallback(
+      //   {
+      //     role: "assistant",
+      //     id: uuidV4(),
+      //     content: `I am trying here. https://chat.recoupable.com/funnels/${agentType}`,
+      //   },
+      //   { id: uuidV4(), content: question || "", role: "user" },
+      //   chatId as string,
+      // );
       lookupProfiles(agentType);
     };
     if (toolName === Tools.analyzeArtist && toolArgs && chatId) triggerTool();

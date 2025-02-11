@@ -1,12 +1,10 @@
 import useClickChat from "@/hooks/useClickChat";
-import getConversationTitle from "@/lib/getConversationTitle";
 import { useConversationsProvider } from "@/providers/ConverstaionsProvider";
-import { Conversation } from "@/types/Stack";
 import RecentChatSkeleton from "./RecentChatSkeleton";
+import capitalize from "@/lib/capitalize";
 
 const RecentChats = ({ toggleModal }: { toggleModal: () => void }) => {
-  const { conversations, streamingTitle, streaming, isLoading } =
-    useConversationsProvider();
+  const { allConverstaions, isLoading } = useConversationsProvider();
   const { handleClick } = useClickChat();
 
   return (
@@ -20,14 +18,8 @@ const RecentChats = ({ toggleModal }: { toggleModal: () => void }) => {
           <RecentChatSkeleton />
         ) : (
           <>
-            {streamingTitle && streaming && (
-              <button className="flex gap-2 items-center" type="button">
-                <p className="text-sm truncate max-w-[200px]">
-                  {streamingTitle}
-                </p>
-              </button>
-            )}
-            {conversations.map((conversation: Conversation, index: number) => (
+            {/* eslint-disable-next-line */}
+            {allConverstaions.map((conversation: any, index: number) => (
               <button
                 className="flex gap-2 items-center"
                 key={index}
@@ -35,7 +27,8 @@ const RecentChats = ({ toggleModal }: { toggleModal: () => void }) => {
                 onClick={() => handleClick(conversation, toggleModal)}
               >
                 <p className="text-sm truncate max-w-[200px]">
-                  {getConversationTitle(conversation)}
+                  {conversation?.topic ||
+                    `${capitalize(conversation?.type)} Analysis`}
                 </p>
               </button>
             ))}

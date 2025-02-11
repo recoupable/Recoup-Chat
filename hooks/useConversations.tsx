@@ -1,105 +1,57 @@
-import { Address } from "viem";
-import { useEffect, useRef, useState } from "react";
-import { Conversation } from "@/types/Stack";
-import getConversations from "@/lib/stack/getConversations";
-import { useParams, useRouter } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
 import { useUserProvider } from "@/providers/UserProvder";
-import trackNewChatEvent from "@/lib/stack/trackNewChatEvent";
 import { useArtistProvider } from "@/providers/ArtistProvider";
-import getAiTitle from "@/lib/getAiTitle";
-
-let timer: any = null;
-let streamedIndex = 1;
+import getConversations from "@/lib/getConversations";
+import { Conversation } from "@/types/Chat";
+import useArtistAgents from "./useArtistAgents";
+import { ArtistAgent } from "@/lib/supabase/getArtistAgents";
 
 const useConversations = () => {
-  const [conversations, setConversations] = useState<Conversation[]>([]);
-  const { address } = useUserProvider();
-  const { chat_id: chatId } = useParams();
-  const conversationRef = useRef(chatId as string);
-  const [streamingTitle, setStreamingTitle] = useState("");
-  const [streaming, setStreaming] = useState(false);
+  const { userData } = useUserProvider();
   const { selectedArtist } = useArtistProvider();
-  const [allConverstaions, setAllConverstaions] = useState<Conversation[]>([]);
+  const [allConverstaions, setAllConverstaions] = useState<
+    Array<Conversation | ArtistAgent>
+  >([]);
   const [quotaExceeded, setQuotaExceeded] = useState(false);
-  const { push } = useRouter();
   const [isLoading, setIsLoading] = useState(true);
+  const { agents } = useArtistAgents();
 
-  const addConversation = (newmetadata: any) => {
-    setAllConverstaions([
-      { metadata: newmetadata, timestamp: new Date().getTime() } as any,
-      ...allConverstaions,
-    ]);
+  const addConversation = (conversation: any) => {
+    setAllConverstaions([conversation, ...allConverstaions]);
   };
 
   useEffect(() => {
-    if (address) {
-      fetchConversations(address);
+    if (userData) {
+      fetchConversations();
       return;
     }
-    setAllConverstaions([]);
-  }, [address]);
+    return () => setAllConverstaions([]);
+  }, [userData, agents]);
 
-  useEffect(() => {
+  const conversations = useMemo(() => {
     const filtered = allConverstaions.filter(
-      (item: any) => item.metadata.accountId === selectedArtist?.account_id,
+      (item: Conversation | ArtistAgent) =>
+        (item as any)?.memories &&
+        (item as any)?.memories?.some(
+          (memory: { artist_id: string }) =>
+            memory.artist_id === selectedArtist?.account_id,
+        ),
     );
-    setConversations([...filtered]);
+    return filtered;
   }, [selectedArtist, allConverstaions]);
 
-  const trackGeneralChat = async (content: string, chatId: string) => {
-    const response = await getAiTitle(content);
-    if (response?.error) {
-      setQuotaExceeded(true);
-      push("/");
-      return;
-    }
-    setQuotaExceeded(false);
-    trackChat({
-      title: response.replaceAll(`\"`, ""),
-      conversationId: chatId,
-      accountId: selectedArtist?.account_id,
-    });
-  };
-
-  const trackChat = (titlemetadata: any) => {
-    clearInterval(timer);
-    streamedIndex = 1;
-    timer = setInterval(() => {
-      if (streamedIndex === titlemetadata.title.length + 1) {
-        clearInterval(timer);
-        return;
-      }
-      setStreamingTitle(titlemetadata.title.slice(0, streamedIndex));
-      streamedIndex++;
-    }, 50);
-    setStreaming(true);
-    addConversation(titlemetadata);
-    setStreaming(false);
-    trackNewChatEvent(address, titlemetadata);
-  };
-
-  const fetchConversations = async (walletAddress: Address) => {
-    try {
-      const data = await getConversations(walletAddress);
-      setAllConverstaions(data);
-      setIsLoading(false);
-    } catch (error) {
-      console.error("Error fetching initial messages:", error);
-      return [];
-    }
+  const fetchConversations = async () => {
+    const data = await getConversations(userData.id);
+    setAllConverstaions([...data, ...agents]);
+    setIsLoading(false);
   };
 
   return {
     addConversation,
     fetchConversations,
     conversations,
-    conversationRef,
-    chatId,
-    streamingTitle,
-    streaming,
     setQuotaExceeded,
     quotaExceeded,
-    trackGeneralChat,
     allConverstaions,
     isLoading,
   };

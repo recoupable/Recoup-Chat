@@ -2,7 +2,7 @@ import { type ArtistSegment } from "@/lib/supabase/getArtistSegments";
 import { useQuery } from "@tanstack/react-query";
 
 async function fetchSegments(
-  artistSocialIds: string[]
+  artistSocialIds: string[],
 ): Promise<ArtistSegment[]> {
   const queryString = artistSocialIds.map((id) => `artistId=${id}`).join("&");
   const response = await fetch(`/api/segments?${queryString}`);

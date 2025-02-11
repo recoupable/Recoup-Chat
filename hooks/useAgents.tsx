@@ -59,13 +59,6 @@ const useAgents = () => {
     if (!agentId) return;
     push(`/funnels/${funnelType}/${agentId}`);
     runAgentTimer();
-    addConversation({
-      conversationId: agentId,
-      accountId: agentArtistId,
-      title: `${new String(funnelType as string).toUpperCase()} Analysis: ${agentArtistName}`,
-      is_funnel_analysis: true,
-      funnel_name: funnelType,
-    });
     await trackAgentChat(
       address,
       agentArtistName,

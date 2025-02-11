@@ -1,4 +1,5 @@
 function capitalize(str: string, locale = "en-US") {
+  if (!str) return "";
   if (str.length === 0) {
     return str;
   }

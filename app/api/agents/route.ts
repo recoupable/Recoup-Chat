@@ -1,20 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getArtistSegments } from "@/lib/supabase/getArtistSegments";
+import { getArtistAgents } from "@/lib/supabase/getArtistAgents";
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
-  const artistIds = searchParams.getAll("artistId");
+  const socialIds = searchParams.getAll("socialId");
 
-  if (!artistIds.length) {
+  if (!socialIds.length) {
     return NextResponse.json(
-      { error: "At least one Artist ID is required" },
+      { error: "At least one Social ID is required" },
       { status: 400 },
     );
   }
 
   try {
-    const segments = await getArtistSegments(artistIds);
-    return NextResponse.json(segments);
+    const agents = await getArtistAgents(socialIds);
+    return NextResponse.json(agents);
   } catch (error) {
     console.error("Error fetching segments:", error);
     return NextResponse.json(

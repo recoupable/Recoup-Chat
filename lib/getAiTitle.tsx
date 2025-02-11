@@ -9,11 +9,11 @@ const getAiTitle = async (question: string) => {
     });
     const data = await response.json();
 
-    if (!response.ok) return { error: true };
+    if (!response.ok) return "";
     return data.title;
   } catch (error) {
     console.error(error);
-    return { error };
+    return "";
   }
 };
 

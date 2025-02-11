@@ -1,60 +1,66 @@
 import { Message } from "ai/react";
-import { v4 as uuidV4 } from "uuid";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useUserProvider } from "@/providers/UserProvder";
-import { useConversationsProvider } from "@/providers/ConverstaionsProvider";
 import { useMessagesProvider } from "@/providers/MessagesProvider";
+import createRoom from "@/lib/createRoom";
+import { useConversationsProvider } from "@/providers/ConverstaionsProvider";
 import { usePromptsProvider } from "@/providers/PromptsProvider";
+import { useEffect, useState } from "react";
+import { v4 as uuidV4 } from "uuid";
 
 const useChat = () => {
-  const { login, address } = useUserProvider();
+  const { userData, isPrepared } = useUserProvider();
   const { push } = useRouter();
-  const { chatId, trackGeneralChat, conversationRef } =
-    useConversationsProvider();
-  const searchParams = useSearchParams();
-  const isReportChat = searchParams.get("is_funnel_report");
-  const { input, appendAiChat, handleAiChatSubmit } = useMessagesProvider();
-  const { setCurrentQuestion } = usePromptsProvider();
+  const { chat_id: chatId, agent_id: agentId } = useParams();
+  const { input, appendAiChat } = useMessagesProvider();
+  const { addConversation } = useConversationsProvider();
+  const { messages, pending } = useMessagesProvider();
+  const { getPrompts } = usePromptsProvider();
+  const [appendActive, setAppendActive] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const createNewConversation = async (content: string) => {
+  const createNewRoom = async (content: string) => {
     if (chatId) return;
-    const newId = uuidV4();
-    conversationRef.current = newId;
-    trackGeneralChat(content, newId);
-    push(`/${newId}`);
-  };
-
-  const isPrepared = () => {
-    if (!address) {
-      login();
-      return false;
-    }
-    return true;
+    setIsLoading(true);
+    const room = await createRoom(userData.id, content);
+    addConversation(room);
+    push(`/${room.id}`);
   };
 
   const append = async (message: Message) => {
     if (!isPrepared()) return;
-    setCurrentQuestion(message);
-    appendAiChat(message);
-    createNewConversation(message.content);
+    createNewRoom(message.content);
+    setAppendActive(message);
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!isPrepared()) return;
-    setCurrentQuestion({
+    append({
+      id: uuidV4(),
       content: input,
       role: "user",
-      id: uuidV4(),
     });
-    handleAiChatSubmit(e);
-    createNewConversation(input);
   };
+
+  useEffect(() => {
+    if (appendActive && chatId) {
+      appendAiChat(appendActive);
+      setAppendActive(null);
+      setIsLoading(false);
+      return;
+    }
+  }, [appendActive, chatId]);
+
+  useEffect(() => {
+    if (messages.length && (chatId || agentId) && !pending)
+      getPrompts(messages[messages.length - 1]?.content);
+  }, [messages, pending, agentId, chatId]);
 
   return {
     handleSubmit,
     append,
-    isReportChat,
+    isLoading,
   };
 };
 

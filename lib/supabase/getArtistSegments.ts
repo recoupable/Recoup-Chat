@@ -18,7 +18,7 @@ interface RawArtistSegment {
 }
 
 export async function getArtistSegments(
-  artistSocialIds: string[]
+  artistSocialIds: string[],
 ): Promise<ArtistSegment[]> {
   const { data, error } = await supabase
     .from("artist_fan_segment")
@@ -48,7 +48,7 @@ export async function getArtistSegments(
       acc[key].size++;
       return acc;
     },
-    {} as Record<string, ArtistSegment>
+    {} as Record<string, ArtistSegment>,
   );
 
   return Object.values(segmentGroups);

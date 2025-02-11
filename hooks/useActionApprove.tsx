@@ -2,7 +2,6 @@ import { useArtistProvider } from "@/providers/ArtistProvider";
 import { useAutopilotProvider } from "@/providers/AutopilotProvider";
 import { ACTION, ACTIONS } from "@/types/Autopilot";
 import { useState } from "react";
-import { useInitialChatProvider } from "@/providers/InitialChatProvider";
 import useFansCSVExport from "./useFansCSVExport";
 import { v4 as uuidV4 } from "uuid";
 import { useChatProvider } from "@/providers/ChatProvider";
@@ -14,12 +13,10 @@ const useActionApprove = () => {
   const { comments, fansSegments, addExistingActions, newActionUsed } =
     useAutopilotProvider();
   const [copied, setCopied] = useState(false);
-  const { clearMessagesCache } = useInitialChatProvider();
   const { exportCSV } = useFansCSVExport();
   const { append } = useChatProvider();
 
   const handleClick = async (action: ACTION) => {
-    clearMessagesCache();
     if (action.type === ACTIONS.AI_ACTION) {
       newActionUsed(action?.id);
       append({

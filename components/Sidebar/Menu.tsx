@@ -14,6 +14,7 @@ const Menu = ({ toggleMenuExpanded }: { toggleMenuExpanded: () => void }) => {
   const activeClasses = "bg-grey";
   const itemClasses = "flex gap-3 items-center rounded-md px-3 py-2";
   const isAgents = pathname.includes("/agents");
+  const isSegments = pathname.includes("/segments");
   const isAutopilot = pathname === "/";
 
   const goToItem = (link?: string) => {
@@ -53,7 +54,7 @@ const Menu = ({ toggleMenuExpanded }: { toggleMenuExpanded: () => void }) => {
       <button
         type="button"
         onClick={() => goToItem("segments")}
-        className={`${itemClasses} ${isAgents && activeClasses}`}
+        className={`${itemClasses} ${isSegments && activeClasses}`}
       >
         <MenuItemIcon name="segments" />
         Segments

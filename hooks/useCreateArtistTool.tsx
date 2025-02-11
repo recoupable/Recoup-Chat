@@ -12,21 +12,21 @@ const useCreateArtistTool = (
 ) => {
   const { chat_id: chatId } = useParams();
   const { toggleCreation, setName } = useArtistProvider();
-  const { finalCallback } = useMessagesProvider();
+  // const { finalCallback } = useMessagesProvider();
 
   useEffect(() => {
     const triggerTool = async () => {
       toggleCreation();
       setName(toolArgs?.artistName || "");
-      await finalCallback(
-        {
-          role: "assistant",
-          id: uuidV4(),
-          content: `You create an artist using creation popup after clicking "New Artist" button.`,
-        },
-        { id: uuidV4(), content: question || "", role: "user" },
-        chatId as string,
-      );
+      // await finalCallback(
+      //   {
+      //     role: "assistant",
+      //     id: uuidV4(),
+      //     content: `You create an artist using creation popup after clicking "New Artist" button.`,
+      //   },
+      //   { id: uuidV4(), content: question || "", role: "user" },
+      //   chatId as string,
+      // );
     };
     if (toolName === Tools.createArtist && toolArgs && chatId) triggerTool();
   }, [toolArgs, toolName, chatId]);

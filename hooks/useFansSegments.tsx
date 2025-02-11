@@ -22,14 +22,7 @@ const useFansSegments = () => {
         selectedArtist?.account_id || "",
       );
       setFansSegments(existingSegments);
-      const analyses = conversations.filter(
-        (conversation) =>
-          conversation.metadata.is_funnel_analysis &&
-          conversation.metadata?.accountId === selectedArtist?.account_id,
-      );
-      const agentIds = analyses.map(
-        (analysis) => analysis.metadata.conversationId,
-      );
+      const agentIds: string[] = [];
       const segments: any = [];
       const commentIds: any = [];
       const agentsPromise = agentIds.map(async (agentId) => {
