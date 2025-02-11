@@ -9,8 +9,8 @@ if (!process.env.ARWEAVE_KEY) {
 const ARWEAVE_KEY = JSON.parse(
   Buffer.from(
     process.env.ARWEAVE_KEY.replace("ARWEAVE_KEY=", ""),
-    "base64"
-  ).toString()
+    "base64",
+  ).toString(),
 );
 
 export async function POST(request: Request) {
@@ -77,7 +77,7 @@ export async function POST(request: Request) {
         success: false,
         error: error instanceof Error ? error.message : "Unknown error",
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

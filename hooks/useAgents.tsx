@@ -5,8 +5,8 @@ import { useUserProvider } from "@/providers/UserProvder";
 import { useRouter } from "next/navigation";
 import { ArtistRecord } from "@/types/Artist";
 import callAgentApi from "@/lib/agent/callAgentApi";
-import trackAgentChat from "@/lib/stack/trackAgentChat";
 import { useConversationsProvider } from "@/providers/ConverstaionsProvider";
+import trackAgent from "@/lib/stack/trackAgent";
 
 const useAgents = () => {
   const {
@@ -59,7 +59,12 @@ const useAgents = () => {
     if (!agentId) return;
     push(`/funnels/${funnelType}/${agentId}`);
     runAgentTimer();
-    await trackAgentChat(
+    addConversation({
+      agentId,
+      title: `${(funnelType as string)?.toUpperCase()} Analysis: ${agentArtistName}`,
+      platform: funnelType as string,
+    });
+    await trackAgent(
       address,
       agentArtistName,
       agentArtistId,

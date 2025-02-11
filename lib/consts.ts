@@ -1,6 +1,7 @@
 // STACK EVENTS
 export const MESSAGE_SENT_EVENT = "message_sent";
 export const NEW_CHAT_EVENT = "new_chat_run";
+export const NEW_AGENT_EVENT = "new_agent_run";
 export const ACTION_EVENT = "action_approve_or_denyy";
 export const AGENT_RUN = "agent_run";
 export const LUH_TYLER_3D_SCORE = "luh-tyler-3d-score";

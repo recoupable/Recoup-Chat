@@ -47,7 +47,10 @@ const useMessages = () => {
   useEffect(() => {
     const fetch = async () => {
       if (!userData?.id) return;
-      if (!chatId) return;
+      if (!chatId) {
+        setMessages([])
+        return
+      };
       setIsLoading(true);
       const initialMessages = await getInitialMessages(chatId as string);
       setMessages(initialMessages);
