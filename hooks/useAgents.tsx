@@ -64,7 +64,7 @@ const useAgents = () => {
       title: `${(funnelType as string)?.toUpperCase()} Analysis: ${agentArtistName}`,
       platform: funnelType as string,
     });
-    await trackAgent(
+    trackAgent(
       address,
       agentArtistName,
       agentArtistId,

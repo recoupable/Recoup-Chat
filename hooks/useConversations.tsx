@@ -39,7 +39,8 @@ async function fetchConversations(
   const agents = await getAgents(artist_id, address);
   const aggregated = [...rooms, ...agents];
   return aggregated.sort(
-    (a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime(),
+    (a, b) =>
+      new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime(),
   );
 }
 

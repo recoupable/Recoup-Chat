@@ -48,9 +48,9 @@ const useMessages = () => {
     const fetch = async () => {
       if (!userData?.id) return;
       if (!chatId) {
-        setMessages([])
-        return
-      };
+        setMessages([]);
+        return;
+      }
       setIsLoading(true);
       const initialMessages = await getInitialMessages(chatId as string);
       setMessages(initialMessages);
