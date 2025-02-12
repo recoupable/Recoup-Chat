@@ -1,6 +1,5 @@
 import { SOCIAL } from "@/types/Agent";
 import { ArtistRecord } from "@/types/Artist";
-import { Funnel_Type } from "@/types/Funnel";
 
 const getExistingHandles = (artist: ArtistRecord | null) => {
   if (!artist)
@@ -12,18 +11,38 @@ const getExistingHandles = (artist: ArtistRecord | null) => {
     };
 
   const socials = artist.account_socials.filter(
-    (link: SOCIAL) => link?.type !== "YOUTUBE" && link?.type !== "APPLE",
+    (link: SOCIAL) => link?.type !== "YOUTUBE" && link?.type !== "APPLE"
   );
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const handles: any = {};
+  // Initialize with empty handles
+  const handles: Record<string, string> = {
+    twitter: "",
+    spotify: "",
+    tiktok: "",
+    instagram: "",
+  };
 
-  socials.map((social: SOCIAL) => {
+  socials.forEach((social: SOCIAL) => {
     const link = social.link;
-    let match = link.match(/\/\/[^/]+\/([^\/?#]+)/);
-    if (social.type === Funnel_Type.SPOTIFY.toUpperCase())
-      match = link.match(/\/artists\/([a-zA-Z0-9]+)\/?$/);
-    handles[`${social.type.toLowerCase()}`] = match ? match[1] : "";
+    const type = social.type.toLowerCase();
+
+    if (type === "spotify") {
+      // Handle various Spotify URL formats
+      const spotifyMatches = [
+        // Format: /artist/id
+        link.match(/\/artist\/([a-zA-Z0-9]+)\/?$/),
+        // Format: /artists/id
+        link.match(/\/artists\/([a-zA-Z0-9]+)\/?$/),
+        // Format: user/id
+        link.match(/\/user\/([a-zA-Z0-9]+)\/?$/),
+      ];
+      const match = spotifyMatches.find((m) => m !== null);
+      handles[type] = match ? match[1] : "";
+    } else {
+      // For other platforms, extract username from URL
+      const match = link.match(/\/\/[^/]+\/([^\/?#]+)/);
+      handles[type] = match ? match[1] : "";
+    }
   });
 
   return handles;
