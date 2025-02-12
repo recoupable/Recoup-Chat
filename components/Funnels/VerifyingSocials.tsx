@@ -1,35 +1,38 @@
-import InputHandles from "./InputHandle";
 import { useFunnelAnalysisProvider } from "@/providers/FunnelAnalysisProvider";
-import Icon from "../Icon";
+import { useAgentsProvider } from "@/providers/AgentsProvider";
+import VerifyCard from "./VerifyCard";
+import SocialHandleList from "./SocialHandleList";
+import ProgressIndicator from "./ProgressIndicator";
 import Loading from "../Loading";
-import { useArtistProvider } from "@/providers/ArtistProvider";
 
 const VerifyingSocials = () => {
-  const { isCheckingHandles, handles } = useFunnelAnalysisProvider();
-  const { selectedArtist } = useArtistProvider();
+  const { isCheckingHandles, handles, setHandles } =
+    useFunnelAnalysisProvider();
+  const { runAgents } = useAgentsProvider();
 
-  if (isCheckingHandles)
-    return (
-      <main className="grow py-2">
-        <div className="px-4 md:max-w-3xl md:mx-auto md:w-full h-full md:pt-4 flex flex-col bg-white">
-          <div className="md:grow flex flex-col pb-4 h-full">
-            <div className="flex gap-3 items-center">
-              <div className="border border-gray rounded-full p-2">
-                <Icon name="logo-xs" />
-              </div>
-              <div className="flex gap-2 items-center text-sm">
-                Verifying @{selectedArtist?.name}
-                ’s Social Handles...
-                <Loading />
-              </div>
+  if (!isCheckingHandles) return null;
+
+  return (
+    <main className="grow py-8 px-4">
+      <div className="max-w-md mx-auto">
+        <ProgressIndicator currentStep={1} totalSteps={3} />
+
+        <VerifyCard>
+          {Object.keys(handles).length > 0 ? (
+            <SocialHandleList
+              handles={handles}
+              onHandlesChange={setHandles}
+              onContinue={runAgents}
+            />
+          ) : (
+            <div className="flex items-center justify-center py-8">
+              <Loading />
             </div>
-            <div className="pl-11 pt-2">
-              {Object.keys(handles).length > 0 && <InputHandles />}
-            </div>
-          </div>
-        </div>
-      </main>
-    );
+          )}
+        </VerifyCard>
+      </div>
+    </main>
+  );
 };
 
 export default VerifyingSocials;
