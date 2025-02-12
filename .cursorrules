@@ -63,6 +63,8 @@ The goal is to help you maintain a big picture as well as the progress of the ta
 - Include info useful for debugging in the program output.
 - Read the file before you try to edit it.
 - Due to Cursor's limit, when you use `git` and `gh` and need to submit a multiline commit message, first write the message in a file, and then use `git commit -F <filename>` or similar command to commit. And then remove the file. Include "[Cursor] " in the commit message and PR title.
+- Keep all files under 100 lines of code to maintain readability and follow single responsibility principle
+- Split hooks/components when they grow too large or handle multiple concerns
 
 ## Cursor learned
 
@@ -76,12 +78,30 @@ The goal is to help you maintain a big picture as well as the progress of the ta
 
 # Scratchpad
 
-## Current Task: None
+## Current Task: Clean Up Social Profile Verification
 
 ### Task Description
 
-Awaiting new task...
+1. Remove development logging
+2. Split useAgents hook into smaller, focused hooks/functions
+
+### Analysis Steps
+
+[X] 1. Investigation - Found key components: - `lib/getHandles.tsx`: Makes Tavily API call via AGENT_API - `lib/getExistingHandles.tsx`: Gets existing social profiles from DB - `hooks/useAgents.tsx`: Main logic for social profile lookup - `components/Funnels/VerifyingSocials.tsx`: UI component
+
+[ ] 2. Refactoring Plan
+Split into three focused modules: 1. `hooks/useHandleLookup.tsx` (~50 lines) - Handle social profile lookup logic - Merge existing and Tavily handles - Return merged handles
+
+    2. `hooks/useAgentRunner.tsx` (~50 lines)
+       - Handle agent initialization and running
+       - Track agent chat
+       - Manage agent status
+
+    3. `hooks/useAgents.tsx` (~30 lines)
+       - Main hook that combines the above
+       - Manage shared state
+       - Route to appropriate funnel pages
 
 ### Progress
 
-Ready for new task assignment.
+Ready to begin refactoring to improve code organization and maintainability.
