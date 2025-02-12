@@ -8,13 +8,6 @@ interface SocialHandleInputProps {
   onChange: (e: React.ChangeEvent<HTMLInputElement>, platform: string) => void;
 }
 
-const platformIcons = {
-  spotify: "Music2",
-  twitter: "Twitter",
-  tiktok: "Ticket",
-  instagram: "Instagram",
-};
-
 const SocialHandleInput = ({
   platform,
   value,
@@ -22,9 +15,6 @@ const SocialHandleInput = ({
   onRemove,
   onChange,
 }: SocialHandleInputProps) => {
-  const iconName =
-    platformIcons[platform.toLowerCase() as keyof typeof platformIcons];
-
   return (
     <div
       className={`
@@ -33,8 +23,8 @@ const SocialHandleInput = ({
         ${isRemoving ? "opacity-0 -translate-x-2" : "opacity-100"}
       `}
     >
-      <div className="flex items-center justify-center w-8 h-8 text-gray-500">
-        {iconName && <LucideIcon name={iconName} size={20} />}
+      <div className="w-20 text-sm font-medium text-gray-500">
+        {platform.charAt(0).toUpperCase() + platform.slice(1)}:
       </div>
 
       <div className="flex-1">
