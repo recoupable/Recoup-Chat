@@ -82,7 +82,7 @@ const useAgents = () => {
         .filter(([k, v]) => v === existingHandles[k] && v)
         .map(([k]) => k),
       fromTavily: Object.entries(mergedHandles)
-        .filter(([k, v]) => v === tavilyHandles[k] && v)
+        .filter(([k, v]) => v === tavilyHandles[k as keyof SocialHandles] && v)
         .map(([k]) => k),
     });
 
