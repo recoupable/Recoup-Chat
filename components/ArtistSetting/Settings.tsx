@@ -14,6 +14,7 @@ import DeleteModal from "./DeleteModal";
 import { useState } from "react";
 import { useAgentsProvider } from "@/providers/AgentsProvider";
 import { useFunnelAnalysisProvider } from "@/providers/FunnelAnalysisProvider";
+import AccountIdDisplay from "./AccountIdDisplay";
 
 const Settings = () => {
   const isMobile = useIsMobile();
@@ -47,14 +48,19 @@ const Settings = () => {
       validationSchema={validation}
       onSubmit={handleSave}
     >
-      <div className="col-span-12 flex justify-between items-center border-b-greyborder-b-[1px] pb-3">
+      <div className="col-span-12 flex justify-between items-center border-b-grey border-b-[1px] pb-3">
         <div className="flex gap-2 items-center">
           <MicVocal />
-          <p>
-            {settingMode === SETTING_MODE.CREATE
-              ? "Add Artist"
-              : "Artist Settings"}
-          </p>
+          <div className="flex flex-col">
+            <p>
+              {settingMode === SETTING_MODE.CREATE
+                ? "Add Artist"
+                : "Artist Settings"}
+            </p>
+            {settingMode === SETTING_MODE.UPDATE && editableArtist && (
+              <AccountIdDisplay accountId={editableArtist.account_id} />
+            )}
+          </div>
         </div>
         {!isMobile && (
           <button type="button" onClick={toggleSettingModal}>
