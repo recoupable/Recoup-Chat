@@ -1,4 +1,3 @@
-import { X } from "lucide-react";
 import LucideIcon from "@/components/LucideIcon";
 
 interface SocialHandleInputProps {
@@ -59,11 +58,12 @@ const SocialHandleInput = ({
             hover:bg-gray-100
             transition-all duration-200
             disabled:opacity-50
+            text-lg
           "
           title={`Remove ${platform}`}
           disabled={isRemoving}
         >
-          <X className="w-4 h-4 text-gray-400" />
+          🗑️
         </button>
       )}
     </div>

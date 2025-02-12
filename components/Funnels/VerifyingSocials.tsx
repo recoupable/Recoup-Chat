@@ -2,7 +2,6 @@ import { useFunnelAnalysisProvider } from "@/providers/FunnelAnalysisProvider";
 import { useAgentsProvider } from "@/providers/AgentsProvider";
 import VerifyCard from "./VerifyCard";
 import SocialHandleList from "./SocialHandleList";
-import ProgressIndicator from "./ProgressIndicator";
 import Loading from "../Loading";
 
 const VerifyingSocials = () => {
@@ -15,8 +14,6 @@ const VerifyingSocials = () => {
   return (
     <main className="grow py-8 px-4">
       <div className="max-w-md mx-auto">
-        <ProgressIndicator currentStep={1} totalSteps={3} />
-
         <VerifyCard>
           {Object.keys(handles).length > 0 ? (
             <SocialHandleList

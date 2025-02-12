@@ -52,23 +52,25 @@ const SocialHandleList = ({
         ))}
       </div>
 
-      <button
-        onClick={onContinue}
-        type="button"
-        className="
-          inline-flex items-center justify-center gap-2
-          bg-black text-white rounded-lg
-          px-6 py-2
-          hover:bg-gray-800
-          disabled:opacity-50 disabled:cursor-not-allowed
-          transition-all duration-200
-          text-sm font-medium
-        "
-        disabled={Object.keys(handles).length === 0}
-      >
-        Next
-        <ArrowRight className="w-4 h-4" />
-      </button>
+      <div className="flex justify-end">
+        <button
+          onClick={onContinue}
+          type="button"
+          className="
+            inline-flex items-center justify-center gap-2
+            bg-black text-white rounded-lg
+            px-6 py-2
+            hover:bg-gray-800
+            disabled:opacity-50 disabled:cursor-not-allowed
+            transition-all duration-200
+            text-sm font-medium
+          "
+          disabled={Object.keys(handles).length === 0}
+        >
+          Next
+          <ArrowRight className="w-4 h-4" />
+        </button>
+      </div>
     </div>
   );
 };
