@@ -14,14 +14,10 @@ export const useHandleLookup = () => {
     artist: ArtistRecord | null,
     funnelType: string
   ): Promise<Record<string, string>> => {
-    // Get existing handles from DB
     const existingHandles = getExistingHandles(artist);
-
-    // Get Tavily suggestions
     const handle = artist?.name || "";
     const tavilyHandles = await getHandles(handle);
 
-    // Merge handles based on what's available
     const mergedHandles: Record<string, string> = {
       spotify: existingHandles.spotify || tavilyHandles.spotify,
       twitter: existingHandles.twitter || tavilyHandles.twitter,
@@ -29,14 +25,9 @@ export const useHandleLookup = () => {
       tiktok: existingHandles.tiktok || tavilyHandles.tiktok,
     };
 
-    // Return either all handles or just the requested platform
-    if (funnelType === "wrapped") {
-      return mergedHandles;
-    }
-
-    return {
-      [funnelType]: mergedHandles[funnelType as keyof SocialHandles],
-    };
+    return funnelType === "wrapped"
+      ? mergedHandles
+      : { [funnelType]: mergedHandles[funnelType as keyof SocialHandles] };
   };
 
   return {
