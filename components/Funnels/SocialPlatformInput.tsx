@@ -18,22 +18,22 @@ const SocialPlatformInput = ({
   return (
     <div
       className={`
-        flex gap-2 items-center
+        flex gap-2 items-center w-full
         transition-all duration-300 ease-in-out
         ${isRemoving ? "opacity-0 -translate-x-2" : "opacity-100"}
       `}
     >
-      <p>{id.toUpperCase()}: </p>
-      <div className="flex-1 flex items-center gap-2">
+      <p className="min-w-[90px]">{id.toUpperCase()}: </p>
+      <div className="flex-1 flex items-center gap-2 max-w-[200px]">
         <input
           value={value}
-          className="flex-1 border rounded-md border-grey-700 px-4 py-1 !outline-none transition-colors focus:border-purple-dark"
+          className="w-full border rounded-md border-grey-700 px-4 py-1 !outline-none transition-colors focus:border-purple-dark"
           onChange={(e) => onChange(e, id)}
         />
         <button
           type="button"
           onClick={() => onRemove(id)}
-          className="p-1 hover:bg-gray-100 rounded-full transition-colors group"
+          className="p-1 hover:bg-gray-100 rounded-full transition-colors group shrink-0"
           title="Remove platform"
           disabled={isRemoving}
         >
