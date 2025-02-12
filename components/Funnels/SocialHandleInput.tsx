@@ -53,17 +53,16 @@ const SocialHandleInput = ({
           type="button"
           onClick={() => onRemove(platform)}
           className="
-            opacity-0 group-hover:opacity-100
             p-1.5 rounded-full
-            hover:bg-gray-100
-            transition-all duration-200
+            text-red-500
+            transition-transform duration-200
+            hover:scale-110
             disabled:opacity-50
-            text-lg
           "
           title={`Remove ${platform}`}
           disabled={isRemoving}
         >
-          🗑️
+          <LucideIcon name="Trash2" size={20} />
         </button>
       )}
     </div>
