@@ -1,6 +1,6 @@
 import { useState } from "react";
 import SocialHandleInput from "./SocialHandleInput";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Loader2 } from "lucide-react";
 
 type Handles = Record<string, string>;
 
@@ -16,6 +16,7 @@ const SocialHandleList = ({
   onContinue,
 }: SocialHandleListProps) => {
   const [removingPlatform, setRemovingPlatform] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleRemove = (platform: string) => {
     setRemovingPlatform(platform);
@@ -37,6 +38,15 @@ const SocialHandleList = ({
     });
   };
 
+  const handleContinue = async () => {
+    setIsLoading(true);
+    try {
+      await onContinue();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <div className="space-y-4">
       <div className="space-y-3">
@@ -54,7 +64,7 @@ const SocialHandleList = ({
 
       <div className="flex justify-end">
         <button
-          onClick={onContinue}
+          onClick={handleContinue}
           type="button"
           className="
             inline-flex items-center justify-center gap-2
@@ -65,10 +75,19 @@ const SocialHandleList = ({
             transition-all duration-200
             text-sm font-medium
           "
-          disabled={Object.keys(handles).length === 0}
+          disabled={Object.keys(handles).length === 0 || isLoading}
         >
-          Next
-          <ArrowRight className="w-4 h-4" />
+          {isLoading ? (
+            <>
+              <Loader2 className="w-4 h-4 animate-spin" />
+              Processing...
+            </>
+          ) : (
+            <>
+              Next
+              <ArrowRight className="w-4 h-4" />
+            </>
+          )}
         </button>
       </div>
     </div>
