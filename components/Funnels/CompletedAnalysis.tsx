@@ -31,7 +31,7 @@ const CompletedAnalysis = () => {
         <>
           <p>{`${selectedArtist?.name} has ${getAggregatedSocialProfiles(selectedArtist)?.followerCount} followers. We've analyzed your most recent 100 engagements in this quick scan. Select a fan segmentation below to generate a detailed report for brand partnership opportunities.`}</p>
           <FanSegmentLabel />
-          <p>{`We categorized ${selectedArtist?.name}'s fans into ${Object.keys(segments).length} different segments - click any to explore. The agent is running in the background and will notify you of new insights!`}</p>
+          <p>{`We categorized ${selectedArtist?.name}'s fans into ${segments?.length || 0} different segments - click any to explore. The agent is running in the background and will notify you of new insights!`}</p>
           <Segments />
         </>
       )}

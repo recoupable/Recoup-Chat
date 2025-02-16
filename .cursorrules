@@ -101,24 +101,32 @@ Task: Update the onFunnelComplete functionality to use the artist_fan_segments t
    - Fetches from `artist_fan_segments` table via `/api/segments` endpoint
    - Uses social IDs from artist's account to fetch segments
 
-### Implementation Plan
+### Implementation Progress
 
-[ ] Update Segment Fetching in Funnel Flow:
+[X] Update Segment Fetching in Funnel Flow:
 
-- Modify `useFunnelAnalysis` to use `useArtistSegments` hook
-- Keep using `isFinishedScraping` for UI transition
-- Update segment data structure to match new format
+- [x] Added `useArtistSegments` hook to `useFunnelAnalysis`
+- [x] Removed `getAgentsInfoFromStack` call
+- [x] Updated loading states to include new segments loading
+- [x] Fixed linter errors for type safety:
+  - Added proper typing for timer variable
+  - Removed any type from getAgentTimer
+  - Added null checks for timer cleanup
 
-[ ] Update CompletedAnalysis Component:
+[X] Update CompletedAnalysis Component:
 
-- Switch to use segments from `useArtistSegments`
-- Update loading states to work with new data source
-- Preserve existing UI and calculations
+- [x] Updated segment count display to use array length
+- [x] Preserved existing UI and loading states
+- [x] Updated Segments component:
+  - [x] Changed key to use segment.id
+  - [x] Added null check for segments
+  - [x] Updated total size calculation
+  - [x] Preserved report generation functionality
 
-[ ] Preserve Report Generation:
+[X] Clean Up:
 
-- Keep existing handleGenerateReport functionality
-- Update any segment data structure differences
+- [x] Removed unused getSegmentsTotalSize function
+- [x] Moved total size calculation into Segments component
 
 [ ] Test Integration:
 
@@ -130,12 +138,16 @@ Task: Update the onFunnelComplete functionality to use the artist_fan_segments t
 
 ✓ Analyzed current implementation
 ✓ Identified UI transition flow
-✓ Located where to make changes
+✓ Modified useFunnelAnalysis to use new segments source
+✓ Fixed linter errors in useFunnelAnalysis
+✓ Updated CompletedAnalysis and Segments components
+✓ Cleaned up unused code
 
 ### Next Steps
 
-1. Create new hook to handle segment fetching
-2. Modify useFunnelAnalysis to use new hook
-3. Update CompletedAnalysis component
+1. Test the changes:
+   - Check segment display in funnel flow
+   - Verify segment counts and calculations
+   - Test report generation
 
-Ready to proceed with implementation.
+Ready for testing.

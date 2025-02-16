@@ -6,10 +6,10 @@ import useFunnelAnalysisParams from "./useFunnelAnalysisParams";
 import getAgent from "@/lib/agent/getAgent";
 import getAgentsStatus from "@/lib/agent/getAgentsStatus";
 import isFinishedScraping from "@/lib/agent/isFinishedScraping";
-import getAgentsInfoFromStack from "@/lib/stack/getAgentsInfoFromStack";
 import getArtistsByAgent from "@/lib/getArtistsByAgent";
+import { useArtistSegments } from "@/hooks/useArtistSegments";
 
-let timer: any = null;
+let timer: NodeJS.Timeout | null = null;
 
 const useFunnelAnalysis = () => {
   const params = useFunnelAnalysisParams();
@@ -18,19 +18,25 @@ const useFunnelAnalysis = () => {
   const { getArtists, artists, selectedArtist } = useArtistProvider();
   const { push } = useRouter();
 
-  const getAgentTimer: any = async () => {
+  // Get social IDs for segments
+  const socialIds =
+    selectedArtist?.account_socials?.map((social) => social.id) || [];
+  const { data: segments, isLoading: isLoadingNewSegments } =
+    useArtistSegments(socialIds);
+
+  const getAgentTimer = async () => {
     if (!agentId) {
-      clearInterval(timer);
+      if (timer) clearInterval(timer);
       return;
     }
     if (!params.agentsStatus.length) params.setIsCheckingAgentStatus(true);
     params.setIsLoading(true);
     params.setIsLoadingAgent(true);
-    const { agent, comments } = await getAgent(agentId as string);
+    const { agent } = await getAgent(agentId as string);
     if (!agent) {
       params.setIsCheckingAgentStatus(false);
       params.setIsLoadingAgent(false);
-      clearInterval(timer);
+      if (timer) clearInterval(timer);
       push("/funnels/wrapped");
       return;
     }
@@ -43,30 +49,28 @@ const useFunnelAnalysis = () => {
     params.setIsInitializing(false);
     if (isFinishedScraping(status)) {
       params.setIsLoadingSegments(true);
-      const { segments } = await getAgentsInfoFromStack(
-        agentId as string,
-        address,
-        comments.slice(0, 500),
-      );
-      params.setSegments(segments);
+      // Use segments from useArtistSegments
+      if (segments) {
+        params.setSegments(segments);
+      }
       params.setIsLoadingSegments(false);
       const artistIds = await getArtistsByAgent(agent);
       params.setIsLoadingAgent(false);
       const selectedArtistId = artistIds.find(
-        (ele: string) => ele === selectedArtist?.account_id,
+        (ele: string) => ele === selectedArtist?.account_id
       );
       const existingArtist = artists.find((artist) =>
-        artistIds.includes(artist.account_id),
+        artistIds.includes(artist.account_id)
       );
       getArtists(selectedArtistId || existingArtist?.account_id);
-      clearInterval(timer);
+      if (timer) clearInterval(timer);
       return;
     }
   };
 
   const runAgentTimer = () => {
     getAgentTimer();
-    timer = setInterval(() => getAgentTimer(timer), 10000);
+    timer = setInterval(() => getAgentTimer(), 10000);
   };
 
   useEffect(() => {
@@ -75,12 +79,18 @@ const useFunnelAnalysis = () => {
       params.setIsLoading(true);
       runAgentTimer();
     }
-    return () => clearInterval(timer);
+    return () => {
+      if (timer) clearInterval(timer);
+    };
   }, [agentId, address, artists.length]);
+
+  // Update loading state to include new segments loading
+  const isLoadingSegments = params.isLoadingSegments || isLoadingNewSegments;
 
   return {
     ...params,
     runAgentTimer,
+    isLoadingSegments,
   };
 };
 

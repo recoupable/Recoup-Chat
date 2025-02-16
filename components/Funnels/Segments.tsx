@@ -3,7 +3,6 @@ import LucideIcon from "@/components/LucideIcon";
 import useCredits from "@/hooks/useCredits";
 import useGenerateSegmentReport from "@/hooks/useGenerateSegmentReport";
 import getAggregatedSocialProfiles from "@/lib/agent/getAggregatedSocialProfiles";
-import getSegmentsTotalSize from "@/lib/agent/getSegmentsTotalSize";
 import { useArtistProvider } from "@/providers/ArtistProvider";
 import { useFunnelAnalysisProvider } from "@/providers/FunnelAnalysisProvider";
 import { useParams } from "next/navigation";
@@ -15,7 +14,10 @@ const Segments = () => {
   const { selectedArtist } = useArtistProvider();
   const { agent_id: agentId } = useParams();
   const { followerCount } = getAggregatedSocialProfiles(selectedArtist);
-  const totalSegmentSize = getSegmentsTotalSize(segments);
+  const totalSegmentSize =
+    segments?.reduce((acc, segment) => acc + segment.size, 0) || 0;
+
+  if (!segments?.length) return null;
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 pt-4 gap-3">
@@ -23,7 +25,7 @@ const Segments = () => {
         <button
           className="w-full border-grey-light border-[1px] rounded-md px-3 py-2 flex gap-2 items-center shadow-grey"
           type="button"
-          key={segment.name}
+          key={segment.id}
           onClick={() =>
             handleGenerateReport((agentId as string) || "", segment.name)
           }
