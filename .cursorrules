@@ -78,6 +78,92 @@ The goal is to help you maintain a big picture as well as the progress of the ta
 
 # Scratchpad
 
-## Current Task: None
+## Current Task: Document /api/account/socials Endpoint (Documentation-First Development)
+
+Task: Create documentation for the /api/account/socials endpoint before implementation.
+
+### API Specification
+
+- Endpoint: https://api.recoupable.com/api/account
+- Method: GET
+- Parameters: accountID (required)
+- Response: List of account_socials related to the accountId
+
+### Documentation Structure
+
+New folder structure:
+
+```
+app/docs/
+├── base/           # Existing base documentation
+└── account/        # New account-related endpoints
+    ├── constants.ts    # Account endpoints constants
+    └── page.tsx        # Account documentation page
+```
+
+1. Code Examples (account/constants.ts):
+   - cURL
+   - Python
+   - JavaScript
+   - TypeScript
+2. Example Response Structure:
+
+   ```typescript
+   {
+     status: "success",
+     socials: [
+       {
+         id: "string",
+         platform: "string",
+         handle: "string",
+         followers: number,
+         following: number,
+         lastUpdated: string
+       }
+     ]
+   }
+   ```
+
+3. Response Properties Table:
+   - id (string): Unique identifier
+   - username (string): Platform username/handle
+   - avatar (string): Profile image URL
+   - profile_url (string): Full profile URL
+   - region (string): Geographic location
+   - bio (string): Profile description
+   - followerCount (number): Number of followers
+   - followingCount (number): Number of following
+   - updated_at (string): Last update timestamp
+
+### Plan
+
+[X] Define API specification
+[X] Define documentation structure
+[X] Create /docs/account folder with new documentation:
+
+- [x] Create constants.ts with code examples and response types
+- [x] Create page.tsx following base documentation pattern
+      [X] Update response properties to match actual implementation
+      [ ] Review documentation for clarity and completeness
+      [ ] Hand off documentation for endpoint implementation
+
+### Progress
+
+✓ Defined initial API specification
+✓ Defined documentation structure
+✓ Created documentation files in /docs/account:
+
+- Created constants.ts with code examples, response structure, and properties
+- Created page.tsx with documentation UI following existing patterns
+  ✓ Updated response properties to match actual implementation
+
+### Next Steps
+
+1. Final review of documentation for:
+   - Accuracy of API specifications
+   - Completeness of response properties
+   - Clarity of examples
+   - Consistency with existing documentation style
+2. Hand off documentation for endpoint implementation
 
 Ready for new task assignment.
