@@ -18,13 +18,10 @@ const useFunnelAnalysis = () => {
   const { getArtists, artists, selectedArtist } = useArtistProvider();
   const { push } = useRouter();
 
-  // Get social IDs for segments
   const socialIds =
     selectedArtist?.account_socials?.map((social) => social.id) || [];
-  console.log("socialIds", socialIds);
   const { data: segments, isLoading: isLoadingNewSegments } =
     useArtistSegments(socialIds);
-  console.log("segments", segments);
   const getAgentTimer = async () => {
     if (!agentId) {
       if (timer) clearInterval(timer);
