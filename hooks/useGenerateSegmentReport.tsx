@@ -58,7 +58,7 @@ const useGenerateSegmentReport = () => {
       new URLSearchParams({
         segmentName,
         agentId,
-      }).toString()
+      }).toString(),
     );
     toggleModal(minimumCredits === 5);
   };
