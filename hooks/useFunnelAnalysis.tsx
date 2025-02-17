@@ -47,7 +47,6 @@ const useFunnelAnalysis = () => {
     params.setIsInitializing(false);
     if (isFinishedScraping(status)) {
       params.setIsLoadingSegments(true);
-      // Use segments from useArtistSegments
       if (segments) {
         params.setSegments(segments);
       }
@@ -82,7 +81,6 @@ const useFunnelAnalysis = () => {
     };
   }, [agentId, address, artists.length]);
 
-  // Update loading state to include new segments loading
   const isLoadingSegments = params.isLoadingSegments || isLoadingNewSegments;
 
   return {
