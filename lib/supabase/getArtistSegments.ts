@@ -18,22 +18,40 @@ interface RawArtistSegment {
 }
 
 export async function getArtistSegments(
-  artistSocialIds: string[],
+  artistSocialIds: string[]
 ): Promise<ArtistSegment[]> {
-  const { data, error } = await supabase
-    .from("artist_fan_segment")
-    .select("*")
-    .in("artist_social_id", artistSocialIds);
+  console.log("artistSocialIds", artistSocialIds);
 
-  if (error) {
-    console.error("Error fetching artist segments:", error);
-    return [];
+  let allData: RawArtistSegment[] = [];
+  let page = 0;
+  const pageSize = 1000; // Supabase's max page size
+
+  while (true) {
+    const { data, error } = await supabase
+      .from("artist_fan_segment")
+      .select("*")
+      .in("artist_social_id", artistSocialIds)
+      .range(page * pageSize, (page + 1) * pageSize - 1);
+
+    if (error) {
+      console.error("Error fetching artist segments:", error);
+      return [];
+    }
+
+    if (!data || data.length === 0) break;
+
+    allData = [...allData, ...data];
+
+    // If we got less than pageSize records, we've reached the end
+    if (data.length < pageSize) break;
+
+    page++;
   }
 
-  if (!data) return [];
+  console.log(`Total segments fetched: ${allData.length}`);
 
   // Group segments by name and count occurrences for size
-  const segmentGroups = (data as RawArtistSegment[]).reduce(
+  const segmentGroups = allData.reduce(
     (acc, segment) => {
       const key = segment.segment_name;
       if (!acc[key]) {
@@ -48,8 +66,11 @@ export async function getArtistSegments(
       acc[key].size++;
       return acc;
     },
-    {} as Record<string, ArtistSegment>,
+    {} as Record<string, ArtistSegment>
   );
 
-  return Object.values(segmentGroups);
+  const segments = Object.values(segmentGroups);
+  console.log(`Unique segments found: ${segments.length}`);
+
+  return segments;
 }

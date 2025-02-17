@@ -78,76 +78,75 @@ The goal is to help you maintain a big picture as well as the progress of the ta
 
 # Scratchpad
 
-## Current Task: Update onFunnelComplete Event for New Segments Table
+## Current Task: Fix Segment Report Generation
 
-Task: Update the onFunnelComplete functionality to use the artist_fan_segments table instead of the legacy table.
+Task: Fix the segment report generation that is currently stuck in a loading state.
 
 ### Current State Analysis
 
-1. Funnel Segments Flow:
+1. Report Generation Flow:
 
-   - `useFunnelAnalysis` hook polls agent status
-   - When `isFinishedScraping(status)` is true:
-     - Calls `getAgentsInfoFromStack` to get segments
-     - Sets segments in `useFunnelAnalysisProvider`
-   - UI transition in `ScrapingCaption`:
-     - Shows loading while `isScraping(agentsStatus)`
-     - Shows `Completion` when `isFinishedScraping(agentsStatus)`
-   - `Completion` renders `CompletedAnalysis` which shows segments
+   - User clicks a segment in either:
+     - Funnel completion view
+     - Segments page
+   - `handleGenerateReport` is called with:
+     - agentId
+     - segment name
+   - User is redirected to `/report/{reportId}`
+   - Report page shows skeleton indefinitely
 
-2. Segments Page (New):
-   - Located in `app/segments/page.tsx`
-   - Uses `useArtistSegments` hook
-   - Fetches from `artist_fan_segments` table via `/api/segments` endpoint
-   - Uses social IDs from artist's account to fetch segments
+2. Found Issues:
+   - Timer variable in useFunnelReport is untyped
+   - createReport function lacks type safety
+   - Report polling has no maximum retry limit
+   - No timeout mechanism for report generation
+   - Error states not properly handled
+   - No loading state timeout
+   - Segments query was limited to 1000 records by default
+     - Added pagination to fetch all segments
+     - Added logging to track total and unique segments
 
-### Implementation Progress
+### Implementation Plan
 
-[X] Update Segment Fetching in Funnel Flow:
+[ ] Fix Type Safety:
 
-- [x] Added `useArtistSegments` hook to `useFunnelAnalysis`
-- [x] Removed `getAgentsInfoFromStack` call
-- [x] Updated loading states to include new segments loading
-- [x] Fixed linter errors for type safety:
-  - Added proper typing for timer variable
-  - Removed any type from getAgentTimer
-  - Added null checks for timer cleanup
+- Add proper typing for timer in useFunnelReport
+- Create interface for report data in createReport
+- Add proper error types
 
-[X] Update CompletedAnalysis Component:
+[ ] Improve Report Creation:
 
-- [x] Updated segment count display to use array length
-- [x] Preserved existing UI and loading states
-- [x] Updated Segments component:
-  - [x] Changed key to use segment.id
-  - [x] Added null check for segments
-  - [x] Updated total size calculation
-  - [x] Preserved report generation functionality
+- Add proper error handling in createReport
+- Add validation for required fields
+- Return error details to UI
 
-[X] Clean Up:
+[ ] Enhance Report Polling:
 
-- [x] Removed unused getSegmentsTotalSize function
-- [x] Moved total size calculation into Segments component
+- Add maximum retry limit (e.g., 20 attempts = 1 minute)
+- Increase polling interval to 5 seconds
+- Add timeout mechanism
+- Handle and display error states
 
-[ ] Test Integration:
+[ ] Update Loading States:
 
-- Verify segments appear in both funnel and segments tab
-- Test segment report generation
-- Validate segment calculations
+- Add timeout for loading state (e.g., 2 minutes)
+- Show error UI if report fails to load
+- Add retry button for failed reports
 
 ### Progress
 
-✓ Analyzed current implementation
-✓ Identified UI transition flow
-✓ Modified useFunnelAnalysis to use new segments source
-✓ Fixed linter errors in useFunnelAnalysis
-✓ Updated CompletedAnalysis and Segments components
-✓ Cleaned up unused code
+✓ Identified issue: Report page stuck in skeleton state
+✓ Located relevant code paths
+✓ Found multiple contributing issues
+✓ Planned comprehensive fixes
+✓ Fixed segment fetching to get all records
 
 ### Next Steps
 
-1. Test the changes:
-   - Check segment display in funnel flow
-   - Verify segment counts and calculations
-   - Test report generation
+1. Test if segment fetching is now complete
+2. Continue with type safety fixes
+3. Implement error handling
+4. Add polling limits
+5. Update UI for error states
 
-Ready for testing.
+Ready to test the segment fetching changes.
