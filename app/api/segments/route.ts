@@ -10,7 +10,6 @@ export async function GET(req: NextRequest) {
 
   try {
     const segments = await getArtistSegments(artistId);
-    console.log("Segments:", segments);
     return Response.json(segments, { status: 200 });
   } catch (error) {
     console.error("Error fetching segments:", error);
