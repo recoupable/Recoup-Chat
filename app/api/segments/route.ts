@@ -1,4 +1,4 @@
-import { getArtistSegments } from "@/lib/supabase/getSegments";
+import { getArtistSegments } from "@/lib/supabase/getArtistSegments";
 import { NextRequest } from "next/server";
 
 export async function GET(req: NextRequest) {

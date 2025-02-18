@@ -142,17 +142,18 @@ Task: Update web components to use artist_segments table for segment names and f
 
 [X] Refactor Segment Functions:
 
-- [x] Split getSegments.ts into two distinct functions:
-  1. getArtistSegmentNames:
-     - Input: artistId
-     - Get segments for given artist from artist_segments
+- [x] Split getSegments.ts into three separate files:
+  1. getArtistSegmentNames.ts:
+     - Single function to get segments for given artist
      - Join with segments table for names
      - Return segment details (id, name)
-  2. getSegmentCounts:
-     - Input: segment_id[]
-     - Query fan_segments table
-     - Return COUNT for each segment_id
-     - Add proper error handling and types
+  2. getSegmentCounts.ts:
+     - Single function to get fan counts
+     - Uses SQL COUNT for efficiency
+     - Return counts by segment_id
+  3. getSegments.ts:
+     - Main function to combine names and counts
+     - Returns final format for UI
 
 [X] Fix Front-end Artist ID Issue:
 
