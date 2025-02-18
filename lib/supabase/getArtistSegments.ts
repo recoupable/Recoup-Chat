@@ -20,11 +20,9 @@ interface RawArtistSegment {
 export async function getArtistSegments(
   artistSocialIds: string[]
 ): Promise<ArtistSegment[]> {
-  console.log("artistSocialIds", artistSocialIds);
-
   let allData: RawArtistSegment[] = [];
   let page = 0;
-  const pageSize = 1000; // Supabase's max page size
+  const pageSize = 1000;
 
   while (true) {
     const { data, error } = await supabase
@@ -42,15 +40,11 @@ export async function getArtistSegments(
 
     allData = [...allData, ...data];
 
-    // If we got less than pageSize records, we've reached the end
     if (data.length < pageSize) break;
 
     page++;
   }
 
-  console.log(`Total segments fetched: ${allData.length}`);
-
-  // Group segments by name and count occurrences for size
   const segmentGroups = allData.reduce(
     (acc, segment) => {
       const key = segment.segment_name;
@@ -70,7 +64,6 @@ export async function getArtistSegments(
   );
 
   const segments = Object.values(segmentGroups);
-  console.log(`Unique segments found: ${segments.length}`);
 
   return segments;
 }
