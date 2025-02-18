@@ -78,75 +78,120 @@ The goal is to help you maintain a big picture as well as the progress of the ta
 
 # Scratchpad
 
-## Current Task: Fix Segment Report Generation
+## Current Task: Update Web Components to Use New Segments Tables
 
-Task: Fix the segment report generation that is currently stuck in a loading state.
+Task: Update web components to use artist_segments table for segment names and fan_segments for counts.
+
+### Database Schema Analysis
+
+1. Tables Structure:
+
+   - `segments`: Core table with standardized segment names
+     - Fields: id, name, updated_at
+   - `artist_segments`: Links artists to segments
+     - Fields: id, artist_account_id, segment_id, updated_at
+     - Relations: segments(id) -> segment_id
+   - `fan_segments`: Links fans to segments
+     - Fields: id, fan_social_id, segment_id, updated_at
+     - Relations: segments(id) -> segment_id
+
+2. Data Flow:
+   - Artist -> artist_segments -> segments (for names)
+   - fan_segments -> segments (for counts)
+   - Join these to get complete segment info
 
 ### Current State Analysis
 
-1. Report Generation Flow:
+1. Current Implementation:
 
-   - User clicks a segment in either:
-     - Funnel completion view
-     - Segments page
-   - `handleGenerateReport` is called with:
-     - agentId
-     - segment name
-   - User is redirected to `/report/{reportId}`
-   - Report page shows skeleton indefinitely
+   - Components use `artist_fan_segments` table directly
+   - Segments are grouped by name in `getArtistSegments`
+   - Size is calculated by counting occurrences
+   - No direct link to artist_segments table
 
-2. Found Issues:
-   - Timer variable in useFunnelReport is untyped
-   - createReport function lacks type safety
-   - Report polling has no maximum retry limit
-   - No timeout mechanism for report generation
-   - Error states not properly handled
-   - No loading state timeout
-   - Segments query was limited to 1000 records by default
-     - Added pagination to fetch all segments
-     - Added logging to track total and unique segments
+2. Required Changes:
+   - Use `artist_segments` table to link artists to segments
+   - Use `segments` table for standardized segment names
+   - Use `fan_segments` table for fan counts
+   - Update data fetching and display logic
 
-### Implementation Plan
+### Implementation Progress
 
-[ ] Fix Type Safety:
+[X] Update Data Fetching:
 
-- Add proper typing for timer in useFunnelReport
-- Create interface for report data in createReport
-- Add proper error types
+- [x] Create new query structure with proper joins:
+  - [x] artist_segments <> segments for names
+  - [x] artist_segments <> fan_segments for counts
+- [x] Add proper types for new data structure
+- [x] Update getArtistSegments to use new tables
+- [x] Simplified query by removing unnecessary social IDs lookup
+- [x] Optimized query to use SQL COUNT instead of fetching all records
 
-[ ] Improve Report Creation:
+[X] Update Components:
 
-- Add proper error handling in createReport
-- Add validation for required fields
-- Return error details to UI
+- [x] Modify useArtistSegments hook to use artistId
+- [x] Update segment display components
+- [x] Preserve existing UI and functionality
 
-[ ] Enhance Report Polling:
+[X] Fix Database Column Name Bug:
 
-- Add maximum retry limit (e.g., 20 attempts = 1 minute)
-- Increase polling interval to 5 seconds
-- Add timeout mechanism
-- Handle and display error states
+- [x] Fix column name mismatch in getSegments.ts
+  - [x] Changed `artist_id` to `artist_account_id` in query
+  - [x] Updated types to match database schema
+  - [x] Ready for testing with correct column name
 
-[ ] Update Loading States:
+[ ] Refactor Segment Functions:
 
-- Add timeout for loading state (e.g., 2 minutes)
-- Show error UI if report fails to load
-- Add retry button for failed reports
+- Split getSegments.ts into two distinct functions:
+  1. getArtistSegmentNames:
+     - Input: artistId
+     - Get segments for given artist from artist_segments
+     - Join with segments table for names
+     - Return segment details (id, name)
+  2. getSegmentCounts:
+     - Input: segment_id[]
+     - Query fan_segments table
+     - Return COUNT for each segment_id
+     - Add proper error handling and types
+
+[ ] Fix Front-end Artist ID Issue:
+
+- Fix incorrect ID being passed to useArtistSegments
+  - Change from passing socialIds array to selectedArtist.account_id
+  - Update hook to use correct artist account ID
+  - Add type validation for single ID
+
+[ ] Verify Integration:
+
+- Test segment display
+- Verify fan counts
+- Check report generation still works
+
+[ ] Cleanup:
+
+- Remove deprecated getArtistSegments.ts file
+- Update any remaining imports to use getSegments.ts
+- Add migration note in documentation
 
 ### Progress
 
-✓ Identified issue: Report page stuck in skeleton state
-✓ Located relevant code paths
-✓ Found multiple contributing issues
-✓ Planned comprehensive fixes
-✓ Fixed segment fetching to get all records
+✓ Identified current implementation
+✓ Located components to update
+✓ Created new database query structure with proper joins
+✓ Updated components to use new data
+✓ Simplified query by removing unnecessary joins
+✓ Optimized query performance with SQL COUNT
+✓ Fixed column name mismatch in query
+⚠ Need to refactor into separate segment functions
+⚠ Found incorrect artist ID being passed from front-end
 
 ### Next Steps
 
-1. Test if segment fetching is now complete
-2. Continue with type safety fixes
-3. Implement error handling
-4. Add polling limits
-5. Update UI for error states
+1. Refactor getSegments.ts:
+   - Create getArtistSegmentNames function
+   - Create getSegmentCounts function
+   - Update types and interfaces
+2. Fix front-end artist ID issue
+3. Test the changes
 
-Ready to test the segment fetching changes.
+Would you like me to implement the split functions in getSegments.ts?

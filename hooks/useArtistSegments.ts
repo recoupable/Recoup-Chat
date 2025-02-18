@@ -1,23 +1,20 @@
-import { type ArtistSegment } from "@/lib/supabase/getArtistSegments";
+import { type Segment } from "@/lib/supabase/getSegments";
 import { useQuery } from "@tanstack/react-query";
 
-async function fetchSegments(
-  artistSocialIds: string[],
-): Promise<ArtistSegment[]> {
-  const queryString = artistSocialIds.map((id) => `artistId=${id}`).join("&");
-  const response = await fetch(`/api/segments?${queryString}`);
+async function fetchSegments(artistId: string): Promise<Segment[]> {
+  const response = await fetch(`/api/segments?artistId=${artistId}`);
   if (!response.ok) {
     throw new Error("Failed to fetch segments");
   }
   return response.json();
 }
 
-export function useArtistSegments(artistSocialIds?: string[]) {
+export function useArtistSegments(artistId?: string) {
   return useQuery({
-    queryKey: ["segments", artistSocialIds],
-    queryFn: () => fetchSegments(artistSocialIds!),
-    enabled: !!artistSocialIds?.length,
-    staleTime: 1000 * 60 * 5,
+    queryKey: ["segments", artistId],
+    queryFn: () => fetchSegments(artistId!),
+    enabled: !!artistId,
+    staleTime: 1000 * 60 * 5, // 5 minutes
     refetchOnWindowFocus: false,
   });
 }

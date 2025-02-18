@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "format": "prettier --write app components providers types hooks lib && pnpm lint"
+    "format": "prettier --write app components providers types hooks lib && pnpm lint",
+    "update-types": "npx supabase gen types typescript --project-id godremdqwajrwazhbrue --schema public > types/database.types.ts"
   },
   "dependencies": {
     "@ai-sdk/openai": "^1.1.9",

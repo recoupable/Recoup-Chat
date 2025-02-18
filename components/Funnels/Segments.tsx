@@ -2,8 +2,6 @@ import Icon from "@/components/Icon";
 import LucideIcon from "@/components/LucideIcon";
 import useCredits from "@/hooks/useCredits";
 import useGenerateSegmentReport from "@/hooks/useGenerateSegmentReport";
-import getAggregatedSocialProfiles from "@/lib/agent/getAggregatedSocialProfiles";
-import { useArtistProvider } from "@/providers/ArtistProvider";
 import { useFunnelAnalysisProvider } from "@/providers/FunnelAnalysisProvider";
 import { useParams } from "next/navigation";
 
@@ -11,11 +9,7 @@ const Segments = () => {
   useCredits();
   const { handleGenerateReport } = useGenerateSegmentReport();
   const { segments } = useFunnelAnalysisProvider();
-  const { selectedArtist } = useArtistProvider();
   const { agent_id: agentId } = useParams();
-  const { followerCount } = getAggregatedSocialProfiles(selectedArtist);
-  const totalSegmentSize =
-    segments?.reduce((acc, segment) => acc + segment.size, 0) || 0;
 
   if (!segments?.length) return null;
 
@@ -38,8 +32,7 @@ const Segments = () => {
           )}
 
           <p className="font-bold text-xs text-center">
-            {segment.name}{" "}
-            {`(${Number((followerCount / totalSegmentSize) * segment.size).toFixed(0)})`}
+            {segment.name} {`(${segment.fan_count})`}
           </p>
         </button>
       ))}

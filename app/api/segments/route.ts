@@ -1,25 +1,22 @@
-import { NextRequest, NextResponse } from "next/server";
-import { getArtistSegments } from "@/lib/supabase/getArtistSegments";
+import { getArtistSegments } from "@/lib/supabase/getSegments";
+import { NextRequest } from "next/server";
 
-export async function GET(request: NextRequest) {
-  const { searchParams } = new URL(request.url);
-  const artistIds = searchParams.getAll("artistId");
+export async function GET(req: NextRequest) {
+  const artistId = req.nextUrl.searchParams.get("artistId");
 
-  if (!artistIds.length) {
-    return NextResponse.json(
-      { error: "At least one Artist ID is required" },
-      { status: 400 },
-    );
+  if (!artistId) {
+    return Response.json({ error: "artistId is required" }, { status: 400 });
   }
 
   try {
-    const segments = await getArtistSegments(artistIds);
-    return NextResponse.json(segments);
+    const segments = await getArtistSegments(artistId);
+    console.log("Segments:", segments);
+    return Response.json(segments, { status: 200 });
   } catch (error) {
     console.error("Error fetching segments:", error);
-    return NextResponse.json(
+    return Response.json(
       { error: "Failed to fetch segments" },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }
