@@ -165,6 +165,7 @@ Task: Update web components to use artist_segments table for segment names and f
 
 - [x] Filter out segments with zero counts in useArtistSegments hook
 - [x] Add proper typing for segment filtering
+- [x] Fix segment count display to use size instead of fan_count
 
 [ ] Verify Integration:
 
