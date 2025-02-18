@@ -10,7 +10,6 @@ const Segments = () => {
   const { segments } = useFunnelAnalysisProvider();
 
   if (!segments?.length) return null;
-  console.log("segments", segments);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 pt-4 gap-3">
