@@ -237,12 +237,16 @@ Task: Update the client call to pass only the new segmentId parameter and remove
 - [x] Document new parameter structure
 - [x] Get documentation verified
 
-[ ] Client Code Updates:
+[X] Client Code Updates:
 
-- [ ] Update createReport.tsx to use new parameter structure
-- [ ] Update useGenerateSegmentReport hook
-- [ ] Remove unused parameters
-- [ ] Add proper TypeScript types
+- [x] Update createReport.tsx to use new parameter structure
+- [x] Update useGenerateSegmentReport hook
+- [x] Remove unused parameters
+- [x] Add proper TypeScript types
+
+[X] Bug Fixes:
+
+- [x] Fixed getArtistSegments to return correct segment ID (using segment_id instead of artist_segments.id)
 
 [ ] Testing:
 
@@ -257,11 +261,15 @@ Task: Update the client call to pass only the new segmentId parameter and remove
 ✓ Created implementation plan
 ✓ Created API documentation
 ✓ Added TypeScript types for request/response
+✓ Updated createReport function to use new types
+✓ Updated useGenerateSegmentReport hook
+✓ Updated Segments component to use segment ID
+✓ Fixed segment ID bug in getArtistSegments
 
 ### Next Steps
 
-1. Update client code to use new parameter structure
-2. Test the changes
-3. Ensure backward compatibility
+1. Test the changes with fixed segment IDs
+2. Ensure backward compatibility
+3. Deploy the changes
 
-Would you like me to start updating the client code?
+Would you like me to help you test the changes?

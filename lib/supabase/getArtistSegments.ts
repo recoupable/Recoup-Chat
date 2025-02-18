@@ -48,7 +48,7 @@ export async function getArtistSegments(artistId: string): Promise<Segment[]> {
   const countMap = new Map(counts.map((c) => [c.segment_id, c.count]));
 
   return segments.map((segment) => ({
-    id: segment.id,
+    id: segment.segment_id,
     name: segment.segment.name,
     size: countMap.get(segment.segment_id) || 0,
     icon: undefined,
