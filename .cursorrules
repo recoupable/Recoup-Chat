@@ -167,6 +167,12 @@ Task: Update web components to use artist_segments table for segment names and f
 - [x] Add proper typing for segment filtering
 - [x] Fix segment count display to use size instead of fan_count
 
+[ ] Align Components:
+
+- [ ] Update FunnelAnalysisProvider to use same segment format as page
+- [ ] Consider consolidating Segments.tsx and BaseSegments.tsx
+- [ ] Ensure consistent property names (size vs fan_count)
+
 [ ] Verify Integration:
 
 - Test segment display
