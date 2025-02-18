@@ -6,7 +6,8 @@ async function fetchSegments(artistId: string): Promise<Segment[]> {
   if (!response.ok) {
     throw new Error("Failed to fetch segments");
   }
-  return response.json();
+  const segments: Segment[] = await response.json();
+  return segments.filter((s) => s.size > 0);
 }
 
 export function useArtistSegments(artistId?: string) {
