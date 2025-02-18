@@ -140,9 +140,9 @@ Task: Update web components to use artist_segments table for segment names and f
   - [x] Updated types to match database schema
   - [x] Ready for testing with correct column name
 
-[ ] Refactor Segment Functions:
+[X] Refactor Segment Functions:
 
-- Split getSegments.ts into two distinct functions:
+- [x] Split getSegments.ts into two distinct functions:
   1. getArtistSegmentNames:
      - Input: artistId
      - Get segments for given artist from artist_segments
@@ -154,12 +154,17 @@ Task: Update web components to use artist_segments table for segment names and f
      - Return COUNT for each segment_id
      - Add proper error handling and types
 
-[ ] Fix Front-end Artist ID Issue:
+[X] Fix Front-end Artist ID Issue:
 
-- Fix incorrect ID being passed to useArtistSegments
-  - Change from passing socialIds array to selectedArtist.account_id
-  - Update hook to use correct artist account ID
-  - Add type validation for single ID
+- [x] Fix incorrect ID being passed to useArtistSegments
+  - [x] Change from passing socialIds array to selectedArtist.account_id
+  - [x] Update hook to use correct artist account ID
+  - [x] Add type validation for single ID
+
+[X] UI Improvements:
+
+- [x] Filter out segments with zero counts in useArtistSegments hook
+- [x] Add proper typing for segment filtering
 
 [ ] Verify Integration:
 
@@ -182,16 +187,14 @@ Task: Update web components to use artist_segments table for segment names and f
 ✓ Simplified query by removing unnecessary joins
 ✓ Optimized query performance with SQL COUNT
 ✓ Fixed column name mismatch in query
-⚠ Need to refactor into separate segment functions
-⚠ Found incorrect artist ID being passed from front-end
+✓ Refactored into separate segment functions
+✓ Fixed incorrect artist ID being passed from front-end
+✓ Added filtering for zero-count segments
 
 ### Next Steps
 
-1. Refactor getSegments.ts:
-   - Create getArtistSegmentNames function
-   - Create getSegmentCounts function
-   - Update types and interfaces
-2. Fix front-end artist ID issue
-3. Test the changes
+1. Test the changes
+2. Clean up deprecated files
+3. Add documentation
 
 Would you like me to implement the split functions in getSegments.ts?
