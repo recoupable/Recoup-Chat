@@ -49,7 +49,6 @@ const useGenerateSegmentReport = () => {
   ) => {
     if (!isPrepared()) return;
     if (isLoadingCredits) return;
-    console.log("segmentId", segmentId);
 
     const minimumCredits = funnelType === "wrapped" ? 5 : 1;
     if (credits >= minimumCredits || subscriptionActive) {
