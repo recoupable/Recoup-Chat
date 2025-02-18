@@ -1,15 +1,5 @@
+import { ArtistSegment } from "./getArtistSegments";
 import supabase from "./serverClient";
-
-export interface ArtistSegment {
-  id: string;
-  segment_id: string;
-  artist_account_id: string;
-  created_at: string;
-  segment: {
-    id: string;
-    name: string;
-  };
-}
 
 /**
  * Get all segments associated with an artist

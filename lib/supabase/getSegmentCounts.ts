@@ -1,9 +1,5 @@
+import { SegmentCount } from "./getArtistSegments";
 import supabase from "./serverClient";
-
-export interface SegmentCount {
-  segment_id: string;
-  count: number;
-}
 
 /**
  * Get fan counts for a list of segment IDs
