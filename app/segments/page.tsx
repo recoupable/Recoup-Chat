@@ -15,8 +15,6 @@ const SegmentsWrapper = () => {
     error,
   } = useArtistSegments(selectedArtist?.account_id);
 
-  console.log("segments", segments);
-
   if (!selectedArtist || isLoading) {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 pt-4 gap-3">
