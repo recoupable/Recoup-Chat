@@ -1,4 +1,4 @@
-import { type Segment } from "@/lib/supabase/getSegments";
+import { type Segment } from "@/lib/supabase/getArtistSegments";
 import { useQuery } from "@tanstack/react-query";
 
 async function fetchSegments(artistId: string): Promise<Segment[]> {
