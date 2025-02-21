@@ -7,7 +7,6 @@ import { v4 as uuidV4 } from "uuid";
 const useFunnelAnalysisParams = () => {
   const [username, setUsername] = useState("");
   const [isLoading, setIsLoading] = useState<any>(null);
-  const [segments, setSegments] = useState<Array<any>>([]);
   const { funnel_type: funnelType } = useParams();
   const { push } = useRouter();
   const [handles, setHandles] = useState<any>({});
@@ -15,7 +14,6 @@ const useFunnelAnalysisParams = () => {
   const [isInitializing, setIsInitializing] = useState(false);
   const [isCheckingAgentStatus, setIsCheckingAgentStatus] = useState(true);
   const [isLoadingAgent, setIsLoadingAgent] = useState(false);
-  const [isLoadingSegments, setIsLoadingSegments] = useState(false);
   const [agent, setAgent] = useState<any>(null);
   const [agentsStatus, setAgentsStatus] = useState<any>([]);
 
@@ -23,10 +21,10 @@ const useFunnelAnalysisParams = () => {
     agentsStatus.some(
       (agentStatus: any) =>
         agentStatus.status === STEP_OF_AGENT.ERROR ||
-        agentStatus.status === STEP_OF_AGENT.UNKNOWN_PROFILE,
+        agentStatus.status === STEP_OF_AGENT.UNKNOWN_PROFILE
     ) &&
     !agentsStatus.some(
-      (agentStatus: any) => agentStatus.status === STEP_OF_AGENT.FINISHED,
+      (agentStatus: any) => agentStatus.status === STEP_OF_AGENT.FINISHED
     );
 
   const funnelName = useMemo(() => {
@@ -36,39 +34,34 @@ const useFunnelAnalysisParams = () => {
   }, [funnelType]);
 
   const handleRetry = () => {
-    setSegments([]);
     setUsername("");
     setIsLoading(false);
     push(`/funnels/${funnelType}/${uuidV4()}`);
   };
 
   return {
-    isInitializing,
-    setIsInitializing,
+    username,
+    setUsername,
     isLoading,
     setIsLoading,
-    segments,
-    setSegments,
-    setUsername,
-    funnelName,
     funnelType,
-    handleRetry,
-    username,
+    funnelName,
     handles,
     setHandles,
     isCheckingHandles,
     setIsCheckingHandles,
-    setIsCheckingAgentStatus,
+    isInitializing,
+    setIsInitializing,
     isCheckingAgentStatus,
-    setIsLoadingSegments,
-    isLoadingSegments,
-    setAgent,
-    setAgentsStatus,
-    agentsStatus,
-    agent,
-    setIsLoadingAgent,
+    setIsCheckingAgentStatus,
     isLoadingAgent,
+    setIsLoadingAgent,
+    agent,
+    setAgent,
+    agentsStatus,
+    setAgentsStatus,
     hasError,
+    handleRetry,
   };
 };
 

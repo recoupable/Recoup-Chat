@@ -7,7 +7,7 @@ import getAgent from "@/lib/agent/getAgent";
 import getAgentsStatus from "@/lib/agent/getAgentsStatus";
 import isFinishedScraping from "@/lib/agent/isFinishedScraping";
 import getArtistsByAgent from "@/lib/getArtistsByAgent";
-import { useArtistSegments } from "@/hooks/useArtistSegments";
+import { useQueryClient } from "@tanstack/react-query";
 
 let timer: NodeJS.Timeout | null = null;
 
@@ -17,10 +17,7 @@ const useFunnelAnalysis = () => {
   const { address } = useUserProvider();
   const { getArtists, artists, selectedArtist } = useArtistProvider();
   const { push } = useRouter();
-
-  const { data: segments, isLoading: isLoadingNewSegments } = useArtistSegments(
-    selectedArtist?.account_id
-  );
+  const queryClient = useQueryClient();
 
   const getAgentTimer = async () => {
     if (!agentId) {
@@ -46,11 +43,11 @@ const useFunnelAnalysis = () => {
     params.setAgentsStatus(status);
     params.setIsInitializing(false);
     if (isFinishedScraping(status)) {
-      params.setIsLoadingSegments(true);
-      if (segments) {
-        params.setSegments(segments);
+      if (selectedArtist?.account_id) {
+        await queryClient.invalidateQueries({
+          queryKey: ["segments", selectedArtist.account_id],
+        });
       }
-      params.setIsLoadingSegments(false);
       const artistIds = await getArtistsByAgent(agent);
       params.setIsLoadingAgent(false);
       const selectedArtistId = artistIds.find(
@@ -81,12 +78,10 @@ const useFunnelAnalysis = () => {
     };
   }, [agentId, address, artists.length]);
 
-  const isLoadingSegments = params.isLoadingSegments || isLoadingNewSegments;
-
   return {
     ...params,
     runAgentTimer,
-    isLoadingSegments,
+    isLoadingAgent: params.isLoadingAgent,
   };
 };
 

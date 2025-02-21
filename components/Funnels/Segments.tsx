@@ -1,35 +1,31 @@
-import Icon from "@/components/Icon";
-import LucideIcon from "@/components/LucideIcon";
-import useCredits from "@/hooks/useCredits";
 import useGenerateSegmentReport from "@/hooks/useGenerateSegmentReport";
-import { useFunnelAnalysisProvider } from "@/providers/FunnelAnalysisProvider";
+import { type Segment } from "@/lib/supabase/getArtistSegments";
 
-const Segments = () => {
-  useCredits();
+interface SegmentsProps {
+  segments: Segment[];
+}
+
+const Segments = ({ segments }: SegmentsProps) => {
   const { handleGenerateReport } = useGenerateSegmentReport();
-  const { segments } = useFunnelAnalysisProvider();
 
-  if (!segments?.length) return null;
+  const sortedSegments = [...segments].sort((a, b) => b.size - a.size);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 pt-4 gap-3">
-      {segments.map((segment) => (
+      {sortedSegments.map((segment) => (
         <button
-          className="w-full border-grey-light border-[1px] rounded-md px-3 py-2 flex gap-2 items-center shadow-grey"
-          type="button"
           key={segment.id}
           onClick={() => handleGenerateReport(segment.id, segment.name)}
+          className="bg-black rounded-[10px] pl-5 pr-4 h-16 z-20 flex items-center gap-2 justify-between
+            transition-all text-[15px] font-medium text-white hover:bg-black active:bg-white/80"
         >
-          {segment.icon ? (
-            <LucideIcon name={segment.icon} />
-          ) : (
-            // eslint-disable-next-line @next/next/no-img-element
-            <Icon name="logo-xs" />
-          )}
-
-          <p className="font-bold text-xs text-center">
-            {segment.name} {`(${segment.size})`}
-          </p>
+          <div className="flex flex-col items-start">
+            <p className="text-sm text-start">{segment.name}</p>
+            <p className="text-xs text-grey-primary">{segment.size} fans</p>
+          </div>
+          <div className="text-xs text-grey-primary whitespace-nowrap">
+            Generate Report
+          </div>
         </button>
       ))}
     </div>
