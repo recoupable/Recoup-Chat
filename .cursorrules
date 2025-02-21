@@ -84,6 +84,101 @@ The goal is to help you maintain a big picture as well as the progress of the ta
 
 # Scratchpad
 
+## Current Task: Implement Segment Page Click Handling (Step 15)
+
+### Implementation Plan
+
+1. [ ] Update imports in /segments/page.tsx:
+
+```typescript
+import { Segments } from "@/components/Funnels/Segments";
+import { SegmentsSkeleton } from "@/components/Funnels/SegmentsSkeleton";
+import { useArtistSegments } from "@/hooks/useArtistSegments";
+import { useArtistProvider } from "@/providers/ArtistProvider";
+```
+
+2. [ ] Replace SegmentsWrapper component:
+
+```typescript
+const SegmentsWrapper = () => {
+  const { selectedArtist } = useArtistProvider();
+  const { data: segments, isLoading, error } = useArtistSegments(
+    selectedArtist?.account_id
+  );
+
+  if (!selectedArtist || isLoading) {
+    return <SegmentsSkeleton />;
+  }
+
+  if (error) {
+    return (
+      <div className="text-lg text-center text-red-500 py-8">
+        Failed to load segments
+      </div>
+    );
+  }
+
+  if (!segments?.length) {
+    return (
+      <div className="text-lg text-center py-8">
+        No segments found for this artist.
+      </div>
+    );
+  }
+
+  return <Segments segments={segments} />;
+};
+```
+
+3. [ ] Update page layout:
+
+```typescript
+const SegmentsPage: NextPage = () => {
+  return (
+    <div className="max-w-screen min-h-screen p-4">
+      <h1 className="text-lg md:text-xl font-bold pb-4">Fan Segments</h1>
+      <SegmentsWrapper />
+    </div>
+  );
+};
+```
+
+### Benefits
+
+1. Minimal Changes:
+
+   - No modifications to existing components
+   - Only updating the segments page
+   - Reusing all existing functionality
+
+2. Consistent UX:
+
+   - Same loading states as funnel page
+   - Same segment button behavior
+   - Same report generation flow
+
+3. Maintainable:
+   - Single source of truth in Segments component
+   - Shared loading states
+   - Consistent error handling
+
+### Next Steps
+
+1. [ ] Make file changes as outlined above
+2. [ ] Test report generation works
+3. [ ] Verify loading states match funnel page
+4. [ ] Test error handling
+
+### Progress
+
+✓ Simplified approach identified
+✓ Implementation plan created
+✓ File changes specified
+[ ] Implementation
+[ ] Testing
+
+# Scratchpad
+
 ## Current Task: None
 
 Ready for next task.
