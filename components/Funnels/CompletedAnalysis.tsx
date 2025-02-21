@@ -20,30 +20,6 @@ const CompletedAnalysis = () => {
 
   const isLoading = isLoadingSegments || isLoadingAgent || isFetching;
 
-  // Track component mounting and state
-  useEffect(() => {
-    console.log("[CompletedAnalysis] Mount:", {
-      hasSegments: segments?.length > 0,
-      segmentsLength: segments?.length,
-      isLoading,
-      isLoadingSegments,
-      isLoadingAgent,
-      isFetching,
-      artistId: selectedArtist?.account_id,
-      timestamp: new Date().toISOString(),
-    });
-  }, []);
-
-  // Track segments state changes
-  useEffect(() => {
-    console.log("[CompletedAnalysis] Segments Updated:", {
-      hasSegments: segments?.length > 0,
-      segmentsLength: segments?.length,
-      isLoading,
-      timestamp: new Date().toISOString(),
-    });
-  }, [segments, isLoading]);
-
   const FanSegmentLabel = () => (
     <p className="text-lg md:text-xl text-xl font-bold py-4"> Fan Segments</p>
   );
