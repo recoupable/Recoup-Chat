@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { useArtistProvider } from "@/providers/ArtistProvider";
 import { useFunnelAnalysisProvider } from "@/providers/FunnelAnalysisProvider";
 import Segments from "./Segments";
