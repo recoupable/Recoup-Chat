@@ -79,6 +79,7 @@ The goal is to help you maintain a big picture as well as the progress of the ta
 - Use whitespace-nowrap to prevent text from breaking into multiple lines in fixed-height buttons
 - When displaying sorted data, create a new sorted array to avoid mutating props
 - For React Query data fetching, consider adding isFetching to loading states to prevent flash of incorrect content
+- For data fetching components, prefer passing data as props from a parent container rather than fetching directly in presentational components to improve reusability, testing, and maintain single source of truth
 
 # Scratchpad
 
