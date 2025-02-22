@@ -84,70 +84,63 @@ The goal is to help you maintain a big picture as well as the progress of the ta
 
 # Scratchpad
 
-## Current Task: Integrate Langchain (Task 20)
+## Current Task: Debug Message Display (Task 20.2)
 
 ### Current State Analysis
 
-1. What We Have:
+1. Current Implementation:
 
-   - Vercel AI SDK for chat streaming
-   - OpenAI direct integration
-   - Basic message handling
-   - Simple Langchain message formatting
+   - API (`app/api/chat/route.ts`): Using Langchain with AI SDK adapter
+   - Client: Using `useChat` from `@ai-sdk/react`
+   - Status: Implemented adapter, ready for testing
 
-2. What We Need (Simplified):
-
-   - Test current prompt management
-   - Add more context-specific prompts
-   - Keep streaming working
-
-3. Integration Options:
-   a. Current Approach:
-
-   - Simple message creation with Langchain
-   - Keep Vercel AI SDK for streaming
-   - No complex prompt templates yet
-
-   b. Future Improvements:
-
-   - Add structured prompt templates
-   - Add memory management
-   - Consider tools if needed
+2. Component Structure:
+   ```
+   MessagesProvider
+   └─ useMessages (uses useChat from @ai-sdk/react)
+      └─ Messages Component
+         └─ Message Component (AssistantMessage/UserMessage)
+   ```
 
 ### Implementation Plan
 
-[X] Phase 1: Basic Langchain Integration
-[X] Create simple message creation
-[X] Setup basic prompt handling
-[X] Keep streaming working
+1. Phase 1: Add LangChain Adapter ✓
+   [X] Import `LangChainAdapter` from `ai`
+   [X] Update API route to use `LangChainAdapter.toDataStreamResponse(stream)`
+   [X] Keep existing client-side `useChat` implementation
 
-[ ] Phase 2: Improve Prompts
-[ ] Add more context-specific prompts
-[ ] Test different prompt variations
-[ ] Evaluate response quality
+2. Phase 2: Update API Route ✓
 
-[ ] Phase 3: Consider Extensions
-[ ] Evaluate need for tools
-[ ] Consider memory management
-[ ] Plan next improvements
+   ```typescript
+   // app/api/chat/route.ts
+   import { LangChainAdapter } from "ai";
+   import { ChatOpenAI } from "@langchain/openai";
+
+   export async function POST(req: Request) {
+     // ... existing setup code ...
+
+     const stream = await model.stream(formattedPrompt);
+     return LangChainAdapter.toDataStreamResponse(stream);
+   }
+   ```
+
+3. Phase 3: Verify Message Format
+   [ ] Ensure message format matches AI SDK expectations
+   [ ] Verify HTML formatting is preserved
+   [ ] Check streaming chunks are properly formatted
+
+### Key Learnings
+
+- Vercel AI SDK provides built-in LangChain adapter
+- No need to remove `@ai-sdk/react` - it's the correct way to handle UI
+- LangChainAdapter handles conversion between Langchain streaming and AI SDK format
 
 ### Next Steps
 
-1. Test current implementation:
+1. Test the integration:
+   - Send a test message
+   - Verify streaming works
+   - Check HTML formatting
+   - Monitor browser console for errors
 
-   - Test with different contexts
-   - Verify prompt formatting
-   - Check streaming still works
-
-2. Plan prompt improvements:
-   - Identify common contexts
-   - Create specific prompts for each
-   - Test variations
-
-### Current Progress
-
-✓ Basic Langchain message creation working
-✓ Streaming still functional
-→ Ready for testing
-
-Would you like to test the current implementation?
+Would you like to test the chat with the updated implementation?

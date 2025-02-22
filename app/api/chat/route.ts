@@ -1,15 +1,9 @@
 import { Message } from "@ai-sdk/react";
-import { openai } from "@ai-sdk/openai";
-import { streamText } from "ai";
+import { ChatOpenAI } from "@langchain/openai";
 import { formatPrompt } from "@/lib/chat/prompts";
 import createMemories from "@/lib/supabase/createMemories";
 import { AI_MODEL } from "@/lib/consts";
-import { HumanMessage } from "@langchain/core/messages";
-
-type CoreMessage = {
-  role: "system" | "user" | "assistant";
-  content: string;
-};
+import { LangChainAdapter } from "ai";
 
 export async function POST(req: Request) {
   const body = await req.json();
@@ -40,18 +34,14 @@ export async function POST(req: Request) {
     lastMessage.content
   );
 
-  const formattedMessages: CoreMessage[] = formattedPrompt.map((msg) => ({
-    role: msg instanceof HumanMessage ? "user" : "system",
-    content: String(msg.content),
-  }));
-
-  // Stream the response
-  const result = streamText({
-    model: openai(AI_MODEL),
-    messages: formattedMessages,
+  const model = new ChatOpenAI({
+    modelName: AI_MODEL,
+    streaming: true,
   });
 
-  return result.toDataStreamResponse();
+  const stream = await model.stream(formattedPrompt);
+
+  return LangChainAdapter.toDataStreamResponse(stream);
 }
 
 export const dynamic = "force-dynamic";
