@@ -84,53 +84,74 @@ The goal is to help you maintain a big picture as well as the progress of the ta
 
 # Scratchpad
 
-## Current Task: Remove BaseSegments Component (Step 16)
+## Current Task: Small Chat Improvement (Task 17)
 
-### Verification Complete
+### Current Architecture Analysis
 
-1. ✓ Found Files to Remove:
+1. Component Structure:
 
-   - `components/Segments/BaseSegments.tsx`
-   - `components/Segments/Segment.tsx`
+   - Main Chat components in /components/Chat/
+   - Core components: Chat, Messages, ChatInput, Message
+   - Supporting components: ChatSkeleton, InitialChat, Thinking
 
-2. ✓ Verified Safe to Remove:
+2. State Management:
 
-   - No imports in current codebase
-   - Functionality replaced by Funnels/Segments
-   - No shared types or interfaces used elsewhere
+   - Multiple providers:
+     - MessagesProvider: Handles chat messages and input
+     - ChatProvider: Manages chat room and submission
+     - ToolCallProvider: Handles tool-specific functionality
+   - Uses React Context for state distribution
+   - Relies on vercel/ai for chat functionality
 
-3. ✓ Directory Structure:
-   - Can remove entire `components/Segments` directory
-   - All functionality moved to `components/Funnels`
+3. Data Flow:
 
-### Implementation Complete
+   - User input → ChatInput → ChatProvider
+   - Messages stored in MessagesProvider
+   - API communication through useChat hook
+   - Message persistence in Supabase
 
-1. ✓ Removed Files:
+4. Pain Points Identified:
+   - Any type used in Message component
+   - Complex provider nesting
+   - Tight coupling between providers
+   - Message component handles both user and assistant messages
 
-   - Deleted `components/Segments/BaseSegments.tsx`
-   - Deleted `components/Segments/Segment.tsx`
-   - Removed empty `components/Segments` directory
+### Proposed Improvement
 
-2. [ ] Final Verification:
-   - Check no TypeScript errors
-   - Verify application builds
-   - Test segments page functionality
+Focus: Split Message Component and Type Safety
 
-### Next Steps
+1. Separate Message Types:
 
-1. [ ] Run TypeScript check
-2. [ ] Test application
+   - Create UserMessage and AssistantMessage components
+   - Add proper TypeScript interfaces
+   - Improve maintainability and type safety
+
+2. Benefits:
+   - Better type safety
+   - Clearer component responsibilities
+   - Easier to maintain and test
+   - More intuitive code organization
+
+### Implementation Plan
+
+[x] Create Message type definitions - Added ChatMessage.tsx with proper types - Included support for all message roles - Added type safety for message content
+
+[x] Create separate message components - Created UserMessage component - Created AssistantMessage component - Each component handles its specific message type
+
+[x] Update Messages component to use new components - Updated Message.tsx to use new components - Added proper type checking - Improved handling of different message types
+
+[x] Add proper TypeScript types to providers - Updated Messages component with proper types - Ensured compatibility with vercel/ai types
 
 ### Progress
 
-✓ Analyzed current state
-✓ Created removal plan
-✓ Verified safe to remove
-✓ Implementation complete
-[ ] Final verification
+✓ Completed implementation
+✓ Added type safety
+✓ Split message components
+✓ Improved code organization
 
-# Scratchpad
+### Notes
 
-## Current Task: None
-
-Ready for next task.
+- Successfully improved type safety
+- Maintained existing functionality
+- Improved code maintainability
+- Ready for testing and review
