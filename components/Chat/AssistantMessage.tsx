@@ -1,8 +1,8 @@
-import { AssistantMessage as AssistantMessageType } from "@/types/ChatMessage";
+import type { Message } from "@ai-sdk/react";
 import Icon from "../Icon";
 
 interface AssistantMessageProps {
-  message: AssistantMessageType;
+  message: Message;
 }
 
 const AssistantMessage = ({ message }: AssistantMessageProps) => {

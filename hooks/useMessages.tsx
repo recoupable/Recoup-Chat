@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useChat } from "@ai-sdk/react";
 import type { Message } from "@ai-sdk/react";
 import type { ToolCall } from "ai";
@@ -9,17 +9,43 @@ import { useParams } from "next/navigation";
 import createMemory from "@/lib/createMemory";
 import { useUserProvider } from "@/providers/UserProvder";
 import getInitialMessages from "@/lib/supabase/getInitialMessages";
+import useAnalyzeArtistTool from "./useAnalyzeArtistTool";
+import useCreateArtistTool from "./useCreateArtistTool";
+import useSpecificReport from "./useSpecificReport";
 
-type ChatToolCall = ToolCall<string, unknown>;
+interface ToolArgs {
+  question?: string;
+  context?: {
+    args?: unknown;
+  };
+}
 
 const useMessages = () => {
   const csrfToken = useCsrfToken();
-  const [toolCall, setToolCall] = useState<ChatToolCall | null>(null);
   const { selectedArtist } = useArtistProvider();
   const { chatContext } = useChatContext();
   const { chat_id: chatId } = useParams();
   const { userData } = useUserProvider();
   const [isLoading, setIsLoading] = useState(false);
+  const specificReportParams = useSpecificReport();
+
+  const analyzeArtist = useAnalyzeArtistTool(null, null, null);
+  const createArtist = useCreateArtistTool(null, null, null);
+
+  const handleToolCall = useCallback(
+    ({ toolCall }: { toolCall: ToolCall<string, ToolArgs> }) => {
+      const { toolName, args } = toolCall;
+      const question = args?.question || "";
+
+      if (toolName === "analyzeArtist") {
+        return analyzeArtist(toolName, question, args);
+      }
+      if (toolName === "createArtist") {
+        return createArtist(toolName, question, args);
+      }
+    },
+    [analyzeArtist, createArtist]
+  );
 
   const {
     messages,
@@ -40,9 +66,7 @@ const useMessages = () => {
       context: chatContext,
       roomId: chatId,
     },
-    onToolCall: ({ toolCall }: { toolCall: ChatToolCall }) => {
-      setToolCall(toolCall);
-    },
+    onToolCall: handleToolCall,
     onFinish: (message: Message) => {
       createMemory(message, chatId as string, selectedArtist?.account_id || "");
     },
@@ -58,7 +82,6 @@ const useMessages = () => {
       setIsLoading(false);
     };
     fetch();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chatId, userData]);
 
   return {
@@ -70,7 +93,6 @@ const useMessages = () => {
     setMessages,
     messages,
     pending: status === "streaming" || status === "submitted",
-    toolCall,
     chatContext,
     isLoading,
   };

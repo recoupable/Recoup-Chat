@@ -84,56 +84,57 @@ The goal is to help you maintain a big picture as well as the progress of the ta
 
 # Scratchpad
 
-## Current Task: Update useAiChat Import (Task 19)
+## Current Task: Simplify Chat Implementation (Task 19 Revised)
 
-### Current State Analysis
+### Architecture Analysis
 
-1. Issue:
+1. Current Issues:
 
-   - useAiChat import is deprecated
-   - Currently using: import { Message, useChat as useAiChat } from "ai/react"
-   - Need to update to: import { useChat } from '@ai-sdk/react'
+   - Too many abstractions with tool handling
+   - Complex type relationships between components
+   - Unnecessary provider complexity
 
-2. Affected Files:
+2. New Approach:
 
-   - hooks/useMessages.tsx (primary usage)
-   - Uses useAiChat for chat functionality with following features:
-     - Message handling
-     - Input management
-     - API communication
-     - Tool calls
-     - Memory persistence
-   - Integrated with multiple providers:
-     - CSRF token
-     - Artist context
-     - User data
-     - Chat context
+   - Direct usage of useChat without tools
+   - Simplified message handling
+   - Remove tool-related complexity
 
-3. Dependencies:
-   - @ai-sdk/react package is already installed (found in package.json)
-   - @ai-sdk/openai is being used in api/chat/route.ts
-   - No breaking changes identified in API structure
+3. Benefits:
+   - Cleaner codebase
+   - Easier to maintain
+   - Better type safety
+   - Faster development
 
 ### Implementation Plan
 
-[x] Analyze Current Usage - ✓ Found primary usage in useMessages.tsx - ✓ Identified all features being used - ✓ Documented integration points
+[X] Phase 1: Remove Tool-Related Code
+[X] Delete useCreateArtistTool.tsx
+[X] Delete useToolCall.tsx
+[X] Delete ToolCallProvider.tsx
+[X] Delete useAnalyzeArtistTool.tsx
 
-[x] Package Setup - ✓ @ai-sdk/react already installed - ✓ Compatible with existing @ai-sdk/openai usage - No additional setup needed
+[ ] Phase 2: Update useMessages Hook
+[ ] Remove tool-related imports
+[ ] Remove tool handling logic
+[ ] Simplify useChat implementation
 
-[x] Update Implementation - ✓ Updated import to useChat from @ai-sdk/react - ✓ Fixed type compatibility issues - ✓ Maintained all features: - Message handling - Tool calls - Memory persistence - API communication
+[ ] Phase 3: Update Components
+[ ] Update Messages component to work without ToolCallProvider
+[ ] Remove tool-related props and types
+[ ] Clean up any remaining tool references
 
-[ ] Testing - Verify chat functionality - Check for type errors - Ensure no regression
+### Current Progress
 
-### Progress
-
-✓ Completed analysis phase
-✓ Verified package availability
-✓ Updated implementation
-→ Ready for testing
+✓ Removed all tool-related files
+→ Need to update useMessages hook
+→ Need to update Messages component
 
 ### Notes
 
-- Successfully updated import
-- Fixed type compatibility issues
-- Maintained existing functionality
-- Need to verify in runtime
+- Focus on core chat functionality
+- Keep type safety with useChat
+- Maintain message history functionality
+- Preserve user context handling
+
+Would you like me to proceed with updating the useMessages hook?

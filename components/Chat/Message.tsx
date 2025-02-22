@@ -1,6 +1,16 @@
-import { MessageProps } from "@/types/ChatMessage";
+import type { Message as AIMessage } from "@ai-sdk/react";
 import AssistantMessage from "./AssistantMessage";
 import UserMessage from "./UserMessage";
+
+interface MessageProps {
+  message: AIMessage;
+  index: number;
+}
+
+const isAssistantMessage = (message: AIMessage): boolean =>
+  message.role === "assistant";
+
+const isUserMessage = (message: AIMessage): boolean => message.role === "user";
 
 const Message = ({ message }: MessageProps) => {
   if (message.role === "system" || message.role === "data") {
@@ -9,11 +19,11 @@ const Message = ({ message }: MessageProps) => {
 
   return (
     <div className="p-3 rounded-lg">
-      {message.role === "assistant" ? (
+      {isAssistantMessage(message) ? (
         <AssistantMessage message={message} />
-      ) : (
+      ) : isUserMessage(message) ? (
         <UserMessage message={message} />
-      )}
+      ) : null}
     </div>
   );
 };

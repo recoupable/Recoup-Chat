@@ -1,7 +1,7 @@
-import { UserMessage as UserMessageType } from "@/types/ChatMessage";
+import type { Message } from "@ai-sdk/react";
 
 interface UserMessageProps {
-  message: UserMessageType;
+  message: Message;
 }
 
 const UserMessage = ({ message }: UserMessageProps) => {

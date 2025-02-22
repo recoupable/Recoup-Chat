@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { ScrollArea } from "react-scroll-to";
 import Thinking from "./Thinking";
 import Message from "./Message";
-import { Message as AIMessage } from "ai";
+import type { ChatMessage } from "@/types/ChatMessage";
 import { ToolCallProvider } from "@/providers/ToolCallProvider";
 import { useMessagesProvider } from "@/providers/MessagesProvider";
 import { usePromptsProvider } from "@/providers/PromptsProvider";
@@ -30,13 +30,13 @@ const Messages = ({
       className={`w-full mt-4 max-w-3xl mx-auto overflow-y-auto grow ${className}`}
     >
       {children || <div />}
-      {messages.map((message: AIMessage, index: number) => (
+      {messages.map((message) => (
         <ToolCallProvider
-          message={message}
+          message={message as ChatMessage}
           scrollTo={scrollTo}
           key={message.id}
         >
-          <Message message={message} index={index} />
+          <Message message={message} index={messages.indexOf(message)} />
         </ToolCallProvider>
       ))}
       {pending && <Thinking />}
