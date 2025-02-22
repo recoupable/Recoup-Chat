@@ -114,21 +114,22 @@ The goal is to help you maintain a big picture as well as the progress of the ta
 [X] Delete ToolCallProvider.tsx
 [X] Delete useAnalyzeArtistTool.tsx
 
-[ ] Phase 2: Update useMessages Hook
-[ ] Remove tool-related imports
-[ ] Remove tool handling logic
-[ ] Simplify useChat implementation
+[X] Phase 2: Update useMessages Hook
+[X] Remove tool-related imports
+[X] Remove tool handling logic
+[X] Simplify useChat implementation
 
-[ ] Phase 3: Update Components
-[ ] Update Messages component to work without ToolCallProvider
-[ ] Remove tool-related props and types
-[ ] Clean up any remaining tool references
+[X] Phase 3: Update Components
+[X] Update Messages component to work without ToolCallProvider
+[X] Remove tool-related props and types
+[X] Clean up any remaining tool references
 
 ### Current Progress
 
 ✓ Removed all tool-related files
-→ Need to update useMessages hook
-→ Need to update Messages component
+✓ Updated useMessages hook to remove tool handling
+✓ Updated Messages component to work without ToolCallProvider
+→ Ready for testing
 
 ### Notes
 
@@ -137,4 +138,4 @@ The goal is to help you maintain a big picture as well as the progress of the ta
 - Maintain message history functionality
 - Preserve user context handling
 
-Would you like me to proceed with updating the useMessages hook?
+The implementation is now complete. Would you like to test the changes?

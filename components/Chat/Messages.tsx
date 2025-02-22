@@ -2,8 +2,6 @@ import { useEffect } from "react";
 import { ScrollArea } from "react-scroll-to";
 import Thinking from "./Thinking";
 import Message from "./Message";
-import type { ChatMessage } from "@/types/ChatMessage";
-import { ToolCallProvider } from "@/providers/ToolCallProvider";
 import { useMessagesProvider } from "@/providers/MessagesProvider";
 import { usePromptsProvider } from "@/providers/PromptsProvider";
 
@@ -31,13 +29,11 @@ const Messages = ({
     >
       {children || <div />}
       {messages.map((message) => (
-        <ToolCallProvider
-          message={message as ChatMessage}
-          scrollTo={scrollTo}
+        <Message
           key={message.id}
-        >
-          <Message message={message} index={messages.indexOf(message)} />
-        </ToolCallProvider>
+          message={message}
+          index={messages.indexOf(message)}
+        />
       ))}
       {pending && <Thinking />}
     </ScrollArea>
