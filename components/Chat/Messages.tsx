@@ -2,18 +2,20 @@ import { useEffect } from "react";
 import { ScrollArea } from "react-scroll-to";
 import Thinking from "./Thinking";
 import Message from "./Message";
-import { ChatMessage } from "@/types/ChatMessage";
+import { Message as AIMessage } from "ai";
 import { ToolCallProvider } from "@/providers/ToolCallProvider";
 import { useMessagesProvider } from "@/providers/MessagesProvider";
 import { usePromptsProvider } from "@/providers/PromptsProvider";
 
-interface MessagesProps {
+const Messages = ({
+  scroll,
+  className,
+  children,
+}: {
   scroll: ({ smooth, y }: { smooth: boolean; y: number }) => void;
   className?: string;
   children?: React.ReactNode;
-}
-
-const Messages = ({ scroll, className, children }: MessagesProps) => {
+}) => {
   const { messages, pending } = useMessagesProvider();
   const { prompts } = usePromptsProvider();
   const scrollTo = () => scroll({ smooth: true, y: Number.MAX_SAFE_INTEGER });
@@ -28,7 +30,7 @@ const Messages = ({ scroll, className, children }: MessagesProps) => {
       className={`w-full mt-4 max-w-3xl mx-auto overflow-y-auto grow ${className}`}
     >
       {children || <div />}
-      {messages.map((message: ChatMessage, index: number) => (
+      {messages.map((message: AIMessage, index: number) => (
         <ToolCallProvider
           message={message}
           scrollTo={scrollTo}
