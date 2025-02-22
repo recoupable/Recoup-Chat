@@ -84,58 +84,70 @@ The goal is to help you maintain a big picture as well as the progress of the ta
 
 # Scratchpad
 
-## Current Task: Simplify Chat Implementation (Task 19 Revised)
+## Current Task: Integrate Langchain (Task 20)
 
-### Architecture Analysis
+### Current State Analysis
 
-1. Current Issues:
+1. What We Have:
 
-   - Too many abstractions with tool handling
-   - Complex type relationships between components
-   - Unnecessary provider complexity
+   - Vercel AI SDK for chat streaming
+   - OpenAI direct integration
+   - Basic message handling
+   - Simple Langchain message formatting
 
-2. New Approach:
+2. What We Need (Simplified):
 
-   - Direct usage of useChat without tools
-   - Simplified message handling
-   - Remove tool-related complexity
+   - Test current prompt management
+   - Add more context-specific prompts
+   - Keep streaming working
 
-3. Benefits:
-   - Cleaner codebase
-   - Easier to maintain
-   - Better type safety
-   - Faster development
+3. Integration Options:
+   a. Current Approach:
+
+   - Simple message creation with Langchain
+   - Keep Vercel AI SDK for streaming
+   - No complex prompt templates yet
+
+   b. Future Improvements:
+
+   - Add structured prompt templates
+   - Add memory management
+   - Consider tools if needed
 
 ### Implementation Plan
 
-[X] Phase 1: Remove Tool-Related Code
-[X] Delete useCreateArtistTool.tsx
-[X] Delete useToolCall.tsx
-[X] Delete ToolCallProvider.tsx
-[X] Delete useAnalyzeArtistTool.tsx
+[X] Phase 1: Basic Langchain Integration
+[X] Create simple message creation
+[X] Setup basic prompt handling
+[X] Keep streaming working
 
-[X] Phase 2: Update useMessages Hook
-[X] Remove tool-related imports
-[X] Remove tool handling logic
-[X] Simplify useChat implementation
+[ ] Phase 2: Improve Prompts
+[ ] Add more context-specific prompts
+[ ] Test different prompt variations
+[ ] Evaluate response quality
 
-[X] Phase 3: Update Components
-[X] Update Messages component to work without ToolCallProvider
-[X] Remove tool-related props and types
-[X] Clean up any remaining tool references
+[ ] Phase 3: Consider Extensions
+[ ] Evaluate need for tools
+[ ] Consider memory management
+[ ] Plan next improvements
+
+### Next Steps
+
+1. Test current implementation:
+
+   - Test with different contexts
+   - Verify prompt formatting
+   - Check streaming still works
+
+2. Plan prompt improvements:
+   - Identify common contexts
+   - Create specific prompts for each
+   - Test variations
 
 ### Current Progress
 
-✓ Removed all tool-related files
-✓ Updated useMessages hook to remove tool handling
-✓ Updated Messages component to work without ToolCallProvider
+✓ Basic Langchain message creation working
+✓ Streaming still functional
 → Ready for testing
 
-### Notes
-
-- Focus on core chat functionality
-- Keep type safety with useChat
-- Maintain message history functionality
-- Preserve user context handling
-
-The implementation is now complete. Would you like to test the changes?
+Would you like to test the current implementation?

@@ -1,14 +1,18 @@
+import { Message } from "@ai-sdk/react";
 import { openai } from "@ai-sdk/openai";
 import { streamText } from "ai";
-
-import { AI_MODEL } from "@/lib/consts";
-import getSystemMessage from "@/lib/chat/getSystemMessage";
-import getTools from "@/lib/chat/getTools";
+import { formatPrompt } from "@/lib/chat/prompts";
 import createMemories from "@/lib/supabase/createMemories";
+import { AI_MODEL } from "@/lib/consts";
+
+type CoreMessage = {
+  role: "system" | "user" | "assistant";
+  content: string;
+};
 
 export async function POST(req: Request) {
   const body = await req.json();
-  const messages = body.messages;
+  const messages = body.messages as Message[];
   const context = body.context;
   const artist_id = body.artistId;
   const room_id = body.roomId;
@@ -21,23 +25,31 @@ export async function POST(req: Request) {
 
   const question = lastMessage.content;
 
-  if (room_id)
+  if (room_id) {
     createMemories({
       room_id,
       artist_id,
       content: lastMessage,
     });
+  }
 
+  // Format messages using Langchain prompt template
+  const formattedPrompt = await formatPrompt(
+    context,
+    question,
+    lastMessage.content
+  );
+
+  // Convert Langchain messages to OpenAI format
+  const formattedMessages: CoreMessage[] = formattedPrompt.map((msg) => ({
+    role: msg.type === "human" ? "user" : msg.type,
+    content: msg.content,
+  }));
+
+  // Stream the response
   const result = streamText({
     model: openai(AI_MODEL),
-    messages: [
-      ...messages,
-      {
-        role: "system",
-        content: getSystemMessage(context, question),
-      },
-    ],
-    tools: getTools(question),
+    messages: formattedMessages,
   });
 
   return result.toDataStreamResponse();
