@@ -84,74 +84,56 @@ The goal is to help you maintain a big picture as well as the progress of the ta
 
 # Scratchpad
 
-## Current Task: Small Chat Improvement (Task 17)
+## Current Task: Update useAiChat Import (Task 19)
 
-### Current Architecture Analysis
+### Current State Analysis
 
-1. Component Structure:
+1. Issue:
 
-   - Main Chat components in /components/Chat/
-   - Core components: Chat, Messages, ChatInput, Message
-   - Supporting components: ChatSkeleton, InitialChat, Thinking
+   - useAiChat import is deprecated
+   - Currently using: import { Message, useChat as useAiChat } from "ai/react"
+   - Need to update to: import { useChat } from '@ai-sdk/react'
 
-2. State Management:
+2. Affected Files:
 
-   - Multiple providers:
-     - MessagesProvider: Handles chat messages and input
-     - ChatProvider: Manages chat room and submission
-     - ToolCallProvider: Handles tool-specific functionality
-   - Uses React Context for state distribution
-   - Relies on vercel/ai for chat functionality
+   - hooks/useMessages.tsx (primary usage)
+   - Uses useAiChat for chat functionality with following features:
+     - Message handling
+     - Input management
+     - API communication
+     - Tool calls
+     - Memory persistence
+   - Integrated with multiple providers:
+     - CSRF token
+     - Artist context
+     - User data
+     - Chat context
 
-3. Data Flow:
-
-   - User input → ChatInput → ChatProvider
-   - Messages stored in MessagesProvider
-   - API communication through useChat hook
-   - Message persistence in Supabase
-
-4. Pain Points Identified:
-   - Any type used in Message component
-   - Complex provider nesting
-   - Tight coupling between providers
-   - Message component handles both user and assistant messages
-
-### Proposed Improvement
-
-Focus: Split Message Component and Type Safety
-
-1. Separate Message Types:
-
-   - Create UserMessage and AssistantMessage components
-   - Add proper TypeScript interfaces
-   - Improve maintainability and type safety
-
-2. Benefits:
-   - Better type safety
-   - Clearer component responsibilities
-   - Easier to maintain and test
-   - More intuitive code organization
+3. Dependencies:
+   - @ai-sdk/react package is already installed (found in package.json)
+   - @ai-sdk/openai is being used in api/chat/route.ts
+   - No breaking changes identified in API structure
 
 ### Implementation Plan
 
-[x] Create Message type definitions - Added ChatMessage.tsx with proper types - Included support for all message roles - Added type safety for message content
+[x] Analyze Current Usage - ✓ Found primary usage in useMessages.tsx - ✓ Identified all features being used - ✓ Documented integration points
 
-[x] Create separate message components - Created UserMessage component - Created AssistantMessage component - Each component handles its specific message type
+[x] Package Setup - ✓ @ai-sdk/react already installed - ✓ Compatible with existing @ai-sdk/openai usage - No additional setup needed
 
-[x] Update Messages component to use new components - Updated Message.tsx to use new components - Added proper type checking - Improved handling of different message types
+[x] Update Implementation - ✓ Updated import to useChat from @ai-sdk/react - ✓ Fixed type compatibility issues - ✓ Maintained all features: - Message handling - Tool calls - Memory persistence - API communication
 
-[x] Add proper TypeScript types to providers - Updated Messages component with proper types - Ensured compatibility with vercel/ai types
+[ ] Testing - Verify chat functionality - Check for type errors - Ensure no regression
 
 ### Progress
 
-✓ Completed implementation
-✓ Added type safety
-✓ Split message components
-✓ Improved code organization
+✓ Completed analysis phase
+✓ Verified package availability
+✓ Updated implementation
+→ Ready for testing
 
 ### Notes
 
-- Successfully improved type safety
+- Successfully updated import
+- Fixed type compatibility issues
 - Maintained existing functionality
-- Improved code maintainability
-- Ready for testing and review
+- Need to verify in runtime

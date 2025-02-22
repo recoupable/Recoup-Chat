@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
-import { Message, useChat as useAiChat } from "ai/react";
+import { useChat } from "@ai-sdk/react";
+import type { Message } from "@ai-sdk/react";
+import type { ToolCall } from "ai";
 import { useCsrfToken } from "./useCsrfToken";
 import { useArtistProvider } from "@/providers/ArtistProvider";
 import useChatContext from "./useChatContext";
@@ -8,9 +10,11 @@ import createMemory from "@/lib/createMemory";
 import { useUserProvider } from "@/providers/UserProvder";
 import getInitialMessages from "@/lib/supabase/getInitialMessages";
 
+type ChatToolCall = ToolCall<string, unknown>;
+
 const useMessages = () => {
   const csrfToken = useCsrfToken();
-  const [toolCall, setToolCall] = useState<any>(null);
+  const [toolCall, setToolCall] = useState<ChatToolCall | null>(null);
   const { selectedArtist } = useArtistProvider();
   const { chatContext } = useChatContext();
   const { chat_id: chatId } = useParams();
@@ -23,10 +27,10 @@ const useMessages = () => {
     handleInputChange,
     handleSubmit: handleAiChatSubmit,
     append: appendAiChat,
-    isLoading: pending,
+    status,
     setMessages,
     reload: reloadAiChat,
-  } = useAiChat({
+  } = useChat({
     api: `/api/chat`,
     headers: {
       "X-CSRF-Token": csrfToken,
@@ -36,10 +40,10 @@ const useMessages = () => {
       context: chatContext,
       roomId: chatId,
     },
-    onToolCall: ({ toolCall }) => {
-      setToolCall(toolCall as any);
+    onToolCall: ({ toolCall }: { toolCall: ChatToolCall }) => {
+      setToolCall(toolCall);
     },
-    onFinish: (message) => {
+    onFinish: (message: Message) => {
       createMemory(message, chatId as string, selectedArtist?.account_id || "");
     },
   });
@@ -54,6 +58,7 @@ const useMessages = () => {
       setIsLoading(false);
     };
     fetch();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chatId, userData]);
 
   return {
@@ -64,7 +69,7 @@ const useMessages = () => {
     input,
     setMessages,
     messages,
-    pending,
+    pending: status === "streaming" || status === "submitted",
     toolCall,
     chatContext,
     isLoading,

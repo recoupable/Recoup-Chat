@@ -12,6 +12,8 @@
   },
   "dependencies": {
     "@ai-sdk/openai": "^1.1.9",
+    "@ai-sdk/react": "^1.1.17",
+    "@ai-sdk/ui-utils": "^1.1.15",
     "@ardrive/turbo-sdk": "^1.22.1",
     "@hookform/resolvers": "^3.9.1",
     "@privy-io/react-auth": "^1.88.4",
