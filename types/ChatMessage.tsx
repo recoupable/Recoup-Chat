@@ -1,22 +1,4 @@
-import type { Message as AIMessage } from "@ai-sdk/react";
-
-interface ToolCallResult {
-  name: string;
-  result?: {
-    question?: string;
-    context?: {
-      args?: unknown;
-    };
-  };
-}
-
-interface MessageMetadata {
-  toolCall?: ToolCallResult;
-}
-
-export interface Message extends AIMessage {
-  metadata?: MessageMetadata;
-}
+import type { Message } from "@ai-sdk/react";
 
 export type MessageRole = Message["role"];
 
