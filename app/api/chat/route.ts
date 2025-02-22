@@ -4,6 +4,7 @@ import { streamText } from "ai";
 import { formatPrompt } from "@/lib/chat/prompts";
 import createMemories from "@/lib/supabase/createMemories";
 import { AI_MODEL } from "@/lib/consts";
+import { HumanMessage } from "@langchain/core/messages";
 
 type CoreMessage = {
   role: "system" | "user" | "assistant";
@@ -33,17 +34,15 @@ export async function POST(req: Request) {
     });
   }
 
-  // Format messages using Langchain prompt template
   const formattedPrompt = await formatPrompt(
     context,
     question,
     lastMessage.content
   );
 
-  // Convert Langchain messages to OpenAI format
   const formattedMessages: CoreMessage[] = formattedPrompt.map((msg) => ({
-    role: msg.type === "human" ? "user" : msg.type,
-    content: msg.content,
+    role: msg instanceof HumanMessage ? "user" : "system",
+    content: String(msg.content),
   }));
 
   // Stream the response
