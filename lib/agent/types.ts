@@ -22,3 +22,11 @@ export interface AgentOptions {
   threadId?: string;
   tools?: Tool[];
 }
+
+/**
+ * Represents a message from an agent or tool
+ */
+export type AgentMessage = {
+  content: string;
+  [key: string]: unknown;
+};
