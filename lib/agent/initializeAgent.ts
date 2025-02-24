@@ -13,10 +13,8 @@ async function initializeAgent(
   options: AgentOptions = {}
 ): Promise<AgentResponse> {
   try {
-    console.debug("[Agent] Validating environment...");
     validateEnvironment();
 
-    console.debug("[Agent] Initializing LLM with model:", AI_MODEL);
     const llm = new ChatOpenAI({
       modelName: AI_MODEL,
     });
@@ -24,19 +22,12 @@ async function initializeAgent(
     const agentConfig: AgentConfig = {
       threadId: options.threadId || "recoup-artist-agent",
     };
-    console.debug("[Agent] Created config:", agentConfig);
-
-    console.debug(
-      "[Agent] Creating React agent with tools:",
-      options.tools?.length || 0
-    );
 
     const agent = createReactAgent({
       llm,
       tools: options.tools || [],
       messageModifier: DESCRIPTION,
     });
-    console.debug("[Agent] Agent created successfully");
 
     return { agent, config: agentConfig };
   } catch (error) {
