@@ -1,7 +1,8 @@
 import { ChatOpenAI } from "@langchain/openai";
 import { createReactAgent } from "@langchain/langgraph/prebuilt";
+import { MemorySaver } from "@langchain/langgraph";
 import validateEnvironment from "./validateEnvironment";
-import type { AgentConfig, AgentOptions, AgentResponse } from "./types";
+import type { AgentOptions, AgentResponse } from "./types";
 import { AI_MODEL, DESCRIPTION } from "../consts";
 
 /**
@@ -19,17 +20,16 @@ async function initializeAgent(
       modelName: AI_MODEL,
     });
 
-    const agentConfig: AgentConfig = {
-      threadId: options.threadId || "recoup-artist-agent",
-    };
+    const memory = new MemorySaver();
 
     const agent = createReactAgent({
       llm,
       tools: options.tools || [],
       messageModifier: DESCRIPTION,
+      checkpointSaver: memory,
     });
 
-    return { agent, config: agentConfig };
+    return { agent };
   } catch (error) {
     console.error("[Agent] Failed to initialize agent:", {
       error,

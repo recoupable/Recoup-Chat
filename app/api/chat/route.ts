@@ -34,7 +34,11 @@ export async function POST(req: Request) {
       messages: [new HumanMessage(question)],
     };
 
-    const stream = await agent.stream(messageInput);
+    const stream = await agent.stream(messageInput, {
+      configurable: {
+        thread_id: room_id || "default",
+      },
+    });
     const transformedStream = getTransformedStream(stream);
     return LangChainAdapter.toDataStreamResponse(transformedStream);
   } catch (error) {
