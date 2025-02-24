@@ -17,6 +17,7 @@
     "@ardrive/turbo-sdk": "^1.22.1",
     "@hookform/resolvers": "^3.9.1",
     "@langchain/core": "^0.3.40",
+    "@langchain/langgraph": "^0.2.48",
     "@langchain/openai": "^0.4.4",
     "@privy-io/react-auth": "^1.88.4",
     "@radix-ui/react-slot": "^1.1.1",
