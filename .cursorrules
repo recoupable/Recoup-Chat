@@ -85,6 +85,82 @@ The goal is to help you maintain a big picture as well as the progress of the ta
 
 # Scratchpad
 
-## Current Task: Ready for New Task
+## Current Task: Remove Hard-coded Comments Context from useChatContext
 
-The scratchpad is clear and ready for the next task. Please provide your next request.
+### Task Analysis
+
+The current implementation adds comments to the chat context through a hard-coded useEffect in useChatContext. This needs to be refactored to maintain a cleaner and more focused context.
+
+### Current State
+
+- useChatContext has a hard-coded useEffect that adds comments to chat context
+- Comments are being included in the context unnecessarily
+- Context currently includes both artist data and comments
+
+### Required Changes
+
+[X] Locate and analyze the current useChatContext implementation
+[X] Identify all places where comments context is being used
+[X] Remove the useEffect that adds comments to context
+[X] Ensure context only contains { activeArtist: selectedArtist }
+[ ] Verify no regressions in chat functionality
+[ ] Test that comments are completely removed from context
+
+### Implementation Plan
+
+1. First Phase - Analysis
+   [X] Review useChatContext implementation
+   [X] Document all dependencies on comments in context
+   [X] Plan safe removal strategy
+
+   Findings:
+
+   1. Current Implementation:
+
+      - useChatContext.tsx is a simple hook that fetches comments when selectedArtist changes
+      - Uses getCommentsByArtistId to fetch comments
+      - Stores comments as stringified JSON in state
+      - Returns only chatContext in its interface
+
+   2. Usage Analysis:
+
+      - Only used in useMessages.tsx
+      - chatContext is passed to useChat's body parameter
+      - chatContext is also exposed in useMessages return value
+      - No other components directly use useChatContext
+
+   3. Removal Strategy:
+      - Since comments will be handled by ArtistCommentsTool (per task 24), we can safely remove the comments logic
+      - Need to update useMessages to not expect chatContext
+      - Update useChat body to only include artistId and roomId
+      - Remove getCommentsByArtistId import from useChatContext
+
+2. Second Phase - Implementation
+   [X] Remove useEffect for comments
+   [X] Update context to only include activeArtist
+   [X] Clean up any unused imports/code
+
+   Changes Made:
+
+   - Removed comments-related code from useChatContext
+   - Updated chatContext to return { activeArtist: selectedArtist }
+   - Removed context from useChat body in useMessages
+   - Cleaned up unused imports
+
+3. Third Phase - Verification
+   [ ] Test chat functionality
+   [ ] Verify context shape
+   [ ] Check for any broken dependencies
+
+### Potential Risks
+
+- Other components might be relying on comments in context
+- Need to ensure clean separation of concerns
+- May need to update tests if they expect comments in context
+
+### Success Criteria
+
+- useChatContext only provides { activeArtist: selectedArtist }
+- No comments-related code in the hook
+- All chat functionality continues to work as expected
+- Clean and minimal implementation

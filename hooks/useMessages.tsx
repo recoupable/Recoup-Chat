@@ -62,7 +62,6 @@ const useMessages = () => {
     setMessages,
     messages,
     pending: status === "streaming" || status === "submitted",
-    chatContext,
     isLoading,
   };
 };
