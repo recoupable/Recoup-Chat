@@ -3,7 +3,6 @@ import { useChat } from "@ai-sdk/react";
 import type { Message } from "@ai-sdk/react";
 import { useCsrfToken } from "./useCsrfToken";
 import { useArtistProvider } from "@/providers/ArtistProvider";
-import useChatContext from "./useChatContext";
 import { useParams } from "next/navigation";
 import createMemory from "@/lib/createMemory";
 import { useUserProvider } from "@/providers/UserProvder";
@@ -12,7 +11,6 @@ import getInitialMessages from "@/lib/supabase/getInitialMessages";
 const useMessages = () => {
   const csrfToken = useCsrfToken();
   const { selectedArtist } = useArtistProvider();
-  const { chatContext } = useChatContext();
   const { chat_id: chatId } = useParams();
   const { userData } = useUserProvider();
   const [isLoading, setIsLoading] = useState(false);
@@ -33,7 +31,6 @@ const useMessages = () => {
     },
     body: {
       artistId: selectedArtist?.account_id,
-      context: chatContext,
       roomId: chatId,
     },
     onFinish: (message: Message) => {
