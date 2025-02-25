@@ -24,7 +24,6 @@ export const getSegmentWithArtist = async (
   segmentId: string
 ): Promise<GetSegmentResult> => {
   try {
-    // First try to get segment with artist (left join)
     const { data: segmentData, error: segmentError } = await supabase
       .from("segments")
       .select(
@@ -38,13 +37,11 @@ export const getSegmentWithArtist = async (
       .eq("id", segmentId)
       .single();
 
-    // Handle database errors
     if (segmentError) {
       console.error("Error fetching segment:", segmentError);
       return { segment: null, artistAccountId: null, error: segmentError };
     }
 
-    // Handle segment not found
     if (!segmentData) {
       console.error("Segment not found:", segmentId);
       return {
@@ -54,15 +51,8 @@ export const getSegmentWithArtist = async (
       };
     }
 
-    // Get artist account ID if available
     const artistAccountId =
       segmentData.artist_segments?.[0]?.artist_account_id || null;
-
-    console.log("Found segment:", {
-      id: segmentData.id,
-      name: segmentData.name,
-      artistAccountId,
-    });
 
     return {
       segment: segmentData,
