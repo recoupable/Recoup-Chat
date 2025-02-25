@@ -8,7 +8,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export const ChatReport = ({ reportId }: ChatReportProps) => {
   const { data, isLoading, error, isError } = useReportData(reportId);
-  console.log("data", data);
   if (isError) {
     return (
       <div className="px-3 w-full text-red-500">
