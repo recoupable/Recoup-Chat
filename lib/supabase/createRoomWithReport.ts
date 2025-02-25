@@ -1,17 +1,13 @@
 import { PostgrestError } from "@supabase/supabase-js";
 import supabase from "./serverClient";
+import { Database } from "@/types/database.types";
+
+type Room = Database["public"]["Tables"]["rooms"]["Row"];
 
 interface CreateRoomParams {
   account_id: string;
   topic: string;
   report_id?: string;
-}
-
-interface Room {
-  id: string;
-  account_id: string | null;
-  topic: string | null;
-  updated_at: string;
 }
 
 export const createRoomWithReport = async ({
@@ -23,7 +19,6 @@ export const createRoomWithReport = async ({
   error: PostgrestError | null;
 }> => {
   try {
-    // Create room
     const { data: new_room, error } = await supabase
       .from("rooms")
       .insert({
@@ -35,7 +30,6 @@ export const createRoomWithReport = async ({
 
     if (error) throw error;
 
-    // Link report if provided
     if (report_id) {
       await supabase.from("room_reports").insert({
         room_id: new_room.id,
