@@ -1,11 +1,11 @@
 import { Suspense } from "react";
 import { getSegmentRoom } from "@/lib/supabase/getSegmentRoom";
-import SegmentPage from "@/components/Segment/SegmentPage";
 import { Skeleton } from "@/components/ui/skeleton";
 import { createRoomWithReport } from "@/lib/supabase/createRoomWithReport";
 import { createSegmentRoom } from "@/lib/supabase/createSegmentRoom";
 import { getSegmentWithArtist } from "@/lib/supabase/getSegmentWithArtist";
 import createReport from "@/lib/report/createReport";
+import { redirect } from "next/navigation";
 
 interface PageProps {
   params: {
@@ -14,25 +14,16 @@ interface PageProps {
 }
 
 export default async function Page({ params }: PageProps) {
-  try {
-    // First check if segment room exists
-    const segmentRoom = await getSegmentRoom(params.segmentId);
-    console.log("Existing segment room:", segmentRoom);
-    if (segmentRoom) {
-      return (
-        <Suspense
-          fallback={
-            <div className="max-w-screen min-h-screen p-4">
-              <Skeleton className="h-8 w-48 mb-4" />
-              <Skeleton className="h-[200px] w-full" />
-            </div>
-          }
-        >
-          <SegmentPage segmentRoom={segmentRoom} isLoading={false} />
-        </Suspense>
-      );
-    }
+  // First check if segment room exists - outside try-catch
+  const segmentRoom = await getSegmentRoom(params.segmentId);
+  console.log("Existing segment room:", segmentRoom);
 
+  // Redirect immediately if room exists
+  if (segmentRoom) {
+    redirect(`/${segmentRoom.room_id}`);
+  }
+
+  try {
     // Get segment details and artist account ID
     const {
       segment,
@@ -83,6 +74,10 @@ export default async function Page({ params }: PageProps) {
 
     console.log("Created segment room:", newSegmentRoom);
 
+    // Redirect to chat page after creating new room
+    redirect(`/${new_room.id}`);
+  } catch (e) {
+    console.error("Error in segment page:", e);
     return (
       <Suspense
         fallback={
@@ -92,16 +87,13 @@ export default async function Page({ params }: PageProps) {
           </div>
         }
       >
-        <SegmentPage segmentRoom={newSegmentRoom} isLoading={false} />
+        <div className="max-w-screen min-h-screen p-4">
+          <div className="text-red-500">
+            Error:{" "}
+            {e instanceof Error ? e.message : "An unexpected error occurred"}
+          </div>
+        </div>
       </Suspense>
-    );
-  } catch (e) {
-    console.error("Error in segment page:", e);
-    return (
-      <SegmentPage
-        segmentRoom={null}
-        error={e instanceof Error ? e.message : "An unexpected error occurred"}
-      />
     );
   }
 }

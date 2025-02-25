@@ -86,42 +86,21 @@ The goal is to help you maintain a big picture as well as the progress of the ta
 
 # Scratchpad
 
-## Current Task: Generate Report When Creating Room (Step 26)
+## Current Task: Redirect /segment/[segmentId] to Chat (Step 27)
 
 ### Task Analysis
 
 Current:
 
-- Server actions create a room but don't generate a report
-- createRoomWithReport accepts report_id but doesn't generate one
+- /segment/[segmentId] shows SegmentPage component
+- No redirection to chat page when room exists
+- Room ID is available in segmentRoom.room_id
 
 Required:
 
-- When creating a new room, also generate a report
-- Pass generated report ID to createRoomWithReport
-- Ensure every new room has an associated report
-
-### Database Schema
-
-1. rooms Table:
-
-```typescript
-{
-  id: string;
-  account_id: string;
-  topic: string;
-  updated_at: string;
-}
-```
-
-2. room_reports Table:
-
-```typescript
-{
-  room_id: string;
-  report_id: string;
-}
-```
+- When segment_room exists, redirect to /[room_id]
+- Keep report generation flow for new segments
+- Maintain error handling and loading states
 
 ### Current Implementation
 
@@ -129,38 +108,133 @@ Required:
 
    ```typescript
    // page.tsx
-   const { new_room } = await createRoomWithReport({
-     account_id: artistAccountId,
-     topic: `Segment: ${segment.name}`,
-   });
+   const segmentRoom = await getSegmentRoom(params.segmentId);
+   if (segmentRoom) {
+     return (
+       <SegmentPage segmentRoom={segmentRoom} isLoading={false} />
+     );
+   }
    ```
 
 2. Missing Steps:
-   - Report generation before room creation
-   - Passing report_id to createRoomWithReport
+   - Import redirect from next/navigation
+   - Add redirect when segmentRoom exists
+   - Keep error handling for failed redirects
 
 ### Required Changes
 
-[ ] Phase 1: Direct Integration
+[X] Phase 1: Add Redirect
 
-1. Import createReport in page.tsx
-2. Generate report before room creation
-3. Pass report_id to createRoomWithReport
+1.  Import redirect from next/navigation
+2.  Add redirect when segmentRoom exists
+3.  Keep fallback for failed redirects
 
-[ ] Phase 2: Error Handling
+[ ] Phase 2: Fix Error Handling
 
-1. Handle report generation failures
-2. Add proper error states
-3. Add loading states
+1.  Move redirect outside try-catch
+2.  Only catch database/report generation errors
+3.  Let Next.js handle redirect errors
 
-4. Success Criteria:
-   - Report is generated when room is created
-   - Report ID is properly linked to room
-   - Error states are handled gracefully
-   - Minimal code changes
+### Implementation Plan
+
+1. New Flow:
+
+   ```typescript
+   // Check room first, outside try-catch
+   const segmentRoom = await getSegmentRoom(params.segmentId);
+   if (segmentRoom) {
+     redirect(`/${segmentRoom.room_id}`);
+   }
+
+   // Then handle room creation in try-catch
+   try {
+     // Create room logic...
+   } catch (e) {
+     // Only handle non-redirect errors
+   }
+   ```
+
+2. Success Criteria:
+   - Redirect errors are not caught
+   - Database/report errors show error page
+   - Clean separation of redirect and error handling
 
 Would you like me to:
 
-1. Delete the unnecessary generateSegmentReport.ts file?
-2. Update the page component to use createReport directly?
-3. Add proper error handling in the page component?
+1. Update the page component with the new error handling?
+2. Add more specific error types?
+3. Add logging for different error cases?
+
+### Error Analysis
+
+Error Message:
+
+```
+Error: NEXT_REDIRECT
+    at getRedirectError (webpack-internal:///(rsc)/./node_modules/.pnpm/next@14.2.13...)
+    at redirect (webpack-internal:///(rsc)/./node_modules/.pnpm/next@14.2.13...)
+    at Page (webpack-internal:///(rsc)/./app/segment/[segmentId]/page.tsx:32:70)
+digest: 'NEXT_REDIRECT;replace;/51ecc2cf-7896-45c2-880a-a0b9f5487b04;307;'
+```
+
+Root Cause:
+
+1. The redirect is working (307 status code) but being caught in the try-catch block
+2. Next.js throws a special NEXT_REDIRECT error for redirects, which we shouldn't catch
+
+Current Flow:
+
+```typescript
+try {
+  if (segmentRoom) {
+    redirect(`/${segmentRoom.room_id}`); // This throws NEXT_REDIRECT
+  }
+} catch (e) {
+  // We're catching the NEXT_REDIRECT error here, which we shouldn't
+  return <ErrorComponent />;
+}
+```
+
+### Required Changes
+
+[X] Phase 1: Add Redirect
+
+1.  Import redirect from next/navigation ✓
+2.  Add redirect when segmentRoom exists ✓
+3.  Keep fallback for failed redirects ✓
+
+[ ] Phase 2: Fix Error Handling
+
+1.  Move redirect outside try-catch
+2.  Only catch database/report generation errors
+3.  Let Next.js handle redirect errors
+
+### Implementation Plan
+
+1. New Flow:
+
+   ```typescript
+   // Check room first, outside try-catch
+   const segmentRoom = await getSegmentRoom(params.segmentId);
+   if (segmentRoom) {
+     redirect(`/${segmentRoom.room_id}`);
+   }
+
+   // Then handle room creation in try-catch
+   try {
+     // Create room logic...
+   } catch (e) {
+     // Only handle non-redirect errors
+   }
+   ```
+
+2. Success Criteria:
+   - Redirect errors are not caught
+   - Database/report errors show error page
+   - Clean separation of redirect and error handling
+
+Would you like me to:
+
+1. Update the page component with the new error handling?
+2. Add more specific error types?
+3. Add logging for different error cases?
