@@ -12,11 +12,8 @@ interface PageProps {
 }
 
 export default async function Page({ params }: PageProps) {
-  // First check if segment room exists
   const segmentRoom = await getSegmentRoom(params.segmentId);
-  console.log("Existing segment room:", segmentRoom);
 
-  // If room exists, redirect immediately
   if (segmentRoom?.room_id) {
     redirect(`/${segmentRoom.room_id}`);
   }
@@ -24,7 +21,6 @@ export default async function Page({ params }: PageProps) {
   let newRoomId: string | null = null;
 
   try {
-    // Get segment details and artist account ID
     const {
       segment,
       artistAccountId,
@@ -39,21 +35,11 @@ export default async function Page({ params }: PageProps) {
       throw new Error("Artist account not found for segment");
     }
 
-    console.log("Found segment:", {
-      id: segment.id,
-      name: segment.name,
-      artistAccountId,
-    });
-
-    // Generate report first
     const reportId = await createReport(segment.id);
     if (!reportId) {
       throw new Error("Failed to generate segment report");
     }
 
-    console.log("Generated report:", { reportId });
-
-    // Create a new room with the report
     const { new_room, error: roomError } = await createRoomWithReport({
       account_id: artistAccountId,
       topic: `Segment: ${segment.name}`,
@@ -64,26 +50,20 @@ export default async function Page({ params }: PageProps) {
       throw new Error(roomError?.message || "Failed to create room");
     }
 
-    console.log("Created room:", { id: new_room.id });
     newRoomId = new_room.id;
 
-    // Create segment room record
-    const newSegmentRoom = await createSegmentRoom({
+    await createSegmentRoom({
       segment_id: params.segmentId,
       room_id: new_room.id,
     });
-
-    console.log("Created segment room:", newSegmentRoom);
   } catch (e) {
     console.error("Error in segment page:", e);
-    throw e; // Re-throw to let Next.js error boundary handle it
+    throw e;
   }
 
-  // Redirect after successful creation
   if (newRoomId) {
     redirect(`/${newRoomId}`);
   }
 
-  // This should never be reached
   throw new Error("Failed to create or find room");
 }
