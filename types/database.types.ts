@@ -1703,6 +1703,42 @@ export type Database = {
           },
         ]
       }
+      segment_rooms: {
+        Row: {
+          id: string
+          room_id: string
+          segment_id: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          room_id: string
+          segment_id: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          room_id?: string
+          segment_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "segment_rooms_room_id_fkey"
+            columns: ["room_id"]
+            isOneToOne: false
+            referencedRelation: "rooms"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "segment_rooms_segment_id_fkey"
+            columns: ["segment_id"]
+            isOneToOne: false
+            referencedRelation: "segments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       segments: {
         Row: {
           id: string

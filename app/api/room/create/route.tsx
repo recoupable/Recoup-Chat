@@ -1,4 +1,4 @@
-import supabase from "@/lib/supabase/serverClient";
+import { createRoomWithReport } from "@/lib/supabase/createRoomWithReport";
 import { NextRequest } from "next/server";
 
 export async function GET(req: NextRequest) {
@@ -6,35 +6,25 @@ export async function GET(req: NextRequest) {
   const account_id = req.nextUrl.searchParams.get("account_id");
   const report_id = req.nextUrl.searchParams.get("report_id");
 
-  try {
-    const { data: new_room, error } = await supabase
-      .from("rooms")
-      .insert({
-        account_id,
-        topic,
-      })
-      .select("*")
-      .single();
-
-    if (report_id)
-      await supabase.from("room_reports").insert({
-        room_id: new_room.id,
-        report_id,
-      });
+  if (!topic || !account_id) {
     return Response.json(
-      {
-        new_room: {
-          ...new_room,
-          memories: [],
-          rooms_reports: report_id ? [report_id] : [],
-        },
-        error,
-      },
-      { status: 200 },
+      { message: "Missing required parameters" },
+      { status: 400 }
     );
+  }
+
+  try {
+    const result = await createRoomWithReport({
+      account_id,
+      topic,
+      report_id: report_id || undefined,
+    });
+
+    return Response.json(result, { status: 200 });
   } catch (error) {
-    console.error(error);
-    const message = error instanceof Error ? error.message : "failed";
+    console.error("Error in /api/room/create:", error);
+    const message =
+      error instanceof Error ? error.message : "Failed to create room";
     return Response.json({ message }, { status: 400 });
   }
 }
