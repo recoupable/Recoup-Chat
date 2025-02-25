@@ -5,6 +5,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { createRoomWithReport } from "@/lib/supabase/createRoomWithReport";
 import { createSegmentRoom } from "@/lib/supabase/createSegmentRoom";
 import { getSegmentWithArtist } from "@/lib/supabase/getSegmentWithArtist";
+import createReport from "@/lib/report/createReport";
 
 interface PageProps {
   params: {
@@ -53,10 +54,19 @@ export default async function Page({ params }: PageProps) {
       artistAccountId,
     });
 
-    // Create a new room
+    // Generate report first
+    const reportId = await createReport(segment.id);
+    if (!reportId) {
+      throw new Error("Failed to generate segment report");
+    }
+
+    console.log("Generated report:", { reportId });
+
+    // Create a new room with the report
     const { new_room, error: roomError } = await createRoomWithReport({
       account_id: artistAccountId,
       topic: `Segment: ${segment.name}`,
+      report_id: reportId,
     });
 
     if (roomError || !new_room) {
