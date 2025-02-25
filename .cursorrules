@@ -86,155 +86,99 @@ The goal is to help you maintain a big picture as well as the progress of the ta
 
 # Scratchpad
 
-## Current Task: Redirect /segment/[segmentId] to Chat (Step 27)
+## Current Task: Chat Page - Room Reports Check (Step 28)
 
-### Task Analysis
+### Task Analysis (Refactored)
 
-Current:
+Core Issue:
 
-- /segment/[segmentId] shows SegmentPage component
-- No redirection to chat page when room exists
-- Room ID is available in segmentRoom.room_id
+- Current separation between ChatReport and Chat creates layout issues
+- Need simpler, more cohesive component structure
 
-Required:
+Current Structure:
 
-- When segment_room exists, redirect to /[room_id]
-- Keep report generation flow for new segments
-- Maintain error handling and loading states
+```tsx
+// ChatPageClient.tsx
+<div className="size-full flex flex-col">
+  <div className="flex-1 overflow-y-auto">{reportId && <ChatReport />}</div>
+  <Chat />
+</div>
+```
 
-### Current Implementation
+Better Structure:
 
-1. Flow:
+```tsx
+// ChatPageClient.tsx
+<Chat reportId={reportId} />;
 
-   ```typescript
-   // page.tsx
-   const segmentRoom = await getSegmentRoom(params.segmentId);
-   if (segmentRoom) {
+// Chat.tsx
+const Chat = ({ reportId }: { reportId?: string }) => {
+  return (
+    <div className="size-full flex flex-col">
+      {reportId && <ChatReport reportId={reportId} />}
+      <Messages />
+      <ChatInput />
+    </div>
+  );
+};
+```
+
+### Required Changes
+
+[X] Phase 1: Report Integration
+
+1.  Add getRoomReports function ✓
+2.  Create ChatReport component ✓
+3.  Display report data ✓
+
+[ ] Phase 2: Component Restructuring
+
+1.  Add reportId prop to Chat component
+2.  Move ChatReport import to Chat.tsx
+3.  Update Chat layout to handle report
+
+[ ] Phase 3: Layout Integration
+
+1.  Remove layout code from ChatPageClient
+2.  Handle scrolling in Chat component
+3.  Ensure proper spacing between report and messages
+
+### Implementation Plan
+
+1. Update Chat Component:
+
+   ```tsx
+   interface ChatProps {
+     reportId?: string;
+   }
+
+   const Chat = ({ reportId }: ChatProps) => {
      return (
-       <SegmentPage segmentRoom={segmentRoom} isLoading={false} />
+       <div className="size-full flex flex-col bg-white rounded-xl overflow-hidden">
+         {reportId && <ChatReport reportId={reportId} />}
+         <ScrollTo>{({ scroll }) => <Messages scroll={scroll} />}</ScrollTo>
+         <ChatInput />
+       </div>
      );
+   };
+   ```
+
+2. Simplify ChatPageClient:
+
+   ```tsx
+   export default function ChatPageClient({ reportId }: ChatPageClientProps) {
+     return <Chat reportId={reportId} />;
    }
    ```
 
-2. Missing Steps:
-   - Import redirect from next/navigation
-   - Add redirect when segmentRoom exists
-   - Keep error handling for failed redirects
-
-### Required Changes
-
-[X] Phase 1: Add Redirect
-
-1.  Import redirect from next/navigation
-2.  Add redirect when segmentRoom exists
-3.  Keep fallback for failed redirects
-
-[ ] Phase 2: Fix Error Handling
-
-1.  Move redirect outside try-catch
-2.  Only catch database/report generation errors
-3.  Let Next.js handle redirect errors
-
-### Implementation Plan
-
-1. New Flow:
-
-   ```typescript
-   // Check room first, outside try-catch
-   const segmentRoom = await getSegmentRoom(params.segmentId);
-   if (segmentRoom) {
-     redirect(`/${segmentRoom.room_id}`);
-   }
-
-   // Then handle room creation in try-catch
-   try {
-     // Create room logic...
-   } catch (e) {
-     // Only handle non-redirect errors
-   }
-   ```
-
-2. Success Criteria:
-   - Redirect errors are not caught
-   - Database/report errors show error page
-   - Clean separation of redirect and error handling
+3. Success Criteria:
+   - Single source of layout management (Chat component)
+   - Natural flow between report and messages
+   - Proper scrolling behavior
+   - Maintains existing styling
 
 Would you like me to:
 
-1. Update the page component with the new error handling?
-2. Add more specific error types?
-3. Add logging for different error cases?
-
-### Error Analysis
-
-Error Message:
-
-```
-Error: NEXT_REDIRECT
-    at getRedirectError (webpack-internal:///(rsc)/./node_modules/.pnpm/next@14.2.13...)
-    at redirect (webpack-internal:///(rsc)/./node_modules/.pnpm/next@14.2.13...)
-    at Page (webpack-internal:///(rsc)/./app/segment/[segmentId]/page.tsx:32:70)
-digest: 'NEXT_REDIRECT;replace;/51ecc2cf-7896-45c2-880a-a0b9f5487b04;307;'
-```
-
-Root Cause:
-
-1. The redirect is working (307 status code) but being caught in the try-catch block
-2. Next.js throws a special NEXT_REDIRECT error for redirects, which we shouldn't catch
-
-Current Flow:
-
-```typescript
-try {
-  if (segmentRoom) {
-    redirect(`/${segmentRoom.room_id}`); // This throws NEXT_REDIRECT
-  }
-} catch (e) {
-  // We're catching the NEXT_REDIRECT error here, which we shouldn't
-  return <ErrorComponent />;
-}
-```
-
-### Required Changes
-
-[X] Phase 1: Add Redirect
-
-1.  Import redirect from next/navigation ✓
-2.  Add redirect when segmentRoom exists ✓
-3.  Keep fallback for failed redirects ✓
-
-[ ] Phase 2: Fix Error Handling
-
-1.  Move redirect outside try-catch
-2.  Only catch database/report generation errors
-3.  Let Next.js handle redirect errors
-
-### Implementation Plan
-
-1. New Flow:
-
-   ```typescript
-   // Check room first, outside try-catch
-   const segmentRoom = await getSegmentRoom(params.segmentId);
-   if (segmentRoom) {
-     redirect(`/${segmentRoom.room_id}`);
-   }
-
-   // Then handle room creation in try-catch
-   try {
-     // Create room logic...
-   } catch (e) {
-     // Only handle non-redirect errors
-   }
-   ```
-
-2. Success Criteria:
-   - Redirect errors are not caught
-   - Database/report errors show error page
-   - Clean separation of redirect and error handling
-
-Would you like me to:
-
-1. Update the page component with the new error handling?
-2. Add more specific error types?
-3. Add logging for different error cases?
+1. Update the Chat component with the new prop?
+2. Simplify ChatPageClient?
+3. Move the layout logic to Chat?
