@@ -1,3 +1,5 @@
+"use client";
+
 import { useMessagesProvider } from "@/providers/MessagesProvider";
 import ChatInput from "./ChatInput";
 import Messages from "./Messages";
