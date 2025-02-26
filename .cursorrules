@@ -103,6 +103,7 @@ Required Behavior:
 - No user prompting needed for segmentId
 - Maintain existing functionality
 - Get segmentId by querying with room_id
+- Only load segment tool when needed
 
 ### Implementation Plan - REVISED
 
@@ -112,11 +113,13 @@ Required Behavior:
 [X] Phase 4: Route Integration
 [X] Phase 5: Room-Segment Integration
 [X] Phase 6: Tool Simplification
+[X] Phase 7: Agent Optimization
 
 1. [x] Update chat route to accept segmentId in request body
 
    - Added segmentId extraction from request body
    - Pass segmentId to agent.stream() in configurable
+   - Pass segmentId to agent initialization
 
 2. [x] Update getSegmentFansTool to use configurable context
 
@@ -160,10 +163,18 @@ Required Behavior:
    - Updated schema and description
    - Simplified error messages
 
-6. [ ] Testing
+6. [x] Optimize Agent Initialization
+
+   - Added segmentId to AgentOptions type
+   - Only include getSegmentFansTool when segmentId is provided
+   - Pass segmentId through configurable context
+   - Updated chat route to pass segmentId to initialization
+
+7. [ ] Testing
    - Test with segmentId from room query
    - Test fallback behavior without segmentId
    - Verify tool receives segmentId from context
+   - Verify tool is only loaded when needed
 
 Benefits of this approach:
 
@@ -174,6 +185,7 @@ Benefits of this approach:
 5. Properly handles room-based navigation
 6. Type-safe implementation with proper error handling
 7. Cleaner tool implementation with single source of truth (context)
+8. Optimized agent loading - tools only included when needed
 
 Status: 🚧 Ready for Testing
 
@@ -185,6 +197,7 @@ Testing Plan:
    - Verify segmentId is fetched from room_id
    - Check server logs for tool execution
    - Confirm tool works with fetched segmentId
+   - Verify tool is not loaded in non-segment chats
 
 2. Error Cases
 
@@ -196,9 +209,11 @@ Testing Plan:
    - Full flow from room navigation to tool execution
    - Verify context persistence across messages
    - Check memory saving with correct context
+   - Verify tool availability matches segmentId presence
 
 Next Steps:
 
 1. Test the implementation manually
 2. Monitor logs for correct data flow
 3. Verify error handling in all components
+4. Check tool loading behavior
