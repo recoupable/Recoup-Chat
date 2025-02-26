@@ -8,7 +8,6 @@ type FanSegmentWithSocial = {
 };
 
 export async function getSegmentFans(segmentId: string): Promise<Social[]> {
-  console.log("[getSegmentFans] Starting query for segmentId:", segmentId);
   try {
     const { data: fans, error } = (await supabase
       .from("fan_segments")
@@ -35,11 +34,6 @@ export async function getSegmentFans(segmentId: string): Promise<Social[]> {
     }
 
     const results = (fans || []).map((fan) => fan.socials);
-    console.log("[getSegmentFans] Query successful:", {
-      segmentId,
-      fansFound: results.length,
-      sampleIds: results.slice(0, 3).map((fan) => fan.id),
-    });
     return results;
   } catch (error) {
     console.error("[getSegmentFans] Unexpected error:", {

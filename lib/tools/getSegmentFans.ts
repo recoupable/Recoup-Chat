@@ -5,8 +5,6 @@ import { getSegmentFans } from "../supabase/getSegmentFans";
 export const getSegmentFansTool = tool(
   async (_input: Record<string, never>, runnable) => {
     const segmentId = runnable.configurable?.segmentId;
-    console.log("[SegmentFansTool] Called with context segmentId:", segmentId);
-
     if (!segmentId) {
       const error = "No segment ID provided in context";
       console.error("[SegmentFansTool] Error:", error);
@@ -19,12 +17,6 @@ export const getSegmentFansTool = tool(
     try {
       const fans = await getSegmentFans(segmentId);
       const response = JSON.stringify({ fans, error: null });
-      console.log("[SegmentFansTool] Successfully returned", {
-        fansCount: fans.length,
-        firstFan: fans[0]
-          ? { id: fans[0].id, username: fans[0].username }
-          : null,
-      });
       return response;
     } catch (error) {
       const errorMessage =

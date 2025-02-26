@@ -9,7 +9,6 @@ export const getSegmentRoom = async (segmentId: string) => {
 
   if (error) {
     if (error.code === "PGRST116") {
-      console.log(`No segment room found for segmentId: ${segmentId}`);
       return null;
     }
 
