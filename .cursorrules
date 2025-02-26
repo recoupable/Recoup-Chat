@@ -83,137 +83,115 @@ The goal is to help you maintain a big picture as well as the progress of the ta
 - When mapping over data to create UI elements, extract complex elements into their own components to improve reusability, testability, and maintainability rather than defining them inline
 - When using Langchain with Vercel AI SDK, use the built-in LangChainAdapter to properly connect streaming responses with the UI
 - When using LangGraph's MemorySaver, ensure thread_id is provided in the configurable property of agent.stream() calls
+- When implementing LangGraph tools, prefer using context over input parameters for values that should be available throughout the conversation
+- For LangGraph agents, conditionally load tools based on context to optimize performance and maintain clean agent state
+- When using React Query for polling endpoints, set appropriate staleTime and retry logic to prevent unnecessary refetching
 
 # Scratchpad
 
-## Current Task: SegmentFansTool (Step 30) - Context Improvement
+## Current Task: Optimize Segment Report Polling (Step 31)
 
-### Task Analysis - UPDATED
+### Task Analysis
 
 Current State:
 
-- Tool is working but requires manual segmentId input
-- AI has to prompt user for segmentId
-- We have access to segmentId in chat context
-- Currently trying to get segmentId from URL params, but users navigate via room_id
+- useReportData hook polls /api/segment_report?reportId every 3 seconds indefinitely
+- Causes unnecessary database queries after report is ready
+- No condition to stop polling once report is complete
 
 Required Behavior:
 
-- Tool should automatically get segmentId from chat context
-- No user prompting needed for segmentId
-- Maintain existing functionality
-- Get segmentId by querying with room_id
-- Only load segment tool when needed
+- Only poll while report is being generated
+- Stop polling when both report and next_steps fields are non-null
+- No unnecessary queries after report is ready
 
-### Implementation Plan - REVISED
+### Current Implementation Analysis
 
-[X] Phase 1: Database Schema Analysis
-[X] Phase 2: Core Implementation
-[X] Phase 3: Integration
-[X] Phase 4: Route Integration
-[X] Phase 5: Room-Segment Integration
-[X] Phase 6: Tool Simplification
-[X] Phase 7: Agent Optimization
+1. Database Schema (Existing):
 
-1. [x] Update chat route to accept segmentId in request body
+```typescript
+// segment_reports table
+{
+  artist_id: string | null;
+  id: string;
+  next_steps: string | null; // Used to determine completion
+  report: string | null; // Used to determine completion
+  updated_at: string | null;
+}
+```
 
-   - Added segmentId extraction from request body
-   - Pass segmentId to agent.stream() in configurable
-   - Pass segmentId to agent initialization
+2. API Response:
 
-2. [x] Update getSegmentFansTool to use configurable context
+```typescript
+interface ReportData {
+  report: string;
+  next_steps: string;
+  artist: {
+    name: string;
+    account_info: { image: string }[];
+  };
+}
+```
 
-   - Modified tool to accept optional segmentId
-   - Added context awareness using runnable.configurable
-   - Enhanced logging for better debugging
-   - Updated schema description
+3. Hook Implementation:
 
-3. [x] Update client-side chat component to pass segmentId
+```typescript
+useQuery({
+  queryKey: ["report", reportId],
+  queryFn: () => fetchReport(reportId),
+  refetchInterval: 3000,
+  enabled: !!reportId,
+  retry: 3,
+  staleTime: 1000,
+});
+```
 
-   - Added segmentId from URL params in useMessages hook
-   - Included in request body to chat API
+### Implementation Plan
 
-4. [x] Implement Room-Segment Integration
-       a. [x] Create Supabase Query Function
+1. [x] Analyze Report Structure
 
-   - Created getSegmentIdForRoomId with error handling
-   - Added detailed logging for debugging
+   - ✓ Reviewed database schema
+   - ✓ Identified completion indicators (report & next_steps)
+   - ✓ Mapped out data flow
 
-   b. [x] Create API Route
+2. [x] Update useReportData Hook
 
-   - Implemented /api/roomSegment GET endpoint
-   - Added proper error handling and validation
+   - ✓ Modify refetchInterval to check both fields
+   - ✓ Add completion check logic
+   - ✓ Update error handling
 
-   c. [x] Create React Query Hook
+3. [ ] Testing
+   - Verify polling stops when both fields are non-null
+   - Check error handling
+   - Monitor database query patterns
 
-   - Created useChatSegment hook with caching
-   - Added error handling and types
-   - Set appropriate stale time and retry logic
-
-   d. [x] Update useMessages Hook
-
-   - Replaced URL param with query result
-   - Added error handling
-   - Fixed type safety issues with chatId
-
-5. [x] Simplify Tool Implementation
-
-   - Removed input option from getSegmentFansTool
-   - Tool now only uses context.segmentId
-   - Updated schema and description
-   - Simplified error messages
-
-6. [x] Optimize Agent Initialization
-
-   - Added segmentId to AgentOptions type
-   - Only include getSegmentFansTool when segmentId is provided
-   - Pass segmentId through configurable context
-   - Updated chat route to pass segmentId to initialization
-
-7. [ ] Testing
-   - Test with segmentId from room query
-   - Test fallback behavior without segmentId
-   - Verify tool receives segmentId from context
-   - Verify tool is only loaded when needed
-
-Benefits of this approach:
-
-1. Simpler - No need to modify agent initialization
-2. More flexible - Can change segmentId per request
-3. Follows existing pattern of using configurable in agent.stream()
-4. Maintains backward compatibility
-5. Properly handles room-based navigation
-6. Type-safe implementation with proper error handling
-7. Cleaner tool implementation with single source of truth (context)
-8. Optimized agent loading - tools only included when needed
-
-Status: 🚧 Ready for Testing
-
-Testing Plan:
-
-1. Manual Testing
-
-   - Navigate to a chat room
-   - Verify segmentId is fetched from room_id
-   - Check server logs for tool execution
-   - Confirm tool works with fetched segmentId
-   - Verify tool is not loaded in non-segment chats
-
-2. Error Cases
-
-   - Test behavior when room has no segment
-   - Verify error handling in API route
-   - Check error message when context is missing
-
-3. Integration Testing
-   - Full flow from room navigation to tool execution
-   - Verify context persistence across messages
-   - Check memory saving with correct context
-   - Verify tool availability matches segmentId presence
+Status: 🚧 Testing Phase
 
 Next Steps:
 
-1. Test the implementation manually
-2. Monitor logs for correct data flow
-3. Verify error handling in all components
-4. Check tool loading behavior
+1. Test the updated polling behavior
+2. Verify error handling
+3. Monitor database query patterns
+
+### Technical Details
+
+1. Completion Check Logic:
+
+```typescript
+const isReportComplete = (data: ReportData | undefined) => {
+  return Boolean(data?.report && data?.next_steps);
+};
+```
+
+2. Updated Hook Configuration:
+
+```typescript
+useQuery({
+  queryKey: ["report", reportId],
+  queryFn: () => fetchReport(reportId),
+  refetchInterval: (data) => (isReportComplete(data) ? false : 3000),
+  enabled: !!reportId,
+  retry: 3,
+  staleTime: 1000,
+});
+```
