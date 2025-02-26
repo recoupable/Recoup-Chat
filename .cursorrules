@@ -86,4 +86,119 @@ The goal is to help you maintain a big picture as well as the progress of the ta
 
 # Scratchpad
 
-Ready for next task.
+## Current Task: SegmentFansTool (Step 30) - Context Improvement
+
+### Task Analysis - UPDATED
+
+Current State:
+
+- Tool is working but requires manual segmentId input
+- AI has to prompt user for segmentId
+- We have access to segmentId in chat context
+- Currently trying to get segmentId from URL params, but users navigate via room_id
+
+Required Behavior:
+
+- Tool should automatically get segmentId from chat context
+- No user prompting needed for segmentId
+- Maintain existing functionality
+- Get segmentId by querying with room_id
+
+### Implementation Plan - REVISED
+
+[X] Phase 1: Database Schema Analysis
+[X] Phase 2: Core Implementation
+[X] Phase 3: Integration
+[X] Phase 4: Route Integration
+[X] Phase 5: Room-Segment Integration
+[X] Phase 6: Tool Simplification
+
+1. [x] Update chat route to accept segmentId in request body
+
+   - Added segmentId extraction from request body
+   - Pass segmentId to agent.stream() in configurable
+
+2. [x] Update getSegmentFansTool to use configurable context
+
+   - Modified tool to accept optional segmentId
+   - Added context awareness using runnable.configurable
+   - Enhanced logging for better debugging
+   - Updated schema description
+
+3. [x] Update client-side chat component to pass segmentId
+
+   - Added segmentId from URL params in useMessages hook
+   - Included in request body to chat API
+
+4. [x] Implement Room-Segment Integration
+       a. [x] Create Supabase Query Function
+
+   - Created getSegmentIdForRoomId with error handling
+   - Added detailed logging for debugging
+
+   b. [x] Create API Route
+
+   - Implemented /api/roomSegment GET endpoint
+   - Added proper error handling and validation
+
+   c. [x] Create React Query Hook
+
+   - Created useChatSegment hook with caching
+   - Added error handling and types
+   - Set appropriate stale time and retry logic
+
+   d. [x] Update useMessages Hook
+
+   - Replaced URL param with query result
+   - Added error handling
+   - Fixed type safety issues with chatId
+
+5. [x] Simplify Tool Implementation
+
+   - Removed input option from getSegmentFansTool
+   - Tool now only uses context.segmentId
+   - Updated schema and description
+   - Simplified error messages
+
+6. [ ] Testing
+   - Test with segmentId from room query
+   - Test fallback behavior without segmentId
+   - Verify tool receives segmentId from context
+
+Benefits of this approach:
+
+1. Simpler - No need to modify agent initialization
+2. More flexible - Can change segmentId per request
+3. Follows existing pattern of using configurable in agent.stream()
+4. Maintains backward compatibility
+5. Properly handles room-based navigation
+6. Type-safe implementation with proper error handling
+7. Cleaner tool implementation with single source of truth (context)
+
+Status: 🚧 Ready for Testing
+
+Testing Plan:
+
+1. Manual Testing
+
+   - Navigate to a chat room
+   - Verify segmentId is fetched from room_id
+   - Check server logs for tool execution
+   - Confirm tool works with fetched segmentId
+
+2. Error Cases
+
+   - Test behavior when room has no segment
+   - Verify error handling in API route
+   - Check error message when context is missing
+
+3. Integration Testing
+   - Full flow from room navigation to tool execution
+   - Verify context persistence across messages
+   - Check memory saving with correct context
+
+Next Steps:
+
+1. Test the implementation manually
+2. Monitor logs for correct data flow
+3. Verify error handling in all components

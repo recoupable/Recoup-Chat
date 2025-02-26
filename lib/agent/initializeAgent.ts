@@ -4,6 +4,7 @@ import { MemorySaver } from "@langchain/langgraph";
 import validateEnvironment from "./validateEnvironment";
 import type { AgentOptions, AgentResponse } from "./types";
 import { AI_MODEL, DESCRIPTION } from "../consts";
+import { getSegmentFansTool } from "../tools/getSegmentFans";
 
 /**
  * Initialize the agent with LangGraph
@@ -22,9 +23,14 @@ async function initializeAgent(
 
     const memory = new MemorySaver();
 
+    const defaultTools = [getSegmentFansTool];
+    const tools = options.tools
+      ? [...defaultTools, ...options.tools]
+      : defaultTools;
+
     const agent = createReactAgent({
       llm,
-      tools: options.tools || [],
+      tools,
       messageModifier: DESCRIPTION,
       checkpointSaver: memory,
     });
