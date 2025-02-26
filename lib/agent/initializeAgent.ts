@@ -1,9 +1,9 @@
-import { ChatOpenAI } from "@langchain/openai";
+import { ChatAnthropic } from "@langchain/anthropic";
 import { createReactAgent } from "@langchain/langgraph/prebuilt";
 import { MemorySaver } from "@langchain/langgraph";
 import validateEnvironment from "./validateEnvironment";
 import type { AgentOptions, AgentResponse } from "./types";
-import { AI_MODEL, DESCRIPTION } from "../consts";
+import { DESCRIPTION } from "../consts";
 import { getSegmentFansTool } from "../tools/getSegmentFans";
 
 /**
@@ -17,8 +17,8 @@ async function initializeAgent(
   try {
     validateEnvironment();
 
-    const llm = new ChatOpenAI({
-      modelName: AI_MODEL,
+    const llm = new ChatAnthropic({
+      modelName: "claude-3-7-sonnet-20250219",
     });
 
     const memory = new MemorySaver();
@@ -40,8 +40,15 @@ async function initializeAgent(
     console.error("[Agent] Failed to initialize agent:", {
       error,
       options,
-      model: AI_MODEL,
+      model: "claude-3.7-sonnet-reasoning",
       threadId: options.threadId,
+      errorDetails:
+        error instanceof Error
+          ? {
+              message: error.message,
+              stack: error.stack,
+            }
+          : "Unknown error",
     });
     throw error;
   }

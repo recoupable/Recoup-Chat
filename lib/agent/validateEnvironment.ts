@@ -1,4 +1,4 @@
-const REQUIRED_ENV_VARS = ["OPENAI_API_KEY"] as const;
+const REQUIRED_ENV_VARS = ["ANTHROPIC_API_KEY"] as const;
 
 type RequiredEnvVar = (typeof REQUIRED_ENV_VARS)[number];
 

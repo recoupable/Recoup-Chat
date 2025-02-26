@@ -19,10 +19,24 @@ export interface AgentOptions {
   segmentId?: string;
 }
 
+interface TextContent {
+  type: "text";
+  text: string;
+}
+
+export interface ToolUseContent {
+  type: "tool_use";
+  id: string;
+  name: string;
+  input: Record<string, unknown>;
+}
+
+type ContentItem = TextContent | ToolUseContent;
+
 /**
  * Represents a message from an agent or tool
  */
 export type AgentMessage = {
-  content: string;
+  content: ContentItem[];
   [key: string]: unknown;
 };

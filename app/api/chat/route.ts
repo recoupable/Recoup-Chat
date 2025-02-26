@@ -42,13 +42,16 @@ export async function POST(req: Request) {
         segmentId: segment_id,
       },
     });
+
     const transformedStream = getTransformedStream(stream);
+
     return LangChainAdapter.toDataStreamResponse(transformedStream);
   } catch (error) {
     console.error("[Chat] Error processing request:", {
       error,
       message: error instanceof Error ? error.message : "Unknown error",
       stack: error instanceof Error ? error.stack : undefined,
+      cause: error instanceof Error ? error.cause : undefined,
     });
 
     return new Response(
