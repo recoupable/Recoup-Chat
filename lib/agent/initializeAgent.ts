@@ -23,7 +23,8 @@ async function initializeAgent(
 
     const memory = new MemorySaver();
 
-    const defaultTools = [getSegmentFansTool];
+    // Only include getSegmentFansTool if segmentId is provided
+    const defaultTools = options.segmentId ? [getSegmentFansTool] : [];
     const tools = options.tools
       ? [...defaultTools, ...options.tools]
       : defaultTools;

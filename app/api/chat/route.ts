@@ -29,6 +29,7 @@ export async function POST(req: Request) {
 
     const { agent } = await initializeAgent({
       threadId: room_id || "default",
+      segmentId: segment_id,
     });
 
     const messageInput = {

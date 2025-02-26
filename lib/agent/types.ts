@@ -16,6 +16,7 @@ export interface AgentContext {
 export interface AgentOptions {
   threadId?: string;
   tools?: Tool[];
+  segmentId?: string;
 }
 
 /**
