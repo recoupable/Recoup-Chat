@@ -6,6 +6,7 @@ import type { AgentOptions, AgentResponse } from "./types";
 import { DESCRIPTION } from "../consts";
 import { getSegmentFansTool } from "../tools/getSegmentFans";
 
+const AI_MODEL = "claude-3-7-sonnet-20250219";
 /**
  * Initialize the agent with LangGraph
  * @param options Configuration options for the agent
@@ -18,7 +19,7 @@ async function initializeAgent(
     validateEnvironment();
 
     const llm = new ChatAnthropic({
-      modelName: "claude-3-7-sonnet-20250219",
+      modelName: AI_MODEL,
     });
 
     const memory = new MemorySaver();
@@ -40,7 +41,7 @@ async function initializeAgent(
     console.error("[Agent] Failed to initialize agent:", {
       error,
       options,
-      model: "claude-3.7-sonnet-reasoning",
+      model: AI_MODEL,
       threadId: options.threadId,
       errorDetails:
         error instanceof Error
