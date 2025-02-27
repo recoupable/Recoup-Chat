@@ -96,14 +96,74 @@ The goal is to help you maintain a big picture as well as the progress of the ta
 
 # Scratchpad
 
-## Current Task: Ready for new task
+## Current Task: Refactor AssistantMessage.tsx to Follow Single Responsibility Principle
 
-Status: 🟢 Ready
+Status: 🟡 Planning
 
-Previous task (Update Agent to Use ChatAnthropic) completed with following key outcomes:
+### Current Issues:
 
-1. Successfully integrated ChatAnthropic for basic message handling
-2. Implemented proper stream transformation for different message types
-3. Added comprehensive logging for debugging
-4. Fixed model name to use correct version
-5. Improved error handling for tool responses
+1. AssistantMessage.tsx contains multiple responsibilities:
+   - Text formatting (markdown, lists)
+   - JSON parsing and validation
+   - Message segmentation
+   - UI rendering
+
+### Implementation Plan:
+
+[X] Analyze current code structure
+[ ] Create new utility files:
+
+- `lib/formatting/textFormatting.ts`
+
+  - Contains formatText function
+  - Handles markdown and list formatting
+  - Reusable across app
+
+- `lib/json/messageParser.ts`
+
+  - Contains findJsonObjects function
+  - JSON validation and extraction
+  - Type definitions for parsed results
+
+- `lib/messages/messageSegmentation.ts`
+  - Contains createMessageSegments function
+  - Types for MessageSegment
+  - Message content processing logic
+
+[ ] Create new components:
+
+- `components/shared/FormattedText.tsx`
+
+  - Handles text rendering with formatting
+  - Uses textFormatting utilities
+
+- `components/shared/MessageContent.tsx`
+  - Handles segment rendering
+  - Uses FormattedText and ProfilePictureCircles
+
+[ ] Update AssistantMessage.tsx:
+
+- Keep only core message display logic
+- Import and use new components/utilities
+- Focus on layout and composition
+
+### Technical Considerations:
+
+- Ensure proper type exports/imports
+- Maintain existing functionality
+- Add unit tests for new utilities
+- Document new components/functions
+
+### Progress:
+
+- Initial analysis complete
+- Plan created
+- Ready to implement changes
+
+Next Steps:
+
+1. Create utility files
+2. Create new components
+3. Update AssistantMessage.tsx
+4. Test functionality
+5. Add documentation
