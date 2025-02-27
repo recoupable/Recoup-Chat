@@ -1,9 +1,9 @@
 import { SupabaseClient } from "@supabase/supabase-js";
-import { Database } from "../database.types";
+import { Database } from "@/types/database.types";
 
 const getFollowersInPast = async (
   client: SupabaseClient<Database, "public">,
-  duration: number,
+  duration: number
 ) => {
   const currentEpochTime = Date.now();
   const { count } = await client

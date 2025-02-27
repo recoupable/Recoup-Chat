@@ -1,12 +1,12 @@
 import { SupabaseClient } from "@supabase/supabase-js";
-import { Database } from "../database.types";
+import { Database } from "@/types/database.types";
 import { CampaignRecord } from "@/types/Artist";
 
 const getStreamsCount = async (
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   client: SupabaseClient<Database, "public", any>,
   artistId: string,
-  email: string,
+  email: string
 ) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let campaignIds = [] as any;
