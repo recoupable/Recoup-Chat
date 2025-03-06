@@ -1,10 +1,3 @@
-export const languages = [
-  { name: "cURL", value: "curl" },
-  { name: "Python", value: "python" },
-  { name: "JavaScript", value: "javascript" },
-  { name: "TypeScript", value: "typescript" },
-];
-
 export const codeExamples = {
   curl: `curl -X GET "http://143.198.164.177:3000/api/agentkit/run" \\
   -H "campaignId: YOUR_CAMPAIGN_ID" \\

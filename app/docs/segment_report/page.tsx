@@ -4,13 +4,9 @@ import { useState } from "react";
 import { CodeBlock } from "@/components/docs/CodeBlock";
 import { LanguageSelector } from "@/components/docs/LanguageSelector";
 import { ResponseTable } from "@/components/docs/ResponseTable";
-import {
-  languages,
-  codeExamples,
-  exampleResponse,
-  responseProperties,
-  Language,
-} from "./constants";
+import { codeExamples, exampleResponse, responseProperties } from "./constants";
+import { Language } from "@/types/Docs";
+import { languages } from "@/types/Docs";
 
 export default function SegmentReportDocs() {
   const [selectedLanguage, setSelectedLanguage] = useState<Language>(

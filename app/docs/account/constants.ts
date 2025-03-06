@@ -1,10 +1,3 @@
-export const languages = [
-  { name: "cURL", value: "curl" },
-  { name: "Python", value: "python" },
-  { name: "JavaScript", value: "javascript" },
-  { name: "TypeScript", value: "typescript" },
-];
-
 export const codeExamples = {
   curl: `curl -X GET "https://api.recoupable.com/api/account" \\
   -H "Content-Type: application/json" \\

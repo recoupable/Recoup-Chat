@@ -6,17 +6,13 @@ import { LanguageSelector } from "@/components/docs/LanguageSelector";
 import { ResponseTable } from "@/components/docs/ResponseTable";
 import { AuthSection } from "@/components/docs/AuthSection";
 import { ViewAgentSection } from "@/components/docs/ViewAgentSection";
-import {
-  languages,
-  codeExamples,
-  exampleResponse,
-  responseProperties,
-} from "./constants";
+import { codeExamples, exampleResponse, responseProperties } from "./constants";
+import { Language, languages } from "@/types/Docs";
 
 export default function AgentKitDocs() {
-  const [selectedLanguage, setSelectedLanguage] = useState<
-    (typeof languages)[0]
-  >(languages[0]);
+  const [selectedLanguage, setSelectedLanguage] = useState<Language>(
+    languages[0]
+  );
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8 h-screen overflow-y-auto">

@@ -4,13 +4,8 @@ import { useState } from "react";
 import { CodeBlock } from "@/components/docs/CodeBlock";
 import { LanguageSelector } from "@/components/docs/LanguageSelector";
 import { ResponseTable } from "@/components/docs/ResponseTable";
-import {
-  Language,
-  languages,
-  codeExamples,
-  exampleResponse,
-  responseProperties,
-} from "./constants";
+import { codeExamples, exampleResponse, responseProperties } from "./constants";
+import { languages, type Language } from "@/types/Docs";
 
 export default function PostsDocs() {
   const [selectedLanguage, setSelectedLanguage] = useState<Language>(
