@@ -8,7 +8,7 @@ const plusJakartaSans = Plus_Jakarta_Sans({
 });
 
 const InitialChat = () => {
-  const words = useMemo(() => ["artist?", "campaign?", "fans?"], []);
+  const words = useMemo(() => ["artist?", "fans?"], []);
   const [currentWord, setCurrentWord] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
   const [wordIndex, setWordIndex] = useState(0);
