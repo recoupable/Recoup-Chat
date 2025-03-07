@@ -5,12 +5,24 @@ interface TwitterEmbedProps {
   url: string;
 }
 
-// Add TypeScript declaration for Twitter widget
+// Twitter widget options type
+interface TwitterWidgetOptions {
+  theme?: "light" | "dark";
+  dnt?: boolean;
+  conversation?: "all" | "none";
+}
+
+// Update TypeScript declaration for Twitter widget
 declare global {
   interface Window {
     twttr?: {
       widgets: {
-        load: () => void;
+        load: (element?: HTMLElement) => Promise<HTMLElement[]>;
+        createTweet: (
+          id: string,
+          element: HTMLElement,
+          options?: TwitterWidgetOptions
+        ) => Promise<HTMLElement>;
       };
     };
   }
@@ -20,6 +32,7 @@ export const TwitterEmbed = ({ url }: TwitterEmbedProps) => {
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
   const hasAttemptedLoad = useRef(false);
+  const tweetContainerRef = useRef<HTMLDivElement>(null);
 
   // Extract Twitter tweet ID from URL
   const extractTweetId = (url: string): string | null => {
@@ -33,39 +46,72 @@ export const TwitterEmbed = ({ url }: TwitterEmbedProps) => {
     return (twitterMatch && twitterMatch[1]) || (xMatch && xMatch[1]) || null;
   };
 
-  // Load Twitter widget script
+  // Load Twitter widget script and render tweet
   useEffect(() => {
-    if (!hasAttemptedLoad.current) {
+    if (!hasAttemptedLoad.current && tweetContainerRef.current) {
       hasAttemptedLoad.current = true;
 
-      if (!window.twttr) {
+      const tweetId = extractTweetId(url);
+      if (!tweetId) {
+        setHasError(true);
+        setIsLoading(false);
+        return;
+      }
+
+      // Function to render the tweet
+      const renderTweet = () => {
+        if (window.twttr && tweetContainerRef.current) {
+          try {
+            // Clear any previous content
+            while (tweetContainerRef.current.firstChild) {
+              tweetContainerRef.current.removeChild(
+                tweetContainerRef.current.firstChild
+              );
+            }
+
+            // Create tweet directly using the API
+            window.twttr.widgets
+              .createTweet(tweetId, tweetContainerRef.current, {
+                theme: "light",
+                dnt: true,
+                conversation: "none",
+              })
+              .then(() => {
+                setIsLoading(false);
+              })
+              .catch(() => {
+                setHasError(true);
+                setIsLoading(false);
+              });
+          } catch {
+            // Catch any errors during tweet creation
+            setHasError(true);
+            setIsLoading(false);
+          }
+        }
+      };
+
+      // Check if script is already in the document
+      const existingScript = document.querySelector(
+        'script[src="https://platform.twitter.com/widgets.js"]'
+      );
+
+      if (!existingScript) {
         const script = document.createElement("script");
         script.src = "https://platform.twitter.com/widgets.js";
         script.async = true;
-        script.onload = () => {
-          if (window.twttr) {
-            window.twttr.widgets.load();
-          }
+        script.onload = renderTweet;
+        script.onerror = () => {
+          setHasError(true);
+          setIsLoading(false);
         };
-        script.onerror = () => setHasError(true);
         document.body.appendChild(script);
       } else {
-        // If script is already loaded, just load the widgets
-        window.twttr.widgets.load();
+        // If script is already loaded, just render the tweet
+        renderTweet();
       }
     }
-  }, []);
-
-  // Handle loading completion
-  const handleLoad = () => {
-    setIsLoading(false);
-  };
-
-  // Handle error
-  const handleError = () => {
-    setIsLoading(false);
-    setHasError(true);
-  };
+  }, [url]);
 
   // Render fallback link if embedding fails
   const renderFallbackLink = () => (
@@ -80,9 +126,7 @@ export const TwitterEmbed = ({ url }: TwitterEmbedProps) => {
     </a>
   );
 
-  // Check if we have a valid tweet ID
-  const tweetId = extractTweetId(url);
-  if (!tweetId || hasError) {
+  if (hasError) {
     return renderFallbackLink();
   }
 
@@ -93,19 +137,7 @@ export const TwitterEmbed = ({ url }: TwitterEmbedProps) => {
           Loading...
         </div>
       )}
-      <blockquote
-        className="twitter-tweet"
-        data-conversation="none"
-        data-theme="light"
-        data-dnt="true"
-      >
-        <a href={url}></a>
-      </blockquote>
-      <iframe
-        style={{ display: "none" }}
-        onLoad={handleLoad}
-        onError={handleError}
-      />
+      <div ref={tweetContainerRef} className="h-full" />
     </div>
   );
 };
