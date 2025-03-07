@@ -34,7 +34,7 @@ const ChatInput: React.FC = () => {
         <div className="w-[calc(100vw-90px)] max-w-3xl mx-auto">
           <SideSuggestions />
         </div>
-        <div className="border-grey  border-[1px] shadow-grey rounded-md p-2 max-w-3xl mx-auto">
+        <div className="border-grey border-[1px] shadow-sm rounded-md p-2 max-w-3xl mx-auto">
           <form onSubmit={handleSubmit} className="w-full">
             <textarea
               ref={textareaRef}
