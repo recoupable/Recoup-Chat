@@ -1,14 +1,25 @@
 import { type Post } from "@/hooks/useArtistPosts";
-import { useState } from "react";
-import { ExternalLink } from "lucide-react";
+import { memo } from "react";
+import { useInView } from "react-intersection-observer";
+import {
+  TwitterEmbed,
+  TikTokEmbed,
+  InstagramEmbed,
+  GenericEmbed,
+} from "./embeds";
 
 interface PostCardProps {
   post: Post;
 }
 
-const PostCard = ({ post }: PostCardProps) => {
-  const [isLoading, setIsLoading] = useState(true);
-  const [embedError, setEmbedError] = useState(false);
+// Use memo to prevent unnecessary re-renders
+const PostCard = memo(({ post }: PostCardProps) => {
+  // Use intersection observer to detect when the card is visible
+  const { ref, inView } = useInView({
+    triggerOnce: true, // Only trigger once
+    threshold: 0.1,
+    rootMargin: "300px", // Load when within 300px of viewport
+  });
 
   // Format the date to a more readable format
   const formattedDate = new Date(post.updated_at).toLocaleDateString("en-US", {
@@ -30,74 +41,35 @@ const PostCard = ({ post }: PostCardProps) => {
 
   const platform = getPlatform(post.post_url);
 
-  // Handle loading state
-  const handleLoad = () => {
-    setIsLoading(false);
-  };
-
-  // Handle error state
-  const handleError = () => {
-    setIsLoading(false);
-    setEmbedError(true);
-  };
-
-  // Render a fallback link if embedding fails
-  const renderFallbackLink = () => (
-    <a
-      href={post.post_url}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="flex items-center justify-center p-4 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors h-full"
-    >
-      <span className="mr-2">View Post</span>
-      <ExternalLink size={16} />
-    </a>
-  );
-
-  // Render the appropriate embed based on the platform
+  // Render the appropriate embed component based on the platform
   const renderEmbed = () => {
-    if (embedError) return renderFallbackLink();
+    // Only render the embed if the card is in view
+    if (!inView) {
+      return (
+        <div className="flex items-center justify-center p-4 bg-gray-100 h-full">
+          <div className="animate-pulse bg-gray-200 h-8 w-32 rounded"></div>
+        </div>
+      );
+    }
 
+    // Render the appropriate platform-specific embed
     switch (platform) {
       case "twitter":
-        return (
-          <div className="twitter-embed relative overflow-hidden h-full min-h-[300px]">
-            {isLoading && (
-              <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
-                Loading...
-              </div>
-            )}
-            <iframe
-              src={`https://platform.twitter.com/embed/index.html?url=${encodeURIComponent(post.post_url)}`}
-              className="w-full h-full border-0"
-              onLoad={handleLoad}
-              onError={handleError}
-            />
-          </div>
-        );
+        return <TwitterEmbed url={post.post_url} />;
+      case "tiktok":
+        return <TikTokEmbed url={post.post_url} />;
       case "instagram":
-        return (
-          <div className="instagram-embed relative overflow-hidden h-full min-h-[300px]">
-            {isLoading && (
-              <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
-                Loading...
-              </div>
-            )}
-            <iframe
-              src={`https://www.instagram.com/p/${post.post_url.split("/p/")[1].split("/")[0]}/embed`}
-              className="w-full h-full border-0"
-              onLoad={handleLoad}
-              onError={handleError}
-            />
-          </div>
-        );
+        return <InstagramEmbed url={post.post_url} />;
       default:
-        return renderFallbackLink();
+        return <GenericEmbed url={post.post_url} platform={platform} />;
     }
   };
 
   return (
-    <div className="border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow bg-white h-full flex flex-col">
+    <div
+      ref={ref}
+      className="border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow bg-white h-full flex flex-col"
+    >
       <div className="p-3 border-b bg-gray-50">
         <div className="flex justify-between items-center">
           <span className="text-sm font-medium capitalize">{platform}</span>
@@ -107,6 +79,9 @@ const PostCard = ({ post }: PostCardProps) => {
       <div className="flex-grow">{renderEmbed()}</div>
     </div>
   );
-};
+});
+
+// Add display name for debugging
+PostCard.displayName = "PostCard";
 
 export default PostCard;
