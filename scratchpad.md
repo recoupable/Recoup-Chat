@@ -4,7 +4,6 @@
 
 ## Requirements
 
-- Create a new route `/posts` in the chat app
 - Call the API route as documented in `/docs/posts`
 - Use the parameter `artist_account_id` from the active artist (activeArtist)
 - Display the API response as a series of tiles, with each tile embedding the corresponding social post
