@@ -2,7 +2,7 @@ import { useArtistProvider } from "@/providers/ArtistProvider";
 import { useArtistPosts } from "@/hooks/useArtistPosts";
 import Posts from "./Posts";
 import PostsSkeleton from "./PostsSkeleton";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 
 const POSTS_PER_PAGE = 6; // Number of posts to show initially and load each time
 
@@ -18,6 +18,12 @@ const PostsWrapper = () => {
   const [displayCount, setDisplayCount] = useState(POSTS_PER_PAGE);
   // Track if we're currently loading more posts
   const [isLoadingMore, setIsLoadingMore] = useState(false);
+
+  // Reset displayCount when the artist changes
+  useEffect(() => {
+    setDisplayCount(POSTS_PER_PAGE);
+    setIsLoadingMore(false);
+  }, [selectedArtist?.account_id]);
 
   // Calculate if there are more posts to load - default to false when posts aren't loaded yet
   const sortedPosts = posts
