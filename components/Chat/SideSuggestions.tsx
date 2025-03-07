@@ -24,16 +24,23 @@ const SideSuggestions = () => {
         className="!overflow-hidden"
         sliderProps={{
           initialSlide: 0,
-          slidesPerView: 1.5,
+          slidesPerView: 1.1,
+          spaceBetween: 10,
           grabCursor: true,
           onSlideChange: (swiperCtrl) =>
             setCurrentIndex(swiperCtrl.activeIndex),
           breakpoints: {
-            770: {
-              slidesPerView: 3.5,
+            640: {
+              slidesPerView: 2.2,
+              spaceBetween: 12,
             },
-            440: {
-              initialSlide: 2.4,
+            768: {
+              slidesPerView: 3,
+              spaceBetween: 16,
+            },
+            1024: {
+              slidesPerView: 3.5,
+              spaceBetween: 16,
             },
           },
           mousewheel: {
@@ -42,7 +49,7 @@ const SideSuggestions = () => {
         }}
       >
         {prompts?.length
-          ? [...prompts, ...prompts, ...prompts].map((suggestion: string) => (
+          ? prompts.map((suggestion: string) => (
               <SuggestionPill suggestion={suggestion} key={suggestion} />
             ))
           : Array.from({ length: 4 }).map((_, index) => (
