@@ -29,6 +29,12 @@ const Artist = ({
       if (selectedArtist.account_id !== artist?.account_id) push("/");
     }
     setSelectedArtist(artist);
+    
+    // Route to the /new page when an artist is selected from the sidebar
+    // Only redirect if we're not already on the /new page
+    if (!pathname.includes("/new")) {
+      push("/new");
+    }
   };
 
   return (
