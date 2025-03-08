@@ -30,7 +30,7 @@ const FansWrapper = () => {
     const fansWithoutAvatars: Social[] = [];
 
     // Iterate through all pages
-    const infiniteData = data as InfiniteData<FansResponse>;
+    const infiniteData = data as unknown as InfiniteData<FansResponse>;
     infiniteData.pages.forEach((page) => {
       if (!page.fans || !Array.isArray(page.fans)) return;
 
