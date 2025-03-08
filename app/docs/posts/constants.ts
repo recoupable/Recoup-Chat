@@ -1,7 +1,6 @@
 export const codeExamples = {
-  curl: `curl -X GET "https://api.recoupable.com/api/posts" \\
-  -H "Content-Type: application/json" \\
-  -d '{"artist_account_id": "YOUR_ARTIST_ACCOUNT_ID"}'`,
+  curl: `curl -X GET "https://api.recoupable.com/api/posts?artist_account_id=YOUR_ARTIST_ACCOUNT_ID&page=1&limit=20" \\
+  -H "Content-Type: application/json"`,
   python: `import requests
 
 headers = {
@@ -9,12 +8,14 @@ headers = {
 }
 
 params = {
-    "artist_account_id": "YOUR_ARTIST_ACCOUNT_ID"
+    "artist_account_id": "YOUR_ARTIST_ACCOUNT_ID",
+    "page": 1,
+    "limit": 20
 }
 
 response = requests.get("https://api.recoupable.com/api/posts", headers=headers, params=params)
 data = response.json()`,
-  javascript: `fetch("https://api.recoupable.com/api/posts?artist_account_id=YOUR_ARTIST_ACCOUNT_ID", {
+  javascript: `fetch("https://api.recoupable.com/api/posts?artist_account_id=YOUR_ARTIST_ACCOUNT_ID&page=1&limit=20", {
   headers: {
     "Content-Type": "application/json"
   }
@@ -30,14 +31,27 @@ data = response.json()`,
 interface PostsResponse {
   status: string;
   posts: Post[];
+  pagination: {
+    total_count: number;
+    page: number;
+    limit: number;
+    total_pages: number;
+  };
 }
 
-const fetchArtistPosts = async (artistAccountId: string) => {
-  const response = await fetch(\`https://api.recoupable.com/api/posts?artist_account_id=\${artistAccountId}\`, {
-    headers: {
-      "Content-Type": "application/json"
+const fetchArtistPosts = async (
+  artistAccountId: string, 
+  page: number = 1, 
+  limit: number = 20
+) => {
+  const response = await fetch(
+    \`https://api.recoupable.com/api/posts?artist_account_id=\${artistAccountId}&page=\${page}&limit=\${limit}\`, 
+    {
+      headers: {
+        "Content-Type": "application/json"
+      }
     }
-  });
+  );
   const data: PostsResponse = await response.json();
   return data;
 };`,
@@ -57,6 +71,12 @@ export const exampleResponse = {
       updated_at: "2024-03-05T18:22:15Z",
     },
   ],
+  pagination: {
+    total_count: 42,
+    page: 1,
+    limit: 20,
+    total_pages: 3,
+  },
 } as const;
 
 export const responseProperties = [
@@ -84,5 +104,30 @@ export const responseProperties = [
     name: "posts[].updated_at",
     type: "string",
     description: "ISO timestamp of when the post was last updated",
+  },
+  {
+    name: "pagination",
+    type: "object",
+    description: "Pagination metadata for the response",
+  },
+  {
+    name: "pagination.total_count",
+    type: "number",
+    description: "Total number of records available",
+  },
+  {
+    name: "pagination.page",
+    type: "number",
+    description: "Current page number",
+  },
+  {
+    name: "pagination.limit",
+    type: "number",
+    description: "Number of records per page",
+  },
+  {
+    name: "pagination.total_pages",
+    type: "number",
+    description: "Total number of pages available",
   },
 ] as const;
