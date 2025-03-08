@@ -13,14 +13,10 @@ const FANS_PER_PAGE = 20; // Number of fans to fetch per page
 
 const FansWrapper = () => {
   const { selectedArtist } = useArtistProvider();
-  const {
-    data,
-    isLoading,
-    error,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-  } = useArtistFans(selectedArtist?.account_id, FANS_PER_PAGE);
+  const { data, isLoading, error, isFetchingNextPage } = useArtistFans(
+    selectedArtist?.account_id,
+    FANS_PER_PAGE
+  );
 
   // Process all pages of data
   const processAllFans = useCallback(() => {
@@ -103,8 +99,6 @@ const FansWrapper = () => {
     <Fans
       fansWithAvatars={fansWithAvatars}
       fansWithoutAvatars={fansWithoutAvatars}
-      hasNextPage={!!hasNextPage}
-      fetchNextPage={fetchNextPage}
       isFetchingNextPage={isFetchingNextPage}
     />
   );

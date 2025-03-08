@@ -1,39 +1,18 @@
 import { type Social } from "@/hooks/useArtistFans";
 import FanAvatar from "./FanAvatar";
 import FansList from "./FansList";
-import { useEffect } from "react";
-import { useInView } from "react-intersection-observer";
 
 interface FansProps {
   fansWithAvatars: Social[];
   fansWithoutAvatars: Social[];
-  hasNextPage: boolean;
-  fetchNextPage: () => void;
   isFetchingNextPage: boolean;
 }
 
 const Fans = ({
   fansWithAvatars,
   fansWithoutAvatars,
-  hasNextPage,
-  fetchNextPage,
   isFetchingNextPage,
 }: FansProps) => {
-  // Set up the intersection observer for infinite scrolling
-  const { ref: loadMoreRef, inView } = useInView({
-    threshold: 0.1,
-    triggerOnce: false,
-    // Only start observing if we have more pages and aren't already fetching
-    skip: !hasNextPage || isFetchingNextPage,
-  });
-
-  // Fetch more fans when the load more element comes into view
-  useEffect(() => {
-    if (inView && hasNextPage && !isFetchingNextPage) {
-      fetchNextPage();
-    }
-  }, [inView, hasNextPage, fetchNextPage, isFetchingNextPage]);
-
   return (
     <div className="space-y-8">
       {/* Fans with avatars section */}
@@ -58,16 +37,12 @@ const Fans = ({
         </div>
       )}
 
-      {/* Load more trigger element */}
-      {hasNextPage && (
-        <div ref={loadMoreRef} className="flex justify-center py-4">
-          {isFetchingNextPage ? (
-            <div className="animate-pulse text-gray-500">
-              Loading more fans...
-            </div>
-          ) : (
-            <div className="h-10" />
-          )}
+      {/* Loading indicator */}
+      {isFetchingNextPage && (
+        <div className="flex justify-center py-4">
+          <div className="animate-pulse text-gray-500">
+            Loading more fans...
+          </div>
         </div>
       )}
     </div>

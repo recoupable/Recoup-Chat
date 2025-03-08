@@ -1,7 +1,9 @@
 import {
   useInfiniteQuery,
   type UseInfiniteQueryResult,
+  type InfiniteData,
 } from "@tanstack/react-query";
+import { useEffect } from "react";
 
 export interface Social {
   id: string;
@@ -69,13 +71,14 @@ async function fetchFans(
 }
 
 /**
- * Hook to fetch and manage fans for an artist with infinite scrolling
+ * Hook to fetch and manage fans for an artist with automatic pagination
+ * This hook will automatically fetch all pages with a controlled delay between requests
  */
 export function useArtistFans(
   artistAccountId?: string,
   limit: number = 20
-): UseInfiniteQueryResult<FansResponse, FansError> {
-  return useInfiniteQuery({
+): UseInfiniteQueryResult<InfiniteData<FansResponse, unknown>, Error> {
+  const queryResult = useInfiniteQuery({
     queryKey: ["fans", artistAccountId, limit],
     queryFn: ({ pageParam = 1 }) =>
       fetchFans(artistAccountId!, pageParam, limit),
@@ -97,4 +100,22 @@ export function useArtistFans(
       return failureCount < 2 && !("status" in error);
     },
   });
+
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = queryResult;
+
+  // Automatically fetch all pages with a controlled delay
+  useEffect(() => {
+    // Only proceed if we have data, there are more pages, and we're not already fetching
+    if (data && hasNextPage && !isFetchingNextPage) {
+      // Use a timeout to avoid overwhelming the API with requests
+      const timeoutId = setTimeout(() => {
+        fetchNextPage();
+      }, 500); // 500ms delay between page requests
+
+      // Clean up the timeout if the component unmounts
+      return () => clearTimeout(timeoutId);
+    }
+  }, [data, hasNextPage, isFetchingNextPage, fetchNextPage]);
+
+  return queryResult;
 }
