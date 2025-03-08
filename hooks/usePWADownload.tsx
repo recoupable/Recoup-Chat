@@ -18,10 +18,17 @@ const usePWADownload = () => {
       window.matchMedia("(display-mode: standalone)").matches ||
       (window.navigator as any).standalone;
 
+    // Temporarily disabled the modal
+    // if (!isStandalone && response) {
+    //   setShowModal(true);
+    //   window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+    // }
+    
+    // Still listen for the event but don't show the modal
     if (!isStandalone && response) {
-      setShowModal(true);
       window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
     }
+    
     return () =>
       window.removeEventListener(
         "beforeinstallprompt",

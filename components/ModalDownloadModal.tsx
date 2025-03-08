@@ -1,14 +1,19 @@
 "use client";
 
 import usePWADownload from "@/hooks/usePWADownload";
-import Image from "next/image";
+// import Image from "next/image";
 import React from "react";
 
 const MobileDownloadModal = () => {
-  const { showModal, handleInstallClick } = usePWADownload();
+  // Temporarily disabled along with the popup
+  // const { showModal, handleInstallClick } = usePWADownload();
+  
+  // Just to keep the hook in place for future use
+  usePWADownload();
 
   return (
     <>
+      {/* Temporarily disabled "Add to Home Screen" popup
       {showModal && (
         <div className="fixed inset-0 flex items-center justify-center z-50">
           <div
@@ -34,6 +39,7 @@ const MobileDownloadModal = () => {
           </div>
         </div>
       )}
+      */}
     </>
   );
 };

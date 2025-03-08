@@ -18,6 +18,7 @@ const SuggestionPill = ({ suggestion }: { suggestion: string }) => {
           content: suggestion,
         })
       }
+      aria-label={`Ask: ${suggestion}`}
     >
       <div
         className="text-center"
