@@ -23,6 +23,7 @@ public/sw.js.map
 yarn-error.log
 .cursorrules
 ROADMAP.md
+scratchpad.md
 
 # Service Worker and Workbox
 public/sw.js

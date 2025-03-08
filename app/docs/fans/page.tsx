@@ -47,6 +47,24 @@ export default function FansDocs() {
                   The unique identifier of the artist account to fetch fans for
                 </div>
               </div>
+
+              <div className="bg-gray-100 p-4 rounded mx-4 mt-4">
+                <div className="font-semibold mb-1">page</div>
+                <div className="text-sm text-gray-600 mb-1">Type: number</div>
+                <div className="text-sm text-gray-600 mb-2">Required: No</div>
+                <div className="text-sm">
+                  The page number to retrieve (default: 1)
+                </div>
+              </div>
+
+              <div className="bg-gray-100 p-4 rounded mx-4 mt-4">
+                <div className="font-semibold mb-1">limit</div>
+                <div className="text-sm text-gray-600 mb-1">Type: number</div>
+                <div className="text-sm text-gray-600 mb-2">Required: No</div>
+                <div className="text-sm">
+                  The number of records per page (default: 20, max: 100)
+                </div>
+              </div>
             </div>
             <div className="hidden md:block">
               {/* Desktop view - Table style */}
@@ -67,6 +85,22 @@ export default function FansDocs() {
                     <td className="p-4 border">
                       The unique identifier of the artist account to fetch fans
                       for
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="p-4 border">page</td>
+                    <td className="p-4 border">number</td>
+                    <td className="p-4 border">No</td>
+                    <td className="p-4 border">
+                      The page number to retrieve (default: 1)
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="p-4 border">limit</td>
+                    <td className="p-4 border">number</td>
+                    <td className="p-4 border">No</td>
+                    <td className="p-4 border">
+                      The number of records per page (default: 20, max: 100)
                     </td>
                   </tr>
                 </tbody>
