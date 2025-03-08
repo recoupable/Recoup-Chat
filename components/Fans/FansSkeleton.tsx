@@ -1,7 +1,6 @@
 const FansSkeleton = () => {
   return (
     <div className="space-y-8">
-      {/* Skeleton for fans with avatars */}
       <div className="space-y-4">
         <div className="h-7 bg-gray-200 rounded w-48 animate-pulse"></div>
         <div className="grid grid-cols-5 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10 gap-2 md:gap-4">
@@ -13,7 +12,6 @@ const FansSkeleton = () => {
         </div>
       </div>
 
-      {/* Skeleton for fans without avatars */}
       <div className="space-y-4">
         <div className="h-7 bg-gray-200 rounded w-64 animate-pulse"></div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
