@@ -9,7 +9,7 @@ import FansSkeleton from "./FansSkeleton";
 import { useCallback } from "react";
 import { type InfiniteData } from "@tanstack/react-query";
 
-const FANS_PER_PAGE = 20; // Number of fans to fetch per page
+const FANS_PER_PAGE = 20;
 
 const FansWrapper = () => {
   const { selectedArtist } = useArtistProvider();
@@ -18,24 +18,19 @@ const FansWrapper = () => {
     FANS_PER_PAGE
   );
 
-  // Process all pages of data
   const processAllFans = useCallback(() => {
     if (!data) return { fansWithAvatars: [], fansWithoutAvatars: [] };
 
     const fansWithAvatars: Social[] = [];
     const fansWithoutAvatars: Social[] = [];
 
-    // Iterate through all pages
     const infiniteData = data as unknown as InfiniteData<FansResponse>;
     infiniteData.pages.forEach((page) => {
       if (!page.fans || !Array.isArray(page.fans)) return;
 
-      // Process fans from this page
       page.fans.forEach((fan) => {
-        // Ensure the fan object has all required properties
         if (!fan || typeof fan !== "object") return;
 
-        // Create a safe fan object with default values for missing properties
         const safeFan: Social = {
           id: fan.id || `fan-${Math.random().toString(36).substring(2, 9)}`,
           username: fan.username || "Anonymous",
@@ -50,7 +45,6 @@ const FansWrapper = () => {
           updated_at: fan.updated_at || new Date().toISOString(),
         };
 
-        // Add to appropriate array based on avatar presence
         if (safeFan.avatar) {
           fansWithAvatars.push(safeFan);
         } else {
@@ -59,7 +53,6 @@ const FansWrapper = () => {
       });
     });
 
-    // Sort fans by follower count (descending)
     const sortedFansWithAvatars = [...fansWithAvatars].sort(
       (a, b) => b.followerCount - a.followerCount
     );
