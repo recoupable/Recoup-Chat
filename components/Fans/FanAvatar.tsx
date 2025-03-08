@@ -9,10 +9,8 @@ interface FanAvatarProps {
 const FanAvatar = ({ fan }: FanAvatarProps) => {
   const [isHovered, setIsHovered] = useState(false);
 
-  // Format follower count with commas
   const formattedFollowerCount = fan.followerCount.toLocaleString();
 
-  // Get initials for the avatar fallback
   const getInitials = (username: string) => {
     if (!username) return "?";
     const parts = username.replace(/[@_]/g, " ").trim().split(/\s+/);
@@ -45,7 +43,6 @@ const FanAvatar = ({ fan }: FanAvatarProps) => {
           </Avatar>
         </div>
 
-        {/* Hover overlay with fan info */}
         <div
           className={`absolute inset-0 hidden sm:flex flex-col items-center justify-center bg-black bg-opacity-70 rounded-full text-white p-1 text-center transition-opacity duration-300 ${
             isHovered ? "opacity-100" : "opacity-0"
