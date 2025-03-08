@@ -15,7 +15,6 @@ const Fans = ({
 }: FansProps) => {
   return (
     <div className="space-y-8">
-      {/* Fans with avatars section */}
       {fansWithAvatars.length > 0 && (
         <div className="space-y-4">
           <h2 className="text-lg font-semibold">Fans with Profile Pictures</h2>
@@ -27,7 +26,6 @@ const Fans = ({
         </div>
       )}
 
-      {/* Fans without avatars section */}
       {fansWithoutAvatars.length > 0 && (
         <div className="space-y-4">
           <h2 className="text-lg font-semibold">
@@ -37,7 +35,6 @@ const Fans = ({
         </div>
       )}
 
-      {/* Loading indicator */}
       {isFetchingNextPage && (
         <div className="flex justify-center py-4">
           <div className="animate-pulse text-gray-500">
