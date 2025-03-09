@@ -28,11 +28,14 @@ const Artist = ({
     if (pathname.includes("/funnels") && selectedArtist) {
       if (selectedArtist.account_id !== artist?.account_id) push("/");
     }
+    
+    // Only redirect if changing artists and we're in a chat (direct path with one segment)
+    const isChangingArtist = selectedArtist?.account_id !== artist?.account_id;
+    const isInChat = pathname.match(/^\/[^/]+$/) && pathname !== "/" && pathname !== "/new";
+    
     setSelectedArtist(artist);
     
-    // Route to the /new page when an artist is selected from the sidebar
-    // Only redirect if we're not already on the /new page
-    if (!pathname.includes("/new")) {
+    if (isInChat && isChangingArtist) {
       push("/new");
     }
   };
