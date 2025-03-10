@@ -26,9 +26,6 @@ export function useFirstArtistRedirect() {
 
         if (!data.artists || data.artists.length === 0) {
           router.push("/funnels/wrapped");
-        } else if (pathname === "/") {
-          // Only redirect from the root path to /new
-          router.push("/new");
         }
       } catch (error) {
         console.error("Error checking artists:", error);

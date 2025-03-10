@@ -38,9 +38,9 @@ const Artist = ({
     
     setSelectedArtist(artist);
     
-    // Only redirect to new chat page if changing artists while in an existing chat
+    // Only redirect to home page if changing artists while in an existing chat
     if (isInExistingChatPage && isChangingArtist) {
-      push("/new"); // In the future, this will be changed to push("/")
+      push("/"); // Redirecting to root instead of /new
     }
   };
 
@@ -53,6 +53,7 @@ const Artist = ({
       } py-2`}
       type="button"
       onClick={handleClick}
+      aria-label={`Select artist: ${artist?.name || 'Unknown'}`}
     >
       <div
         className={`w-8 aspect-1/1 rounded-full overflow-hidden flex items-center justify-center ${isSelectedArtist && "shadow-[1px_1px_1px_1px_#E6E6E6]"}`}
@@ -69,10 +70,12 @@ const Artist = ({
           </div>
           <button
             type="button"
-            onClick={() => {
+            onClick={(e) => {
+              e.stopPropagation();
               if (artist) toggleUpdate(artist);
               toggleSettingModal();
             }}
+            aria-label="Artist settings"
           >
             <EllipsisVertical className="size-5" />
           </button>
