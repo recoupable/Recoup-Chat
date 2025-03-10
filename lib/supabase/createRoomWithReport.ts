@@ -8,12 +8,14 @@ interface CreateRoomParams {
   account_id: string;
   topic: string;
   report_id?: string;
+  artist_id?: string;
 }
 
 export const createRoomWithReport = async ({
   account_id,
   topic,
   report_id,
+  artist_id,
 }: CreateRoomParams): Promise<{
   new_room: Room & { memories: []; rooms_reports: string[] };
   error: PostgrestError | null;
@@ -24,6 +26,7 @@ export const createRoomWithReport = async ({
       .insert({
         account_id,
         topic,
+        artist_id,
       })
       .select("*")
       .single();
