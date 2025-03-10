@@ -16,19 +16,27 @@ const usePrompts = () => {
 
   useEffect(() => {
     if (isLoading) return;
+    
+    // If we have a selected artist and we're on the new chat page, set relevant prompts
     if (selectedArtist && isNewChat) {
       setPrompts([
-        `Who are ${selectedArtist?.name || ""}’s most engaged fans?`,
-        `Analyze ${selectedArtist?.name || ""}’s TikTok posts from this week.`,
+        `Who are ${selectedArtist?.name || ""}'s most engaged fans?`,
+        `Analyze ${selectedArtist?.name || ""}'s TikTok posts from this week.`,
       ]);
       return;
     }
-    if (artists.length) {
+    
+    // Only select the first artist if there's truly no artist selected
+    // AND there's no artist saved in localStorage
+    if (artists.length && !selectedArtist && !localStorage.getItem("RECOUP_ARTIST")) {
+      console.log("No artist selected, selecting first artist as fallback");
       setSelectedArtist(artists[0]);
       return;
     }
+    
+    // Default prompts if no conditions above are met
     setPrompts(SUGGESTIONS);
-  }, [selectedArtist, isNewChat, artists, isLoading]);
+  }, [selectedArtist, isNewChat, artists, isLoading, setSelectedArtist]);
 
   const getPrompts = async (content: string, isTikTokAnalysis?: boolean) => {
     const isFunnelReport = content === "Funnel Report";

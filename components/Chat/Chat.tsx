@@ -6,6 +6,7 @@ import Messages from "./Messages";
 import { ScrollTo } from "react-scroll-to";
 import ChatSkeleton from "./ChatSkeleton";
 import { ChatReport } from "./ChatReport";
+import ArtistSyncForChat from "./ArtistSyncForChat";
 
 interface ChatProps {
   reportId?: string;
@@ -18,6 +19,8 @@ const Chat = ({ reportId }: ChatProps) => {
 
   return (
     <div className="size-full flex flex-col items-center justify-center bg-white rounded-xl overflow-hidden flex flex-col px-4 pb-5 md:pt-[14px]">
+      <ArtistSyncForChat />
+      
       <ScrollTo>
         {({ scroll }) => (
           <Messages scroll={scroll}>
