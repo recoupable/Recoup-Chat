@@ -28,6 +28,7 @@ const useMessages = () => {
     status,
     setMessages,
     reload: reloadAiChat,
+    setInput,
   } = useChat({
     api: `/api/chat`,
     headers: {
@@ -42,8 +43,14 @@ const useMessages = () => {
       if (chatId) {
         createMemory(message, chatId, selectedArtist?.account_id || "");
       }
+      setInput("");
     },
   });
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    handleAiChatSubmit(e);
+    setInput("");
+  };
 
   useEffect(() => {
     const fetch = async () => {
@@ -64,9 +71,10 @@ const useMessages = () => {
   return {
     reloadAiChat,
     appendAiChat,
-    handleAiChatSubmit,
+    handleAiChatSubmit: handleSubmit,
     handleInputChange,
     input,
+    setInput,
     setMessages,
     messages,
     pending: status === "streaming" || status === "submitted",
