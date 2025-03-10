@@ -15,8 +15,7 @@ const ChatInput: React.FC = () => {
     }
   };
 
-  // Auto-resize textarea as content changes
-  const adjustTextareaHeight = () => {
+  const autoResizeTextareaBasedOnContent = () => {
     const textarea = textareaRef.current;
     if (textarea) {
       textarea.style.height = "auto";
@@ -25,7 +24,7 @@ const ChatInput: React.FC = () => {
   };
 
   useEffect(() => {
-    adjustTextareaHeight();
+    autoResizeTextareaBasedOnContent();
   }, [input]);
 
   return (

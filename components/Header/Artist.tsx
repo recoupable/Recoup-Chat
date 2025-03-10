@@ -29,18 +29,13 @@ const Artist = ({
       if (selectedArtist.account_id !== artist?.account_id) push("/");
     }
     
-    // Check if user is changing artists
     const isChangingArtist = selectedArtist?.account_id !== artist?.account_id;
-    
-    // Check if user is in an existing chat page (not home or new chat pages)
-    // This prevents unnecessary redirects when already on a new chat page
     const isInExistingChatPage = pathname.match(/^\/[^/]+$/) && pathname !== "/" && pathname !== "/new";
     
     setSelectedArtist(artist);
     
-    // Only redirect to home page if changing artists while in an existing chat
     if (isInExistingChatPage && isChangingArtist) {
-      push("/"); // Redirecting to root instead of /new
+      push("/");
     }
   };
 

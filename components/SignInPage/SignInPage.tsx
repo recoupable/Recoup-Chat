@@ -16,8 +16,7 @@ export default function SignInPage() {
     }
 
     login();
-    // eslint-disable-next-line
-  }, [authenticated]);
+  }, [authenticated, router, login]);
 
   return (
     <div className="flex items-center justify-center min-h-screen">
