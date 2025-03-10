@@ -1,13 +1,12 @@
 "use client";
 
 import usePWADownload from "@/hooks/usePWADownload";
-// import Image from "next/image";
+import Image from "next/image";
 import React from "react";
 
 const MobileDownloadModal = () => {
-  // Temporarily disabled along with the popup
   const { showModal, handleInstallClick } = usePWADownload();
-  
+
   return (
     <>
       {showModal && (
@@ -17,21 +16,18 @@ const MobileDownloadModal = () => {
             id="tap-close-download"
           />
           <div className="relative bg-white p-4 rounded-md shadow-lg w-4/5 z-10 flex flex-col items-center">
-            {/* Uncomment when we have the image
             <Image
               src="/savePhoneIcon.png"
               alt="save phone icon"
               width={100}
               height={100}
             />
-            */}
             <h2 className="text-lg font-bold mb-2 text-center">
               Add to Home Screen
             </h2>
             <button
               className="border-2 px-4 py-2 rounded-xl border-grey-700"
               onClick={handleInstallClick}
-              aria-label="Install App"
             >
               Install App
             </button>
