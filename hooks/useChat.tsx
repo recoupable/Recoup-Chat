@@ -50,12 +50,12 @@ const useChat = () => {
     console.log("==== useChat: Creating new room ====");
     console.log("Using artist:", artistToUse?.name, artistToUse?.account_id);
     
-    // Create room with the content
-    // Note: createRoom only accepts account_id and content parameters
-    const room = await createRoom(userData.id, content);
-    
-    // If the room has an artist_id field, we'll update it separately
-    // This is a workaround since createRoom doesn't accept artist_id
+    // Create room with the content and artist_id
+    const room = await createRoom(
+      userData.id, 
+      content, 
+      artistToUse?.account_id
+    );
     
     addConversation(room);
     
