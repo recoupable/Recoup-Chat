@@ -15,7 +15,7 @@ const Menu = ({ toggleMenuExpanded }: { toggleMenuExpanded: () => void }) => {
   const itemClasses = "flex gap-3 items-center rounded-md px-3 py-2";
   const isAgents = pathname.includes("/agents");
   const isSegments = pathname.includes("/segments");
-  const isAutopilot = pathname === "/";
+  const isAutopilot = pathname === "/autopilot";
 
   const goToItem = (link?: string) => {
     if (isPrepared()) {
@@ -25,20 +25,25 @@ const Menu = ({ toggleMenuExpanded }: { toggleMenuExpanded: () => void }) => {
 
   return (
     <div className="w-full h-screen pt-10 pb-4 pl-6 pr-2 gap-1 hidden md:flex flex-col">
-      <button className="mt-2" onClick={() => push("/")} type="button">
+      <button 
+        className="mt-2" 
+        onClick={() => push("/")} 
+        type="button"
+        title="Go to Home"
+      >
         <Logo />
       </button>
       <button
         type="button"
         className="border-[#E6E6E6] border-[1px] rounded-md p-2 mt-4 cursor-pointer shadow-[1px_1px_1px_1px_#E6E6E6] bg-white"
-        onClick={() => goToItem("new")}
+        onClick={() => goToItem("")}
       >
         {email ? "New Chat" : "Sign In"}
       </button>
       <button
         className={`${itemClasses} ${isAutopilot && activeClasses} md:mt-2`}
         type="button"
-        onClick={() => push("/")}
+        onClick={() => push("/autopilot")}
       >
         <MenuItemIcon name="dashboard" />
         Autopilot

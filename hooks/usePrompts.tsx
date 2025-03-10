@@ -22,6 +22,8 @@ const usePrompts = () => {
       setPrompts([
         `Who are ${selectedArtist?.name || ""}'s most engaged fans?`,
         `Analyze ${selectedArtist?.name || ""}'s TikTok posts from this week.`,
+        `What content performs best for ${selectedArtist?.name || ""}?`,
+        `How can ${selectedArtist?.name || ""} grow their audience?`,
       ]);
       return;
     }
