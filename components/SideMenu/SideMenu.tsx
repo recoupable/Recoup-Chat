@@ -6,7 +6,6 @@ import UnlockPro from "../Sidebar/UnlockPro";
 import UserInfo from "../Sidebar/UserInfo";
 import Logo from "../Logo";
 import MenuItemIcon from "../MenuItemIcon";
-import { v4 as uuidV4 } from "uuid";
 
 const SideMenu = ({
   isVisible,
@@ -20,14 +19,20 @@ const SideMenu = ({
 
   const goToItem = (link?: string) => {
     if (isPrepared()) {
-      push(`/${link || uuidV4()}`);
+      if (link === "new" || !link) {
+        // For new chats, go to the root path
+        push("/");
+      } else {
+        // For other items, go to the specified path
+        push(`/${link}`);
+      }
       toggleModal();
     }
   };
 
   return (
     <SideModal isVisible={isVisible} toggleModal={toggleModal}>
-      <button className="mt-4" onClick={() => push("/")} type="button">
+      <button className="mt-4" onClick={() => push("/")} type="button" title="Go to Home">
         <Logo />
       </button>
       <button

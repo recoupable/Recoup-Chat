@@ -5,7 +5,6 @@ import UnlockPro from "./UnlockPro";
 import UserInfo from "../Sidebar/UserInfo";
 import Logo from "../Logo";
 import MenuItemIcon from "../MenuItemIcon";
-import { v4 as uuidV4 } from "uuid";
 
 const Menu = ({ toggleMenuExpanded }: { toggleMenuExpanded: () => void }) => {
   const { push } = useRouter();
@@ -19,7 +18,13 @@ const Menu = ({ toggleMenuExpanded }: { toggleMenuExpanded: () => void }) => {
 
   const goToItem = (link?: string) => {
     if (isPrepared()) {
-      push(`/${link || uuidV4()}`);
+      if (!link) {
+        // For new chats, go to the root path
+        push("/");
+      } else {
+        // For other items, go to the specified path
+        push(`/${link}`);
+      }
     }
   };
 
