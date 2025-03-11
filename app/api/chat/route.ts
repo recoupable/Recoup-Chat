@@ -5,6 +5,10 @@ import initializeAgent from "@/lib/agent/initializeAgent";
 import { HumanMessage } from "@langchain/core/messages";
 import getTransformedStream from "@/lib/agent/getTransformedStream";
 
+// Cache for agent instances to avoid recreating them for the same room/segment
+const agentCache = new Map();
+const CACHE_TTL = 5 * 60 * 1000; // 5 minutes in milliseconds
+
 export async function POST(req: Request) {
   try {
     const body = await req.json();
@@ -25,16 +29,34 @@ export async function POST(req: Request) {
       });
     }
 
-    const { agent } = await initializeAgent({
-      threadId: room_id || "default",
-      segmentId: segment_id,
-    });
+    // Create a cache key based on room_id and segment_id
+    const cacheKey = `${room_id || "default"}_${segment_id || ""}`;
+    
+    // Check if we have a cached agent
+    let agentData = agentCache.get(cacheKey);
+    
+    // If no cached agent or cache expired, initialize a new one
+    if (!agentData || Date.now() > agentData.expiry) {
+      const { agent } = await initializeAgent({
+        threadId: room_id || "default",
+        segmentId: segment_id,
+      });
+      
+      // Store in cache with expiry time
+      agentData = {
+        agent,
+        expiry: Date.now() + CACHE_TTL
+      };
+      
+      agentCache.set(cacheKey, agentData);
+    }
 
     const messageInput = {
       messages: [new HumanMessage(question)],
     };
 
-    const stream = await agent.stream(messageInput, {
+    // Use the cached or newly created agent
+    const stream = await agentData.agent.stream(messageInput, {
       configurable: {
         thread_id: room_id || "default",
         segmentId: segment_id,
@@ -66,6 +88,16 @@ export async function POST(req: Request) {
     );
   }
 }
+
+// Clean up expired cache entries periodically
+setInterval(() => {
+  const now = Date.now();
+  for (const [key, value] of agentCache.entries()) {
+    if (now > value.expiry) {
+      agentCache.delete(key);
+    }
+  }
+}, CACHE_TTL);
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { useChat } from "@ai-sdk/react";
 import type { Message } from "@ai-sdk/react";
 import { useCsrfToken } from "./useCsrfToken";
@@ -17,19 +17,11 @@ const useMessages = () => {
     typeof params.chat_id === "string" ? params.chat_id : undefined;
   const { userData } = useUserProvider();
   const [isLoading, setIsLoading] = useState(false);
+  const [initialMessagesLoaded, setInitialMessagesLoaded] = useState(false);
   const { data: segmentData, isError: segmentError } = useChatSegment(chatId);
 
-  const {
-    messages,
-    input,
-    handleInputChange,
-    handleSubmit: handleAiChatSubmit,
-    append: appendAiChat,
-    status,
-    setMessages,
-    reload: reloadAiChat,
-    setInput,
-  } = useChat({
+  // Memoize the chat configuration to prevent unnecessary re-renders
+  const chatConfig = useMemo(() => ({
     api: `/api/chat`,
     headers: {
       "X-CSRF-Token": csrfToken,
@@ -45,30 +37,52 @@ const useMessages = () => {
       }
       setInput("");
     },
-  });
+  }), [csrfToken, selectedArtist?.account_id, chatId, segmentData?.segmentId]);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const {
+    messages,
+    input,
+    handleInputChange,
+    handleSubmit: handleAiChatSubmit,
+    append: appendAiChat,
+    status,
+    setMessages,
+    reload: reloadAiChat,
+    setInput,
+  } = useChat(chatConfig);
+
+  // Create a memoized submit handler to prevent recreating on each render
+  const handleSubmit = useCallback((e: React.FormEvent<HTMLFormElement>) => {
     handleAiChatSubmit(e);
     setInput("");
-  };
+  }, [handleAiChatSubmit, setInput]);
 
   // Reset messages when chatId changes
   useEffect(() => {
     // Clear messages when navigating to a new chat
     setMessages([]);
+    setInitialMessagesLoaded(false);
   }, [chatId, setMessages]);
 
+  // Fetch initial messages only once per chatId
   useEffect(() => {
     const fetch = async () => {
-      if (!userData?.id) return;
-      if (!chatId) return;
+      if (!userData?.id || !chatId || initialMessagesLoaded) return;
+      
       setIsLoading(true);
-      const initialMessages = await getInitialMessages(chatId);
-      setMessages(initialMessages);
-      setIsLoading(false);
+      try {
+        const initialMessages = await getInitialMessages(chatId);
+        setMessages(initialMessages);
+        setInitialMessagesLoaded(true);
+      } catch (error) {
+        console.error("[useMessages] Error fetching initial messages:", error);
+      } finally {
+        setIsLoading(false);
+      }
     };
+    
     fetch();
-  }, [chatId, userData, setMessages]);
+  }, [chatId, userData?.id, setMessages, initialMessagesLoaded]);
 
   if (segmentError) {
     console.error("[useMessages] Error fetching segment:", segmentError);
