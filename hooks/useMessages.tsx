@@ -41,7 +41,7 @@ const useMessages = () => {
     },
     onFinish: (message: Message) => {
       if (chatId) {
-        createMemory(message, chatId, selectedArtist?.account_id || "");
+        createMemory(message, chatId);
       }
       setInput("");
     },
@@ -51,6 +51,12 @@ const useMessages = () => {
     handleAiChatSubmit(e);
     setInput("");
   };
+
+  // Reset messages when chatId changes
+  useEffect(() => {
+    // Clear messages when navigating to a new chat
+    setMessages([]);
+  }, [chatId, setMessages]);
 
   useEffect(() => {
     const fetch = async () => {
