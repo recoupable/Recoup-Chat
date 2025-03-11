@@ -9,7 +9,6 @@ export async function POST(req: Request) {
   try {
     const body = await req.json();
     const messages = body.messages as Message[];
-    const artist_id = body.artistId;
     const room_id = body.roomId;
     const segment_id = body.segmentId;
 
@@ -22,7 +21,6 @@ export async function POST(req: Request) {
     if (room_id) {
       await createMemories({
         room_id,
-        artist_id,
         content: lastMessage,
       });
     }
