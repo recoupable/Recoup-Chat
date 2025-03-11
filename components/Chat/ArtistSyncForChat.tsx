@@ -86,6 +86,60 @@ const ArtistSyncForChat = () => {
     }
   };
 
+  // Function to validate and clean up stored artist data
+  const validateStoredArtistData = () => {
+    try {
+      // Check localStorage for stored artist
+      const storedArtist = localStorage.getItem("RECOUP_ARTIST");
+      if (storedArtist) {
+        const artistData = JSON.parse(storedArtist);
+        
+        // Check if this artist exists in our current artists list
+        const artistExists = artists.some(
+          (artist) => artist.account_id === artistData.account_id
+        );
+        
+        // If the artist doesn't exist in our current list, remove it from localStorage
+        if (!artistExists) {
+          console.log("Stored artist no longer exists in artists list, removing from localStorage:", artistData.name);
+          localStorage.removeItem("RECOUP_ARTIST");
+          
+          // If this was the selected artist, clear it
+          if (selectedArtist && selectedArtist.account_id === artistData.account_id) {
+            console.log("Clearing selected artist as it no longer exists");
+            setSelectedArtist(null);
+          }
+        }
+      }
+      
+      // Check localStorage for room artist data
+      const storedRoomArtist = localStorage.getItem("RECOUP_ROOM_ARTIST");
+      if (storedRoomArtist) {
+        const roomArtistData = JSON.parse(storedRoomArtist);
+        
+        // Check if this artist exists in our current artists list
+        const artistExists = artists.some(
+          (artist) => artist.account_id === roomArtistData.artistId
+        );
+        
+        // If the artist doesn't exist in our current list, remove it from localStorage
+        if (!artistExists) {
+          console.log("Stored room artist no longer exists in artists list, removing from localStorage");
+          localStorage.removeItem("RECOUP_ROOM_ARTIST");
+        }
+      }
+    } catch (e) {
+      console.error("Error validating stored artist data:", e);
+    }
+  };
+
+  // Add this effect to validate stored artist data when artists are loaded
+  useEffect(() => {
+    if (artists.length > 0) {
+      validateStoredArtistData();
+    }
+  }, [artists]);
+
   // First effect: Make sure artists are loaded
   useEffect(() => {
     if (artists.length === 0) {
