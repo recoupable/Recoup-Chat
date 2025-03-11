@@ -3,7 +3,6 @@ import supabase from "@/lib/supabase/serverClient";
 export async function POST(req: Request) {
   const body = await req.json();
   const content = body.content;
-  const artist_id = body.artist_id;
   const room_id = body.room_id;
 
   try {
@@ -11,7 +10,6 @@ export async function POST(req: Request) {
       .from("memories")
       .insert({
         content,
-        artist_id,
         room_id,
       })
       .select("*")

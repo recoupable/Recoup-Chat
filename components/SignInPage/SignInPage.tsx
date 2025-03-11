@@ -11,13 +11,12 @@ export default function SignInPage() {
 
   useEffect(() => {
     if (authenticated) {
-      router.push("/new");
+      router.push("/");
       return;
     }
 
     login();
-    // eslint-disable-next-line
-  }, [authenticated]);
+  }, [authenticated, router, login]);
 
   return (
     <div className="flex items-center justify-center min-h-screen">

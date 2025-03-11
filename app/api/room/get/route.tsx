@@ -7,7 +7,7 @@ export async function GET(req: NextRequest) {
   try {
     const { data: rooms, error } = await supabase
       .from("rooms")
-      .select("*, memories(artist_id), room_reports(report_id)")
+      .select("*, memories(*), room_reports(report_id)")
       .eq("account_id", account_id);
 
     return Response.json({ rooms: rooms || [], error }, { status: 200 });

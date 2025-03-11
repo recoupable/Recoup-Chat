@@ -29,14 +29,13 @@ const Artist = ({
       if (selectedArtist.account_id !== artist?.account_id) push("/");
     }
     
-    // Only redirect if changing artists and we're in a chat (direct path with one segment)
     const isChangingArtist = selectedArtist?.account_id !== artist?.account_id;
-    const isInChat = pathname.match(/^\/[^/]+$/) && pathname !== "/" && pathname !== "/new";
+    const isInExistingChatPage = pathname.match(/^\/[^/]+$/) && pathname !== "/" && pathname !== "/new";
     
     setSelectedArtist(artist);
     
-    if (isInChat && isChangingArtist) {
-      push("/new");
+    if (isInExistingChatPage && isChangingArtist) {
+      push("/");
     }
   };
 
@@ -49,6 +48,7 @@ const Artist = ({
       } py-2`}
       type="button"
       onClick={handleClick}
+      aria-label={`Select artist: ${artist?.name || 'Unknown'}`}
     >
       <div
         className={`w-8 aspect-1/1 rounded-full overflow-hidden flex items-center justify-center ${isSelectedArtist && "shadow-[1px_1px_1px_1px_#E6E6E6]"}`}
@@ -65,10 +65,12 @@ const Artist = ({
           </div>
           <button
             type="button"
-            onClick={() => {
+            onClick={(e) => {
+              e.stopPropagation();
               if (artist) toggleUpdate(artist);
               toggleSettingModal();
             }}
+            aria-label="Artist settings"
           >
             <EllipsisVertical className="size-5" />
           </button>

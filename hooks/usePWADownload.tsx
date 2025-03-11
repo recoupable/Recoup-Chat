@@ -1,32 +1,37 @@
 import { useEffect, useState } from "react";
 import useIsMobile from "./useIsMobile";
 
+interface BeforeInstallPromptEvent extends Event {
+  prompt: () => Promise<void>;
+}
+
+interface NavigatorWithStandalone extends Navigator {
+  standalone?: boolean;
+}
+
 const usePWADownload = () => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+  const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const isMobile = useIsMobile();
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const handleBeforeInstallPrompt = (e: any) => {
+    const handleBeforeInstallPrompt = (e: BeforeInstallPromptEvent) => {
       e.preventDefault();
       setDeferredPrompt(e);
     };
     const response = /Android/i.test(navigator.userAgent);
     const isStandalone =
       window.matchMedia("(display-mode: standalone)").matches ||
-      (window.navigator as any).standalone;
-    
-    // Still listen for the event but don't show the modal
+      (window.navigator as NavigatorWithStandalone).standalone;
+
     if (!isStandalone && response) {
-      window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+      setShowModal(true);
+      window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt as EventListener);
     }
-    
     return () =>
       window.removeEventListener(
         "beforeinstallprompt",
-        handleBeforeInstallPrompt,
+        handleBeforeInstallPrompt as EventListener,
       );
   }, [isMobile]);
 
@@ -39,9 +44,9 @@ const usePWADownload = () => {
   };
 
   useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    document.addEventListener("click", (e: any) => {
-      if (e.target.id === "tap-close-download") {
+    document.addEventListener("click", (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (target.id === "tap-close-download") {
         setShowModal(false);
       }
     });
