@@ -17,6 +17,13 @@ interface TableOfContentsItem {
   level: number;
 }
 
+// Define types for markdown components
+type MarkdownComponentProps = {
+  node?: unknown;
+  children?: React.ReactNode;
+  [key: string]: unknown;
+};
+
 // Custom component for expandable sections
 const ExpandableSection = ({ summary, children }: { summary: string; children: ReactNode }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -144,8 +151,8 @@ export const FormattedText = ({
         remarkPlugins={[remarkGfm]} 
         rehypePlugins={[rehypeSanitize]}
         components={{
-          h1: ({children, ...props}: {children: React.ReactNode; [key: string]: any}) => {
-            const id = children ? slugify(children.toString(), { lower: true, strict: true }) : '';
+          h1: ({ children, ...props }: MarkdownComponentProps) => {
+            const id = children ? slugify(String(children), { lower: true, strict: true }) : '';
             return (
               <h1 id={id} className="text-2xl font-bold mt-6 mb-4 scroll-mt-16" {...props}>
                 <a href={`#${id}`} className="anchor-link">
@@ -154,8 +161,8 @@ export const FormattedText = ({
               </h1>
             );
           },
-          h2: ({children, ...props}: {children: React.ReactNode; [key: string]: any}) => {
-            const id = children ? slugify(children.toString(), { lower: true, strict: true }) : '';
+          h2: ({ children, ...props }: MarkdownComponentProps) => {
+            const id = children ? slugify(String(children), { lower: true, strict: true }) : '';
             return (
               <h2 id={id} className="text-xl font-semibold mt-5 mb-3 scroll-mt-16" {...props}>
                 <a href={`#${id}`} className="anchor-link">
@@ -164,8 +171,8 @@ export const FormattedText = ({
               </h2>
             );
           },
-          h3: ({children, ...props}: {children: React.ReactNode; [key: string]: any}) => {
-            const id = children ? slugify(children.toString(), { lower: true, strict: true }) : '';
+          h3: ({ children, ...props }: MarkdownComponentProps) => {
+            const id = children ? slugify(String(children), { lower: true, strict: true }) : '';
             return (
               <h3 id={id} className="text-lg font-semibold mt-4 mb-2 scroll-mt-16" {...props}>
                 <a href={`#${id}`} className="anchor-link">
@@ -174,10 +181,10 @@ export const FormattedText = ({
               </h3>
             );
           },
-          p: ({...props}) => <p className="my-3" {...props} />,
-          strong: ({...props}) => <strong className="font-semibold" {...props} />,
-          em: ({...props}) => <em className="italic" {...props} />,
-          code: ({inline, className, children, ...props}: {inline?: boolean; className?: string; children: React.ReactNode; [key: string]: any}) => {
+          p: (props: MarkdownComponentProps) => <p className="my-3" {...props} />,
+          strong: (props: MarkdownComponentProps) => <strong className="font-semibold" {...props} />,
+          em: (props: MarkdownComponentProps) => <em className="italic" {...props} />,
+          code: ({ inline, className, children, ...props }: { inline?: boolean; className?: string } & MarkdownComponentProps) => {
             const match = /language-(\w+)/.exec(className || '');
             const language = match ? match[1] : '';
             const code = String(children).replace(/\n$/, '');
@@ -185,7 +192,6 @@ export const FormattedText = ({
             if (!inline) {
               return (
                 <div className="relative">
-                  {/* @ts-ignore */}
                   <SyntaxHighlighter
                     style={vs}
                     language={language || 'text'}
@@ -205,25 +211,25 @@ export const FormattedText = ({
               </code>
             );
           },
-          hr: ({...props}) => <hr className="my-4 border-t border-gray-200" {...props} />,
-          ul: ({...props}) => <ul className="list-disc pl-5 my-3 space-y-1" {...props} />,
-          ol: ({...props}) => <ol className="list-decimal pl-5 my-3 space-y-1" {...props} />,
-          li: ({...props}) => <li className="ml-2" {...props} />,
-          table: ({...props}) => (
+          hr: (props: MarkdownComponentProps) => <hr className="my-4 border-t border-gray-200" {...props} />,
+          ul: (props: MarkdownComponentProps) => <ul className="list-disc pl-5 my-3 space-y-1" {...props} />,
+          ol: (props: MarkdownComponentProps) => <ol className="list-decimal pl-5 my-3 space-y-1" {...props} />,
+          li: (props: MarkdownComponentProps) => <li className="ml-2" {...props} />,
+          table: (props: MarkdownComponentProps) => (
             <div className="overflow-x-auto my-4 -mx-4 px-4">
               <table className="min-w-full border-collapse text-sm" {...props} />
             </div>
           ),
-          thead: ({...props}) => <thead {...props} />,
-          tbody: ({...props}) => <tbody {...props} />,
-          tr: ({...props}) => <tr className="border-b border-gray-100" {...props} />,
-          th: ({...props}) => <th className="py-2 px-3 text-left font-semibold border-b border-gray-200" {...props} />,
-          td: ({...props}) => <td className="py-2 px-3" {...props} />,
+          thead: (props: MarkdownComponentProps) => <thead {...props} />,
+          tbody: (props: MarkdownComponentProps) => <tbody {...props} />,
+          tr: (props: MarkdownComponentProps) => <tr className="border-b border-gray-100" {...props} />,
+          th: (props: MarkdownComponentProps) => <th className="py-2 px-3 text-left font-semibold border-b border-gray-200" {...props} />,
+          td: (props: MarkdownComponentProps) => <td className="py-2 px-3" {...props} />,
           // Add support for callouts/admonitions
-          blockquote: ({node, children, ...props}: {node?: any; children: React.ReactNode; [key: string]: any}) => {
+          blockquote: ({ node, children, ...props }: MarkdownComponentProps) => {
             // Check if this is a custom callout
-            // @ts-ignore
-            const className = node?.properties?.className;
+            const nodeProps = node as { properties?: { className?: string | string[] } } | undefined;
+            const className = nodeProps?.properties?.className;
             const classArray = className ? (Array.isArray(className) ? className : [className]) : [];
             const isCustomCallout = classArray.some((c) => 
               typeof c === 'string' && c.includes('custom-callout')
@@ -259,18 +265,15 @@ export const FormattedText = ({
             );
           },
           // Support for details/summary (expandable sections)
-          details: ({children}: {children: React.ReactNode}) => {
+          details: ({ children }: MarkdownComponentProps) => {
             // Extract summary and content
             let summary = 'Details';
             let content: ReactNode = null;
             
             if (children) {
-              // @ts-ignore
-              React.Children.forEach(children, (child) => {
-                // @ts-ignore
+              React.Children.forEach(children as React.ReactElement[], (child) => {
                 if (child && typeof child === 'object' && 'type' in child && child.type === 'summary') {
-                  // @ts-ignore
-                  summary = child.props.children;
+                  summary = String(child.props?.children || 'Details');
                 } else {
                   content = child;
                 }
