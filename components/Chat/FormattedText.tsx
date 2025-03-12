@@ -144,7 +144,7 @@ export const FormattedText = ({
         remarkPlugins={[remarkGfm]} 
         rehypePlugins={[rehypeSanitize]}
         components={{
-          h1: ({children, ...props}) => {
+          h1: ({children, ...props}: {children: React.ReactNode; [key: string]: any}) => {
             const id = children ? slugify(children.toString(), { lower: true, strict: true }) : '';
             return (
               <h1 id={id} className="text-2xl font-bold mt-6 mb-4 scroll-mt-16" {...props}>
@@ -154,7 +154,7 @@ export const FormattedText = ({
               </h1>
             );
           },
-          h2: ({children, ...props}) => {
+          h2: ({children, ...props}: {children: React.ReactNode; [key: string]: any}) => {
             const id = children ? slugify(children.toString(), { lower: true, strict: true }) : '';
             return (
               <h2 id={id} className="text-xl font-semibold mt-5 mb-3 scroll-mt-16" {...props}>
@@ -164,7 +164,7 @@ export const FormattedText = ({
               </h2>
             );
           },
-          h3: ({children, ...props}) => {
+          h3: ({children, ...props}: {children: React.ReactNode; [key: string]: any}) => {
             const id = children ? slugify(children.toString(), { lower: true, strict: true }) : '';
             return (
               <h3 id={id} className="text-lg font-semibold mt-4 mb-2 scroll-mt-16" {...props}>
@@ -177,7 +177,7 @@ export const FormattedText = ({
           p: ({...props}) => <p className="my-3" {...props} />,
           strong: ({...props}) => <strong className="font-semibold" {...props} />,
           em: ({...props}) => <em className="italic" {...props} />,
-          code: ({inline, className, children, ...props}) => {
+          code: ({inline, className, children, ...props}: {inline?: boolean; className?: string; children: React.ReactNode; [key: string]: any}) => {
             const match = /language-(\w+)/.exec(className || '');
             const language = match ? match[1] : '';
             const code = String(children).replace(/\n$/, '');
@@ -220,7 +220,7 @@ export const FormattedText = ({
           th: ({...props}) => <th className="py-2 px-3 text-left font-semibold border-b border-gray-200" {...props} />,
           td: ({...props}) => <td className="py-2 px-3" {...props} />,
           // Add support for callouts/admonitions
-          blockquote: ({node, children, ...props}) => {
+          blockquote: ({node, children, ...props}: {node?: any; children: React.ReactNode; [key: string]: any}) => {
             // Check if this is a custom callout
             // @ts-ignore
             const className = node?.properties?.className;
@@ -259,7 +259,7 @@ export const FormattedText = ({
             );
           },
           // Support for details/summary (expandable sections)
-          details: ({children}) => {
+          details: ({children}: {children: React.ReactNode}) => {
             // Extract summary and content
             let summary = 'Details';
             let content: ReactNode = null;

@@ -33,15 +33,34 @@ declare module 'react-syntax-highlighter/dist/cjs/styles/prism' {
 
 // Extend React Markdown types
 declare module 'react-markdown' {
-  import { ReactNode } from 'react';
+  import { ComponentType, ReactNode } from 'react';
   
   export interface ReactMarkdownProps {
-    node?: {
-      properties?: {
-        className?: string[] | string;
-      };
+    children?: string;
+    remarkPlugins?: any[];
+    rehypePlugins?: any[];
+    components?: {
+      [key: string]: ComponentType<any>;
     };
-    children?: ReactNode;
+    className?: string;
     [key: string]: any;
   }
+  
+  const ReactMarkdown: ComponentType<ReactMarkdownProps>;
+  export default ReactMarkdown;
+}
+
+declare module 'remark-gfm' {
+  const remarkGfm: any;
+  export default remarkGfm;
+}
+
+declare module 'rehype-sanitize' {
+  const rehypeSanitize: any;
+  export default rehypeSanitize;
+}
+
+declare module 'slugify' {
+  function slugify(string: string, options?: { lower?: boolean; strict?: boolean; [key: string]: any }): string;
+  export default slugify;
 } 
