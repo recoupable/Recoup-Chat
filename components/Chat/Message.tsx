@@ -12,7 +12,7 @@ const isAssistantMessage = (message: AIMessage): boolean =>
 
 const isUserMessage = (message: AIMessage): boolean => message.role === "user";
 
-const Message = ({ message }: MessageProps) => {
+const Message = ({ message, index }: MessageProps) => {
   if (message.role === "system" || message.role === "data") {
     return null;
   }
@@ -20,7 +20,7 @@ const Message = ({ message }: MessageProps) => {
   return (
     <div className="p-3 rounded-lg">
       {isAssistantMessage(message) ? (
-        <AssistantMessage message={message} />
+        <AssistantMessage message={message} index={index} />
       ) : isUserMessage(message) ? (
         <UserMessage message={message} />
       ) : null}
