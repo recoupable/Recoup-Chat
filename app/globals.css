@@ -65,6 +65,62 @@ body {
   padding-left: 12px !important;
 }
 
+/* Chat message formatting styles */
+.formatted-content h1 {
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+  font-weight: 700;
+  font-size: 1.5rem;
+  line-height: 2rem;
+  border-bottom: 1px solid #eaeaea;
+  padding-bottom: 0.25rem;
+}
+
+.formatted-content h2 {
+  margin-top: 1.25rem;
+  margin-bottom: 0.75rem;
+  font-weight: 600;
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+}
+
+.formatted-content h3 {
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  font-size: 1.125rem;
+  line-height: 1.5rem;
+}
+
+.formatted-content p {
+  margin-bottom: 0.75rem;
+  line-height: 1.5;
+}
+
+.formatted-content ul, 
+.formatted-content ol {
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.formatted-content code {
+  background-color: #f5f5f5;
+  padding: 0.125rem 0.25rem;
+  border-radius: 0.25rem;
+  font-family: monospace;
+  font-size: 0.875rem;
+}
+
+.formatted-content hr {
+  margin: 1.5rem 0;
+  border: 0;
+  border-top: 1px solid #eaeaea;
+}
+
+.message-container {
+  line-height: 1.5;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;

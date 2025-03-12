@@ -38,13 +38,13 @@ const AssistantMessage = ({ message }: AssistantMessageProps) => {
   const segments = createMessageSegments(message.content, jsonObjects);
 
   return (
-    <div className="flex w-full gap-2">
-      <div className="border border-grey w-7 h-7 rounded-full flex items-center justify-center">
+    <div className="flex w-full gap-3">
+      <div className="border border-grey w-7 h-7 rounded-full flex items-center justify-center shrink-0 mt-1">
         <Icon name="logo-xs" />
       </div>
-      <div className="grow max-w-[90%]">
+      <div className="grow max-w-[90%] message-container">
         {isUsingContext && (
-          <div className="text-xs text-gray-500 italic mb-1 flex items-center">
+          <div className="text-xs text-gray-500 italic mb-2 flex items-center">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>

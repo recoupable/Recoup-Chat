@@ -9,12 +9,13 @@ interface MessageContentProps {
 
 export const MessageContent = ({ segments }: MessageContentProps) => {
   return (
-    <section className="flex flex-col gap-3">
+    <section className="flex flex-col gap-4">
       {segments.map((segment, index) =>
         segment.type === "text" ? (
           <FormattedText
             key={`text-${index}`}
             content={segment.content as string}
+            className={index > 0 ? "mt-2" : ""}
           />
         ) : (
           <ProfilePictureCircles

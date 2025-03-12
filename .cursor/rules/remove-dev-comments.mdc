@@ -1,0 +1,7 @@
+---
+description: # Remove dev comments, all code should be self-documenting.
+globs: 
+alwaysApply: false
+---
+
+# Remove dev comments, all code should be self-documenting.
