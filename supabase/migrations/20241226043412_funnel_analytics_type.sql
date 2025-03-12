@@ -1,0 +1,1 @@
+alter table "public"."funnel_analytics" add column "type" social_type;
