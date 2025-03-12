@@ -117,6 +117,40 @@ body {
   border-top: 1px solid #eaeaea;
 }
 
+/* Table styles */
+.formatted-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+  font-size: 0.875rem;
+}
+
+.formatted-content th {
+  background-color: #f9fafb;
+  font-weight: 600;
+  text-align: left;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.formatted-content td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #f3f4f6;
+  vertical-align: top;
+}
+
+.formatted-content tr:hover {
+  background-color: #f9fafb;
+}
+
+.formatted-content .overflow-x-auto {
+  overflow-x: auto;
+  max-width: 100%;
+  margin: 1rem 0;
+  border-radius: 0.375rem;
+  border: 1px solid #eaeaea;
+}
+
 .message-container {
   line-height: 1.5;
 }

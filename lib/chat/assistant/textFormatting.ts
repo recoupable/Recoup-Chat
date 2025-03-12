@@ -4,6 +4,126 @@
 export const formatText = (text: string): string => {
   return (
     text
+      // Format discography-style content with pipe separators
+      .replace(
+        /^(#+ .*Discography.*)\n+(.+\n)*((?:\| .+\n)+)/gm,
+        (match, header, intro, tableContent) => {
+          // Process the table-like content with pipes
+          const rows = tableContent.trim().split('\n');
+          
+          // Create a formatted discography section
+          return `
+            ${header}
+            ${intro || ''}
+            <div class="overflow-x-auto my-4">
+              <table class="min-w-full border-collapse text-sm">
+                <tbody>
+                  ${rows.map((row: string) => {
+                    const cells = row.split('|').filter(Boolean).map((cell: string) => cell.trim());
+                    return `
+                      <tr class="border-b border-gray-100">
+                        ${cells.map((cell: string) => `<td class="py-2 px-3">${cell}</td>`).join('')}
+                      </tr>
+                    `;
+                  }).join('')}
+                </tbody>
+              </table>
+            </div>
+          `;
+        }
+      )
+      
+      // Format tables with pipe syntax
+      .replace(
+        /^\|(.*)\|\s*\n\|([-|]+)\|\s*\n((^\|.*\|\s*\n)+)/gm,
+        (match, headerRow, separatorRow, bodyRows) => {
+          const headers = headerRow
+            .split('|')
+            .filter(Boolean)
+            .map((cell: string) => cell.trim());
+          
+          const rows = bodyRows
+            .trim()
+            .split('\n')
+            .map((row: string) => 
+              row
+                .split('|')
+                .filter(Boolean)
+                .map((cell: string) => cell.trim())
+            );
+          
+          return `
+            <div class="overflow-x-auto my-4">
+              <table class="min-w-full border-collapse text-sm">
+                <thead>
+                  <tr class="border-b border-gray-200">
+                    ${headers.map((header: string) => 
+                      `<th class="py-2 px-3 text-left font-semibold">${header}</th>`
+                    ).join('')}
+                  </tr>
+                </thead>
+                <tbody>
+                  ${rows.map((row: string[]) => 
+                    `<tr class="border-b border-gray-100">
+                      ${row.map((cell: string) => 
+                        `<td class="py-2 px-3">${cell}</td>`
+                      ).join('')}
+                    </tr>`
+                  ).join('')}
+                </tbody>
+              </table>
+            </div>
+          `;
+        }
+      )
+      
+      // Format simple tables with dash and pipe separators
+      .replace(
+        /^([^\n]+)\n([-|]+)\n([\s\S]+?)(?=\n\n|$)/gm,
+        (match, headerRow, separatorRow, bodyRows) => {
+          // Check if this is actually a table format
+          if (!/\|/.test(headerRow) || !/\|/.test(bodyRows)) {
+            return match;
+          }
+          
+          const headers = headerRow
+            .split('|')
+            .map((cell: string) => cell.trim());
+          
+          const rows = bodyRows
+            .trim()
+            .split('\n')
+            .map((row: string) => 
+              row
+                .split('|')
+                .map((cell: string) => cell.trim())
+            );
+          
+          return `
+            <div class="overflow-x-auto my-4">
+              <table class="min-w-full border-collapse text-sm">
+                <thead>
+                  <tr class="border-b border-gray-200">
+                    ${headers.map((header: string) => 
+                      `<th class="py-2 px-3 text-left font-semibold">${header}</th>`
+                    ).join('')}
+                  </tr>
+                </thead>
+                <tbody>
+                  ${rows.map((row: string[]) => 
+                    `<tr class="border-b border-gray-100">
+                      ${row.map((cell: string) => 
+                        `<td class="py-2 px-3">${cell}</td>`
+                      ).join('')}
+                    </tr>`
+                  ).join('')}
+                </tbody>
+              </table>
+            </div>
+          `;
+        }
+      )
+      
       // Convert headers (# Header) to styled headers
       .replace(/^###\s+(.*?)$/gm, '<h3 class="text-lg font-semibold mt-4 mb-2">$1</h3>')
       .replace(/^##\s+(.*?)$/gm, '<h2 class="text-xl font-semibold mt-5 mb-3">$1</h2>')
@@ -48,6 +168,6 @@ export const formatText = (text: string): string => {
       .replace(/^---+$/gm, '<hr class="my-4 border-t border-gray-200" />')
       
       // Wrap content in paragraphs if not already wrapped
-      .replace(/^(?!<h[1-6]|<div|<p|<hr)(.+)$/gm, '<p class="my-2">$1</p>')
+      .replace(/^(?!<h[1-6]|<div|<p|<hr|<table)(.+)$/gm, '<p class="my-2">$1</p>')
   );
 };
