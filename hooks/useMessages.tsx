@@ -30,6 +30,8 @@ const useMessages = () => {
       artistId: selectedArtist?.account_id,
       roomId: chatId,
       segmentId: segmentData?.segmentId,
+      // Note: We don't need to explicitly send messages here as the AI SDK's useChat hook
+      // automatically includes the full messages array in the request body
     },
     onFinish: (message: Message) => {
       if (chatId) {

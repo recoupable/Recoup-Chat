@@ -2,12 +2,28 @@ import { Message } from "@ai-sdk/react";
 import createMemories from "@/lib/supabase/createMemories";
 import { LangChainAdapter } from "ai";
 import initializeAgent from "@/lib/agent/initializeAgent";
-import { HumanMessage } from "@langchain/core/messages";
+import { HumanMessage, AIMessage, SystemMessage } from "@langchain/core/messages";
 import getTransformedStream from "@/lib/agent/getTransformedStream";
 
 // Cache for agent instances to avoid recreating them for the same room/segment
 const agentCache = new Map();
 const CACHE_TTL = 5 * 60 * 1000; // 5 minutes in milliseconds
+
+// Maximum number of messages to include in the context
+const MAX_CONTEXT_MESSAGES = 10;
+
+// Convert a message from AI SDK format to LangChain format
+const convertMessageToLangChainFormat = (message: Message) => {
+  if (message.role === "user") {
+    return new HumanMessage(message.content);
+  } else if (message.role === "assistant") {
+    return new AIMessage(message.content);
+  } else if (message.role === "system") {
+    return new SystemMessage(message.content);
+  }
+  // Default to HumanMessage if role is unknown
+  return new HumanMessage(message.content);
+};
 
 export async function POST(req: Request) {
   try {
@@ -21,7 +37,6 @@ export async function POST(req: Request) {
       throw new Error("No messages provided");
     }
 
-    const question = lastMessage.content;
     if (room_id) {
       await createMemories({
         room_id,
@@ -51,9 +66,18 @@ export async function POST(req: Request) {
       agentCache.set(cacheKey, agentData);
     }
 
+    // Get the recent message history (limit to MAX_CONTEXT_MESSAGES)
+    const recentMessages = messages.slice(-MAX_CONTEXT_MESSAGES);
+    
+    // Convert messages to LangChain format
+    const langChainMessages = recentMessages.map(convertMessageToLangChainFormat);
+    
+    // Create message input with conversation history
     const messageInput = {
-      messages: [new HumanMessage(question)],
+      messages: langChainMessages,
     };
+
+    console.log(`[Chat] Including ${langChainMessages.length} messages in context`);
 
     // Use the cached or newly created agent
     const stream = await agentData.agent.stream(messageInput, {
