@@ -1,5 +1,5 @@
 import { MessageSegment } from "@/lib/chat/assistant/messageSegmentation";
-import FormattedText from "./FormattedText";
+import SimpleFormattedText from "./SimpleFormattedText";
 import ProfilePictureCircles from "./ProfilePictureCircles";
 import { FanData } from "@/lib/chat/assistant/messageParser";
 
@@ -12,7 +12,7 @@ export const MessageContent = ({ segments }: MessageContentProps) => {
     <section className="flex flex-col gap-4">
       {segments.map((segment, index) =>
         segment.type === "text" ? (
-          <FormattedText
+          <SimpleFormattedText
             key={`text-${index}`}
             content={segment.content as string}
             className={index > 0 ? "mt-2" : ""}

@@ -67,40 +67,115 @@ body {
 
 /* Chat message formatting styles */
 .formatted-content h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
   margin-top: 1.5rem;
   margin-bottom: 1rem;
-  font-weight: 700;
-  font-size: 1.5rem;
-  line-height: 2rem;
-  border-bottom: 1px solid #eaeaea;
-  padding-bottom: 0.25rem;
+  scroll-margin-top: 4rem;
 }
 
 .formatted-content h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
   margin-top: 1.25rem;
   margin-bottom: 0.75rem;
-  font-weight: 600;
-  font-size: 1.25rem;
-  line-height: 1.75rem;
+  scroll-margin-top: 4rem;
 }
 
 .formatted-content h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
   margin-top: 1rem;
   margin-bottom: 0.5rem;
-  font-weight: 600;
-  font-size: 1.125rem;
-  line-height: 1.5rem;
+  scroll-margin-top: 4rem;
 }
 
 .formatted-content p {
-  margin-bottom: 0.75rem;
-  line-height: 1.5;
+  margin: 0.75rem 0;
 }
 
-.formatted-content ul, 
+.formatted-content ul, .formatted-content ol {
+  margin: 0.75rem 0;
+  padding-left: 1.25rem;
+}
+
+.formatted-content ul {
+  list-style-type: disc;
+}
+
 .formatted-content ol {
-  margin-top: 0.5rem;
-  margin-bottom: 1rem;
+  list-style-type: decimal;
+}
+
+.formatted-content li {
+  margin: 0.25rem 0;
+}
+
+.formatted-content a {
+  color: #3b82f6;
+  text-decoration: none;
+}
+
+.formatted-content a:hover {
+  text-decoration: underline;
+}
+
+.formatted-content blockquote {
+  border-left: 4px solid #e5e7eb;
+  padding: 0.5rem 1rem;
+  margin: 1rem 0;
+  background-color: #f9fafb;
+  border-radius: 0 0.25rem 0.25rem 0;
+}
+
+.formatted-content code {
+  background-color: #f3f4f6;
+  padding: 0.125rem 0.25rem;
+  border-radius: 0.25rem;
+  font-family: monospace;
+  font-size: 0.875rem;
+}
+
+.formatted-content pre {
+  background-color: #f3f4f6;
+  padding: 1rem;
+  border-radius: 0.25rem;
+  overflow-x: auto;
+  margin: 0.75rem 0;
+}
+
+.formatted-content pre code {
+  background-color: transparent;
+  padding: 0;
+  border-radius: 0;
+}
+
+.formatted-content table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1rem 0;
+}
+
+.formatted-content th, .formatted-content td {
+  border: 1px solid #e5e7eb;
+  padding: 0.5rem;
+  text-align: left;
+}
+
+.formatted-content th {
+  background-color: #f9fafb;
+  font-weight: 600;
+}
+
+.formatted-content tr:nth-child(even) {
+  background-color: #f9fafb;
+}
+
+.formatted-content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.25rem;
+  margin: 0.75rem 0;
 }
 
 /* Enhanced markdown styles */
@@ -116,14 +191,6 @@ body {
   left: -1em;
   color: #6b7280;
   font-weight: normal;
-}
-
-.formatted-content blockquote {
-  font-style: italic;
-}
-
-.formatted-content blockquote p:last-child {
-  margin-bottom: 0;
 }
 
 /* Callout styles */

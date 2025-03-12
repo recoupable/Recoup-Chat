@@ -1,6 +1,6 @@
 import type { Message as AIMessage } from "@ai-sdk/react";
 import AssistantMessage from "./AssistantMessage";
-import UserMessage from "./UserMessage";
+import SimpleUserMessage from "./SimpleUserMessage";
 
 interface MessageProps {
   message: AIMessage;
@@ -22,7 +22,7 @@ const Message = ({ message, index }: MessageProps) => {
       {isAssistantMessage(message) ? (
         <AssistantMessage message={message} index={index} />
       ) : isUserMessage(message) ? (
-        <UserMessage message={message} />
+        <SimpleUserMessage message={message} />
       ) : null}
     </div>
   );
