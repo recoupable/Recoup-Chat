@@ -7,22 +7,13 @@ import Events from "./Events";
 import Approvals from "./Approvals";
 import { useUserProvider } from "@/providers/UserProvder";
 import { Skeleton } from "@/components/ui/skeleton";
-import { usePrivy } from "@privy-io/react-auth";
-import { useEffect, useRef } from "react";
+import useLoginRedirect from "@/hooks/useLoginRedirect";
 
 const AutoPilot = () => {
   const { selectedArtist } = useArtistProvider();
   const { email } = useUserProvider();
-  const { login } = usePrivy();
-  const hasTriedLogin = useRef(false);
+  useLoginRedirect();
   const showSkeleton = !selectedArtist || !email;
-
-  useEffect(() => {
-    if (!email && !hasTriedLogin.current) {
-      hasTriedLogin.current = true;
-      login();
-    }
-  }, [email, login]);
 
   return (
     <div className="grow font-mono p-3 md:p-4 rounded-lg flex flex-col">
