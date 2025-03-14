@@ -32,7 +32,6 @@ export async function POST(req: Request) {
       segmentId: segment_id,
     });
 
-    // Get previous messages from the database if a room_id is provided
     let previousMessages: BaseMessage[] = [];
     if (room_id) {
       previousMessages = await getPreviousMessages(room_id, 10);
@@ -42,10 +41,8 @@ export async function POST(req: Request) {
       });
     }
 
-    // Create the current message
     const currentMessage = new HumanMessage(question);
     
-    // Combine previous messages with the current message
     const allMessages: BaseMessage[] = [...previousMessages, currentMessage];
     
     console.log("[Chat] Sending messages to LLM:", {

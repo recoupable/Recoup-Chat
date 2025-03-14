@@ -13,7 +13,6 @@ export async function getPreviousMessages(roomId: string, limit = 10): Promise<B
   try {
     console.log("[getPreviousMessages] Retrieving messages for room:", roomId);
     
-    // Retrieve messages from the database
     const { data, error } = await supabase
       .from("memories")
       .select("*")
@@ -37,18 +36,15 @@ export async function getPreviousMessages(roomId: string, limit = 10): Promise<B
       lastMessage: data[data.length - 1],
     });
     
-    // Convert to LangChain message format
     const langChainMessages: BaseMessage[] = data.map((memory) => {
       const content = memory.content;
       
-      // Check if the message is from the user or the assistant
       if (content.role === "user") {
         return new HumanMessage(content.content);
       } else if (content.role === "assistant") {
         return new AIMessage(content.content);
       }
       
-      // Default to HumanMessage if role is unknown
       return new HumanMessage(content.content);
     });
     
