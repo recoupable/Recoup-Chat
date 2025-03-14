@@ -23,11 +23,21 @@ const Artist = ({
   const isSelectedArtist = selectedArtist?.account_id === artist?.account_id;
   const pathname = usePathname();
   const { push } = useRouter();
+  
   const handleClick = () => {
     toggleDropDown();
-    if (pathname.includes("/funnels") && selectedArtist) {
-      if (selectedArtist.account_id !== artist?.account_id) push("/");
+    
+    // Only proceed with redirection if we're actually switching artists
+    if (selectedArtist?.account_id !== artist?.account_id) {
+      // UUID pattern: 8-4-4-4-12 hexadecimal characters
+      const uuidPattern = /^\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+      const isChatPage = uuidPattern.test(pathname);
+      
+      if (isChatPage || pathname.includes("/funnels")) {
+        push("/");
+      }
     }
+    
     setSelectedArtist(artist);
   };
 
