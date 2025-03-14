@@ -4,6 +4,8 @@ import { LangChainAdapter } from "ai";
 import initializeAgent from "@/lib/agent/initializeAgent";
 import { HumanMessage } from "@langchain/core/messages";
 import getTransformedStream from "@/lib/agent/getTransformedStream";
+import { getPreviousMessages } from "@/lib/supabase/getPreviousMessages";
+import { BaseMessage } from "@langchain/core/messages";
 
 export async function POST(req: Request) {
   try {
@@ -30,8 +32,29 @@ export async function POST(req: Request) {
       segmentId: segment_id,
     });
 
+    // Get previous messages from the database if a room_id is provided
+    let previousMessages: BaseMessage[] = [];
+    if (room_id) {
+      previousMessages = await getPreviousMessages(room_id, 10);
+      console.log("[Chat] Retrieved previous messages:", {
+        count: previousMessages.length,
+        roomId: room_id,
+      });
+    }
+
+    // Create the current message
+    const currentMessage = new HumanMessage(question);
+    
+    // Combine previous messages with the current message
+    const allMessages: BaseMessage[] = [...previousMessages, currentMessage];
+    
+    console.log("[Chat] Sending messages to LLM:", {
+      totalCount: allMessages.length,
+      hasContext: previousMessages.length > 0,
+    });
+
     const messageInput = {
-      messages: [new HumanMessage(question)],
+      messages: allMessages,
     };
 
     const stream = await agent.stream(messageInput, {
