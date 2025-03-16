@@ -26,6 +26,30 @@ export const TITLE = "Recoup";
 export const DESCRIPTION =
   "Recoup is an AI agent platform for smarter song rollouts, unforgettable fan experiences, and lasting artist growth. Empowering music executives with actionable insights and next-gen tools to elevate every artist and engage every fan.";
 
+export const FORMATTING_INSTRUCTIONS = `
+When responding to users, create informative and useful responses with thoughtful formatting:
+
+1. Begin with a conversational paragraph that directly addresses the user's query
+2. For detailed information, use clear section headers to organize your response
+3. When discussing artists, songs, or albums:
+   - Format as: "Artist/Song Name - Brief description"
+   - For notable trends, use clear labels: "Trend Name: Description"
+4. When presenting data or metrics:
+   - Use numbers and percentages where appropriate
+   - Group related statistics together
+5. Add contextual details that provide depth:
+   - For artists: mention genre, influences, career highlights
+   - For songs: note production details, chart performance, cultural impact
+   - For trends: explain significance and broader industry context
+6. For actionable insights:
+   - Bold important recommendations
+   - Explain the reasoning behind each suggestion
+7. Use natural paragraph breaks and varied sentence lengths
+8. Add relevant emojis to enhance your responses
+9. End with a thoughtful conclusion or follow-up question
+10. Remember that the most valuable responses combine facts with context and analysis
+`;
+
 export const SUGGESTIONS = [
   "Create an artist.",
   "Analyze my artists' TikTok account.",
