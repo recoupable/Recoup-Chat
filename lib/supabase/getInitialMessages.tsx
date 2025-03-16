@@ -1,6 +1,11 @@
-const getInitialMessages = async (chatId: string) => {
+const getInitialMessages = async (chatId: string, artistId?: string) => {
   try {
-    const response = await fetch(`/api/memories/get?roomId=${chatId}`);
+    let url = `/api/memories/get?roomId=${chatId}`;
+    if (artistId) {
+      url += `&artistId=${artistId}`;
+    }
+    
+    const response = await fetch(url);
     const data = await response.json();
 
     const memories = data?.data || [];

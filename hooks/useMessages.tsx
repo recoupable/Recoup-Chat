@@ -50,12 +50,15 @@ const useMessages = () => {
       if (!userData?.id) return;
       if (!chatId) return;
       setIsLoading(true);
-      const initialMessages = await getInitialMessages(chatId);
+      const initialMessages = await getInitialMessages(
+        chatId,
+        selectedArtist?.account_id
+      );
       setMessages(initialMessages);
       setIsLoading(false);
     };
     fetch();
-  }, [chatId, userData, setMessages]);
+  }, [chatId, userData, setMessages, selectedArtist?.account_id]);
 
   if (segmentError) {
     console.error("[useMessages] Error fetching segment:", segmentError);
