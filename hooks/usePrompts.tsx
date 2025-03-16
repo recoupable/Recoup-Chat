@@ -17,7 +17,6 @@ const usePrompts = () => {
   useEffect(() => {
     if (isLoading) return;
     
-    // Set artist-specific prompts for new chat
     if (selectedArtist && isNewChat) {
       setPrompts([
         `Who are ${selectedArtist?.name || ""}'s most engaged fans?`,
@@ -26,8 +25,6 @@ const usePrompts = () => {
       return;
     }
     
-    // Only set the selected artist if we're on the home page
-    // This prevents resetting the artist when navigating to a chat page
     if (artists.length && pathname === "/") {
       setSelectedArtist(artists[0]);
       return;
