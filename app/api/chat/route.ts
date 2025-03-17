@@ -41,11 +41,6 @@ export async function POST(req: Request) {
     
     const allMessages: BaseMessage[] = [...previousMessages, currentMessage];
     
-    console.log("[Chat] Sending messages to LLM:", {
-      totalCount: allMessages.length,
-      hasContext: previousMessages.length > 0,
-    });
-
     const messageInput = {
       messages: allMessages,
     };
