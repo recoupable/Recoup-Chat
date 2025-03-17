@@ -35,10 +35,6 @@ export async function POST(req: Request) {
     let previousMessages: BaseMessage[] = [];
     if (room_id) {
       previousMessages = await getPreviousMessages(room_id, 10);
-      console.log("[Chat] Retrieved previous messages:", {
-        count: previousMessages.length,
-        roomId: room_id,
-      });
     }
 
     const currentMessage = new HumanMessage(question);
