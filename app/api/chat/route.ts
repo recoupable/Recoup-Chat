@@ -4,7 +4,7 @@ import { LangChainAdapter } from "ai";
 import initializeAgent from "@/lib/agent/initializeAgent";
 import { HumanMessage } from "@langchain/core/messages";
 import getTransformedStream from "@/lib/agent/getTransformedStream";
-import { getPreviousMessages } from "@/lib/supabase/getPreviousMessages";
+import { getServerMessages } from "@/lib/supabase/getServerMessages";
 import { BaseMessage } from "@langchain/core/messages";
 
 export async function POST(req: Request) {
@@ -34,7 +34,7 @@ export async function POST(req: Request) {
 
     let previousMessages: BaseMessage[] = [];
     if (room_id) {
-      previousMessages = await getPreviousMessages(room_id, 10);
+      previousMessages = await getServerMessages(room_id, 10);
     }
 
     const currentMessage = new HumanMessage(question);
