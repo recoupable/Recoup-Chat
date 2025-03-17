@@ -2,17 +2,16 @@ import { HumanMessage, AIMessage, BaseMessage } from "@langchain/core/messages";
 import supabase from "./serverClient";
 
 /**
- * Retrieves previous messages from the database for a specific chat room
- * and converts them to LangChain message format for the agent
+ * Server-side message fetching function that uses the service role key
+ * This function should ONLY be used server-side as it has elevated database privileges
+ * and returns data in LangChain format for AI processing
  * 
- * @param roomId The ID of the chat room
+ * @param roomId The ID of the chat room to fetch messages for
  * @param limit Maximum number of messages to retrieve (default: 10)
  * @returns Array of LangChain messages in chronological order
  */
-export async function getPreviousMessages(roomId: string, limit = 10): Promise<BaseMessage[]> {
+export async function getServerMessages(roomId: string, limit = 10): Promise<BaseMessage[]> {
   try {
-    console.log("[getPreviousMessages] Retrieving messages for room:", roomId);
-    
     const { data, error } = await supabase
       .from("memories")
       .select("*")
@@ -21,20 +20,12 @@ export async function getPreviousMessages(roomId: string, limit = 10): Promise<B
       .limit(limit);
     
     if (error) {
-      console.error("[getPreviousMessages] Error retrieving messages:", error);
       return [];
     }
     
     if (!data || data.length === 0) {
-      console.log("[getPreviousMessages] No messages found for room:", roomId);
       return [];
     }
-    
-    console.log("[getPreviousMessages] Retrieved messages:", {
-      count: data.length,
-      firstMessage: data[0],
-      lastMessage: data[data.length - 1],
-    });
     
     const langChainMessages: BaseMessage[] = data.map((memory) => {
       const content = memory.content;
@@ -48,13 +39,8 @@ export async function getPreviousMessages(roomId: string, limit = 10): Promise<B
       return new HumanMessage(content.content);
     });
     
-    console.log("[getPreviousMessages] Converted to LangChain format:", {
-      count: langChainMessages.length,
-    });
-    
     return langChainMessages;
-  } catch (error) {
-    console.error("[getPreviousMessages] Unexpected error:", error);
+  } catch {
     return [];
   }
 } 

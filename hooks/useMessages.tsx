@@ -6,7 +6,7 @@ import { useArtistProvider } from "@/providers/ArtistProvider";
 import { useParams } from "next/navigation";
 import createMemory from "@/lib/createMemory";
 import { useUserProvider } from "@/providers/UserProvder";
-import getInitialMessages from "@/lib/supabase/getInitialMessages";
+import getClientMessages from "@/lib/supabase/getClientMessages";
 import { useChatSegment } from "./useChatSegment";
 
 const useMessages = () => {
@@ -50,7 +50,7 @@ const useMessages = () => {
       if (!userData?.id) return;
       if (!chatId) return;
       setIsLoading(true);
-      const initialMessages = await getInitialMessages(chatId);
+      const initialMessages = await getClientMessages(chatId);
       setMessages(initialMessages);
       setIsLoading(false);
     };
