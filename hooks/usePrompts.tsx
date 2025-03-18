@@ -16,6 +16,7 @@ const usePrompts = () => {
 
   useEffect(() => {
     if (isLoading) return;
+
     if (selectedArtist && isNewChat) {
       setPrompts([
         `Who are ${selectedArtist?.name || ""}'s most engaged fans?`,
@@ -23,12 +24,14 @@ const usePrompts = () => {
       ]);
       return;
     }
-    if (artists.length) {
+
+    if (artists.length && pathname === "/") {
       setSelectedArtist(artists[0]);
       return;
     }
+
     setPrompts(SUGGESTIONS);
-  }, [selectedArtist, isNewChat, artists, isLoading]);
+  }, [selectedArtist, isNewChat, artists, isLoading, pathname, setSelectedArtist]);
 
   const getPrompts = async (content: string, isTikTokAnalysis?: boolean) => {
     const isFunnelReport = content === "Funnel Report";
