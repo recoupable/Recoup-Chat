@@ -18,16 +18,18 @@ const useMessages = () => {
   const { userData } = useUserProvider();
   const [isLoading, setIsLoading] = useState(false);
   const { data: segmentData, isError: segmentError } = useChatSegment(chatId);
+  const [localMessages, setLocalMessages] = useState<Message[]>([]);
 
   const {
-    messages,
+    messages: aiMessages,
     input,
     handleInputChange,
-    handleSubmit: handleAiChatSubmit,
+    handleSubmit: baseHandleSubmit,
     append: appendAiChat,
     status,
-    setMessages,
+    setMessages: setAiMessages,
     reload: reloadAiChat,
+    setInput,
   } = useChat({
     api: `/api/chat`,
     headers: {
@@ -45,17 +47,59 @@ const useMessages = () => {
     },
   });
 
+  // Load initial messages when chat or artist changes
   useEffect(() => {
     const fetch = async () => {
-      if (!userData?.id) return;
-      if (!chatId) return;
+      if (!userData?.id || !chatId || !selectedArtist?.account_id) return;
+      
       setIsLoading(true);
-      const initialMessages = await getInitialMessages(chatId, selectedArtist?.account_id);
-      setMessages(initialMessages);
-      setIsLoading(false);
+      try {
+        const initialMessages = await getInitialMessages(chatId, selectedArtist.account_id);
+        if (initialMessages?.length) {
+          setLocalMessages(initialMessages);
+          setAiMessages(initialMessages);
+        }
+      } catch (error) {
+        console.error("[useMessages] Error fetching initial messages:", error);
+      } finally {
+        setIsLoading(false);
+      }
     };
+    
     fetch();
-  }, [chatId, userData, setMessages, selectedArtist?.account_id]);
+  }, [chatId, userData?.id, selectedArtist?.account_id, setAiMessages]);
+
+  // Keep local messages in sync with AI messages
+  useEffect(() => {
+    if (aiMessages?.length) {
+      setLocalMessages(aiMessages);
+    }
+  }, [aiMessages]);
+
+  const handleAiChatSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const currentInput = input.trim();
+    if (!currentInput) return;
+    
+    const userMessage: Message = {
+      id: Date.now().toString(),
+      content: currentInput,
+      role: "user",
+    };
+    
+    // Update both message states
+    const newMessages = [...localMessages, userMessage];
+    setLocalMessages(newMessages);
+    setAiMessages(newMessages);
+    
+    try {
+      // Submit first, then clear input
+      await baseHandleSubmit(e);
+      setInput("");
+    } catch (error) {
+      console.error("[handleAiChatSubmit] Error:", error);
+    }
+  };
 
   if (segmentError) {
     console.error("[useMessages] Error fetching segment:", segmentError);
@@ -67,8 +111,8 @@ const useMessages = () => {
     handleAiChatSubmit,
     handleInputChange,
     input,
-    setMessages,
-    messages,
+    setMessages: setLocalMessages,
+    messages: localMessages,
     pending: status === "streaming" || status === "submitted",
     isLoading,
   };
