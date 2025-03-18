@@ -23,11 +23,21 @@ const Artist = ({
   const isSelectedArtist = selectedArtist?.account_id === artist?.account_id;
   const pathname = usePathname();
   const { push } = useRouter();
+  
   const handleClick = () => {
     toggleDropDown();
-    if (pathname.includes("/funnels") && selectedArtist) {
-      if (selectedArtist.account_id !== artist?.account_id) push("/");
+    
+    const isArtistSwitch = selectedArtist?.account_id !== artist?.account_id;
+    if (isArtistSwitch) {
+      const chatUuidPattern = /^\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+      const isViewingExistingChat = chatUuidPattern.test(pathname);
+      const isViewingFunnel = pathname.includes("/funnels");
+      
+      if (isViewingExistingChat || isViewingFunnel) {
+        push("/");
+      }
     }
+    
     setSelectedArtist(artist);
   };
 
@@ -40,6 +50,7 @@ const Artist = ({
       } py-2`}
       type="button"
       onClick={handleClick}
+      aria-label={`Select artist ${artist?.name || 'Unknown'}`}
     >
       <div
         className={`w-8 aspect-1/1 rounded-full overflow-hidden flex items-center justify-center ${isSelectedArtist && "shadow-[1px_1px_1px_1px_#E6E6E6]"}`}
@@ -56,10 +67,12 @@ const Artist = ({
           </div>
           <button
             type="button"
-            onClick={() => {
+            onClick={(e) => {
+              e.stopPropagation();
               if (artist) toggleUpdate(artist);
               toggleSettingModal();
             }}
+            aria-label="Open artist settings"
           >
             <EllipsisVertical className="size-5" />
           </button>
