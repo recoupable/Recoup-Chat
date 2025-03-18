@@ -129,3 +129,49 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+/* Formatted content styles */
+.formatted-content h1 {
+  @apply text-2xl font-bold mt-8 mb-4 text-gray-900;
+}
+
+.formatted-content h2 {
+  @apply text-lg font-semibold mt-7 mb-3 text-gray-800;
+}
+
+.formatted-content p {
+  @apply my-4 leading-relaxed;
+}
+
+.first-p-mt-0 p:first-of-type {
+  @apply mt-0;
+}
+
+.formatted-content ul {
+  @apply list-disc pl-6 my-5 space-y-2.5;
+}
+
+.formatted-content ol {
+  @apply list-decimal pl-6 my-5 space-y-2.5;
+}
+
+.formatted-content strong {
+  @apply font-semibold;
+}
+
+.formatted-content em {
+  @apply italic;
+}
+
+.formatted-content li {
+  @apply mb-1.5 leading-relaxed;
+}
+
+.formatted-content .section-divider {
+  @apply border-b border-gray-200 my-3;
+}
+
+/* Ensure proper spacing between message segments */
+.message-content-segment + .message-content-segment {
+  @apply mt-5;
+}

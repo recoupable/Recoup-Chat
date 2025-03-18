@@ -9,18 +9,16 @@ interface MessageContentProps {
 
 export const MessageContent = ({ segments }: MessageContentProps) => {
   return (
-    <section className="flex flex-col gap-3">
+    <section className="flex flex-col gap-5">
       {segments.map((segment, index) =>
         segment.type === "text" ? (
-          <FormattedText
-            key={`text-${index}`}
-            content={segment.content as string}
-          />
+          <div key={`text-${index}`} className="message-content-segment">
+            <FormattedText content={segment.content as string} />
+          </div>
         ) : (
-          <ProfilePictureCircles
-            key={`fans-${index}`}
-            fans={(segment.content as FanData).fans}
-          />
+          <div key={`fans-${index}`} className="message-content-segment mt-2 mb-3">
+            <ProfilePictureCircles fans={(segment.content as FanData).fans} />
+          </div>
         )
       )}
     </section>

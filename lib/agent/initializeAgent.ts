@@ -3,7 +3,7 @@ import { createReactAgent } from "@langchain/langgraph/prebuilt";
 import { MemorySaver } from "@langchain/langgraph";
 import validateEnvironment from "./validateEnvironment";
 import type { AgentOptions, AgentResponse } from "./types";
-import { DESCRIPTION } from "../consts";
+import { DESCRIPTION, FORMATTING_INSTRUCTIONS } from "../consts";
 import { getSegmentFansTool } from "../tools/getSegmentFans";
 
 const AI_MODEL = "claude-3-7-sonnet-20250219";
@@ -32,7 +32,7 @@ async function initializeAgent(
     const agent = createReactAgent({
       llm,
       tools,
-      messageModifier: DESCRIPTION,
+      messageModifier: `${DESCRIPTION} ${FORMATTING_INSTRUCTIONS}`,
       checkpointSaver: memory,
     });
 

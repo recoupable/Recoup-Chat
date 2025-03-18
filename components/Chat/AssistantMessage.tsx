@@ -13,8 +13,8 @@ const AssistantMessage = ({ message }: AssistantMessageProps) => {
   const segments = createMessageSegments(message.content, jsonObjects);
 
   return (
-    <div className="flex w-full gap-2">
-      <div className="border border-grey w-7 h-7 rounded-full flex items-center justify-center">
+    <div className="flex w-full gap-2 items-start">
+      <div className="border border-grey w-7 h-7 rounded-full flex items-center justify-center mt-1">
         <Icon name="logo-xs" />
       </div>
       <div className="grow max-w-[90%]">

@@ -11,7 +11,7 @@ export const FormattedText = ({
 }: FormattedTextProps) => {
   return (
     <div
-      className={`text-sm font-sans max-w-[500px] text-pretty break-words ${className}`}
+      className={`text-sm font-sans max-w-full text-pretty break-words formatted-content first-p-mt-0 mt-1.5 ${className}`}
       dangerouslySetInnerHTML={{
         __html: formatText(content),
       }}
