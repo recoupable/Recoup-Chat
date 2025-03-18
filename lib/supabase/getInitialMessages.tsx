@@ -1,18 +1,24 @@
-const getInitialMessages = async (chatId: string) => {
-  try {
-    const response = await fetch(`/api/memories/get?roomId=${chatId}`);
-    const data = await response.json();
+interface MemoryMessage {
+  id: string;
+  role: string;
+  content: string;
+}
 
-    const memories = data?.data || [];
-
-    // eslint-disable-next-line
-    return memories.map((memory: any) => ({
-      ...memory.content,
-    }));
-  } catch (error) {
-    console.error(error);
-    return [];
+const getInitialMessages = async (chatId: string, artistId?: string) => {
+  const url = new URL("/api/memories/get", window.location.origin);
+  url.searchParams.set("roomId", chatId);
+  if (artistId) {
+    url.searchParams.set("artistId", artistId);
   }
+
+  const response = await fetch(url);
+  const { data } = await response.json();
+
+  return data?.map((message: MemoryMessage) => ({
+    id: message.id,
+    role: message.role,
+    content: message.content,
+  })) || [];
 };
 
 export default getInitialMessages;

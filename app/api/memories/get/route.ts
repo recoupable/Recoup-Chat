@@ -3,8 +3,23 @@ import { NextRequest } from "next/server";
 
 export async function GET(req: NextRequest) {
   const roomId = req.nextUrl.searchParams.get("roomId");
+  const artistId = req.nextUrl.searchParams.get("artistId");
 
   try {
+    if (artistId) {
+      const { data: roomData, error: roomError } = await supabase
+        .from("rooms")
+        .select("id")
+        .eq("id", roomId)
+        .eq("artist_id", artistId)
+        .single();
+
+      if (roomError || !roomData) {
+        console.log(`[memories/get] Room ${roomId} not found for artist ${artistId}`);
+        return Response.json({ data: [], error: null }, { status: 200 });
+      }
+    }
+
     const { data, error } = await supabase
       .from("memories")
       .select("*")
