@@ -34,7 +34,7 @@ export async function POST(req: Request) {
 
     let previousMessages: BaseMessage[] = [];
     if (room_id) {
-      previousMessages = await getServerMessages(room_id, 10);
+      previousMessages = await getServerMessages(room_id, 100);
     }
 
     const currentMessage = new HumanMessage(question);

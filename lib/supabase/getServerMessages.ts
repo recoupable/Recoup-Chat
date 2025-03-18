@@ -7,10 +7,10 @@ import supabase from "./serverClient";
  * and returns data in LangChain format for AI processing
  * 
  * @param roomId The ID of the chat room to fetch messages for
- * @param limit Maximum number of messages to retrieve (default: 10)
+ * @param limit Maximum number of messages to retrieve (default: 100)
  * @returns Array of LangChain messages in chronological order
  */
-export async function getServerMessages(roomId: string, limit = 10): Promise<BaseMessage[]> {
+export async function getServerMessages(roomId: string, limit = 100): Promise<BaseMessage[]> {
   try {
     const { data, error } = await supabase
       .from("memories")
