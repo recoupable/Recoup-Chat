@@ -54,8 +54,11 @@ const useConversations = () => {
               memory.artist_id === selectedArtist?.account_id
           );
         
-        // Return true if either condition matches
-        return directArtistMatch || memoryArtistMatch;
+        // Only include chats that have memories
+        const hasMemories = item.memories && item.memories.length > 0;
+        
+        // Return true if either artist condition matches AND the chat has memories
+        return (directArtistMatch || memoryArtistMatch) && hasMemories;
       }
     );
     return filtered;
