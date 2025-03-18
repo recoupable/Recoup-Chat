@@ -16,7 +16,7 @@ export async function getServerMessages(roomId: string, limit = 100): Promise<Ba
       .from("memories")
       .select("*")
       .eq("room_id", roomId)
-      .order("updated_at", { ascending: true })
+      .order("updated_at", { ascending: false })
       .limit(limit);
     
     if (error) {
@@ -39,7 +39,7 @@ export async function getServerMessages(roomId: string, limit = 100): Promise<Ba
       return new HumanMessage(content.content);
     });
     
-    return langChainMessages;
+    return langChainMessages.reverse();
   } catch {
     return [];
   }
