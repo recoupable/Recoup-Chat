@@ -23,20 +23,26 @@ const Artist = ({
   const isSelectedArtist = selectedArtist?.account_id === artist?.account_id;
   const pathname = usePathname();
   const { push } = useRouter();
+  
   const handleClick = () => {
     toggleDropDown();
-    if (pathname.includes("/funnels") && selectedArtist) {
-      if (selectedArtist.account_id !== artist?.account_id) push("/");
-    }
     
-    const isChangingArtist = selectedArtist?.account_id !== artist?.account_id;
-    const isInExistingChatPage = pathname.match(/^\/[^/]+$/) && pathname !== "/" && pathname !== "/new";
+    // Only proceed with redirection if we're actually switching artists
+    if (selectedArtist?.account_id !== artist?.account_id) {
+      // UUID pattern: 8-4-4-4-12 hexadecimal characters
+      const uuidPattern = /^\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+      
+      // Only redirect if we're viewing an existing chat or funnel
+      // This allows artist switching during chat creation from any path
+      const isViewingExistingChat = uuidPattern.test(pathname);
+      const isViewingFunnel = pathname.includes("/funnels");
+      
+      if (isViewingExistingChat || isViewingFunnel) {
+        push("/");
+      }
+    }
     
     setSelectedArtist(artist);
-    
-    if (isInExistingChatPage && isChangingArtist) {
-      push("/");
-    }
   };
 
   return (
@@ -48,7 +54,7 @@ const Artist = ({
       } py-2`}
       type="button"
       onClick={handleClick}
-      aria-label={`Select artist: ${artist?.name || 'Unknown'}`}
+      aria-label={`Select artist ${artist?.name || 'Unknown'}`}
     >
       <div
         className={`w-8 aspect-1/1 rounded-full overflow-hidden flex items-center justify-center ${isSelectedArtist && "shadow-[1px_1px_1px_1px_#E6E6E6]"}`}
@@ -70,7 +76,7 @@ const Artist = ({
               if (artist) toggleUpdate(artist);
               toggleSettingModal();
             }}
-            aria-label="Artist settings"
+            aria-label="Open artist settings"
           >
             <EllipsisVertical className="size-5" />
           </button>

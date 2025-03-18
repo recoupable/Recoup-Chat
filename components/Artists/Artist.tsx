@@ -2,6 +2,7 @@ import { useArtistProvider } from "@/providers/ArtistProvider";
 import { ArtistRecord } from "@/types/Artist";
 import ImageWithFallback from "../ImageWithFallback";
 import DropDown from "./DropDown";
+import { usePathname, useRouter } from "next/navigation";
 
 const Artist = ({
   artist,
@@ -10,10 +11,28 @@ const Artist = ({
   artist: ArtistRecord;
   isVisibleDropDown: boolean;
 }) => {
-  const { setSelectedArtist, setMenuVisibleArtistId } = useArtistProvider();
+  const { setSelectedArtist, setMenuVisibleArtistId, selectedArtist } = useArtistProvider();
+  const pathname = usePathname();
+  const { push } = useRouter();
 
   const handleClick = () => {
     setMenuVisibleArtistId(null);
+    
+    // Only proceed with redirection if we're actually switching artists
+    if (selectedArtist?.account_id !== artist.account_id) {
+      // UUID pattern: 8-4-4-4-12 hexadecimal characters
+      const uuidPattern = /^\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+      
+      // Only redirect if we're viewing an existing chat or funnel
+      // This allows artist switching during chat creation from any path
+      const isViewingExistingChat = uuidPattern.test(pathname);
+      const isViewingFunnel = pathname.includes("/funnels");
+      
+      if (isViewingExistingChat || isViewingFunnel) {
+        push("/");
+      }
+    }
+    
     setSelectedArtist(artist);
   };
 
