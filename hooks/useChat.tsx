@@ -29,8 +29,10 @@ const useChat = () => {
       content, 
       selectedArtist?.account_id
     );
-    addConversation(room);
-    push(`/${room.id}`);
+    if (room) {
+      addConversation(room);
+      push(`/${room.id}`);
+    }
   };
 
   const append = async (message: Message) => {
