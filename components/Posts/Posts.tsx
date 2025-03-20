@@ -2,6 +2,7 @@ import { type Post } from "@/hooks/useArtistPosts";
 import PostCard from "./PostCard";
 import { useEffect, useRef } from "react";
 import { useInView } from "react-intersection-observer";
+import LoadMorePosts from "./LoadMorePosts";
 
 interface PostsProps {
   posts: Post[];
@@ -53,18 +54,11 @@ const Posts = ({
         ))}
       </div>
 
-      {/* Load more trigger element */}
-      {hasNextPage && (
-        <div ref={loadMoreRef} className="flex justify-center py-4">
-          {isFetchingNextPage ? (
-            <div className="animate-pulse text-gray-500">
-              Loading more posts...
-            </div>
-          ) : (
-            <div className="h-10" />
-          )}
-        </div>
-      )}
+      <LoadMorePosts
+        hasNextPage={hasNextPage}
+        isFetchingNextPage={isFetchingNextPage}
+        loadMoreRef={loadMoreRef}
+      />
     </div>
   );
 };
