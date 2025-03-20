@@ -16,7 +16,6 @@ const PostsWrapper = () => {
     isFetchingNextPage,
   } = useArtistPosts(selectedArtist?.account_id, POSTS_PER_PAGE);
 
-  // Combine all posts from all pages and sort them
   const allPosts =
     data?.pages?.reduce((acc: Post[], page) => {
       return [...acc, ...page.posts];
@@ -40,7 +39,6 @@ const PostsWrapper = () => {
   }
 
   if (!sortedPosts.length) {
-    console.log("[PostsWrapper] No posts found");
     return (
       <div className="text-lg text-center py-8">
         No posts found for this artist.
