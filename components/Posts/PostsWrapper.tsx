@@ -1,57 +1,77 @@
 import { useArtistProvider } from "@/providers/ArtistProvider";
-import { useArtistPosts } from "@/hooks/useArtistPosts";
+import { useArtistPosts, type Post } from "@/hooks/useArtistPosts";
 import Posts from "./Posts";
 import PostsSkeleton from "./PostsSkeleton";
-import { useState, useCallback, useEffect } from "react";
+import { useCallback } from "react";
+import { useInView } from "react-intersection-observer";
 
-const POSTS_PER_PAGE = 6; // Number of posts to show initially and load each time
+const POSTS_PER_PAGE = 20; // Match API default
 
 const PostsWrapper = () => {
   const { selectedArtist } = useArtistProvider();
+  const { ref: loadMoreRef, inView } = useInView({
+    threshold: 0.1,
+    triggerOnce: false,
+  });
+
   const {
-    data: posts,
+    data,
     isLoading,
     error,
-  } = useArtistPosts(selectedArtist?.account_id);
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useArtistPosts(selectedArtist?.account_id, POSTS_PER_PAGE);
 
-  // State to track how many posts to display
-  const [displayCount, setDisplayCount] = useState(POSTS_PER_PAGE);
-  // Track if we're currently loading more posts
-  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  console.log("[PostsWrapper] Rendering with:", {
+    selectedArtistId: selectedArtist?.account_id,
+    hasNextPage,
+    isFetchingNextPage,
+    pagesData: data?.pages,
+  });
 
-  // Reset displayCount when the artist changes
-  useEffect(() => {
-    setDisplayCount(POSTS_PER_PAGE);
-    setIsLoadingMore(false);
-  }, [selectedArtist?.account_id]);
+  // Combine all posts from all pages and sort them
+  const allPosts =
+    data?.pages?.reduce((acc: Post[], page) => {
+      return [...acc, ...page.posts];
+    }, []) ?? [];
 
-  // Calculate if there are more posts to load - default to false when posts aren't loaded yet
-  const sortedPosts = posts
-    ? [...posts].sort(
-        (a, b) =>
-          new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime()
-      )
-    : [];
-  const visiblePosts = sortedPosts.slice(0, displayCount);
-  const hasMorePosts = sortedPosts.length > displayCount;
+  const sortedPosts = [...allPosts].sort(
+    (a, b) =>
+      new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime()
+  );
 
-  // Function to load more posts - moved to top level before conditional returns
+  console.log("[PostsWrapper] Posts data:", {
+    totalPosts: allPosts.length,
+    sortedPostsCount: sortedPosts.length,
+    totalAvailable: data?.pages[0]?.pagination.total_count,
+    currentPage: data?.pages?.length,
+    totalPages: data?.pages[0]?.pagination.total_pages,
+  });
+
+  // Load more posts when the load more element comes into view
   const loadMorePosts = useCallback(() => {
-    if (isLoadingMore || !hasMorePosts) return;
+    if (inView && hasNextPage && !isFetchingNextPage) {
+      console.log("[PostsWrapper] Loading more posts");
+      fetchNextPage();
+    }
+  }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
-    setIsLoadingMore(true);
-    // Use setTimeout to prevent immediate state updates causing infinite loops
-    setTimeout(() => {
-      setDisplayCount((prevCount) => prevCount + POSTS_PER_PAGE);
-      setIsLoadingMore(false);
-    }, 300);
-  }, [hasMorePosts, isLoadingMore]);
+  // Call loadMorePosts when inView changes
+  if (inView) {
+    loadMorePosts();
+  }
 
   if (!selectedArtist || isLoading) {
+    console.log("[PostsWrapper] Loading state:", {
+      hasSelectedArtist: !!selectedArtist,
+      isLoading,
+    });
     return <PostsSkeleton />;
   }
 
   if (error) {
+    console.error("[PostsWrapper] Error state:", error);
     return (
       <div className="text-lg text-center text-red-500 py-8">
         Failed to load posts: {error.message}
@@ -59,7 +79,8 @@ const PostsWrapper = () => {
     );
   }
 
-  if (!posts?.length) {
+  if (!sortedPosts.length) {
+    console.log("[PostsWrapper] No posts found");
     return (
       <div className="text-lg text-center py-8">
         No posts found for this artist.
@@ -68,12 +89,27 @@ const PostsWrapper = () => {
   }
 
   return (
-    <Posts
-      posts={visiblePosts}
-      hasNextPage={hasMorePosts}
-      fetchNextPage={loadMorePosts}
-      isFetchingNextPage={isLoadingMore}
-    />
+    <div className="space-y-8">
+      <Posts
+        posts={sortedPosts}
+        hasNextPage={hasNextPage}
+        fetchNextPage={loadMorePosts}
+        isFetchingNextPage={isFetchingNextPage}
+      />
+
+      {/* Load more trigger element */}
+      {hasNextPage && (
+        <div ref={loadMoreRef} className="flex justify-center py-4">
+          {isFetchingNextPage ? (
+            <div className="animate-pulse text-gray-500">
+              Loading more posts...
+            </div>
+          ) : (
+            <div className="h-10" />
+          )}
+        </div>
+      )}
+    </div>
   );
 };
 
