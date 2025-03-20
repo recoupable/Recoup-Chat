@@ -1,4 +1,4 @@
-import { type Post } from "@/hooks/useArtistPosts";
+import { type Post } from "@/lib/recoup/fetchPosts";
 import { memo } from "react";
 import { useInView } from "react-intersection-observer";
 import {
