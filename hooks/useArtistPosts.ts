@@ -40,27 +40,15 @@ async function fetchPosts({
   page = 1,
   limit = 20,
 }: FetchPostsParams): Promise<PostsResponse> {
-  console.log("[useArtistPosts] Fetching posts with params:", {
-    artistAccountId,
-    page,
-    limit,
-  });
-
   try {
     const url = new URL("https://api.recoupable.com/api/posts");
     url.searchParams.append("artist_account_id", artistAccountId);
     url.searchParams.append("page", page.toString());
     url.searchParams.append("limit", limit.toString());
 
-    console.log("[useArtistPosts] Request URL:", url.toString());
-
     const response = await fetch(url.toString());
 
     if (!response.ok) {
-      console.error("[useArtistPosts] API request failed:", {
-        status: response.status,
-        statusText: response.statusText,
-      });
       const error: PostsError = {
         message: "Failed to fetch posts",
         status: response.status,
@@ -69,21 +57,13 @@ async function fetchPosts({
     }
 
     const data: PostsResponse = await response.json();
-    console.log("[useArtistPosts] API response:", {
-      status: data.status,
-      postsCount: data.posts?.length ?? 0,
-      pagination: data.pagination,
-    });
 
     if (data.status !== "success") {
-      console.error("[useArtistPosts] API returned error status:", data.status);
       throw { message: "API returned error status" } as PostsError;
     }
 
     return data;
   } catch (error) {
-    console.error("[useArtistPosts] Error fetching posts:", error);
-    // Ensure we're always throwing a consistent error shape
     if (typeof error === "object" && error !== null && "message" in error) {
       throw error;
     }
@@ -120,7 +100,6 @@ export function useArtistPosts(
     staleTime: 1000 * 60 * 5, // 5 minutes
     refetchOnWindowFocus: false,
     retry: (failureCount, error) => {
-      // Only retry network errors, not 4xx/5xx responses
       return failureCount < 2 && !("status" in error);
     },
   });
