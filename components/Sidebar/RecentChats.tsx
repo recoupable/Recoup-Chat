@@ -1,10 +1,10 @@
 import useClickChat from "@/hooks/useClickChat";
-import { useConversationsProvider } from "@/providers/ConverstaionsProvider";
+import { useConversationsProvider } from "@/providers/ConversationsProvider";
 import RecentChatSkeleton from "./RecentChatSkeleton";
 import capitalize from "@/lib/capitalize";
 
 const RecentChats = ({ toggleModal }: { toggleModal: () => void }) => {
-  const { allConverstaions, isLoading } = useConversationsProvider();
+  const { allConversations, isLoading } = useConversationsProvider();
   const { handleClick } = useClickChat();
 
   return (
@@ -19,7 +19,7 @@ const RecentChats = ({ toggleModal }: { toggleModal: () => void }) => {
         ) : (
           <>
             {/* eslint-disable-next-line */}
-            {allConverstaions.map((conversation: any, index: number) => (
+            {allConversations.map((conversation: any, index: number) => (
               <button
                 className="flex gap-2 items-center"
                 key={index}

@@ -1262,34 +1262,24 @@ export type Database = {
       }
       memories: {
         Row: {
-          artist_id: string | null
           content: Json
           id: string
           room_id: string | null
           updated_at: string
         }
         Insert: {
-          artist_id?: string | null
           content: Json
           id?: string
           room_id?: string | null
           updated_at?: string
         }
         Update: {
-          artist_id?: string | null
           content?: Json
           id?: string
           room_id?: string | null
           updated_at?: string
         }
         Relationships: [
-          {
-            foreignKeyName: "memories_artist_id_fkey"
-            columns: ["artist_id"]
-            isOneToOne: false
-            referencedRelation: "accounts"
-            referencedColumns: ["id"]
-          },
           {
             foreignKeyName: "memories_room_id_fkey"
             columns: ["room_id"]
@@ -1635,21 +1625,170 @@ export type Database = {
       rooms: {
         Row: {
           account_id: string | null
+          artist_id: string | null
           id: string
           topic: string | null
           updated_at: string
         }
         Insert: {
           account_id?: string | null
+          artist_id?: string | null
           id?: string
           topic?: string | null
           updated_at?: string
         }
         Update: {
           account_id?: string | null
+          artist_id?: string | null
           id?: string
           topic?: string | null
           updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rooms_artist_id_fkey"
+            columns: ["artist_id"]
+            isOneToOne: false
+            referencedRelation: "accounts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sales_pipeline_customers: {
+        Row: {
+          activity_count: number | null
+          assigned_to: string | null
+          company_size: string | null
+          competitors: string[] | null
+          contact_email: string | null
+          contact_name: string | null
+          contact_phone: string | null
+          contacts: Json | null
+          created_at: string | null
+          current_artists: number
+          current_mrr: number
+          custom_fields: Json | null
+          days_in_stage: number | null
+          expected_close_date: string | null
+          external_ids: Json | null
+          id: string
+          industry: string | null
+          last_activity_date: string | null
+          last_activity_type: string | null
+          last_contact_date: string
+          logo_url: string | null
+          lost_reason: string | null
+          name: string
+          next_activity_date: string | null
+          next_activity_type: string | null
+          notes: string | null
+          potential_artists: number
+          potential_mrr: number
+          priority: string | null
+          probability: number | null
+          source: string | null
+          stage: string
+          stage_entered_at: string | null
+          stage_history: Json | null
+          tags: string[] | null
+          todos: Json | null
+          trial_end_date: string | null
+          trial_start_date: string | null
+          type: string | null
+          updated_at: string | null
+          website: string | null
+          weighted_mrr: number | null
+          win_reason: string | null
+        }
+        Insert: {
+          activity_count?: number | null
+          assigned_to?: string | null
+          company_size?: string | null
+          competitors?: string[] | null
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
+          contacts?: Json | null
+          created_at?: string | null
+          current_artists?: number
+          current_mrr?: number
+          custom_fields?: Json | null
+          days_in_stage?: number | null
+          expected_close_date?: string | null
+          external_ids?: Json | null
+          id?: string
+          industry?: string | null
+          last_activity_date?: string | null
+          last_activity_type?: string | null
+          last_contact_date?: string
+          logo_url?: string | null
+          lost_reason?: string | null
+          name: string
+          next_activity_date?: string | null
+          next_activity_type?: string | null
+          notes?: string | null
+          potential_artists?: number
+          potential_mrr?: number
+          priority?: string | null
+          probability?: number | null
+          source?: string | null
+          stage: string
+          stage_entered_at?: string | null
+          stage_history?: Json | null
+          tags?: string[] | null
+          todos?: Json | null
+          trial_end_date?: string | null
+          trial_start_date?: string | null
+          type?: string | null
+          updated_at?: string | null
+          website?: string | null
+          weighted_mrr?: number | null
+          win_reason?: string | null
+        }
+        Update: {
+          activity_count?: number | null
+          assigned_to?: string | null
+          company_size?: string | null
+          competitors?: string[] | null
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
+          contacts?: Json | null
+          created_at?: string | null
+          current_artists?: number
+          current_mrr?: number
+          custom_fields?: Json | null
+          days_in_stage?: number | null
+          expected_close_date?: string | null
+          external_ids?: Json | null
+          id?: string
+          industry?: string | null
+          last_activity_date?: string | null
+          last_activity_type?: string | null
+          last_contact_date?: string
+          logo_url?: string | null
+          lost_reason?: string | null
+          name?: string
+          next_activity_date?: string | null
+          next_activity_type?: string | null
+          notes?: string | null
+          potential_artists?: number
+          potential_mrr?: number
+          priority?: string | null
+          probability?: number | null
+          source?: string | null
+          stage?: string
+          stage_entered_at?: string | null
+          stage_history?: Json | null
+          tags?: string[] | null
+          todos?: Json | null
+          trial_end_date?: string | null
+          trial_start_date?: string | null
+          type?: string | null
+          updated_at?: string | null
+          website?: string | null
+          weighted_mrr?: number | null
+          win_reason?: string | null
         }
         Relationships: []
       }

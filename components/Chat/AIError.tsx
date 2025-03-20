@@ -1,6 +1,6 @@
 import { useRouter } from "next/navigation";
 import Icon from "../Icon";
-import { useConversationsProvider } from "@/providers/ConverstaionsProvider";
+import { useConversationsProvider } from "@/providers/ConversationsProvider";
 import { v4 as uuidV4 } from "uuid";
 
 const AIError = () => {

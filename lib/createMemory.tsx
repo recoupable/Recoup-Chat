@@ -1,5 +1,5 @@
 // eslint-disable-next-line
-const createMemory = async (message: any, roomId: string, artistId: string) => {
+const createMemory = async (message: any, roomId: string) => {
   try {
     const response = await fetch("/api/memories/create", {
       method: "POST",
@@ -9,7 +9,6 @@ const createMemory = async (message: any, roomId: string, artistId: string) => {
       body: JSON.stringify({
         content: message,
         room_id: roomId,
-        artist_id: artistId,
       }),
     });
 

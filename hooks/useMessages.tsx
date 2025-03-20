@@ -6,7 +6,7 @@ import { useArtistProvider } from "@/providers/ArtistProvider";
 import { useParams } from "next/navigation";
 import createMemory from "@/lib/createMemory";
 import { useUserProvider } from "@/providers/UserProvder";
-import getInitialMessages from "@/lib/supabase/getInitialMessages";
+import getClientMessages from "@/lib/supabase/getClientMessages";
 import { useChatSegment } from "./useChatSegment";
 
 const useMessages = () => {
@@ -29,6 +29,7 @@ const useMessages = () => {
     setMessages,
     reload: reloadAiChat,
   } = useChat({
+    id: chatId,
     api: `/api/chat`,
     headers: {
       "X-CSRF-Token": csrfToken,
@@ -40,17 +41,23 @@ const useMessages = () => {
     },
     onFinish: (message: Message) => {
       if (chatId) {
-        createMemory(message, chatId, selectedArtist?.account_id || "");
+        createMemory(message, chatId);
       }
     },
   });
+
+  useEffect(() => {
+    if (!chatId) {
+      setMessages([]);
+    }
+  }, [chatId, setMessages]);
 
   useEffect(() => {
     const fetch = async () => {
       if (!userData?.id) return;
       if (!chatId) return;
       setIsLoading(true);
-      const initialMessages = await getInitialMessages(chatId);
+      const initialMessages = await getClientMessages(chatId);
       setMessages(initialMessages);
       setIsLoading(false);
     };

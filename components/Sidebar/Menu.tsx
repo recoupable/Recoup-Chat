@@ -15,7 +15,7 @@ const Menu = ({ toggleMenuExpanded }: { toggleMenuExpanded: () => void }) => {
   const itemClasses = "flex gap-3 items-center rounded-md px-3 py-2";
   const isAgents = pathname.includes("/agents");
   const isSegments = pathname.includes("/segments");
-  const isAutopilot = pathname === "/";
+  const isAutopilot = pathname === "/autopilot";
 
   const goToItem = (link?: string) => {
     if (isPrepared()) {
@@ -38,7 +38,7 @@ const Menu = ({ toggleMenuExpanded }: { toggleMenuExpanded: () => void }) => {
       <button
         className={`${itemClasses} ${isAutopilot && activeClasses} md:mt-2`}
         type="button"
-        onClick={() => push("/")}
+        onClick={() => push("/autopilot")}
       >
         <MenuItemIcon name="dashboard" />
         Autopilot

@@ -5,7 +5,7 @@ import { ChatProvider } from "./ChatProvider";
 import PrivyProvider from "./PrivyProvider";
 import { UserProvider } from "./UserProvder";
 import { ArtistProvider } from "./ArtistProvider";
-import { ConversationsProvider } from "./ConverstaionsProvider";
+import { ConversationsProvider } from "./ConversationsProvider";
 import { FunnelReportProvider } from "./FunnelReportProvider";
 import { PaymentProvider } from "./PaymentProvider";
 import { MessagesProvider } from "./MessagesProvider";

@@ -2,14 +2,14 @@ import { Message } from "@ai-sdk/react";
 import createMemories from "@/lib/supabase/createMemories";
 import { LangChainAdapter } from "ai";
 import initializeAgent from "@/lib/agent/initializeAgent";
-import { HumanMessage } from "@langchain/core/messages";
+import { HumanMessage, BaseMessage } from "@langchain/core/messages";
 import getTransformedStream from "@/lib/agent/getTransformedStream";
+import getLangchainMemories from "@/lib/agent/getLangchainMemories";
 
 export async function POST(req: Request) {
   try {
     const body = await req.json();
     const messages = body.messages as Message[];
-    const artist_id = body.artistId;
     const room_id = body.roomId;
     const segment_id = body.segmentId;
 
@@ -22,7 +22,6 @@ export async function POST(req: Request) {
     if (room_id) {
       await createMemories({
         room_id,
-        artist_id,
         content: lastMessage,
       });
     }
@@ -32,8 +31,16 @@ export async function POST(req: Request) {
       segmentId: segment_id,
     });
 
+    let previousMessages: BaseMessage[] = [];
+    if (room_id) {
+      previousMessages = await getLangchainMemories(room_id, 100);
+    }
+
+    const currentMessage = new HumanMessage(question);
+    const allMessages: BaseMessage[] = [...previousMessages, currentMessage];
+
     const messageInput = {
-      messages: [new HumanMessage(question)],
+      messages: allMessages,
     };
 
     const stream = await agent.stream(messageInput, {
@@ -50,8 +57,6 @@ export async function POST(req: Request) {
     console.error("[Chat] Error processing request:", {
       error,
       message: error instanceof Error ? error.message : "Unknown error",
-      stack: error instanceof Error ? error.stack : undefined,
-      cause: error instanceof Error ? error.cause : undefined,
     });
 
     return new Response(

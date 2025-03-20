@@ -1,7 +1,11 @@
 import supabase from "./serverClient";
 
-// eslint-disable-next-line
-const createMemories = async (memory: any) => {
+interface MemoryInput {
+  room_id: string;
+  content: unknown;
+}
+
+const createMemories = async (memory: MemoryInput) => {
   try {
     await supabase.from("memories").insert(memory).select("*");
   } catch (error) {

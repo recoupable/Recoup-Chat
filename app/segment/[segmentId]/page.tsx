@@ -44,6 +44,7 @@ export default async function Page({ params }: PageProps) {
       account_id: artistAccountId,
       topic: `Segment: ${segment.name}`,
       report_id: reportId,
+      artist_id: artistAccountId,
     });
 
     if (roomError || !new_room) {

@@ -3,7 +3,7 @@ import getFanSegments from "@/lib/getFanSegments";
 import getSegments from "@/lib/getSegments";
 import getAgentsInfoFromStack from "@/lib/stack/getAgentsInfoFromStack";
 import { useArtistProvider } from "@/providers/ArtistProvider";
-import { useConversationsProvider } from "@/providers/ConverstaionsProvider";
+import { useConversationsProvider } from "@/providers/ConversationsProvider";
 import { useUserProvider } from "@/providers/UserProvder";
 import { ACTIONS } from "@/types/Autopilot";
 import { useEffect, useState } from "react";

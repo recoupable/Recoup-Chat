@@ -1,12 +1,12 @@
-const getInitialMessages = async (chatId: string) => {
+const getClientMessages = async (chatId: string) => {
   try {
     const response = await fetch(`/api/memories/get?roomId=${chatId}`);
     const data = await response.json();
 
     const memories = data?.data || [];
 
-    // eslint-disable-next-line
-    return memories.map((memory: any) => ({
+    
+    return memories.map((memory: { content: { role: string; content: string } }) => ({
       ...memory.content,
     }));
   } catch (error) {
@@ -15,4 +15,4 @@ const getInitialMessages = async (chatId: string) => {
   }
 };
 
-export default getInitialMessages;
+export default getClientMessages; 

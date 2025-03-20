@@ -40,7 +40,7 @@ const SideMenu = ({
       <button
         type="button"
         onClick={() => {
-          push("/");
+          push("/autopilot");
           toggleModal();
         }}
         className="flex gap-3 items-center mb-3 mt-4"

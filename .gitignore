@@ -24,6 +24,7 @@ yarn-error.log
 .cursorrules
 ROADMAP.md
 scratchpad.md
+/documentation
 
 # Service Worker and Workbox
 public/sw.js

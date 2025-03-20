@@ -30,7 +30,7 @@ const MiniMenu = ({
         <button
           type="button"
           className=" p-2 rounded-md mt-2"
-          onClick={() => push("/")}
+          onClick={() => push("/autopilot")}
         >
           <Icon name="dashboard" />
         </button>
@@ -44,7 +44,7 @@ const MiniMenu = ({
         <button
           type="button"
           className=" p-2 rounded-md"
-          onClick={() => goToItem("agents")}
+          onClick={() => goToItem("segments")}
         >
           <Icon name="segments" />
         </button>

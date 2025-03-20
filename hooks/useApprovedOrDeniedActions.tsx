@@ -2,7 +2,7 @@ import { ACTION_EVENT } from "@/lib/consts";
 import getActions from "@/lib/stack/getActions";
 import trackAction from "@/lib/stack/trackAction";
 import { useArtistProvider } from "@/providers/ArtistProvider";
-import { useConversationsProvider } from "@/providers/ConverstaionsProvider";
+import { useConversationsProvider } from "@/providers/ConversationsProvider";
 import { useUserProvider } from "@/providers/UserProvder";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
