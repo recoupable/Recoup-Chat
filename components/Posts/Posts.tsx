@@ -1,4 +1,4 @@
-import { type Post } from "@/hooks/useArtistPosts";
+import { type Post } from "@/lib/recoup/fetchPosts";
 import PostCard from "./PostCard";
 import { useEffect, useRef } from "react";
 import { useInView } from "react-intersection-observer";
