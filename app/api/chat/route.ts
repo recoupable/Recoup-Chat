@@ -5,6 +5,7 @@ import initializeAgent from "@/lib/agent/initializeAgent";
 import { HumanMessage, BaseMessage } from "@langchain/core/messages";
 import getTransformedStream from "@/lib/agent/getTransformedStream";
 import getLangchainMemories from "@/lib/agent/getLangchainMemories";
+import { getKnowledgeBaseContext } from "@/lib/agent/getKnowledgeBaseContext";
 
 export async function POST(req: Request) {
   try {
@@ -36,7 +37,16 @@ export async function POST(req: Request) {
       previousMessages = await getLangchainMemories(room_id, 100);
     }
 
-    const currentMessage = new HumanMessage(question);
+    let messageText = question;
+    
+    if (room_id) {
+      const knowledgeContent = await getKnowledgeBaseContext(room_id);
+      if (knowledgeContent) {
+        messageText += `\n\n-----ARTIST KNOWLEDGE BASE-----\n${knowledgeContent}\n-----END KNOWLEDGE BASE-----\n\nPlease use the information from the knowledge base if relevant to answering my question.`;
+      }
+    }
+    
+    const currentMessage = new HumanMessage(messageText);
     const allMessages: BaseMessage[] = [...previousMessages, currentMessage];
 
     const messageInput = {
