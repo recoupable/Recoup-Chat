@@ -65,11 +65,32 @@ const useArtistSetting = () => {
           const name = file.name;
           const type = file.type;
           const { uri } = await uploadFile(file);
-          temp.push({
+          
+          const fileData: {
+            name: string;
+            url: string;
+            type: string;
+            content?: string;
+          } = {
             name,
             url: uri,
             type,
-          });
+          };
+          
+          const isTextFile = type.startsWith("text/") || 
+                             type === "application/json" ||
+                             (/\.(txt|md|json)$/i).test(name);
+            
+          if (isTextFile) {
+            try {
+              const textContent = await file.text();
+              fileData.content = textContent;
+            } catch (textError) {
+              console.error("Failed to extract text from file:", textError);
+            }
+          }
+          
+          temp.push(fileData);
         }
       }
       setBases(temp);
