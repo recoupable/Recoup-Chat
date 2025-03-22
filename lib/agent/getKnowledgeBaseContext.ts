@@ -7,8 +7,6 @@ interface KnowledgeBaseEntry {
   content?: string;
 }
 
-/**
- */
 export async function getKnowledgeBaseContext(roomId: string): Promise<string> {
   try {
     const { data: room } = await supabase
@@ -34,7 +32,6 @@ export async function getKnowledgeBaseContext(roomId: string): Promise<string> {
     return textFiles.length > 0 
       ? textFiles.map(file => `--- ${file.name} ---\n${file.content}`).join("\n\n")
       : "";
-      
   } catch (error) {
     console.error("[getKnowledgeBaseContext]", error);
     return "";
