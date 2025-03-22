@@ -1,31 +1,14 @@
-import supabase from "@/lib/supabase/serverClient";
-
-interface KnowledgeBaseEntry {
-  url: string;
-  name: string;
-  type: string;
-  content?: string;
-}
+import { getArtistIdForRoom, getKnowledgeEntries } from "@/lib/supabase/getArtistKnowledge";
 
 export async function getKnowledgeBaseContext(roomId: string): Promise<string> {
   try {
-    const { data: room } = await supabase
-      .from("rooms")
-      .select("artist_id")
-      .eq("id", roomId)
-      .single();
-    
-    if (!room?.artist_id) return "";
+    const artistId = await getArtistIdForRoom(roomId);
+    if (!artistId) return "";
 
-    const { data: accountInfo } = await supabase
-      .from("account_info")
-      .select("knowledges")
-      .eq("account_id", room.artist_id)
-      .single();
+    const knowledges = await getKnowledgeEntries(artistId);
+    if (!knowledges.length) return "";
     
-    if (!accountInfo?.knowledges?.length) return "";
-    
-    const textFiles = (accountInfo.knowledges as KnowledgeBaseEntry[]).filter(file => 
+    const textFiles = knowledges.filter(file => 
       file.content && ["text/plain", "text/markdown", "application/json"].includes(file.type)
     );
     
