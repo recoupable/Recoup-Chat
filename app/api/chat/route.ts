@@ -2,6 +2,7 @@ import { Message, streamText, Tool } from "ai";
 import { anthropic } from "@ai-sdk/anthropic";
 import createMemories from "@/lib/supabase/createMemories";
 import getSegmentFansTool from "@/lib/tools/getSegmentFans";
+import { DESCRIPTION } from "@/lib/consts";
 
 export async function POST(req: Request) {
   try {
@@ -24,6 +25,7 @@ export async function POST(req: Request) {
 
     const streamTextOpts = {
       model: anthropic("claude-3-7-sonnet-20250219"),
+      system: DESCRIPTION,
       messages,
       providerOptions: {
         anthropic: {
