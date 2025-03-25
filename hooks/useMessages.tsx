@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useChat } from "@ai-sdk/react";
-import type { Message } from "@ai-sdk/react";
 import { useCsrfToken } from "./useCsrfToken";
 import { useArtistProvider } from "@/providers/ArtistProvider";
 import { useParams } from "next/navigation";
@@ -8,6 +7,7 @@ import createMemory from "@/lib/createMemory";
 import { useUserProvider } from "@/providers/UserProvder";
 import getClientMessages from "@/lib/supabase/getClientMessages";
 import { useChatSegment } from "./useChatSegment";
+import { ChatMessage } from "@/types/reasoning";
 
 const useMessages = () => {
   const csrfToken = useCsrfToken();
@@ -39,9 +39,9 @@ const useMessages = () => {
       roomId: chatId,
       segmentId: segmentData?.segmentId,
     },
-    onFinish: (message: Message) => {
+    onFinish: (message) => {
       if (chatId) {
-        createMemory(message, chatId);
+        createMemory(message as ChatMessage, chatId);
       }
     },
   });
@@ -58,7 +58,7 @@ const useMessages = () => {
       if (!chatId) return;
       setIsLoading(true);
       const initialMessages = await getClientMessages(chatId);
-      setMessages(initialMessages);
+      setMessages(initialMessages as ChatMessage[]);
       setIsLoading(false);
     };
     fetch();
@@ -75,7 +75,7 @@ const useMessages = () => {
     handleInputChange,
     input,
     setMessages,
-    messages,
+    messages: messages as ChatMessage[],
     pending: status === "streaming" || status === "submitted",
     isLoading,
   };
