@@ -6,13 +6,14 @@ import createReport from "@/lib/report/createReport";
 import { redirect } from "next/navigation";
 
 interface PageProps {
-  params: {
+  params: Promise<{
     segmentId: string;
-  };
+  }>;
 }
 
 export default async function Page({ params }: PageProps) {
-  const segmentRoom = await getSegmentRoom(params.segmentId);
+  const { segmentId } = await params;
+  const segmentRoom = await getSegmentRoom(segmentId);
 
   if (segmentRoom?.room_id) {
     redirect(`/${segmentRoom.room_id}`);
@@ -25,7 +26,7 @@ export default async function Page({ params }: PageProps) {
       segment,
       artistAccountId,
       error: segmentError,
-    } = await getSegmentWithArtist(params.segmentId);
+    } = await getSegmentWithArtist(segmentId);
 
     if (segmentError || !segment) {
       throw new Error(segmentError?.message || "Failed to fetch segment");
@@ -54,7 +55,7 @@ export default async function Page({ params }: PageProps) {
     newRoomId = new_room.id;
 
     await createSegmentRoom({
-      segment_id: params.segmentId,
+      segment_id: segmentId,
       room_id: new_room.id,
     });
   } catch (e) {
