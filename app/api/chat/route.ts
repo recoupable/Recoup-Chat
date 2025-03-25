@@ -1,8 +1,8 @@
-import { experimental_createMCPClient, Message, streamText } from "ai";
+import { Message, streamText } from "ai";
 import { anthropic } from "@ai-sdk/anthropic";
 import createMemories from "@/lib/supabase/createMemories";
-import getSegmentFansTool from "@/lib/tools/getSegmentFans";
 import { DESCRIPTION } from "@/lib/consts";
+import { getMcpTools } from "@/lib/tools/getMcpTools";
 
 export async function POST(req: Request) {
   try {
@@ -22,24 +22,8 @@ export async function POST(req: Request) {
         content: lastMessage,
       });
     }
-    const tavilyMcpClient = await experimental_createMCPClient({
-      transport: {
-        type: "sse",
-        url: process.env.TAVILY_MCP_SERVER as string,
-      },
-    });
 
-    const toolSetTavily = await tavilyMcpClient.tools();
-    const tools = {
-      ...toolSetTavily,
-    };
-
-    let fanSegmentTool;
-    if (segment_id) {
-      fanSegmentTool = getSegmentFansTool(segment_id);
-      // @ts-expect-error no fanSegmentTool
-      tools.fanSegmentTool = fanSegmentTool;
-    }
+    const tools = await getMcpTools(segment_id);
 
     const streamTextOpts = {
       model: anthropic("claude-3-7-sonnet-20250219"),
