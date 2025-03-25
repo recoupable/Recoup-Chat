@@ -9,10 +9,11 @@ const ReportPage = () => {
   return (
     <div className="size-full flex flex-col items-center justify-center bg-white rounded-xl overflow-hidden flex flex-col px-4 pb-5 md:pt-[14px]">
       <ScrollTo>
-        {({ scroll }) => (
-          <Messages scroll={scroll}>
+        {() => (
+          <div>
             <SegmentReport />
-          </Messages>
+            <Messages />
+          </div>
         )}
       </ScrollTo>
       <ChatInput />
