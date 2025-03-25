@@ -21,8 +21,9 @@ const Chat = ({ reportId }: ChatProps) => {
       <ScrollTo>
         {({ scroll }) => (
           <div className="flex-1 min-h-0">
-            {reportId && <ChatReport reportId={reportId} />}
-            <Messages scroll={scroll} />
+            <Messages scroll={scroll}>
+              {reportId && <ChatReport reportId={reportId} />}
+            </Messages>
           </div>
         )}
       </ScrollTo>

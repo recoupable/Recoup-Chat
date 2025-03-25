@@ -15,8 +15,9 @@ const AnalysisChat = () => {
           <ScrollTo>
             {({ scroll }) => (
               <>
-                <FanSegmentResult />
-                <Messages scroll={scroll} />
+                <Messages scroll={scroll} className="!grow">
+                  <FanSegmentResult />
+                </Messages>
               </>
             )}
           </ScrollTo>
