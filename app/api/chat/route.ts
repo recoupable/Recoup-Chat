@@ -1,4 +1,4 @@
-import { Message, streamText } from "ai";
+import { Message, streamText, Tool } from "ai";
 import { anthropic } from "@ai-sdk/anthropic";
 import createMemories from "@/lib/supabase/createMemories";
 import getSegmentFansTool from "@/lib/tools/getSegmentFans";
@@ -36,9 +36,8 @@ export async function POST(req: Request) {
 
     if (segment_id) {
       const fanSegmentTool = getSegmentFansTool(segment_id);
-      const tools = [];
-      if (fanSegmentTool) tools.push(fanSegmentTool);
-      // @ts-expect-error type change
+      const tools = [fanSegmentTool] as Tool[];
+      // @ts-expect-error tools type
       streamTextOpts.tools = tools;
     }
 
