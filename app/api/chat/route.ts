@@ -15,10 +15,6 @@ export async function POST(req: Request) {
       throw new Error("No messages provided");
     }
 
-    const fanSegmentTool = getSegmentFansTool(segment_id);
-    const tools = [];
-    if (fanSegmentTool) tools.push(fanSegmentTool);
-
     if (room_id) {
       await createMemories({
         room_id,
@@ -26,7 +22,7 @@ export async function POST(req: Request) {
       });
     }
 
-    const result = streamText({
+    const streamTextOpts = {
       model: anthropic("claude-3-7-sonnet-20250219"),
       messages,
       providerOptions: {
@@ -36,7 +32,17 @@ export async function POST(req: Request) {
       },
       maxSteps: 11,
       toolCallStreaming: true,
-    });
+    };
+
+    const fanSegmentTool = getSegmentFansTool(segment_id);
+    if (fanSegmentTool) {
+      const tools = [];
+      if (fanSegmentTool) tools.push(fanSegmentTool);
+      // @ts-expect-error type change
+      streamTextOpts.tools = tools;
+    }
+
+    const result = streamText(streamTextOpts);
 
     return result.toDataStreamResponse({
       sendReasoning: true,
