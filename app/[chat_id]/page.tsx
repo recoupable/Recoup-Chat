@@ -1,12 +1,14 @@
 import { getRoomReports } from "@/lib/supabase/getRoomReports";
 import Chat from "@/components/Chat";
+
 interface PageProps {
-  params: {
+  params: Promise<{
     chat_id: string;
-  };
+  }>;
 }
 
 export default async function ChatPage({ params }: PageProps) {
-  const reports = await getRoomReports(params.chat_id);
+  const { chat_id } = await params;
+  const reports = await getRoomReports(chat_id);
   return <Chat reportId={reports?.report_id} />;
 }
