@@ -1,8 +1,8 @@
-import { Message, streamText, Tool } from "ai";
+import { Message, streamText } from "ai";
 import { anthropic } from "@ai-sdk/anthropic";
 import createMemories from "@/lib/supabase/createMemories";
-import getSegmentFansTool from "@/lib/tools/getSegmentFans";
 import { DESCRIPTION } from "@/lib/consts";
+import { getMcpTools } from "@/lib/tools/getMcpTools";
 
 export async function POST(req: Request) {
   try {
@@ -23,6 +23,8 @@ export async function POST(req: Request) {
       });
     }
 
+    const tools = await getMcpTools(segment_id);
+
     const streamTextOpts = {
       model: anthropic("claude-3-7-sonnet-20250219"),
       system: DESCRIPTION,
@@ -32,16 +34,10 @@ export async function POST(req: Request) {
           thinking: { type: "enabled", budgetTokens: 12000 },
         },
       },
+      tools,
       maxSteps: 11,
       toolCallStreaming: true,
     };
-
-    if (segment_id) {
-      const fanSegmentTool = getSegmentFansTool(segment_id);
-      const tools = [fanSegmentTool] as Tool[];
-      // @ts-expect-error tools type
-      streamTextOpts.tools = tools;
-    }
 
     const result = streamText(streamTextOpts);
 
