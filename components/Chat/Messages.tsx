@@ -1,36 +1,40 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { ScrollArea } from "react-scroll-to";
 import { cn } from "@/lib/utils";
 import { ReasoningMessagePart } from "./ReasoningMessagePart";
 import { TextMessagePart } from "./TextMessagePart";
 import { useMessagesProvider } from "@/providers/MessagesProvider";
+import { usePromptsProvider } from "@/providers/PromptsProvider";
 import { IconRobot } from "@tabler/icons-react";
 
-const Messages = () => {
-  const { messages, pending, isLoading } = useMessagesProvider();
-  const messagesRef = useRef<HTMLDivElement>(null);
+const Messages = ({
+  scroll,
+  className,
+  children,
+}: {
+  scroll: ({ smooth, y }: { smooth: boolean; y: number }) => void;
+  className?: string;
+  children?: React.ReactNode;
+}) => {
+  const { messages, pending } = useMessagesProvider();
+  const { prompts } = usePromptsProvider();
+  const scrollTo = () => scroll({ smooth: true, y: Number.MAX_SAFE_INTEGER });
 
   useEffect(() => {
-    if (messagesRef.current) {
-      messagesRef.current.scrollTop = messagesRef.current.scrollHeight;
-    }
-  }, [messages]);
-
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center w-full h-full">
-        <div className="animate-pulse">Loading messages...</div>
-      </div>
-    );
-  }
+    scrollTo();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [messages, pending, prompts]);
 
   return (
     <ScrollArea
-      className="w-full mt-4 max-w-3xl mx-auto overflow-y-auto grow"
-      ref={messagesRef}
+      className={cn(
+        "w-full h-full max-w-3xl mx-auto overflow-y-auto",
+        className
+      )}
     >
+      {children || <div />}
       {messages.map((message) => (
         <div
           key={message.id}
