@@ -1,9 +1,6 @@
-import { Message } from "@ai-sdk/react";
+import { Message, streamText } from "ai";
+import { anthropic } from "@ai-sdk/anthropic";
 import createMemories from "@/lib/supabase/createMemories";
-import { LangChainAdapter } from "ai";
-import initializeAgent from "@/lib/agent/initializeAgent";
-import { HumanMessage, BaseMessage } from "@langchain/core/messages";
-import getTransformedStream from "@/lib/agent/getTransformedStream";
 import getLangchainMemories from "@/lib/agent/getLangchainMemories";
 
 export async function POST(req: Request) {
@@ -11,14 +8,13 @@ export async function POST(req: Request) {
     const body = await req.json();
     const messages = body.messages as Message[];
     const room_id = body.roomId;
-    const segment_id = body.segmentId;
 
     const lastMessage = messages[messages.length - 1];
     if (!lastMessage) {
       throw new Error("No messages provided");
     }
 
-    const question = lastMessage.content;
+    // Save user message to memory if room_id exists
     if (room_id) {
       await createMemories({
         room_id,
@@ -26,33 +22,36 @@ export async function POST(req: Request) {
       });
     }
 
-    const { agent } = await initializeAgent({
-      threadId: room_id || "default",
-      segmentId: segment_id,
-    });
-
-    let previousMessages: BaseMessage[] = [];
+    // Load previous messages for context if room_id exists
+    let chatHistory: Message[] = [];
     if (room_id) {
-      previousMessages = await getLangchainMemories(room_id, 100);
+      const previousMessages = await getLangchainMemories(room_id, 100);
+      chatHistory = previousMessages.map((msg) => ({
+        id: msg.id || crypto.randomUUID(),
+        role: msg.getType() === "human" ? "user" : "assistant",
+        content: String(msg.content),
+      }));
     }
 
-    const currentMessage = new HumanMessage(question);
-    const allMessages: BaseMessage[] = [...previousMessages, currentMessage];
+    // Prepare messages for the API call
+    const apiMessages = [...chatHistory, ...messages];
 
-    const messageInput = {
-      messages: allMessages,
-    };
-
-    const stream = await agent.stream(messageInput, {
-      configurable: {
-        thread_id: room_id || "default",
-        segmentId: segment_id,
+    const result = streamText({
+      // @ts-expect-error model version is not supported
+      model: anthropic("claude-3-7-sonnet-20250219"),
+      messages: apiMessages,
+      providerOptions: {
+        anthropic: {
+          thinking: { type: "enabled", budgetTokens: 12000 },
+        },
       },
+      maxSteps: 11,
+      toolCallStreaming: true,
     });
 
-    const transformedStream = getTransformedStream(stream);
-
-    return LangChainAdapter.toDataStreamResponse(transformedStream);
+    return result.toDataStreamResponse({
+      sendReasoning: true,
+    });
   } catch (error) {
     console.error("[Chat] Error processing request:", {
       error,
@@ -73,7 +72,3 @@ export async function POST(req: Request) {
     );
   }
 }
-
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
-export const fetchCache = "force-no-store";
