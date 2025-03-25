@@ -7,7 +7,7 @@ import { TextMessagePart } from "./TextMessagePart";
 import { MessagePart, ChatMessage } from "@/types/reasoning";
 import { useMessagesProvider } from "@/providers/MessagesProvider";
 
-export function Messages() {
+const Messages = () => {
   const { messages, pending, isLoading } = useMessagesProvider();
   const messagesRef = useRef<HTMLDivElement>(null);
   const messagesLength = useMemo(() => messages.length, [messages]);
@@ -92,4 +92,6 @@ export function Messages() {
       {pending && <div className="text-zinc-500 mb-12 w-full">Hmm...</div>}
     </div>
   );
-}
+};
+
+export default Messages;
