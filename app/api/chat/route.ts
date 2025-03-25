@@ -34,8 +34,8 @@ export async function POST(req: Request) {
       toolCallStreaming: true,
     };
 
-    const fanSegmentTool = getSegmentFansTool(segment_id);
-    if (fanSegmentTool) {
+    if (segment_id) {
+      const fanSegmentTool = getSegmentFansTool(segment_id);
       const tools = [];
       if (fanSegmentTool) tools.push(fanSegmentTool);
       // @ts-expect-error type change

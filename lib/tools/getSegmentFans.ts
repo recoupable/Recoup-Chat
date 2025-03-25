@@ -2,16 +2,10 @@ import { Tool } from "ai";
 import { z } from "zod";
 import { getSegmentFans } from "../supabase/getSegmentFans";
 
-const getSegmentFansTool = (segmentId: string): Tool | null => ({
+const getSegmentFansTool = (segmentId: string): Tool => ({
   description: "Get all fans belonging to the current segment",
   parameters: z.object({}),
   execute: async () => {
-    if (!segmentId) {
-      const error = "No segment ID provided in context";
-      console.error("[SegmentFansTool] Error:", error);
-      return null;
-    }
-
     try {
       const fans = await getSegmentFans(segmentId);
       const response = JSON.stringify({ fans, error: null });
