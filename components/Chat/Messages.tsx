@@ -1,22 +1,22 @@
 "use client";
 
-import { useEffect, useMemo, useRef } from "react";
-import cn from "classnames";
+import { useEffect, useRef } from "react";
+import { ScrollArea } from "react-scroll-to";
+import { cn } from "@/lib/utils";
 import { ReasoningMessagePart } from "./ReasoningMessagePart";
 import { TextMessagePart } from "./TextMessagePart";
-import { MessagePart, ChatMessage } from "@/types/reasoning";
 import { useMessagesProvider } from "@/providers/MessagesProvider";
+import { IconRobot } from "@tabler/icons-react";
 
 const Messages = () => {
   const { messages, pending, isLoading } = useMessagesProvider();
   const messagesRef = useRef<HTMLDivElement>(null);
-  const messagesLength = useMemo(() => messages.length, [messages]);
 
   useEffect(() => {
     if (messagesRef.current) {
       messagesRef.current.scrollTop = messagesRef.current.scrollHeight;
     }
-  }, [messagesLength]);
+  }, [messages]);
 
   if (isLoading) {
     return (
@@ -26,71 +26,57 @@ const Messages = () => {
     );
   }
 
-  const renderMessageContent = (message: ChatMessage) => {
-    // Handle legacy message format or undefined parts
-    if (!message.parts?.length) {
-      return <TextMessagePart part={{ type: "text", text: message.content }} />;
-    }
-
-    // Handle new message format with parts
-    return message.parts.map((part: MessagePart, partIndex) => {
-      try {
-        if (part.type === "text") {
-          return (
-            <TextMessagePart key={`${message.id}-${partIndex}`} part={part} />
-          );
-        }
-
-        if (part.type === "reasoning") {
-          return (
-            <ReasoningMessagePart
-              key={`${message.id}-${partIndex}`}
-              part={part}
-              isReasoning={
-                pending && partIndex === (message.parts?.length ?? 0) - 1
-              }
-            />
-          );
-        }
-      } catch (error) {
-        console.error("Error rendering message part:", error);
-        return (
-          <div key={`${message.id}-${partIndex}`} className="text-red-500">
-            Error displaying message
-          </div>
-        );
-      }
-
-      return null;
-    });
-  };
-
   return (
-    <div
-      className="flex flex-col gap-8 overflow-y-scroll items-center w-full"
+    <ScrollArea
+      className="w-full mt-4 max-w-3xl mx-auto overflow-y-auto grow"
       ref={messagesRef}
     >
       {messages.map((message) => (
         <div
           key={message.id}
-          className={cn(
-            "flex flex-col gap-4 last-of-type:mb-12 first-of-type:mt-16 w-full"
-          )}
+          className={cn("flex items-start gap-x-3 py-4 px-4", {
+            "bg-secondary/50": message.role === "assistant",
+            "justify-end": message.role === "user",
+          })}
         >
+          {message.role === "assistant" && (
+            <div className="flex h-6 w-6 shrink-0 select-none items-center justify-center rounded-md border bg-background shadow">
+              <IconRobot className="h-4 w-4" />
+            </div>
+          )}
           <div
-            className={cn("flex flex-col gap-4", {
-              "dark:bg-zinc-800 bg-zinc-200 p-2 rounded-xl w-fit ml-auto":
-                message.role === "user",
-              "": message.role === "assistant",
+            className={cn("flex flex-col space-y-1.5", {
+              "w-fit": message.role === "user",
             })}
           >
-            {renderMessageContent(message as ChatMessage)}
+            {message.parts?.map((part, i) => {
+              if (part.type === "reasoning") {
+                return (
+                  <ReasoningMessagePart
+                    key={i}
+                    part={part}
+                    isReasoning={
+                      pending && i === (message.parts?.length ?? 0) - 1
+                    }
+                  />
+                );
+              }
+              return <TextMessagePart key={i} part={part} />;
+            }) || (
+              <TextMessagePart part={{ type: "text", text: message.content }} />
+            )}
           </div>
         </div>
       ))}
-
-      {pending && <div className="text-zinc-500 mb-12 w-full">Hmm...</div>}
-    </div>
+      {pending && (
+        <div className="flex items-center gap-x-3 py-4 px-4 bg-secondary/50">
+          <div className="flex h-6 w-6 shrink-0 select-none items-center justify-center rounded-md border bg-background shadow">
+            <IconRobot className="h-4 w-4" />
+          </div>
+          <div>Hmm...</div>
+        </div>
+      )}
+    </ScrollArea>
   );
 };
 
