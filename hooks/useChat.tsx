@@ -8,6 +8,7 @@ import { usePromptsProvider } from "@/providers/PromptsProvider";
 import { useEffect, useState } from "react";
 import { v4 as uuidV4 } from "uuid";
 import { useArtistProvider } from "@/providers/ArtistProvider";
+import { ChatMessage } from "@/types/reasoning";
 
 const useChat = () => {
   const { userData, isPrepared } = useUserProvider();
@@ -25,8 +26,8 @@ const useChat = () => {
     if (chatId) return;
     setIsLoading(true);
     const room = await createRoom(
-      userData.id, 
-      content, 
+      userData.id,
+      content,
       selectedArtist?.account_id
     );
     addConversation(room);
@@ -47,12 +48,14 @@ const useChat = () => {
       content: input,
       role: "user",
     });
-    handleInputChange({ target: { value: '' } } as React.ChangeEvent<HTMLTextAreaElement>);
+    handleInputChange({
+      target: { value: "" },
+    } as React.ChangeEvent<HTMLTextAreaElement>);
   };
 
   useEffect(() => {
     if (appendActive && chatId) {
-      appendAiChat(appendActive);
+      appendAiChat(appendActive as ChatMessage);
       setAppendActive(null);
       setIsLoading(false);
       return;
