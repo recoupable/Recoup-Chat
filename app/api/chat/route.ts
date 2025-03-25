@@ -37,7 +37,6 @@ export async function POST(req: Request) {
     const apiMessages = [...chatHistory, ...messages];
 
     const result = streamText({
-      // @ts-expect-error model version is not supported
       model: anthropic("claude-3-7-sonnet-20250219"),
       messages: apiMessages,
       providerOptions: {
