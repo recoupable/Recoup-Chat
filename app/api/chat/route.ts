@@ -1,20 +1,24 @@
 import { Message, streamText } from "ai";
 import { anthropic } from "@ai-sdk/anthropic";
 import createMemories from "@/lib/supabase/createMemories";
-import getLangchainMemories from "@/lib/agent/getLangchainMemories";
+import getSegmentFansTool from "@/lib/tools/getSegmentFans";
 
 export async function POST(req: Request) {
   try {
     const body = await req.json();
     const messages = body.messages as Message[];
     const room_id = body.roomId;
+    const segment_id = body.segmentId;
 
     const lastMessage = messages[messages.length - 1];
     if (!lastMessage) {
       throw new Error("No messages provided");
     }
 
-    // Save user message to memory if room_id exists
+    const fanSegmentTool = getSegmentFansTool(segment_id);
+    const tools = [];
+    if (fanSegmentTool) tools.push(fanSegmentTool);
+
     if (room_id) {
       await createMemories({
         room_id,
@@ -22,23 +26,9 @@ export async function POST(req: Request) {
       });
     }
 
-    // Load previous messages for context if room_id exists
-    let chatHistory: Message[] = [];
-    if (room_id) {
-      const previousMessages = await getLangchainMemories(room_id, 100);
-      chatHistory = previousMessages.map((msg) => ({
-        id: msg.id || crypto.randomUUID(),
-        role: msg.getType() === "human" ? "user" : "assistant",
-        content: String(msg.content),
-      }));
-    }
-
-    // Prepare messages for the API call
-    const apiMessages = [...chatHistory, ...messages];
-
     const result = streamText({
       model: anthropic("claude-3-7-sonnet-20250219"),
-      messages: apiMessages,
+      messages,
       providerOptions: {
         anthropic: {
           thinking: { type: "enabled", budgetTokens: 12000 },
