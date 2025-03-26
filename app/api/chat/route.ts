@@ -1,8 +1,8 @@
 import { Message, streamText } from "ai";
 import { anthropic } from "@ai-sdk/anthropic";
 import createMemories from "@/lib/supabase/createMemories";
-import { DESCRIPTION } from "@/lib/consts";
 import { getMcpTools } from "@/lib/tools/getMcpTools";
+import getSystemPrompt from "@/lib/getSystemPrompt";
 
 export async function POST(req: Request) {
   try {
@@ -24,16 +24,22 @@ export async function POST(req: Request) {
       });
     }
 
+    // Get tools and system prompt
     const tools = await getMcpTools(segment_id);
-    const activeArtistContext = artist_id
-      ? ` The active artist_account_id is ${artist_id}`
-      : undefined;
+    const systemPrompt = await getSystemPrompt(room_id);
 
-    const system = DESCRIPTION + activeArtistContext;
+    // Add active artist context if available
+    const finalSystemPrompt = artist_id
+      ? `${systemPrompt}
+      
+-----ACTIVE ARTIST-----
+The active artist_account_id is ${artist_id}
+-----END ACTIVE ARTIST-----`
+      : systemPrompt;
 
     const streamTextOpts = {
       model: anthropic("claude-3-7-sonnet-20250219"),
-      system,
+      system: finalSystemPrompt,
       messages,
       providerOptions: {
         anthropic: {
@@ -51,23 +57,10 @@ export async function POST(req: Request) {
       sendReasoning: true,
     });
   } catch (error) {
-    console.error("[Chat] Error processing request:", {
-      error,
-      message: error instanceof Error ? error.message : "Unknown error",
+    console.error("[chat]", error);
+    return new Response(JSON.stringify({ error: "Internal server error" }), {
+      status: 500,
     });
-
-    return new Response(
-      JSON.stringify({
-        error: "Failed to process chat message",
-        details: error instanceof Error ? error.message : "Unknown error",
-      }),
-      {
-        status: 500,
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
   }
 }
 

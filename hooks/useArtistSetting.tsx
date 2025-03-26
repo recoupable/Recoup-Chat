@@ -2,6 +2,13 @@ import { uploadFile } from "@/lib/arweave/uploadToArweave";
 import { useEffect, useRef, useState } from "react";
 import { ArtistRecord } from "@/types/Artist";
 
+type KnowledgeEntry = {
+  name: string; 
+  url: string; 
+  type: string; 
+  content?: string;
+};
+
 const useArtistSetting = () => {
   const imageRef = useRef<HTMLInputElement>(null);
   const baseRef = useRef<HTMLInputElement>(null);
@@ -15,9 +22,7 @@ const useArtistSetting = () => {
   const [instagram, setInstagram] = useState("");
   const [youtube, setYoutube] = useState("");
   const [twitter, setTwitter] = useState("");
-  const [bases, setBases] = useState<
-    Array<{ name: string; url: string; type: string }>
-  >([]);
+  const [bases, setBases] = useState<KnowledgeEntry[]>([]);
   const [imageUploading, setImageUploading] = useState(false);
   const [knowledgeUploading, setKnowledgeUploading] = useState(false);
   const [question, setQuestion] = useState("");
@@ -26,13 +31,14 @@ const useArtistSetting = () => {
   );
 
   const handleDeleteKnowledge = (index: number) => {
-    let temp = [...bases];
-    if (temp.length === 1) {
+    if (bases.length === 1) {
       setBases([]);
       return;
     }
-    temp = temp.splice(index, 1);
-    setBases([...temp]);
+    
+    const updatedBases = [...bases];
+    updatedBases.splice(index, 1);
+    setBases(updatedBases);
   };
 
   const handleImageSelected = async (
@@ -53,26 +59,43 @@ const useArtistSetting = () => {
     setImageUploading(false);
   };
 
+  const isTextBasedFile = (fileName: string, fileType: string) => 
+    fileType.startsWith("text/") || 
+    fileType === "application/json" ||
+    (/\.(txt|md|json)$/i).test(fileName);
+
   const handleKnowledgesSelected = async (
     e: React.ChangeEvent<HTMLInputElement>,
   ) => {
     setKnowledgeUploading(true);
     const files = e.target.files;
-    const temp = [];
+    const knowledgeFiles: KnowledgeEntry[] = [];
+    
     try {
       if (files) {
         for (const file of files) {
-          const name = file.name;
-          const type = file.type;
+          const fileName = file.name;
+          const fileType = file.type;
           const { uri } = await uploadFile(file);
-          temp.push({
-            name,
+          
+          const fileData: KnowledgeEntry = {
+            name: fileName,
             url: uri,
-            type,
-          });
+            type: fileType,
+          };
+          
+          if (isTextBasedFile(fileName, fileType)) {
+            try {
+              fileData.content = await file.text();
+            } catch (textError) {
+              console.error("Failed to extract text from file:", textError);
+            }
+          }
+          
+          knowledgeFiles.push(fileData);
         }
       }
-      setBases(temp);
+      setBases(knowledgeFiles);
     } catch (error) {
       console.error("Failed to upload knowledge files:", error);
     }
