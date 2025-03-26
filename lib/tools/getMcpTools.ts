@@ -9,9 +9,18 @@ export async function getMcpTools(segment_id?: string) {
     },
   });
 
+  const mantleMcpClient = await experimental_createMCPClient({
+    transport: {
+      type: "sse",
+      url: "https://next-mcp.vercel.app/sse",
+    },
+  });
+
   const toolSetPerplexityWebSearch = await perplexityMcpClient.tools();
+  const toolSetMantleWebSearch = await mantleMcpClient.tools();
   const tools = {
     ...toolSetPerplexityWebSearch,
+    ...toolSetMantleWebSearch,
   };
 
   if (segment_id) {
