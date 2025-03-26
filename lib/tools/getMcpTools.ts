@@ -2,16 +2,16 @@ import { experimental_createMCPClient } from "ai";
 import getSegmentFansTool from "./getSegmentFans";
 
 export async function getMcpTools(segment_id?: string) {
-  const braveMcpClient = await experimental_createMCPClient({
+  const perplexityMcpClient = await experimental_createMCPClient({
     transport: {
       type: "sse",
-      url: process.env.BRAVE_MCP_SERVER as string,
+      url: process.env.PERPLEXITY_MCP_SERVER as string,
     },
   });
 
-  const toolSetBraveWebSearch = await braveMcpClient.tools();
+  const toolSetPerplexityWebSearch = await perplexityMcpClient.tools();
   const tools = {
-    ...toolSetBraveWebSearch,
+    ...toolSetPerplexityWebSearch,
   };
 
   if (segment_id) {
