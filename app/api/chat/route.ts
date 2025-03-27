@@ -25,15 +25,13 @@ export async function POST(req: Request) {
     }
 
     const tools = await getMcpTools(segment_id);
-    const toolContext = artist_id
-      ? {
-          artist_account_id: artist_id,
-        }
+    const activeArtistContext = artist_id
+      ? ` The active artist_account_id is ${artist_id}`
       : undefined;
 
     const streamTextOpts = {
       model: anthropic("claude-3-7-sonnet-20250219"),
-      system: DESCRIPTION,
+      system: DESCRIPTION + activeArtistContext,
       messages,
       providerOptions: {
         anthropic: {
@@ -43,7 +41,6 @@ export async function POST(req: Request) {
       tools,
       maxSteps: 11,
       toolCallStreaming: true,
-      toolContext,
     };
 
     const result = streamText(streamTextOpts);
