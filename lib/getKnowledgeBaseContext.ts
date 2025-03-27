@@ -1,4 +1,5 @@
-import { getArtistIdForRoom, getKnowledgeEntries } from "./supabase/getArtistKnowledge";
+import { getArtistIdForRoom } from "./supabase/getArtistId";
+import { getKnowledgeEntries } from "./supabase/getArtistKnowledge";
 
 const SUPPORTED_TEXT_TYPES = ["text/plain", "text/markdown", "application/json"];
 
