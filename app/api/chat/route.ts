@@ -24,7 +24,7 @@ export async function POST(req: Request) {
       });
     }
 
-    // Get tools and system prompt
+    // Get tools and system prompt with all necessary context
     const tools = await getMcpTools(segment_id);
     const systemPrompt = await getSystemPrompt(room_id);
 
