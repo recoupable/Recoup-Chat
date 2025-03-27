@@ -29,9 +29,11 @@ export async function POST(req: Request) {
       ? ` The active artist_account_id is ${artist_id}`
       : undefined;
 
+    const system = DESCRIPTION + activeArtistContext;
+
     const streamTextOpts = {
       model: anthropic("claude-3-7-sonnet-20250219"),
-      system: DESCRIPTION + activeArtistContext,
+      system,
       messages,
       providerOptions: {
         anthropic: {
@@ -68,3 +70,7 @@ export async function POST(req: Request) {
     );
   }
 }
+
+export const dynamic = "force-dynamic";
+export const fetchCache = "force-no-store";
+export const revalidate = 0;
