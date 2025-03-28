@@ -34,8 +34,21 @@ export async function POST(req: Request) {
       system,
       tools,
     });
-    console.log("result", result);
-    return result;
+    if (result) {
+      return result.toDataStreamResponse({ sendReasoning: true });
+    }
+    return new Response(
+      JSON.stringify({
+        error: "Failed to process chat message",
+        details: "No result from streamWithFailover",
+      }),
+      {
+        status: 500,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
   } catch (error) {
     console.error("[Chat] Error processing request:", {
       error,

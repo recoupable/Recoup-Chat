@@ -28,19 +28,7 @@ export async function streamWithFailover(opts: StreamTextOptions) {
 
     // Return a streaming error for MCP errors
     if (isMCPError(error)) {
-      const encoder = new TextEncoder();
-      const stream = new ReadableStream({
-        start(controller) {
-          controller.enqueue(
-            encoder.encode("MCP service is not responding, please try again\n")
-          );
-          controller.close();
-        },
-      });
-      return new Response(stream, {
-        headers: { "Content-Type": "text/event-stream" },
-        status: 503,
-      });
+      console.log("SWEETS MCP ERROR");
     }
 
     // Try fallback model for rate limit errors
@@ -62,33 +50,8 @@ export async function streamWithFailover(opts: StreamTextOptions) {
               ? fallbackError.constructor.name
               : "Unknown",
         });
-        const encoder = new TextEncoder();
-        const stream = new ReadableStream({
-          start(controller) {
-            controller.enqueue(
-              encoder.encode("All available models are currently unavailable\n")
-            );
-            controller.close();
-          },
-        });
-        return new Response(stream, {
-          headers: { "Content-Type": "text/event-stream" },
-          status: 503,
-        });
+        console.log("SWEETS FALLBACK ERROR");
       }
     }
-
-    // For unknown errors, return 500
-    const encoder = new TextEncoder();
-    const stream = new ReadableStream({
-      start(controller) {
-        controller.enqueue(encoder.encode(getErrorMessage(error) + "\n"));
-        controller.close();
-      },
-    });
-    return new Response(stream, {
-      headers: { "Content-Type": "text/event-stream" },
-      status: 500,
-    });
   }
 }
