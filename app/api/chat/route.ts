@@ -1,8 +1,9 @@
-import { Message } from "ai";
+import { Message, streamText } from "ai";
+import { anthropic } from "@ai-sdk/anthropic";
 import createMemories from "@/lib/supabase/createMemories";
 import { DESCRIPTION } from "@/lib/consts";
 import { getMcpTools } from "@/lib/tools/getMcpTools";
-import { streamWithFailover } from "@/lib/chat/failover";
+import { deepseek } from "@ai-sdk/deepseek";
 
 export async function POST(req: Request) {
   try {
@@ -25,30 +26,31 @@ export async function POST(req: Request) {
     }
 
     const tools = await getMcpTools(segment_id);
-    const system = artist_id
-      ? `${DESCRIPTION} The active artist_account_id is ${artist_id}`
-      : DESCRIPTION;
+    const activeArtistContext = artist_id
+      ? ` The active artist_account_id is ${artist_id}`
+      : undefined;
 
-    const result = await streamWithFailover({
-      messages,
+    const system = DESCRIPTION + activeArtistContext;
+
+    const streamTextOpts = {
+      model: deepseek("deepseek-reasoner"),
       system,
-      tools,
-    });
-    if (result) {
-      return result.toDataStreamResponse({ sendReasoning: true });
-    }
-    return new Response(
-      JSON.stringify({
-        error: "Failed to process chat message",
-        details: "No result from streamWithFailover",
-      }),
-      {
-        status: 500,
-        headers: {
-          "Content-Type": "application/json",
+      messages,
+      providerOptions: {
+        deepseek: {
+          thinking: { type: "enabled", budgetTokens: 12000 },
         },
-      }
-    );
+      },
+      tools,
+      maxSteps: 11,
+      toolCallStreaming: true,
+    };
+
+    const result = streamText(streamTextOpts);
+
+    return result.toDataStreamResponse({
+      sendReasoning: true,
+    });
   } catch (error) {
     console.error("[Chat] Error processing request:", {
       error,
