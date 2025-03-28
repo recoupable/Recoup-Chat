@@ -2,26 +2,33 @@ import { experimental_createMCPClient } from "ai";
 import getSegmentFansTool from "./getSegmentFans";
 
 export async function getMcpTools(segment_id?: string) {
-  const perplexityMcpClient = await experimental_createMCPClient({
-    transport: {
-      type: "sse",
-      url: process.env.PERPLEXITY_MCP_SERVER as string,
-    },
-  });
+  let tools = {};
 
-  const mantleMcpClient = await experimental_createMCPClient({
-    transport: {
-      type: "sse",
-      url: "https://next-mcp.vercel.app/sse",
-    },
-  });
+  try {
+    const perplexityMcpClient = await experimental_createMCPClient({
+      transport: {
+        type: "sse",
+        url: process.env.PERPLEXITY_MCP_SERVER as string,
+      },
+    });
+    const toolSetPerplexityWebSearch = await perplexityMcpClient.tools();
+    tools = { ...tools, ...toolSetPerplexityWebSearch };
+  } catch (error) {
+    console.error("[MCP] Perplexity client error:", error);
+  }
 
-  const toolSetPerplexityWebSearch = await perplexityMcpClient.tools();
-  const toolSetMantleWebSearch = await mantleMcpClient.tools();
-  const tools = {
-    ...toolSetPerplexityWebSearch,
-    ...toolSetMantleWebSearch,
-  };
+  try {
+    const mantleMcpClient = await experimental_createMCPClient({
+      transport: {
+        type: "sse",
+        url: "https://next-mcp.vercel.app/sse",
+      },
+    });
+    const toolSetMantleWebSearch = await mantleMcpClient.tools();
+    tools = { ...tools, ...toolSetMantleWebSearch };
+  } catch (error) {
+    console.error("[MCP] Mantle client error:", error);
+  }
 
   if (segment_id) {
     const fanSegmentTool = getSegmentFansTool(segment_id);

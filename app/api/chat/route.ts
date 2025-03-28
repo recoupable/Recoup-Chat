@@ -1,8 +1,8 @@
-import { Message, streamText } from "ai";
-import { anthropic } from "@ai-sdk/anthropic";
+import { Message } from "ai";
 import createMemories from "@/lib/supabase/createMemories";
 import { DESCRIPTION } from "@/lib/consts";
 import { getMcpTools } from "@/lib/tools/getMcpTools";
+import { streamWithFailover } from "@/lib/chat/failover";
 
 export async function POST(req: Request) {
   try {
@@ -25,31 +25,17 @@ export async function POST(req: Request) {
     }
 
     const tools = await getMcpTools(segment_id);
-    const activeArtistContext = artist_id
-      ? ` The active artist_account_id is ${artist_id}`
-      : undefined;
+    const system = artist_id
+      ? `${DESCRIPTION} The active artist_account_id is ${artist_id}`
+      : DESCRIPTION;
 
-    const system = DESCRIPTION + activeArtistContext;
-
-    const streamTextOpts = {
-      model: anthropic("claude-3-7-sonnet-20250219"),
-      system,
+    const result = await streamWithFailover({
       messages,
-      providerOptions: {
-        anthropic: {
-          thinking: { type: "enabled", budgetTokens: 12000 },
-        },
-      },
+      system,
       tools,
-      maxSteps: 11,
-      toolCallStreaming: true,
-    };
-
-    const result = streamText(streamTextOpts);
-
-    return result.toDataStreamResponse({
-      sendReasoning: true,
     });
+    console.log("result", result);
+    return result;
   } catch (error) {
     console.error("[Chat] Error processing request:", {
       error,
