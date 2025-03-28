@@ -11,6 +11,9 @@ importers:
       '@ai-sdk/anthropic':
         specifier: ^1.2.0
         version: 1.2.1(zod@3.24.2)
+      '@ai-sdk/deepseek':
+        specifier: ^0.2.2
+        version: 0.2.2(zod@3.24.2)
       '@ai-sdk/react':
         specifier: ^1.2.0
         version: 1.2.1(react@18.3.1)(zod@3.24.2)
@@ -209,6 +212,18 @@ packages:
 
   '@ai-sdk/anthropic@1.2.1':
     resolution: {integrity: sha512-X2bcuDXDKl8UCxUbiK+BX/xW8FLLzc36jngQmQycRvzr1Lmc8k8l+0pgLjgvmWRmbF+L9XOzP38Wm86bdTrFzQ==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      zod: ^3.0.0
+
+  '@ai-sdk/deepseek@0.2.2':
+    resolution: {integrity: sha512-utqalXPkAMPsPRAxQt0isbtgjBbGsiIRzg24xdBMl5pZFDRgo7XOWhBMwhHnB7Ii1cHobjVRxKNMqvcJSa9gmQ==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      zod: ^3.0.0
+
+  '@ai-sdk/openai-compatible@0.2.2':
+    resolution: {integrity: sha512-pMc21dXF8qWP5AZkNtm+/jvBg1lHlC0HsP5yJRYZ5/6fYuRMl5JYMQZc4Gl8azd19LdWmPPi1HJT+jYE4vM04g==}
     engines: {node: '>=18'}
     peerDependencies:
       zod: ^3.0.0
@@ -6132,6 +6147,19 @@ snapshots:
   '@adraffy/ens-normalize@1.11.0': {}
 
   '@ai-sdk/anthropic@1.2.1(zod@3.24.2)':
+    dependencies:
+      '@ai-sdk/provider': 1.1.0
+      '@ai-sdk/provider-utils': 2.2.1(zod@3.24.2)
+      zod: 3.24.2
+
+  '@ai-sdk/deepseek@0.2.2(zod@3.24.2)':
+    dependencies:
+      '@ai-sdk/openai-compatible': 0.2.2(zod@3.24.2)
+      '@ai-sdk/provider': 1.1.0
+      '@ai-sdk/provider-utils': 2.2.1(zod@3.24.2)
+      zod: 3.24.2
+
+  '@ai-sdk/openai-compatible@0.2.2(zod@3.24.2)':
     dependencies:
       '@ai-sdk/provider': 1.1.0
       '@ai-sdk/provider-utils': 2.2.1(zod@3.24.2)

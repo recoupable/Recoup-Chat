@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^1.2.0",
+    "@ai-sdk/deepseek": "^0.2.2",
     "@ai-sdk/react": "^1.2.0",
     "@ai-sdk/ui-utils": "^1.1.15",
     "@ardrive/turbo-sdk": "^1.22.1",

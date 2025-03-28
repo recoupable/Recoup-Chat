@@ -1,8 +1,8 @@
 import { Message, streamText } from "ai";
-import { anthropic } from "@ai-sdk/anthropic";
 import createMemories from "@/lib/supabase/createMemories";
 import { DESCRIPTION } from "@/lib/consts";
 import { getMcpTools } from "@/lib/tools/getMcpTools";
+import { deepseek } from "@ai-sdk/deepseek";
 
 export async function POST(req: Request) {
   try {
@@ -32,11 +32,11 @@ export async function POST(req: Request) {
     const system = DESCRIPTION + activeArtistContext;
 
     const streamTextOpts = {
-      model: anthropic("claude-3-7-sonnet-20250219"),
+      model: deepseek("deepseek-reasoner"),
       system,
       messages,
       providerOptions: {
-        anthropic: {
+        deepseek: {
           thinking: { type: "enabled", budgetTokens: 12000 },
         },
       },
