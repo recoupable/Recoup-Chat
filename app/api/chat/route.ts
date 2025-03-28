@@ -1,5 +1,4 @@
 import { Message, streamText } from "ai";
-import { anthropic } from "@ai-sdk/anthropic";
 import createMemories from "@/lib/supabase/createMemories";
 import { DESCRIPTION } from "@/lib/consts";
 import { getMcpTools } from "@/lib/tools/getMcpTools";
