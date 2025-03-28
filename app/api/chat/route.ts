@@ -1,8 +1,8 @@
 import { Message, streamText } from "ai";
 import { anthropic } from "@ai-sdk/anthropic";
 import createMemories from "@/lib/supabase/createMemories";
-import { DESCRIPTION } from "@/lib/consts";
 import { getMcpTools } from "@/lib/tools/getMcpTools";
+import getSystemPrompt from "@/lib/prompts/getSystemPrompt";
 
 export async function POST(req: Request) {
   try {
@@ -25,11 +25,7 @@ export async function POST(req: Request) {
     }
 
     const tools = await getMcpTools(segment_id);
-    const activeArtistContext = artist_id
-      ? ` The active artist_account_id is ${artist_id}`
-      : undefined;
-
-    const system = DESCRIPTION + activeArtistContext;
+    const system = await getSystemPrompt(room_id, artist_id);
 
     const streamTextOpts = {
       model: anthropic("claude-3-7-sonnet-20250219"),

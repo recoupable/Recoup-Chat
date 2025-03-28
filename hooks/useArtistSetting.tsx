@@ -16,7 +16,7 @@ const useArtistSetting = () => {
   const [youtube, setYoutube] = useState("");
   const [twitter, setTwitter] = useState("");
   const [bases, setBases] = useState<
-    Array<{ name: string; url: string; type: string }>
+    Array<{ name: string; url: string; type: string; content?: string }>
   >([]);
   const [imageUploading, setImageUploading] = useState(false);
   const [knowledgeUploading, setKnowledgeUploading] = useState(false);
@@ -65,10 +65,17 @@ const useArtistSetting = () => {
           const name = file.name;
           const type = file.type;
           const { uri } = await uploadFile(file);
+          
+          let content;
+          if (["text/plain", "text/markdown", "application/json"].includes(type)) {
+            content = await file.text();
+          }
+          
           temp.push({
             name,
             url: uri,
             type,
+            content
           });
         }
       }
