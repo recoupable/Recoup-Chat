@@ -24,10 +24,9 @@ export const fallbackModel = deepseek("deepseek-reasoner");
  * Common stream options
  */
 export const streamOptions = {
-  sendReasoning: true,
   providerOptions: {
     anthropic: {
-      thinking: { type: "enabled" as const, budgetTokens: 12000 },
+      thinking: { type: "enabled", budgetTokens: 12000 },
     },
   },
   maxSteps: 11,
