@@ -33,7 +33,14 @@ const useConversations = () => {
       (item: Conversation | ArtistAgent) =>
         'artist_id' in item && item.artist_id === selectedArtist?.account_id
     );
-    return filtered;
+    
+    // Sort by updated_at in descending order (most recent first)
+    return filtered.sort((a, b) => {
+      if ('updated_at' in a && 'updated_at' in b) {
+        return new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime();
+      }
+      return 0;
+    });
   }, [selectedArtist, allConversations]);
 
   const fetchConversations = async () => {
