@@ -3,6 +3,7 @@ import { anthropic } from "@ai-sdk/anthropic";
 import createMemories from "@/lib/supabase/createMemories";
 import { getMcpTools } from "@/lib/tools/getMcpTools";
 import getSystemPrompt from "@/lib/prompts/getSystemPrompt";
+import { ANTHROPIC_MODEL } from "@/lib/consts";
 
 export async function POST(req: Request) {
   try {
@@ -27,12 +28,10 @@ export async function POST(req: Request) {
     const tools = await getMcpTools(segment_id);
     const system = await getSystemPrompt(room_id, artist_id);
 
-    const anthropicModel = "claude-3-7-sonnet-20250219";
-
     const nonEmptyMessages = messages.filter((m) => m.content.length > 0);
 
     const result = streamText({
-      model: anthropic(anthropicModel),
+      model: anthropic(ANTHROPIC_MODEL),
       system,
       messages: nonEmptyMessages,
       providerOptions: {
