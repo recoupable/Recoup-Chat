@@ -8,7 +8,8 @@ export async function GET(req: NextRequest) {
     const { data: rooms, error } = await supabase
       .from("rooms")
       .select("*, memories(*), room_reports(report_id)")
-      .eq("account_id", account_id);
+      .eq("account_id", account_id)
+      .order('updated_at', { ascending: false });
 
     return Response.json({ rooms: rooms || [], error }, { status: 200 });
   } catch (error) {

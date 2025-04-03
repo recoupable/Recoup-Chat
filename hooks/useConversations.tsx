@@ -29,18 +29,13 @@ const useConversations = () => {
   }, [userData, agents]);
 
   const conversations = useMemo(() => {
-    const filtered = allConversations.filter(
+    // Filter conversations by selected artist
+    return allConversations.filter(
       (item: Conversation | ArtistAgent) =>
         'artist_id' in item && item.artist_id === selectedArtist?.account_id
     );
     
-    // Sort by updated_at in descending order (most recent first)
-    return filtered.sort((a, b) => {
-      if ('updated_at' in a && 'updated_at' in b) {
-        return new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime();
-      }
-      return 0;
-    });
+    // Sorting is now handled at the API level in app/api/room/get/route.tsx
   }, [selectedArtist, allConversations]);
 
   const fetchConversations = async () => {
