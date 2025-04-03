@@ -1,9 +1,10 @@
 import { Message, streamText } from "ai";
-import { anthropic } from "@ai-sdk/anthropic";
 import createMemories from "@/lib/supabase/createMemories";
 import { getMcpTools } from "@/lib/tools/getMcpTools";
 import getSystemPrompt from "@/lib/prompts/getSystemPrompt";
-import { ANTHROPIC_MODEL } from "@/lib/consts";
+import { validateMessages } from "@/lib/chat/validateMessages";
+import { createStreamConfig } from "@/lib/chat/createStreamConfig";
+import { handleChatError } from "@/lib/chat/handleChatError";
 
 export async function POST(req: Request) {
   try {
@@ -13,10 +14,7 @@ export async function POST(req: Request) {
     const segment_id = body.segmentId;
     const artist_id = body.artistId;
 
-    const lastMessage = messages[messages.length - 1];
-    if (!lastMessage) {
-      throw new Error("No messages provided");
-    }
+    const { lastMessage, validMessages } = validateMessages(messages);
 
     if (room_id) {
       await createMemories({
@@ -28,43 +26,19 @@ export async function POST(req: Request) {
     const tools = await getMcpTools(segment_id);
     const system = await getSystemPrompt(room_id, artist_id);
 
-    const nonEmptyMessages = messages.filter((m) => m.content.length > 0);
-
-    const result = streamText({
-      model: anthropic(ANTHROPIC_MODEL),
+    const streamConfig = createStreamConfig({
       system,
-      messages: nonEmptyMessages,
-      providerOptions: {
-        anthropic: {
-          thinking: { type: "enabled", budgetTokens: 12000 },
-        },
-      },
+      messages: validMessages,
       tools,
-      maxSteps: 11,
-      toolCallStreaming: true,
     });
+
+    const result = streamText(streamConfig);
 
     return result.toDataStreamResponse({
       sendReasoning: true,
     });
   } catch (error) {
-    console.error("[Chat] Error processing request:", {
-      error,
-      message: error instanceof Error ? error.message : "Unknown error",
-    });
-
-    return new Response(
-      JSON.stringify({
-        error: "Failed to process chat message",
-        details: error instanceof Error ? error.message : "Unknown error",
-      }),
-      {
-        status: 500,
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    return handleChatError(error);
   }
 }
 
