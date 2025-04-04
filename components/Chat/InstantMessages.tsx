@@ -11,14 +11,14 @@ interface InstantMessagesProps {
 }
 
 const InstantMessages = ({ scroll, className }: InstantMessagesProps) => {
-  const { messages, isUserReady, loginUser } = useInstantChat();
+  const { messages, isUserReady, loginUser, pending } = useInstantChat();
 
   const scrollTo = () => scroll({ smooth: true, y: Number.MAX_SAFE_INTEGER });
 
-  // Scroll to bottom whenever messages change
+  // Scroll to bottom whenever messages change or during streaming
   useEffect(() => {
     scrollTo();
-  }, [messages]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [messages, pending]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const renderEmptyState = () => {
     if (!isUserReady) {
@@ -71,10 +71,36 @@ const InstantMessages = ({ scroll, className }: InstantMessagesProps) => {
                   "w-fit": message.role === "user",
                 })}
               >
-                <div>{message.content}</div>
+                {/* Handle parts if available, or fall back to content */}
+                {message.parts ? (
+                  message.parts.map((part, i) => (
+                    <div key={i}>
+                      {part.type === "text" ? part.text : part.reasoning}
+                    </div>
+                  ))
+                ) : (
+                  <div>{message.content}</div>
+                )}
               </div>
             </div>
           ))}
+
+      {/* Show thinking indicator if streaming */}
+      {pending &&
+        messages.length > 0 &&
+        messages[messages.length - 1].role !== "assistant" && (
+          <div className="flex items-center gap-x-3 py-4 px-4 bg-secondary/50">
+            <div className="flex h-6 w-6 shrink-0 select-none items-center justify-center rounded-md border bg-background shadow">
+              <IconRobot className="h-4 w-4" />
+            </div>
+            <div className="flex items-center">
+              <span className="mr-2">Thinking</span>
+              <span className="animate-pulse">●</span>
+              <span className="animate-pulse delay-75">●</span>
+              <span className="animate-pulse delay-150">●</span>
+            </div>
+          </div>
+        )}
     </div>
   );
 };
