@@ -9,7 +9,7 @@ import EmptyState from "./EmptyState";
 
 // No need for InstantChatProvider here as it's now in the layout
 const InstantChat = () => {
-  const { messages, isUserReady, loginUser, pending } = useInstantChat();
+  const { messages, pending } = useInstantChat();
   const scrollRef = useRef<(options: { smooth: boolean; y: number }) => void>();
 
   // Use effect for scrolling outside the callback
@@ -29,7 +29,7 @@ const InstantChat = () => {
           return (
             <div className="flex-1 min-h-0">
               {messages.length === 0 ? (
-                <EmptyState isUserReady={isUserReady} loginUser={loginUser} />
+                <EmptyState />
               ) : (
                 // Render Messages component when we have messages
                 <Messages

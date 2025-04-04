@@ -23,10 +23,8 @@ interface InstantChatContextType {
   messages: ChatMessage[];
   input: string;
   pending: boolean;
-  isUserReady: boolean;
   handleInputChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
   handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
-  loginUser: () => void;
 }
 
 const InstantChatContext = createContext<InstantChatContextType>(
@@ -46,13 +44,12 @@ export const InstantChatProvider = ({
   // Use a ref to persist messages across re-renders
   const messagesRef = useRef<ChatMessage[]>([]);
 
-  const { userData, login } = useUserProvider();
+  const { userData } = useUserProvider();
   const { selectedArtist } = useArtistProvider();
   const { addConversation } = useConversationsProvider();
 
   const [localMessages, setLocalMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
-  const [isUserReady, setIsUserReady] = useState(false);
 
   // Connect to AI SDK for chat
   const {
@@ -94,36 +91,6 @@ export const InstantChatProvider = ({
       console.log("Loading messages for chatId:", chatId);
     }
   }, [chatId]);
-
-  // Function to trigger login
-  const loginUser = useCallback(() => {
-    if (login) {
-      login();
-    }
-  }, [login]);
-
-  // Check if user data is ready
-  useEffect(() => {
-    // Check for both userData and selectedArtist since we need both
-    const userReady = !!userData?.id;
-    const artistReady = !!selectedArtist?.account_id;
-
-    console.log("User data status:", {
-      userReady,
-      artistReady,
-      userData: userData?.id,
-      artist: selectedArtist?.account_id,
-      currentChatId: chatId,
-    });
-
-    setIsUserReady(userReady && artistReady);
-
-    // If user is not logged in, attempt login
-    if (!userReady && login) {
-      console.log("Attempting to log in user");
-      login();
-    }
-  }, [userData, selectedArtist, login, chatId]);
 
   const handleInputChange = useCallback(
     (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -201,7 +168,7 @@ export const InstantChatProvider = ({
       e.preventDefault();
 
       // Safety checks
-      if (!isUserReady || !input.trim()) return;
+      if (!input.trim()) return;
 
       // Create user message
       const userMessage: ChatMessage = {
@@ -240,17 +207,15 @@ export const InstantChatProvider = ({
         createNewRoom(input, userMessage);
       }
     },
-    [input, isUserReady, createNewRoom, chatId, appendAiChat]
+    [input, createNewRoom, chatId, appendAiChat]
   );
 
   const value = {
     messages,
     input,
     pending: status === "streaming" || status === "submitted",
-    isUserReady,
     handleInputChange,
     handleSubmit,
-    loginUser,
   };
 
   return (
