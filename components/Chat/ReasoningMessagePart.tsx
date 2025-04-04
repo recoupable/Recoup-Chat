@@ -22,7 +22,7 @@ const variants = {
     height: "auto",
     opacity: 1,
     marginTop: "1rem",
-    marginBottom: 0,
+    marginBottom: "1rem",
   },
 };
 
@@ -39,7 +39,7 @@ export function ReasoningMessagePart({
   }, [isReasoning]);
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col mb-8">
       {isReasoning ? (
         <div className="flex flex-row gap-2 items-center">
           <div className="font-medium text-sm">Reasoning</div>
@@ -63,6 +63,7 @@ export function ReasoningMessagePart({
               }
             )}
             onClick={() => setIsExpanded(!isExpanded)}
+            aria-label={isExpanded ? "Collapse reasoning" : "Expand reasoning"}
           >
             <svg
               className="w-4 h-4"
@@ -85,7 +86,7 @@ export function ReasoningMessagePart({
         {isExpanded && (
           <motion.div
             key="reasoning"
-            className="text-sm dark:text-zinc-400 text-zinc-600 flex flex-col gap-4 border-l pl-3 dark:border-zinc-800"
+            className="text-sm dark:text-zinc-400 text-zinc-600 flex flex-col gap-4 border-l pl-3 pt-6 dark:border-zinc-800"
             initial="collapsed"
             animate="expanded"
             exit="collapsed"

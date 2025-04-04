@@ -1,4 +1,5 @@
 import type { Message } from "@ai-sdk/react";
+import ChatMarkdown from "./ChatMarkdown";
 
 interface UserMessageProps {
   message: Message;
@@ -6,18 +7,9 @@ interface UserMessageProps {
 
 const UserMessage = ({ message }: UserMessageProps) => {
   return (
-    <div className="grow flex justify-end max-w-[90%]">
-      <section>
-        <div
-          className="text-sm font-sans max-w-[500px] text-pretty break-words bg-grey px-4 p-2 rounded-full"
-          dangerouslySetInnerHTML={{
-            __html: decodeURIComponent(
-              message.content.replaceAll("%", "&#37;") || ""
-            ),
-          }}
-        />
-      </section>
-    </div>
+    <ChatMarkdown>
+      {decodeURIComponent(message.content.replaceAll("%", "&#37;") || "")}
+    </ChatMarkdown>
   );
 };
 

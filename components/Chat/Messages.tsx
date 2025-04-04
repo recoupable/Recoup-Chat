@@ -8,6 +8,7 @@ import { TextMessagePart } from "./TextMessagePart";
 import { useMessagesProvider } from "@/providers/MessagesProvider";
 import { usePromptsProvider } from "@/providers/PromptsProvider";
 import { IconRobot } from "@tabler/icons-react";
+import ChatMarkdown from "./ChatMarkdown";
 
 const Messages = ({
   scroll,
@@ -39,7 +40,6 @@ const Messages = ({
         <div
           key={message.id}
           className={cn("flex items-start gap-x-3 py-4 px-4", {
-            "bg-secondary/50": message.role === "assistant",
             "justify-end": message.role === "user",
           })}
         >
@@ -50,10 +50,14 @@ const Messages = ({
           )}
           <div
             className={cn("flex flex-col space-y-1.5", {
-              "w-fit": message.role === "user",
+              "flex items-start bg-secondary/70 rounded-xl px-4 py-3 max-w-[85%] md:max-w-[70%] break-words": message.role === "user" 
             })}
           >
-            {message.parts?.map((part, i) => {
+            {message.role === "user" ? (
+              <ChatMarkdown>
+                {message.content}
+              </ChatMarkdown>
+            ) : message.parts?.map((part, i) => {
               if (part.type === "reasoning") {
                 return (
                   <ReasoningMessagePart
@@ -73,7 +77,7 @@ const Messages = ({
         </div>
       ))}
       {pending && (
-        <div className="flex items-center gap-x-3 py-4 px-4 bg-secondary/50">
+        <div className="flex items-center gap-x-3 py-4 px-4">
           <div className="flex h-6 w-6 shrink-0 select-none items-center justify-center rounded-md border bg-background shadow">
             <IconRobot className="h-4 w-4" />
           </div>

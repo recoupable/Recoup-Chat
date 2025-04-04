@@ -1,0 +1,474 @@
+.markdown {
+  /* Base styling */
+  line-height: 1.6;
+  font-size: 1rem;
+  color: rgba(0, 0, 0, 0.85);
+  overflow-x: hidden !important;
+  max-width: 100% !important;
+  width: 100%;
+}
+
+/* Improved paragraph spacing */
+.markdown p {
+  margin-bottom: 1.2em;
+  line-height: 1.7;
+}
+
+.markdown p + p {
+  margin-top: 0.8em;
+}
+
+/* Better content section spacing */
+.markdown > h2,
+.markdown > h3 {
+  margin-top: 2em;
+}
+
+.markdown > h1:first-child {
+  margin-top: 0.8em;
+}
+
+/* Enhanced Visual Hierarchy - Headings */
+.markdown h1 {
+  font-size: 1.8em;
+  font-weight: 700;
+  margin: 1.5em 0 0.8em;
+  color: rgba(0, 0, 0, 0.85);
+  padding-bottom: 0.4em;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.markdown h2 {
+  font-size: 1.5em;
+  font-weight: 600;
+  margin: 1.5em 0 0.8em;
+  padding-bottom: 0.3em;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  color: rgba(0, 0, 0, 0.8);
+}
+
+.markdown h3 {
+  font-size: 1.3em;
+  font-weight: 600;
+  margin: 1.3em 0 0.7em;
+  color: rgba(0, 0, 0, 0.75);
+}
+
+/* Horizontal rule for section separation */
+.markdown hr {
+  border: 0;
+  height: 1px;
+  background: linear-gradient(to right, transparent, rgba(0, 0, 0, 0.1), transparent);
+  margin: 2em 0;
+}
+
+/* Highlight key numbers */
+.markdown strong {
+  font-weight: 600;
+  color: rgba(0, 0, 0, 0.9);
+}
+
+/* Monetary values and important numbers styling */
+.markdown code:not(pre code) {
+  background-color: rgba(0, 30, 100, 0.05);
+  border-radius: 3px;
+  padding: 0.2em 0.4em;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.95em;
+  font-weight: 600;
+  color: rgba(24, 54, 145, 0.9);
+}
+
+/* List improvements */
+.markdown ul,
+.markdown ol {
+  padding-left: 1.8em;
+  margin: 1.2em 0 1.4em;
+}
+
+.markdown li {
+  margin-bottom: 1em;
+  line-height: 1.6;
+  position: relative;
+}
+
+.markdown ul li {
+  list-style-type: disc;
+  display: list-item;
+}
+
+.markdown ul li::marker {
+  color: rgba(0, 0, 0, 0.65);
+}
+
+.markdown ol li::marker {
+  color: rgba(0, 0, 0, 0.75);
+  font-weight: 600;
+}
+
+/* Improved list within list */
+.markdown li ul,
+.markdown li ol {
+  margin: 0.7em 0 0.9em;
+}
+
+/* Better spacing for paragraphs inside list items */
+.markdown li p {
+  margin-bottom: 0.6em;
+}
+
+.markdown li p:last-child {
+  margin-bottom: 0;
+}
+
+/* Enhanced blockquotes for important notes */
+.markdown blockquote {
+  border-left: 4px solid rgba(0, 0, 0, 0.15);
+  padding: 0.8em 1.2em;
+  margin: 1.2em 0;
+  background-color: rgba(0, 0, 0, 0.03);
+  border-radius: 0 4px 4px 0;
+  color: rgba(0, 0, 0, 0.7);
+  font-style: italic;
+}
+
+.markdown blockquote p {
+  margin-bottom: 0.5em;
+}
+
+.markdown blockquote p:last-child {
+  margin-bottom: 0;
+}
+
+.markdown blockquote strong {
+  font-weight: 600;
+  color: rgba(0, 0, 0, 0.8);
+}
+
+/* Tables with better readability */
+.markdown table {
+  border-collapse: separate;
+  border-spacing: 0;
+  width: 100%;
+  margin: 1.8em 0;
+  font-size: 0.95em;
+  line-height: 1.5;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  table-layout: fixed;
+}
+
+.markdown th {
+  background-color: rgba(0, 0, 0, 0.06);
+  font-weight: 600;
+  padding: 0.9em 1em;
+  text-align: left;
+  color: rgba(0, 0, 0, 0.85);
+  border-bottom: 2px solid rgba(0, 0, 0, 0.12);
+  position: relative;
+  letter-spacing: 0.01em;
+  word-break: break-word;
+}
+
+.markdown td {
+  padding: 0.9em 1em;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  vertical-align: top;
+  word-break: break-word;
+}
+
+.markdown tr:nth-child(even) {
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+.markdown tbody tr:hover {
+  background-color: rgba(0, 0, 0, 0.04);
+}
+
+/* Code formatting */
+.markdown code {
+  background-color: rgba(0, 0, 0, 0.05);
+  border-radius: 3px;
+  padding: 0.2em 0.4em;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.9em;
+  color: rgba(0, 0, 0, 0.85);
+}
+
+.markdown pre {
+  background-color: rgb(40, 44, 52);
+  color: #abb2bf;
+  border-radius: 6px;
+  padding: 1em;
+  overflow-x: auto;
+  margin: 1.2em 0;
+  max-width: 100%;
+  box-sizing: border-box;
+  word-break: break-word;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+/* Pre with code blocks inside */
+.markdown pre code {
+  background-color: transparent;
+  padding: 0;
+  border-radius: 0;
+  display: block;
+  font-size: 0.9em;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  tab-size: 2;
+  color: inherit;
+  border-left: 3px solid rgba(255, 255, 255, 0.2);
+  padding-left: 0.8em;
+  width: 100%;
+  box-sizing: border-box;
+  overflow-x: visible;
+}
+
+/* Syntax highlighting emulation via CSS */
+.markdown pre code .comment,
+.markdown pre code span.comment {
+  color: #7f848e; /* soft gray for comments */
+  font-style: italic;
+}
+
+.markdown pre code .keyword,
+.markdown pre code span.keyword {
+  color: #c678dd; /* purple for keywords */
+}
+
+.markdown pre code .string,
+.markdown pre code span.string {
+  color: #98c379; /* green for strings */
+}
+
+.markdown pre code .number,
+.markdown pre code span.number {
+  color: #d19a66; /* orange for numbers */
+}
+
+.markdown pre code .function,
+.markdown pre code span.function {
+  color: #61afef; /* blue for functions */
+}
+
+.markdown pre code .tag,
+.markdown pre code span.tag {
+  color: #e06c75; /* red for tags */
+}
+
+.markdown pre code .attr-name,
+.markdown pre code span.attr-name {
+  color: #d19a66; /* orange for attribute names */
+}
+
+.markdown pre code .attr-value,
+.markdown pre code span.attr-value {
+  color: #98c379; /* green for attribute values */
+}
+
+.markdown pre code .property,
+.markdown pre code span.property {
+  color: #56b6c2; /* teal for properties */
+}
+
+/* HTML tag-like syntax */
+.markdown pre code .tag { color: #e06c75; } /* red */
+.markdown pre code .attr-name { color: #d19a66; } /* orange */
+.markdown pre code .attr-value { color: #98c379; } /* green */
+
+/* Custom colorization for common languages */
+/* CSS-like syntax */
+.markdown pre code .property { color: #56b6c2; } /* teal */
+.markdown pre code .important { color: #e06c75; } /* red */
+
+/* JS/TS-like syntax */
+.markdown pre code .function { color: #61afef; } /* blue */
+.markdown pre code .class-name { color: #e5c07b; } /* yellow */
+
+/* Improved inline code for numbers and values */
+.markdown p code {
+  font-weight: 600;
+  color: #1E40AF;
+  padding: 0.15em 0.4em;
+  border-radius: 3px;
+  background-color: rgba(30, 64, 175, 0.08);
+}
+
+/* Mobile tables styles */
+@media (max-width: 640px) {
+  .markdown table {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 8px;
+    table-layout: auto;
+  }
+  
+  .markdown th,
+  .markdown td {
+    white-space: normal;
+    min-width: 140px; /* Ensure columns don't get too narrow */
+  }
+}
+
+/* Blockquotes */
+.markdown blockquote {
+  border-left: 4px solid rgba(0, 0, 0, 0.15);
+  padding: 0.8em 1.2em;
+  margin: 1.2em 0;
+  background-color: rgba(0, 0, 0, 0.03);
+  border-radius: 0 4px 4px 0;
+  color: rgba(0, 0, 0, 0.7);
+  font-style: italic;
+}
+
+.markdown blockquote p {
+  margin-bottom: 0.5em;
+}
+
+.markdown blockquote p:last-child {
+  margin-bottom: 0;
+}
+
+.markdown blockquote strong {
+  font-weight: 600;
+  color: rgba(0, 0, 0, 0.8);
+}
+
+/* Horizontal rule */
+.markdown hr {
+  border: 0;
+  height: 1px;
+  background-color: rgba(0, 0, 0, 0.12);
+  margin: 2em 0;
+}
+
+/* Links */
+.markdown a {
+  color: #0070f3;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-bottom-color 0.2s ease;
+  font-weight: 500;
+}
+
+.markdown a:hover {
+  border-bottom-color: #0070f3;
+}
+
+/* Inline text formatting */
+.markdown em {
+  font-style: italic;
+}
+
+.markdown del {
+  text-decoration: line-through;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+/* Visual separation */
+.markdown > *:not(:first-child) {
+  margin-top: 1.2em;
+}
+
+.markdown > h1 + p,
+.markdown > h2 + p,
+.markdown > h3 + p {
+  margin-top: 0.5em;
+}
+
+/* Mobile responsiveness improvements */
+@media (max-width: 640px) {
+  .markdown {
+    /* Ensure content doesn't overflow container */
+    max-width: 100%;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;
+    hyphens: auto;
+  }
+
+  /* Prevent code blocks from causing horizontal scroll */
+  .markdown pre {
+    max-width: 100%;
+    overflow-x: auto;
+    white-space: pre-wrap;
+  }
+
+  /* Ensure inline code wraps properly */
+  .markdown code {
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  /* Adjust image sizing for mobile */
+  .markdown img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* Make links wrap */
+  .markdown a {
+    word-break: break-word;
+  }
+  
+  /* Scale down headings for mobile */
+  .markdown h1 {
+    font-size: 1.6em;
+  }
+  
+  .markdown h2 {
+    font-size: 1.3em;
+  }
+  
+  .markdown h3 {
+    font-size: 1.1em;
+  }
+
+  /* Improve table layouts on mobile */
+  .markdown table {
+    margin: 1em 0;
+    font-size: 0.9em;
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 8px;
+    table-layout: auto;
+    white-space: normal;
+  }
+  
+  .markdown th,
+  .markdown td {
+    padding: 0.7em 0.8em;
+    word-break: normal;
+    min-width: 100px;
+  }
+
+  /* Ensure blockquotes don't cause overflow */
+  .markdown blockquote {
+    padding: 0.6em 1em;
+    margin: 1em 0;
+    max-width: 100%;
+    overflow-x: auto;
+  }
+}
+
+/* Ensure table container allows scroll but doesn't cause parent to scroll */
+.markdown table {
+  max-width: 100%;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+/* Force table to be contained within its parent */
+.markdown div > table {
+  max-width: 100%;
+  width: 100%;
+} 
