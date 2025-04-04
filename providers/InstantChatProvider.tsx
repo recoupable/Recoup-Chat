@@ -180,7 +180,6 @@ export const InstantChatProvider = ({
             } as Message);
           } catch (error) {
             console.error("[InstantChat] Error sending message to API:", error);
-            setPending(false);
           }
         }
       } catch (error) {
