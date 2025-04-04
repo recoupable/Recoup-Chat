@@ -1,9 +1,12 @@
 "use client";
 
+import ChatSkeleton from "@/components/Chat/ChatSkeleton";
 import InitialChat from "@/components/Chat/InitialChat";
+import { useChatProvider } from "@/providers/ChatProvider";
 
 const NewChatPage = () => {
-  // Always render InitialChat immediately, never show skeleton
+  const { isLoading } = useChatProvider();
+  if (isLoading) return <ChatSkeleton />;
   return <InitialChat />;
 };
 
