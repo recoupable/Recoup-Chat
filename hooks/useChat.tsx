@@ -1,4 +1,3 @@
-import { Message } from "ai/react";
 import { useParams, useRouter } from "next/navigation";
 import { useUserProvider } from "@/providers/UserProvder";
 import { useMessagesProvider } from "@/providers/MessagesProvider";
@@ -19,48 +18,55 @@ const useChat = () => {
   const { messages, pending } = useMessagesProvider();
   const { getPrompts } = usePromptsProvider();
   const { selectedArtist } = useArtistProvider();
-  const [appendActive, setAppendActive] = useState<Message | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
+  // Create room in background without blocking UI
   const createNewRoom = async (content: string) => {
     if (chatId) return;
-    setIsLoading(true);
-    const room = await createRoom(
-      userData.id,
-      content,
-      selectedArtist?.account_id
-    );
-    addConversation(room);
-    push(`/${room.id}`);
-  };
 
-  const append = async (message: Message) => {
-    if (!isPrepared()) return;
-    createNewRoom(message.content);
-    setAppendActive(message);
+    try {
+      // Create room but don't wait for redirect
+      const room = await createRoom(
+        userData.id,
+        content,
+        selectedArtist?.account_id
+      );
+      addConversation(room);
+
+      // Silent route change
+      push(`/${room.id}`);
+    } catch (error) {
+      console.error("[useChat] Error creating room:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!isPrepared()) return;
-    append({
+
+    // Create message
+    const message: ChatMessage = {
       id: uuidV4(),
       content: input,
       role: "user",
-    });
+    };
+
+    // Clear input immediately
     handleInputChange({
       target: { value: "" },
     } as React.ChangeEvent<HTMLTextAreaElement>);
-  };
 
-  useEffect(() => {
-    if (appendActive && chatId) {
-      appendAiChat(appendActive as ChatMessage);
-      setAppendActive(null);
-      setIsLoading(false);
-      return;
+    // Show message immediately in UI
+    appendAiChat(message);
+
+    // Start room creation in background
+    if (!chatId) {
+      setIsLoading(true);
+      createNewRoom(message.content);
     }
-  }, [appendActive, chatId]);
+  };
 
   useEffect(() => {
     if (messages.length && (chatId || agentId) && !pending)
@@ -69,7 +75,6 @@ const useChat = () => {
 
   return {
     handleSubmit,
-    append,
     isLoading,
   };
 };
