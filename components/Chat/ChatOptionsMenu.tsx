@@ -19,7 +19,6 @@ const ChatOptionsMenu = ({ conversation, onClose }: ChatOptionsMenuProps) => {
   const { fetchConversations } = useConversationsProvider();
   const isMobile = useIsMobile();
 
-  // For mobile - menu is always shown, don't use isMenuOpen
   useEffect(() => {
     if (isMobile) {
       setIsMenuOpen(true);
@@ -80,7 +79,6 @@ const ChatOptionsMenu = ({ conversation, onClose }: ChatOptionsMenuProps) => {
 
         {(isMenuOpen || isMobile) && (
           <>
-            {/* Background overlay for mobile */}
             <div
               className={`fixed inset-0 z-10 ${isMobile ? 'bg-black/60 backdrop-blur-sm' : ''}`}
               onClick={closeMenus}
@@ -113,7 +111,6 @@ const ChatOptionsMenu = ({ conversation, onClose }: ChatOptionsMenuProps) => {
         )}
       </div>
 
-      {/* Rename Modal - Custom implementation */}
       {isRenameModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center z-50 bg-[#6262626b] bg-[url('/circle.png')] bg-center bg-cover px-3 md:px-0">
           <div className="relative bg-white rounded-md shadow-lg w-full max-w-md p-4 md:p-6">
@@ -154,7 +151,6 @@ const ChatOptionsMenu = ({ conversation, onClose }: ChatOptionsMenuProps) => {
         </div>
       )}
 
-      {/* Delete Confirmation Modal - Custom implementation */}
       {isDeleteModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center z-50 bg-[#6262626b] bg-[url('/circle.png')] bg-center bg-cover px-3 md:px-0">
           <div className="relative bg-white rounded-md shadow-lg w-full max-w-md p-4 md:p-6">

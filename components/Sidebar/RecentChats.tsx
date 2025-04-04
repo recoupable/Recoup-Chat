@@ -45,7 +45,6 @@ const RecentChats = ({ toggleModal }: { toggleModal: () => void }) => {
           <RecentChatSkeleton />
         ) : (
           <>
-            {/* eslint-disable-next-line */}
             {conversations.map((conversation: any, index: number) => (
               <div
                 className="flex items-center w-full relative"

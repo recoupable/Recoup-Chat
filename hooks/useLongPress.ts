@@ -40,7 +40,6 @@ export default function useLongPress(
 
   const clear = useCallback(
     (e: React.MouseEvent | React.TouchEvent, shouldTriggerClick = true) => {
-      // Prevent click event if long press triggered
       if (timeout.current) {
         clearTimeout(timeout.current);
         timeout.current = undefined;
