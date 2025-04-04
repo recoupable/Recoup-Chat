@@ -5,28 +5,47 @@ import { ScrollArea } from "react-scroll-to";
 import { cn } from "@/lib/utils";
 import { ReasoningMessagePart } from "./ReasoningMessagePart";
 import { TextMessagePart } from "./TextMessagePart";
-import { useMessagesProvider } from "@/providers/MessagesProvider";
-import { usePromptsProvider } from "@/providers/PromptsProvider";
 import { IconRobot } from "@tabler/icons-react";
 import ChatMarkdown from "./ChatMarkdown";
 
-const Messages = ({
-  scroll,
-  className,
-  children,
-}: {
+// Using a more generic type to handle different message structures
+interface MessageLike {
+  id: string;
+  role: string;
+  content: string;
+  parts?: MessagePartLike[]; // More specific part type
+}
+
+// Generic message part interface that covers necessary properties
+interface MessagePartLike {
+  type: string;
+  text?: string;
+  reasoning?: string;
+  details?: Array<{ type: string; text?: string; [key: string]: any }>;
+  [key: string]: any; // Allow other properties
+}
+
+interface MessagesProps {
+  messages: MessageLike[];
+  pending?: boolean;
   scroll: ({ smooth, y }: { smooth: boolean; y: number }) => void;
   className?: string;
   children?: React.ReactNode;
-}) => {
-  const { messages, pending } = useMessagesProvider();
-  const { prompts } = usePromptsProvider();
-  const scrollTo = () => scroll({ smooth: true, y: Number.MAX_SAFE_INTEGER });
+}
 
+const Messages = ({
+  messages,
+  pending = false,
+  scroll,
+  className,
+  children,
+}: MessagesProps) => {
+  // Use the scroll prop to scroll to bottom when messages change
   useEffect(() => {
-    scrollTo();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [messages, pending, prompts]);
+    scroll({ smooth: true, y: Number.MAX_SAFE_INTEGER });
+  }, [messages, pending, scroll]);
+
+  console.log("[Messages] pending", pending);
 
   return (
     <ScrollArea
@@ -50,27 +69,30 @@ const Messages = ({
           )}
           <div
             className={cn("flex flex-col space-y-1.5", {
-              "flex items-start bg-secondary/70 rounded-xl px-4 py-3 max-w-[85%] md:max-w-[70%] break-words": message.role === "user" 
+              "flex items-start bg-secondary/70 rounded-xl px-4 py-3 max-w-[85%] md:max-w-[70%] break-words":
+                message.role === "user",
             })}
           >
             {message.role === "user" ? (
-              <ChatMarkdown>
-                {message.content}
-              </ChatMarkdown>
-            ) : message.parts?.map((part, i) => {
-              if (part.type === "reasoning") {
-                return (
-                  <ReasoningMessagePart
-                    key={i}
-                    part={part}
-                    isReasoning={
-                      pending && i === (message.parts?.length ?? 0) - 1
-                    }
-                  />
-                );
-              }
-              return <TextMessagePart key={i} part={part} />;
-            }) || (
+              <ChatMarkdown>{message.content}</ChatMarkdown>
+            ) : message.parts && message.parts.length > 0 ? (
+              message.parts.map((part, i) => {
+                // Simple check for reasoning parts by looking for the type property
+                if (part.type === "reasoning") {
+                  return (
+                    <ReasoningMessagePart
+                      key={i}
+                      part={part as any}
+                      isReasoning={
+                        pending && i === (message.parts?.length ?? 0) - 1
+                      }
+                    />
+                  );
+                }
+                // Default to text part
+                return <TextMessagePart key={i} part={part as any} />;
+              })
+            ) : (
               <TextMessagePart part={{ type: "text", text: message.content }} />
             )}
           </div>

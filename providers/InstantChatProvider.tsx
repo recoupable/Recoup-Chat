@@ -52,7 +52,6 @@ export const InstantChatProvider = ({
 
   const [localMessages, setLocalMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
-  const [pending, setPending] = useState(false);
   const [isUserReady, setIsUserReady] = useState(false);
 
   // Connect to AI SDK for chat
@@ -69,13 +68,6 @@ export const InstantChatProvider = ({
     body: {
       artistId: selectedArtist?.account_id,
       roomId: chatId,
-    },
-    onFinish: () => {
-      setPending(false);
-    },
-    onError: (error) => {
-      console.error("[InstantChat] API error:", error);
-      setPending(false);
     },
   });
 
@@ -193,9 +185,6 @@ export const InstantChatProvider = ({
         }
       } catch (error) {
         console.error("[InstantChat] Error creating room:", error);
-        // Reset pending state on error
-        setPending(false);
-
         // Add error message
         const errorMessage: ChatMessage = {
           id: uuidv4(),
@@ -221,9 +210,6 @@ export const InstantChatProvider = ({
         role: "user",
         content: input,
       };
-
-      // Set pending state
-      setPending(true);
 
       // Clear input
       setInput("");
@@ -261,7 +247,7 @@ export const InstantChatProvider = ({
   const value = {
     messages,
     input,
-    pending: pending || status === "streaming" || status === "submitted",
+    pending: status === "streaming" || status === "submitted",
     isUserReady,
     handleInputChange,
     handleSubmit,
