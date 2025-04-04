@@ -24,19 +24,19 @@ const Menu = ({ toggleMenuExpanded }: { toggleMenuExpanded: () => void }) => {
   };
 
   return (
-    <div className="w-full h-screen pt-10 pb-4 pl-6 pr-2 gap-1 hidden md:flex flex-col">
-      <button className="mt-2" onClick={() => push("/")} type="button">
+    <div className="w-full h-screen pt-10 pb-4 pl-6 pr-2 hidden md:flex flex-col">
+      <button className="mt-2 shrink-0" onClick={() => push("/")} type="button" aria-label="Home">
         <Logo />
       </button>
       <button
         type="button"
-        className="border-[#E6E6E6] border-[1px] rounded-md p-2 mt-4 cursor-pointer shadow-[1px_1px_1px_1px_#E6E6E6] bg-white"
+        className="border-[#E6E6E6] border-[1px] rounded-md p-2 mt-4 cursor-pointer shadow-[1px_1px_1px_1px_#E6E6E6] bg-white shrink-0"
         onClick={() => goToItem("new")}
       >
         {email ? "New Chat" : "Sign In"}
       </button>
       <button
-        className={`${itemClasses} ${isAutopilot && activeClasses} md:mt-2`}
+        className={`${itemClasses} ${isAutopilot && activeClasses} md:mt-2 shrink-0`}
         type="button"
         onClick={() => push("/autopilot")}
       >
@@ -46,7 +46,7 @@ const Menu = ({ toggleMenuExpanded }: { toggleMenuExpanded: () => void }) => {
       <button
         type="button"
         onClick={() => goToItem("agents")}
-        className={`${itemClasses} ${isAgents && activeClasses}`}
+        className={`${itemClasses} ${isAgents && activeClasses} shrink-0`}
       >
         <MenuItemIcon name="robot" />
         Agents
@@ -54,15 +54,19 @@ const Menu = ({ toggleMenuExpanded }: { toggleMenuExpanded: () => void }) => {
       <button
         type="button"
         onClick={() => goToItem("segments")}
-        className={`${itemClasses} ${isSegments && activeClasses}`}
+        className={`${itemClasses} ${isSegments && activeClasses} shrink-0`}
       >
         <MenuItemIcon name="segments" />
         Segments
       </button>
-      {email && <RecentChats toggleModal={toggleMenuExpanded} />}
-      <div className="grow flex flex-col gap-1 md:gap-3 justify-end">
-        {email && <UnlockPro />}
-        <UserInfo toggleMenuExpanded={toggleMenuExpanded} />
+      
+      <div className="flex flex-col flex-grow min-h-0">
+        {email && <RecentChats toggleModal={toggleMenuExpanded} />}
+        
+        <div className="shrink-0 mt-auto">
+          {email && <UnlockPro />}
+          <UserInfo toggleMenuExpanded={toggleMenuExpanded} />
+        </div>
       </div>
     </div>
   );

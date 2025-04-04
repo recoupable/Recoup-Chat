@@ -6,7 +6,9 @@ const UnlockPro = () => {
   const { subscriptionActive } = usePaymentProvider();
 
   return (
-    <div>{subscriptionActive ? <UnlimitedCredits /> : <UnlockProCard />}</div>
+    <div className="-mt-px">
+      {subscriptionActive ? <UnlimitedCredits /> : <UnlockProCard />}
+    </div>
   );
 };
 
