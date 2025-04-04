@@ -1,5 +1,5 @@
 import ChatInput from "@/components/Chat/ChatInput";
-import Messages from "@/components/Chat/Messages";
+import ProviderMessages from "@/components/Chat/ProviderMessages";
 import { ScrollTo } from "react-scroll-to";
 import FanSegmentResult from "./FanSegmentResult";
 import { useFunnelAnalysisProvider } from "@/providers/FunnelAnalysisProvider";
@@ -15,9 +15,9 @@ const AnalysisChat = () => {
           <ScrollTo>
             {({ scroll }) => (
               <>
-                <Messages scroll={scroll} className="!grow">
+                <ProviderMessages scroll={scroll} className="!grow">
                   <FanSegmentResult />
-                </Messages>
+                </ProviderMessages>
               </>
             )}
           </ScrollTo>
