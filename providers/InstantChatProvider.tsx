@@ -113,22 +113,17 @@ export const InstantChatProvider = ({
         return;
       }
 
-      if (!selectedArtist?.account_id) {
-        console.error("[InstantChat] Artist not selected");
-        return;
-      }
-
       try {
         console.log("Creating room with:", {
           userId: userData.id,
-          artistId: selectedArtist.account_id,
+          artistId: selectedArtist?.account_id,
         });
 
         // Create room silently in the background
         const room = await createRoom(
           userData.id,
           content,
-          selectedArtist.account_id
+          selectedArtist?.account_id
         );
 
         // Add to conversations
