@@ -2,10 +2,12 @@
 
 import { useRef, useEffect } from "react";
 import { useInstantChat } from "@/providers/InstantChatProvider";
+import { usePrivy } from "@privy-io/react-auth";
 
 const InstantChatInput = () => {
-  const { input, handleInputChange, handleSubmit, isUserReady, pending } =
-    useInstantChat();
+  const { input, handleInputChange, handleSubmit, pending } = useInstantChat();
+  const { ready, authenticated } = usePrivy();
+  const isUserReady = ready && authenticated;
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   // Handle enter key press
