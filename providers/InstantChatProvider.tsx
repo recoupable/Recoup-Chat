@@ -6,8 +6,9 @@ import React, {
   useState,
   useCallback,
   useEffect,
+  useRef,
 } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import { v4 as uuidv4 } from "uuid";
 import { useUserProvider } from "./UserProvder";
 import { useArtistProvider } from "./ArtistProvider";
@@ -35,6 +36,12 @@ export const InstantChatProvider = ({
   children: React.ReactNode;
 }) => {
   const router = useRouter();
+  const params = useParams();
+  const chatId = params?.chatId as string;
+
+  // Use a ref to persist messages across re-renders
+  const messagesRef = useRef<ChatMessage[]>([]);
+
   const { userData, login } = useUserProvider();
   const { selectedArtist } = useArtistProvider();
   const { addConversation } = useConversationsProvider();
@@ -43,6 +50,22 @@ export const InstantChatProvider = ({
   const [input, setInput] = useState("");
   const [pending, setPending] = useState(false);
   const [isUserReady, setIsUserReady] = useState(false);
+
+  // When messages change, update the ref
+  useEffect(() => {
+    if (messages.length > 0) {
+      messagesRef.current = messages;
+    }
+  }, [messages]);
+
+  // Load messages when chatId changes
+  useEffect(() => {
+    if (chatId) {
+      console.log("Loading messages for chatId:", chatId);
+      // Here you would load messages from your API
+      // For now we'll keep the current messages
+    }
+  }, [chatId]);
 
   // Function to trigger login
   const loginUser = useCallback(() => {
@@ -62,6 +85,7 @@ export const InstantChatProvider = ({
       artistReady,
       userData: userData?.id,
       artist: selectedArtist?.account_id,
+      currentChatId: chatId,
     });
 
     setIsUserReady(userReady && artistReady);
@@ -71,7 +95,7 @@ export const InstantChatProvider = ({
       console.log("Attempting to log in user");
       login();
     }
-  }, [userData, selectedArtist, login]);
+  }, [userData, selectedArtist, login, chatId]);
 
   const handleInputChange = useCallback(
     (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -82,6 +106,12 @@ export const InstantChatProvider = ({
 
   const createNewRoom = useCallback(
     async (content: string) => {
+      // If we already have a chatId, don't create a new room
+      if (chatId) {
+        console.log("Already in a chat room:", chatId);
+        return;
+      }
+
       // Safety check for userData and artist
       if (!userData?.id) {
         console.error("[InstantChat] User data not available");
@@ -110,8 +140,9 @@ export const InstantChatProvider = ({
         if (room) {
           addConversation(room);
 
-          // Silent route change - doesn't reload components
-          router.push(`/${room.id}`);
+          // Use router.replace() for seamless transition
+          // This will update the URL without causing a full page reload
+          router.replace(`/instant/${room.id}`);
         }
       } catch (error) {
         console.error("[InstantChat] Error creating room:", error);
@@ -127,7 +158,7 @@ export const InstantChatProvider = ({
         setMessages((prev) => [...prev.slice(0, -1), errorMessage]);
       }
     },
-    [userData, selectedArtist, addConversation, router]
+    [userData, selectedArtist, addConversation, router, chatId]
   );
 
   const handleSubmit = useCallback(
