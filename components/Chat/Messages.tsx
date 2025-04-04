@@ -21,7 +21,9 @@ interface MessagePartLike {
   type: string;
   text?: string;
   reasoning?: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   details?: Array<{ type: string; text?: string; [key: string]: any }>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any; // Allow other properties
 }
 
@@ -82,6 +84,7 @@ const Messages = ({
                   return (
                     <ReasoningMessagePart
                       key={i}
+                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
                       part={part as any}
                       isReasoning={
                         pending && i === (message.parts?.length ?? 0) - 1
@@ -90,6 +93,7 @@ const Messages = ({
                   );
                 }
                 // Default to text part
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 return <TextMessagePart key={i} part={part as any} />;
               })
             ) : (
