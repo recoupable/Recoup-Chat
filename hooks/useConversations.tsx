@@ -20,6 +20,17 @@ const useConversations = () => {
     setAllConversations([conversation, ...allConversations]);
   };
 
+  const updateConversationName = (roomId: string, newTopic: string) => {
+    setAllConversations(prevConversations => 
+      prevConversations.map(conv => {
+        if ('id' in conv && conv.id === roomId) {
+          return { ...conv, topic: newTopic };
+        }
+        return conv;
+      })
+    );
+  };
+
   useEffect(() => {
     if (userData) {
       fetchConversations();
@@ -43,6 +54,7 @@ const useConversations = () => {
 
   return {
     addConversation,
+    updateConversationName,
     fetchConversations,
     conversations,
     setQuotaExceeded,
