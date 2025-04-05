@@ -29,10 +29,8 @@ const RecentChats = ({ toggleModal }: { toggleModal: () => void }) => {
   }, []);
 
   const handleItemClick = useCallback((conversation: Conversation | ArtistAgent) => {
-    if (!isMobile) {
-      handleClick(conversation, toggleModal);
-    }
-  }, [handleClick, isMobile, toggleModal]);
+    handleClick(conversation, toggleModal);
+  }, [handleClick, toggleModal]);
 
   const handleTouchStart = useCallback((conversation: Conversation | ArtistAgent) => {
     longPressTimerRef.current = setTimeout(() => {
