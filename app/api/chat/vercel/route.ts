@@ -38,6 +38,8 @@ export async function POST(request: NextRequest) {
       }),
     ],
     messages,
+    maxSteps: 11,
+    toolCallStreaming: true,
   });
 
   return stream.toDataStreamResponse({
