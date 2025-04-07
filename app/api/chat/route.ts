@@ -16,15 +16,16 @@ export async function POST(req: Request) {
 
     const { lastMessage, validMessages } = validateMessages(messages);
 
-    if (room_id) {
-      await createMemories({
-        room_id,
-        content: lastMessage,
-      });
-    }
-
-    const tools = await getMcpTools(segment_id);
-    const system = await getSystemPrompt(room_id, artist_id);
+    const [tools, system] = await Promise.all([
+      getMcpTools(segment_id),
+      getSystemPrompt(room_id, artist_id),
+      room_id
+        ? createMemories({
+            room_id,
+            content: lastMessage,
+          })
+        : Promise.resolve(null),
+    ]);
 
     const streamConfig = createStreamConfig({
       system,
