@@ -1,7 +1,6 @@
 "use client";
 
 import { useChat } from "@ai-sdk/react";
-import { toast } from "sonner";
 
 interface InputProps {
   input: string;
@@ -26,7 +25,7 @@ export function Input({
       isReasoningEnabled,
     },
     onError: () => {
-      toast.error("An error occurred, please try again!");
+      console.error("An error occurred, please try again!");
     },
   });
 
@@ -48,7 +47,7 @@ export function Input({
           }
 
           if (isGeneratingResponse) {
-            toast.error("Please wait for the model to finish its response!");
+            console.error("Please wait for the model to finish its response!");
 
             return;
           }

@@ -1,7 +1,6 @@
 "use client";
 
 import cn from "classnames";
-import { toast } from "sonner";
 import { useChat } from "@ai-sdk/react";
 import { useState } from "react";
 import { Messages } from "./messages";
@@ -25,7 +24,7 @@ export function Chat() {
     id: "primary",
     api: `/api/chat/vercel`,
     onError: () => {
-      toast.error("An error occurred, please try again!");
+      console.error("An error occurred, please try again!");
     },
   });
   console.log("[SWEETMAN] messages", messages);
