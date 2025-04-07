@@ -1,6 +1,6 @@
 import { Message, streamText } from "ai";
 import createMemories from "@/lib/supabase/createMemories";
-import { getMcpTools } from "@/lib/tools/getMcpTools";
+// import { getMcpTools } from "@/lib/tools/getMcpTools";
 import getSystemPrompt from "@/lib/prompts/getSystemPrompt";
 import { validateMessages } from "@/lib/chat/validateMessages";
 import { createStreamConfig } from "@/lib/chat/createStreamConfig";
@@ -11,13 +11,13 @@ export async function POST(req: Request) {
     const body = await req.json();
     const messages = body.messages as Message[];
     const room_id = body.roomId;
-    const segment_id = body.segmentId;
+    // const segment_id = body.segmentId;
     const artist_id = body.artistId;
 
     const { lastMessage, validMessages } = validateMessages(messages);
 
-    const [tools, system] = await Promise.all([
-      getMcpTools(segment_id),
+    const [system] = await Promise.all([
+      // getMcpTools(segment_id),
       getSystemPrompt(room_id, artist_id),
       room_id
         ? createMemories({
@@ -30,7 +30,7 @@ export async function POST(req: Request) {
     const streamConfig = createStreamConfig({
       system,
       messages: validMessages,
-      tools,
+      // tools,
     });
 
     const result = streamText(streamConfig);
