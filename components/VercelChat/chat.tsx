@@ -27,8 +27,6 @@ export function Chat() {
       console.error("An error occurred, please try again!");
     },
   });
-  console.log("[SWEETMAN] messages", messages);
-  console.log("[SWEETMAN] status", status);
 
   const isGeneratingResponse = ["streaming", "submitted"].includes(status);
 
