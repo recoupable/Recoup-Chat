@@ -1,3 +1,4 @@
+import { SYSTEM_PROMPT } from "@/lib/consts";
 import { myProvider } from "@/lib/models";
 import { Message, smoothStream, streamText } from "ai";
 import { NextRequest } from "next/server";
@@ -11,10 +12,10 @@ export async function POST(request: NextRequest) {
     isReasoningEnabled: boolean;
   } = await request.json();
   const selectedModelId = "sonnet-3.7";
+  const system = SYSTEM_PROMPT;
 
   const stream = streamText({
-    system:
-      "you are a friendly assistant. do not use emojis in your responses.",
+    system,
     providerOptions:
       selectedModelId === "sonnet-3.7" && isReasoningEnabled === false
         ? {
