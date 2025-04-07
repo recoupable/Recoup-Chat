@@ -2,7 +2,7 @@
 
 import { useMessagesProvider } from "@/providers/MessagesProvider";
 import ChatInput from "./ChatInput";
-import Messages from "./Messages";
+import ProviderMessages from "./ProviderMessages";
 import { ScrollTo } from "react-scroll-to";
 import ChatSkeleton from "./ChatSkeleton";
 import { ChatReport } from "./ChatReport";
@@ -21,9 +21,9 @@ const Chat = ({ reportId }: ChatProps) => {
       <ScrollTo>
         {({ scroll }) => (
           <div className="flex-1 min-h-0">
-            <Messages scroll={scroll}>
+            <ProviderMessages scroll={scroll}>
               {reportId && <ChatReport reportId={reportId} />}
-            </Messages>
+            </ProviderMessages>
           </div>
         )}
       </ScrollTo>

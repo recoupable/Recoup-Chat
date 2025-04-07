@@ -5,7 +5,7 @@ import { ANTHROPIC_MODEL } from "@/lib/consts";
 interface StreamConfigParams {
   system: string;
   messages: Message[];
-  tools: ToolSet;
+  tools?: ToolSet;
 }
 
 export function createStreamConfig({
