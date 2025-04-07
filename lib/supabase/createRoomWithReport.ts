@@ -9,6 +9,7 @@ interface CreateRoomParams {
   topic: string;
   report_id?: string;
   artist_id?: string;
+  room_id?: string;
 }
 
 export const createRoomWithReport = async ({
@@ -16,6 +17,7 @@ export const createRoomWithReport = async ({
   topic,
   report_id,
   artist_id,
+  room_id,
 }: CreateRoomParams): Promise<{
   new_room: Room & { memories: []; rooms_reports: string[] };
   error: PostgrestError | null;
@@ -24,6 +26,7 @@ export const createRoomWithReport = async ({
     const { data: new_room, error } = await supabase
       .from("rooms")
       .insert({
+        id: room_id,
         account_id,
         topic,
         artist_id,

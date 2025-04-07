@@ -9,7 +9,7 @@ import React, {
   useRef,
   useMemo,
 } from "react";
-import { useRouter, useParams } from "next/navigation";
+import { useParams } from "next/navigation";
 import { v4 as uuidv4 } from "uuid";
 import { useUserProvider } from "./UserProvder";
 import { useArtistProvider } from "./ArtistProvider";
@@ -36,10 +36,12 @@ export const InstantChatProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const router = useRouter();
   const params = useParams();
   const chatId = params?.chatId as string;
   const csrfToken = useCsrfToken();
+
+  // State for room ID (used for new chats)
+  const [activeRoomId, setActiveRoomId] = useState<string>(chatId || "");
 
   // Use a ref to persist messages across re-renders
   const messagesRef = useRef<ChatMessage[]>([]);
@@ -56,27 +58,35 @@ export const InstantChatProvider = ({
     messages: aiMessages,
     append: appendAiChat,
     status,
+    reload,
   } = useChat({
-    id: chatId || "new-chat",
+    id: activeRoomId || chatId || "new-chat",
     api: "/api/chat",
     headers: {
       "X-CSRF-Token": csrfToken,
     },
     body: {
       artistId: selectedArtist?.account_id,
-      roomId: chatId,
+      roomId: activeRoomId || chatId,
     },
   });
+
+  // Reload chat when activeRoomId changes
+  useEffect(() => {
+    if (activeRoomId && !chatId) {
+      reload();
+    }
+  }, [activeRoomId, chatId, reload]);
 
   // Combine local and AI messages
   const messages = useMemo(() => {
     // If we have API responses, show those
-    if (aiMessages.length > 0 && chatId) {
+    if (aiMessages.length > 0 && (chatId || activeRoomId)) {
       return aiMessages as ChatMessage[];
     }
     // Otherwise, show local messages
     return localMessages;
-  }, [aiMessages, localMessages, chatId]);
+  }, [aiMessages, localMessages, chatId, activeRoomId]);
 
   // When messages change, update the ref
   useEffect(() => {
@@ -85,9 +95,10 @@ export const InstantChatProvider = ({
     }
   }, [messages]);
 
-  // Load messages when chatId changes
+  // If chatId from URL changes, update activeRoomId
   useEffect(() => {
     if (chatId) {
+      setActiveRoomId(chatId);
       console.log("Loading messages for chatId:", chatId);
     }
   }, [chatId]);
@@ -99,67 +110,8 @@ export const InstantChatProvider = ({
     []
   );
 
-  const createNewRoom = useCallback(
-    async (content: string, userMessage: ChatMessage) => {
-      // If we already have a chatId, don't create a new room
-      if (chatId) {
-        console.log("Already in a chat room:", chatId);
-        return;
-      }
-
-      // Safety check for userData and artist
-      if (!userData?.id) {
-        console.error("[InstantChat] User data not available");
-        return;
-      }
-
-      try {
-        console.log("Creating room with:", {
-          userId: userData.id,
-          artistId: selectedArtist?.account_id,
-        });
-
-        // Create room silently in the background
-        const room = await createRoom(
-          userData.id,
-          content,
-          selectedArtist?.account_id
-        );
-
-        // Add to conversations
-        if (room) {
-          addConversation(room);
-
-          // Use router.replace() for seamless transition
-          router.replace(`/instant/${room.id}`);
-
-          // Send message to AI after room creation
-          try {
-            appendAiChat({
-              id: userMessage.id,
-              content: userMessage.content,
-              role: "user",
-            } as Message);
-          } catch (error) {
-            console.error("[InstantChat] Error sending message to API:", error);
-          }
-        }
-      } catch (error) {
-        console.error("[InstantChat] Error creating room:", error);
-        // Add error message
-        const errorMessage: ChatMessage = {
-          id: uuidv4(),
-          role: "assistant",
-          content: "Sorry, I encountered an error. Please try again.",
-        };
-        setLocalMessages((prev) => [...prev.slice(0, -1), errorMessage]);
-      }
-    },
-    [userData, selectedArtist, addConversation, router, chatId, appendAiChat]
-  );
-
   const handleSubmit = useCallback(
-    (e: React.FormEvent<HTMLFormElement>) => {
+    async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
 
       // Safety checks
@@ -184,25 +136,63 @@ export const InstantChatProvider = ({
           role: "user",
         } as Message);
       } else {
-        // For new chat, show messages locally first
+        // For new chat, generate room ID upfront
+        const newRoomId = uuidv4();
+
         // Add user message immediately
         setLocalMessages((prev) => [...prev, userMessage]);
 
-        // Add assistant thinking message
-        const thinkingMessage: ChatMessage = {
-          id: uuidv4(),
-          role: "assistant",
-          content: "Hmm...",
-        };
+        try {
+          // First create the room with the new UUID
+          // Safety check for userData
+          if (!userData?.id) {
+            console.error("[InstantChat] User data not available");
+            throw new Error("User data not available");
+          }
 
-        // Add thinking message
-        setLocalMessages((prev) => [...prev, thinkingMessage]);
+          // Create room with the new UUID
+          const room = await createRoom(
+            userData.id,
+            input,
+            selectedArtist?.account_id,
+            newRoomId
+          );
 
-        // Create room and send to API
-        createNewRoom(input, userMessage);
+          // Add to conversations if successful
+          if (room) {
+            addConversation(room);
+            console.log("[InstantChat] Room created:", room.id);
+
+            // Update active room ID after successful room creation
+            // This will trigger the useEffect to reload the chat
+            setActiveRoomId(newRoomId);
+
+            // Then send the message to the API
+            appendAiChat({
+              id: userMessage.id,
+              content: userMessage.content,
+              role: "user",
+            } as Message);
+          }
+        } catch (error) {
+          console.error("[InstantChat] Error:", error);
+
+          // Add error message
+          const errorMessage: ChatMessage = {
+            id: uuidv4(),
+            role: "assistant",
+            content: "Sorry, I encountered an error. Please try again.",
+          };
+          setLocalMessages((prev) =>
+            // Replace thinking message with error or add to the end
+            prev.length > 1
+              ? [...prev.slice(0, -1), errorMessage]
+              : [...prev, errorMessage]
+          );
+        }
       }
     },
-    [input, createNewRoom, chatId, appendAiChat]
+    [input, userData, selectedArtist, addConversation, chatId, appendAiChat]
   );
 
   const value = {
