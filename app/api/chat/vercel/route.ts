@@ -1,19 +1,32 @@
 import { SYSTEM_PROMPT } from "@/lib/consts";
 import { myProvider } from "@/lib/models";
 import { getMcpTools } from "@/lib/tools/getMcpTools";
+import createMemories from "@/lib/supabase/createMemories";
 import { Message, smoothStream, streamText } from "ai";
 import { NextRequest } from "next/server";
+import { validateMessages } from "@/lib/chat/validateMessages";
 
 export async function POST(request: NextRequest) {
   const {
     messages,
     isReasoningEnabled,
+    roomId,
   }: {
     messages: Array<Message>;
     isReasoningEnabled: boolean;
+    roomId?: string;
   } = await request.json();
   const selectedModelId = "sonnet-3.7";
   const system = SYSTEM_PROMPT;
+
+  // Save the last message to Supabase if roomId is provided
+  if (roomId) {
+    const { lastMessage } = validateMessages(messages);
+    await createMemories({
+      room_id: roomId,
+      content: lastMessage,
+    });
+  }
 
   const tools = await getMcpTools();
 

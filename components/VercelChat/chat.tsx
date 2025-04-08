@@ -7,6 +7,9 @@ import { useArtistProvider } from "@/providers/ArtistProvider";
 import { useUserProvider } from "@/providers/UserProvder";
 import useRoomCreation from "@/hooks/useRoomCreation";
 import ChatInput from "./ChatInput";
+import createMemory from "@/lib/createMemory";
+import { useEffect, useRef } from "react";
+import { Message } from "ai";
 
 interface ChatProps {
   roomId?: string;
@@ -21,22 +24,49 @@ export function Chat({ roomId }: ChatProps) {
     artistId: selectedArtist?.account_id,
   });
 
+  // Use a ref to keep track of messages that need to be stored once a room is created
+  const pendingMessages = useRef<Message[]>([]);
+
   const { messages, append, status, stop } = useChat({
     id: "recoup-chat", // Constant ID prevents state reset when route changes
     api: `/api/chat/vercel`,
     body: {
       roomId: internalRoomId,
     },
+    onFinish: (message) => {
+      if (internalRoomId) {
+        // If room exists, immediately store the message
+        createMemory(message, internalRoomId);
+      } else {
+        // Otherwise, add to pending messages
+        pendingMessages.current.push(message as Message);
+      }
+    },
     onError: () => {
       console.error("An error occurred, please try again!");
     },
   });
 
+  // When roomId changes from undefined to a value, store all pending messages
+  useEffect(() => {
+    if (internalRoomId && pendingMessages.current.length > 0) {
+      const storePendingMessages = async () => {
+        for (const message of pendingMessages.current) {
+          await createMemory(message, internalRoomId);
+        }
+        pendingMessages.current = [];
+      };
+
+      storePendingMessages();
+    }
+  }, [internalRoomId]);
+
   const isGeneratingResponse = ["streaming", "submitted"].includes(status);
 
   const handleSendMessage = (content: string) => {
-    const message = {
-      role: "user" as const,
+    const message: Message = {
+      id: crypto.randomUUID(),
+      role: "user",
       content,
       createdAt: new Date(),
     };
@@ -44,7 +74,9 @@ export function Chat({ roomId }: ChatProps) {
     // Always append message first for immediate feedback
     append(message);
 
+    // Track user message for storage
     if (!internalRoomId) {
+      pendingMessages.current.push(message);
       createNewRoom(content);
     }
   };
