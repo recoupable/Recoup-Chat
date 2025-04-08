@@ -36,6 +36,7 @@ export function ChatInput({
         input={input}
         setInput={setInput}
         isGeneratingResponse={isGeneratingResponse}
+        onSend={handleSend}
       />
 
       <div className="absolute bottom-2.5 right-2.5">
