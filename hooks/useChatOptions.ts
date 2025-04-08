@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Conversation } from "@/types/Chat";
 import { useConversationsProvider } from "@/providers/ConversationsProvider";
 import useIsMobile from "@/hooks/useIsMobile";
@@ -12,12 +12,6 @@ export const useChatOptions = (conversation: Conversation, onClose?: () => void)
   const { fetchConversations, updateConversationName } = useConversationsProvider();
   const isMobile = useIsMobile();
   const router = useRouter();
-
-  useEffect(() => {
-    if (isMobile) {
-      setIsMenuOpen(true);
-    }
-  }, [isMobile]);
 
   const handleRename = async () => {
     try {

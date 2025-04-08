@@ -1,6 +1,5 @@
 import { Conversation } from "@/types/Chat";
 import { useChatOptions } from "@/hooks/useChatOptions";
-import ChatOptionsButton from "./ChatOptionsButton";
 import ChatOptions from "./ChatOptions";
 import RenameChatModal from "./RenameChatModal";
 import DeleteChatModal from "./DeleteChatModal";
@@ -12,8 +11,6 @@ interface ChatOptionsMenuProps {
 
 const ChatOptionsMenu = ({ conversation, onClose }: ChatOptionsMenuProps) => {
   const { 
-    isMenuOpen, 
-    setIsMenuOpen,
     isRenameModalOpen,
     isDeleteModalOpen,
     isMobile,
@@ -25,11 +22,6 @@ const ChatOptionsMenu = ({ conversation, onClose }: ChatOptionsMenuProps) => {
     setIsRenameModalOpen,
     setIsDeleteModalOpen
   } = useChatOptions(conversation, onClose);
-
-  const handleToggleMenu = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setIsMenuOpen(!isMenuOpen);
-  };
 
   const handleOpenRenameModal = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -43,19 +35,13 @@ const ChatOptionsMenu = ({ conversation, onClose }: ChatOptionsMenuProps) => {
 
   return (
     <>
-      <div className="relative">
-        {!isMobile && (
-          <ChatOptionsButton toggleMenu={handleToggleMenu} />
-        )}
-
-        <ChatOptions 
-          isMenuOpen={isMenuOpen}
-          isMobile={isMobile}
-          closeMenus={closeMenus}
-          openRenameModal={handleOpenRenameModal}
-          openDeleteModal={handleOpenDeleteModal}
-        />
-      </div>
+      <ChatOptions 
+        isMenuOpen={true}
+        isMobile={isMobile}
+        closeMenus={closeMenus}
+        openRenameModal={handleOpenRenameModal}
+        openDeleteModal={handleOpenDeleteModal}
+      />
 
       <RenameChatModal 
         isOpen={isRenameModalOpen}
