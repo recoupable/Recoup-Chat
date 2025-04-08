@@ -7,7 +7,6 @@ interface InputProps {
   setInput: (value: string) => void;
   selectedModelId?: string;
   isGeneratingResponse: boolean;
-  isReasoningEnabled: boolean;
 }
 
 export function Input({
@@ -15,14 +14,13 @@ export function Input({
   setInput,
   selectedModelId = "sonnet-3.7",
   isGeneratingResponse,
-  isReasoningEnabled,
 }: InputProps) {
   const { append } = useChat({
     id: "primary",
     api: "/api/chat/vercel",
     body: {
       selectedModelId,
-      isReasoningEnabled,
+      isReasoningEnabled: true,
     },
     onError: () => {
       console.error("An error occurred, please try again!");

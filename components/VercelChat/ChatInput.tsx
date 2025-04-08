@@ -3,7 +3,7 @@
 import { useState } from "react";
 import cn from "classnames";
 import { Input } from "./input";
-import { ArrowUpIcon, CheckedSquare, StopIcon, UncheckedSquare } from "./icons";
+import { ArrowUpIcon, StopIcon } from "./icons";
 
 interface ChatInputProps {
   onSendMessage: (message: string) => void;
@@ -17,7 +17,6 @@ export function ChatInput({
   onStop,
 }: ChatInputProps) {
   const [input, setInput] = useState<string>("");
-  const [isReasoningEnabled, setIsReasoningEnabled] = useState<boolean>(true);
 
   const handleSend = () => {
     if (input === "") return;
@@ -37,25 +36,7 @@ export function ChatInput({
         input={input}
         setInput={setInput}
         isGeneratingResponse={isGeneratingResponse}
-        isReasoningEnabled={isReasoningEnabled}
       />
-
-      <div className="absolute bottom-2.5 left-2.5">
-        <button
-          className={cn(
-            "relative w-fit text-sm p-1.5 rounded-lg flex flex-row items-center gap-2 dark:hover:bg-zinc-600 hover:bg-zinc-200 cursor-pointer",
-            {
-              "dark:bg-zinc-600 bg-zinc-200": isReasoningEnabled,
-            }
-          )}
-          onClick={() => {
-            setIsReasoningEnabled(!isReasoningEnabled);
-          }}
-        >
-          {isReasoningEnabled ? <CheckedSquare /> : <UncheckedSquare />}
-          <div>Reasoning</div>
-        </button>
-      </div>
 
       <div className="absolute bottom-2.5 right-2.5">
         <button

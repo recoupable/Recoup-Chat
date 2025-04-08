@@ -3,7 +3,6 @@
 import cn from "classnames";
 import { useChat } from "@ai-sdk/react";
 import { Messages } from "./messages";
-import { Footnote } from "./footnote";
 import { useArtistProvider } from "@/providers/ArtistProvider";
 import { useUserProvider } from "@/providers/UserProvder";
 import useRoomCreation from "@/hooks/useRoomCreation";
@@ -79,7 +78,6 @@ export function Chat({ roomId }: ChatProps) {
           isGeneratingResponse={isGeneratingResponse}
           onStop={stop}
         />
-        <Footnote />
       </div>
     </div>
   );
