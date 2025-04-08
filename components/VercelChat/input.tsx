@@ -5,7 +5,7 @@ import { useChat } from "@ai-sdk/react";
 interface InputProps {
   input: string;
   setInput: (value: string) => void;
-  selectedModelId: string;
+  selectedModelId?: string;
   isGeneratingResponse: boolean;
   isReasoningEnabled: boolean;
 }
@@ -13,7 +13,7 @@ interface InputProps {
 export function Input({
   input,
   setInput,
-  selectedModelId,
+  selectedModelId = "sonnet-3.7",
   isGeneratingResponse,
   isReasoningEnabled,
 }: InputProps) {
