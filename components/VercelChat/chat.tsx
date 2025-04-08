@@ -21,7 +21,7 @@ export function Chat({ roomId }: ChatProps) {
     stop,
   } = useVercelChat({ roomId });
 
-  if (isLoading) {
+  if (isLoading || (!!roomId && messages.length === 0)) {
     return <ChatSkeleton />;
   }
 
@@ -45,7 +45,7 @@ export function Chat({ roomId }: ChatProps) {
         }
       )}
     >
-      {messages.length > 0 ? (
+      {messages.length > 0 || !!roomId ? (
         <Messages messages={messages} status={status} />
       ) : (
         <div className="flex flex-col gap-0.5 sm:text-2xl text-xl w-full">
