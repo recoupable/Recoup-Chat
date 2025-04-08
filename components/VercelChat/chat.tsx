@@ -8,10 +8,10 @@ import { useUserProvider } from "@/providers/UserProvder";
 import useRoomCreation from "@/hooks/useRoomCreation";
 import ChatInput from "./ChatInput";
 import createMemory from "@/lib/createMemory";
-import { useEffect, useRef, useState } from "react";
 import { Message } from "ai";
-import getClientMessages from "@/lib/supabase/getClientMessages";
 import ChatSkeleton from "../Chat/ChatSkeleton";
+import { usePendingMessages } from "@/hooks/usePendingMessages";
+import { useMessageLoader } from "@/hooks/useMessageLoader";
 
 interface ChatProps {
   roomId?: string;
@@ -25,10 +25,7 @@ export function Chat({ roomId }: ChatProps) {
     userId: userData?.id,
     artistId: selectedArtist?.account_id,
   });
-  const [isLoading, setIsLoading] = useState(!!roomId);
-
-  // Use a ref to keep track of messages that need to be stored once a room is created
-  const pendingMessages = useRef<Message[]>([]);
+  const { trackMessage } = usePendingMessages(internalRoomId);
 
   const { messages, append, status, stop, setMessages } = useChat({
     id: "recoup-chat", // Constant ID prevents state reset when route changes
@@ -42,7 +39,7 @@ export function Chat({ roomId }: ChatProps) {
         createMemory(message, internalRoomId);
       } else {
         // Otherwise, add to pending messages
-        pendingMessages.current.push(message as Message);
+        trackMessage(message as Message);
       }
     },
     onError: () => {
@@ -50,38 +47,12 @@ export function Chat({ roomId }: ChatProps) {
     },
   });
 
-  // Load existing messages when component mounts or roomId changes
-  useEffect(() => {
-    if (!internalRoomId || !userData?.id) return;
-
-    const loadMessages = async () => {
-      setIsLoading(true);
-      try {
-        const initialMessages = await getClientMessages(internalRoomId);
-        setMessages(initialMessages as Message[]);
-      } catch (error) {
-        console.error("Error loading messages:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    loadMessages();
-  }, [internalRoomId, userData?.id, setMessages]);
-
-  // When roomId changes from undefined to a value, store all pending messages
-  useEffect(() => {
-    if (internalRoomId && pendingMessages.current.length > 0) {
-      const storePendingMessages = async () => {
-        for (const message of pendingMessages.current) {
-          await createMemory(message, internalRoomId);
-        }
-        pendingMessages.current = [];
-      };
-
-      storePendingMessages();
-    }
-  }, [internalRoomId]);
+  // Load existing messages using the custom hook
+  const { isLoading, hasError } = useMessageLoader(
+    internalRoomId,
+    userData?.id,
+    setMessages
+  );
 
   const isGeneratingResponse = ["streaming", "submitted"].includes(status);
 
@@ -96,15 +67,24 @@ export function Chat({ roomId }: ChatProps) {
     // Always append message first for immediate feedback
     append(message);
 
-    // Only track/store messages if no room exists yet
     if (!internalRoomId) {
-      pendingMessages.current.push(message);
+      trackMessage(message);
       createNewRoom(content);
     }
   };
 
   if (isLoading) {
     return <ChatSkeleton />;
+  }
+
+  if (hasError) {
+    return (
+      <div className="flex items-center justify-center h-dvh">
+        <div className="text-red-500">
+          Failed to load messages. Please try again later.
+        </div>
+      </div>
+    );
   }
 
   return (

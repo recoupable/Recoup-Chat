@@ -19,7 +19,6 @@ export async function POST(request: NextRequest) {
   const selectedModelId = "sonnet-3.7";
   const system = SYSTEM_PROMPT;
 
-  // Save the last message to Supabase if roomId is provided
   if (roomId) {
     const { lastMessage } = validateMessages(messages);
     await createMemories({
