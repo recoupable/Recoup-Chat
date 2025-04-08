@@ -8,8 +8,10 @@ import { useUserProvider } from "@/providers/UserProvder";
 import useRoomCreation from "@/hooks/useRoomCreation";
 import ChatInput from "./ChatInput";
 import createMemory from "@/lib/createMemory";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Message } from "ai";
+import getClientMessages from "@/lib/supabase/getClientMessages";
+import ChatSkeleton from "../Chat/ChatSkeleton";
 
 interface ChatProps {
   roomId?: string;
@@ -23,11 +25,12 @@ export function Chat({ roomId }: ChatProps) {
     userId: userData?.id,
     artistId: selectedArtist?.account_id,
   });
+  const [isLoading, setIsLoading] = useState(!!roomId);
 
   // Use a ref to keep track of messages that need to be stored once a room is created
   const pendingMessages = useRef<Message[]>([]);
 
-  const { messages, append, status, stop } = useChat({
+  const { messages, append, status, stop, setMessages } = useChat({
     id: "recoup-chat", // Constant ID prevents state reset when route changes
     api: `/api/chat/vercel`,
     body: {
@@ -46,6 +49,25 @@ export function Chat({ roomId }: ChatProps) {
       console.error("An error occurred, please try again!");
     },
   });
+
+  // Load existing messages when component mounts or roomId changes
+  useEffect(() => {
+    if (!internalRoomId || !userData?.id) return;
+
+    const loadMessages = async () => {
+      setIsLoading(true);
+      try {
+        const initialMessages = await getClientMessages(internalRoomId);
+        setMessages(initialMessages as Message[]);
+      } catch (error) {
+        console.error("Error loading messages:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadMessages();
+  }, [internalRoomId, userData?.id, setMessages]);
 
   // When roomId changes from undefined to a value, store all pending messages
   useEffect(() => {
@@ -74,12 +96,16 @@ export function Chat({ roomId }: ChatProps) {
     // Always append message first for immediate feedback
     append(message);
 
-    // Track user message for storage
+    // Only track/store messages if no room exists yet
     if (!internalRoomId) {
       pendingMessages.current.push(message);
       createNewRoom(content);
     }
   };
+
+  if (isLoading) {
+    return <ChatSkeleton />;
+  }
 
   return (
     <div
