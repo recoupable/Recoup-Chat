@@ -23,17 +23,12 @@ export function useVercelChat({ roomId }: UseVercelChatProps) {
   const userId = userData?.id;
   const artistId = selectedArtist?.account_id;
 
-  // Room creation functionality
   const { roomId: internalRoomId, createNewRoom } = useRoomCreation({
     initialRoomId: roomId,
     userId,
     artistId,
   });
-
-  // Message tracking for pending messages
   const { trackMessage } = usePendingMessages(internalRoomId);
-
-  // Chat functionality from AI SDK
   const { messages, append, status, stop, setMessages } = useChat({
     id: "recoup-chat", // Constant ID prevents state reset when route changes
     api: `/api/chat/vercel`,
@@ -53,18 +48,14 @@ export function useVercelChat({ roomId }: UseVercelChatProps) {
       console.error("An error occurred, please try again!");
     },
   });
-
-  // Message loading functionality
   const { isLoading, hasError } = useMessageLoader(
     internalRoomId,
     userId,
     setMessages
   );
 
-  // Derived state
   const isGeneratingResponse = ["streaming", "submitted"].includes(status);
 
-  // Handler for sending messages
   const handleSendMessage = (content: string) => {
     const message: Message = {
       id: crypto.randomUUID(),
