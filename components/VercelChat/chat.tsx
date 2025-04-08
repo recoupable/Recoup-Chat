@@ -2,7 +2,7 @@
 
 import cn from "classnames";
 import { useChat } from "@ai-sdk/react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Messages } from "./messages";
 import { modelID, models } from "@/lib/models";
 import { Footnote } from "./footnote";
@@ -14,11 +14,9 @@ import {
   UncheckedSquare,
 } from "./icons";
 import { Input } from "./input";
-import { useRouter } from "next/navigation";
 import { useArtistProvider } from "@/providers/ArtistProvider";
 import { useUserProvider } from "@/providers/UserProvder";
-import { useConversationsProvider } from "@/providers/ConversationsProvider";
-import createRoom from "@/lib/createRoom";
+import useRoomCreation from "@/hooks/useRoomCreation";
 
 interface ChatProps {
   roomId?: string;
@@ -28,14 +26,15 @@ export function Chat({ roomId }: ChatProps) {
   const [input, setInput] = useState<string>("");
   const [selectedModelId, setSelectedModelId] = useState<modelID>("sonnet-3.7");
   const [isReasoningEnabled, setIsReasoningEnabled] = useState<boolean>(true);
-  const router = useRouter();
   const { selectedArtist } = useArtistProvider();
   const { userData } = useUserProvider();
-  const { addConversation } = useConversationsProvider();
-  const [isCreatingRoom, setIsCreatingRoom] = useState(false);
-  const [internalRoomId, setInternalRoomId] = useState<string | undefined>(
-    roomId
-  );
+
+  // Use our new room creation hook
+  const { roomId: internalRoomId, createNewRoom } = useRoomCreation({
+    initialRoomId: roomId,
+    userId: userData?.id,
+    artistId: selectedArtist?.account_id,
+  });
 
   // Use a constant chat ID to maintain state across route changes
   const { messages, append, status, stop } = useChat({
@@ -48,45 +47,6 @@ export function Chat({ roomId }: ChatProps) {
       console.error("An error occurred, please try again!");
     },
   });
-
-  // Update internal room ID if the prop changes
-  useEffect(() => {
-    if (roomId && roomId !== internalRoomId) {
-      setInternalRoomId(roomId);
-    }
-  }, [roomId, internalRoomId]);
-
-  const createNewRoom = async (content: string) => {
-    if (
-      internalRoomId ||
-      isCreatingRoom ||
-      !userData?.id ||
-      !selectedArtist?.account_id
-    )
-      return;
-
-    try {
-      setIsCreatingRoom(true);
-      const room = await createRoom(
-        userData.id,
-        content,
-        selectedArtist.account_id
-      );
-
-      if (room) {
-        // Update internal state first
-        setInternalRoomId(room.id);
-        addConversation(room);
-
-        // Silently update the URL without affecting the UI or causing remount
-        router.replace(`/instant/${room.id}`, { scroll: false });
-      }
-    } catch (error) {
-      console.error("Error creating room:", error);
-    } finally {
-      setIsCreatingRoom(false);
-    }
-  };
 
   const isGeneratingResponse = ["streaming", "submitted"].includes(status);
 
