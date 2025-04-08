@@ -2,8 +2,6 @@
 
 import cn from "classnames";
 import { Messages } from "./messages";
-import { useArtistProvider } from "@/providers/ArtistProvider";
-import { useUserProvider } from "@/providers/UserProvder";
 import ChatInput from "./ChatInput";
 import ChatSkeleton from "../Chat/ChatSkeleton";
 import { useVercelChat } from "@/hooks/useVercelChat";
@@ -13,8 +11,6 @@ interface ChatProps {
 }
 
 export function Chat({ roomId }: ChatProps) {
-  const { selectedArtist } = useArtistProvider();
-  const { userData } = useUserProvider();
   const {
     messages,
     status,
@@ -23,11 +19,7 @@ export function Chat({ roomId }: ChatProps) {
     isGeneratingResponse,
     handleSendMessage,
     stop,
-  } = useVercelChat({
-    roomId,
-    userId: userData?.id,
-    artistId: selectedArtist?.account_id,
-  });
+  } = useVercelChat({ roomId });
 
   if (isLoading) {
     return <ChatSkeleton />;

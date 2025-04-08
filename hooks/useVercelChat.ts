@@ -4,22 +4,25 @@ import createMemory from "@/lib/createMemory";
 import { usePendingMessages } from "./usePendingMessages";
 import { useMessageLoader } from "./useMessageLoader";
 import useRoomCreation from "./useRoomCreation";
+import { useUserProvider } from "@/providers/UserProvder";
+import { useArtistProvider } from "@/providers/ArtistProvider";
 
 interface UseVercelChatProps {
   roomId?: string;
-  userId?: string;
-  artistId?: string;
 }
 
 /**
  * A hook that provides all chat functionality for the Vercel Chat component
  * Combines useChat, useRoomCreation, usePendingMessages, and useMessageLoader
+ * Accesses user and artist data directly from providers
  */
-export function useVercelChat({
-  roomId,
-  userId,
-  artistId,
-}: UseVercelChatProps) {
+export function useVercelChat({ roomId }: UseVercelChatProps) {
+  const { userData } = useUserProvider();
+  const { selectedArtist } = useArtistProvider();
+
+  const userId = userData?.id;
+  const artistId = selectedArtist?.account_id;
+
   // Room creation functionality
   const { roomId: internalRoomId, createNewRoom } = useRoomCreation({
     initialRoomId: roomId,
