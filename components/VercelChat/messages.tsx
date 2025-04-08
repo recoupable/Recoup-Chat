@@ -24,7 +24,7 @@ export function ReasoningMessagePart({
   part,
   isReasoning,
 }: ReasoningMessagePartProps) {
-  const [isExpanded, setIsExpanded] = useState(true);
+  const [isExpanded, setIsExpanded] = useState(false);
 
   const variants = {
     collapsed: {
@@ -42,7 +42,9 @@ export function ReasoningMessagePart({
   };
 
   useEffect(() => {
-    if (!isReasoning) {
+    if (isReasoning) {
+      setIsExpanded(true);
+    } else {
       setIsExpanded(false);
     }
   }, [isReasoning]);

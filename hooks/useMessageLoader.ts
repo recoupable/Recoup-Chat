@@ -4,7 +4,7 @@ import getClientMessages from "@/lib/supabase/getClientMessages";
 
 /**
  * Hook for loading existing messages from a room
- * @param roomId - The room ID to load messages from
+ * @param roomId - The room ID to load messages from (undefined to skip loading)
  * @param userId - The current user ID (messages won't load if user is not authenticated)
  * @param setMessages - Callback function to set the loaded messages
  * @returns Loading state and error information
