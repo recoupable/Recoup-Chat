@@ -2,10 +2,11 @@ import useClickChat from "@/hooks/useClickChat";
 import { useConversationsProvider } from "@/providers/ConversationsProvider";
 import RecentChatSkeleton from "./RecentChatSkeleton";
 import ChatOptionsMenu from "../Chat/ChatOptionsMenu";
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback } from "react";
 import { Conversation } from "@/types/Chat";
 import useIsMobile from "@/hooks/useIsMobile";
 import { ArtistAgent } from "@/lib/supabase/getArtistAgents";
+import { MoreVertical } from "lucide-react";
 
 const RecentChats = ({ toggleModal }: { toggleModal: () => void }) => {
   const { conversations, isLoading } = useConversationsProvider();
@@ -13,7 +14,6 @@ const RecentChats = ({ toggleModal }: { toggleModal: () => void }) => {
   const [hoveredChatId, setHoveredChatId] = useState<string | null>(null);
   const [menuOpenChatId, setMenuOpenChatId] = useState<string | null>(null);
   const isMobile = useIsMobile();
-  const longPressTimerRef = useRef<NodeJS.Timeout | null>(null);
   
   // Helper function to check if item is a Conversation
   const isConversation = (item: Conversation | ArtistAgent): item is Conversation => {
@@ -32,18 +32,11 @@ const RecentChats = ({ toggleModal }: { toggleModal: () => void }) => {
     handleClick(conversation, toggleModal);
   }, [handleClick, toggleModal]);
 
-  const handleTouchStart = useCallback((conversation: Conversation | ArtistAgent) => {
-    longPressTimerRef.current = setTimeout(() => {
-      setMenuOpenChatId(getItemId(conversation));
-    }, 500);
-  }, [getItemId]);
-
-  const handleTouchEnd = useCallback(() => {
-    if (longPressTimerRef.current) {
-      clearTimeout(longPressTimerRef.current);
-      longPressTimerRef.current = null;
-    }
-  }, []);
+  const handleMenuClick = useCallback((e: React.MouseEvent | React.TouchEvent, itemId: string) => {
+    e.stopPropagation();
+    e.preventDefault(); // Prevent any default behavior
+    setMenuOpenChatId(itemId === menuOpenChatId ? null : itemId);
+  }, [menuOpenChatId]);
 
   return (
     <div className="w-full flex-grow min-h-0 flex flex-col">
@@ -51,7 +44,7 @@ const RecentChats = ({ toggleModal }: { toggleModal: () => void }) => {
       <p className="text-sm mb-1 md:mb-2 font-inter text-grey-dark px-2 shrink-0">
         Recent Chats
       </p>
-      <div className="overflow-y-auto space-y-1 md:space-y-1.5 flex-grow">
+      <div className="overflow-y-auto space-y-1 md:space-y-1.5 flex-grow overflow-x-visible">
         {isLoading ? (
           <RecentChatSkeleton />
         ) : (
@@ -60,16 +53,15 @@ const RecentChats = ({ toggleModal }: { toggleModal: () => void }) => {
               const itemId = getItemId(conversation);
               return (
                 <div
-                  className="flex items-center w-full relative"
+                  className="flex items-center justify-between w-full relative overflow-visible"
                   key={index}
                   onMouseEnter={() => !isMobile && setHoveredChatId(itemId)}
                   onMouseLeave={() => !isMobile && setHoveredChatId(null)}
-                  onTouchStart={() => isMobile && handleTouchStart(conversation)}
-                  onTouchEnd={() => isMobile && handleTouchEnd()}
-                  onClick={() => handleItemClick(conversation)}
                 >
+                  {/* Chat title (clickable) */}
                   <div 
-                    className="flex gap-2 items-center w-full py-1.5 px-2 rounded-md hover:bg-gray-100 transition-colors duration-150 cursor-pointer"
+                    className="flex gap-2 items-center flex-grow py-1.5 px-2 rounded-md hover:bg-gray-100 transition-colors duration-150 cursor-pointer"
+                    onClick={() => handleItemClick(conversation)}
                   >
                     <p className="text-sm truncate max-w-[200px] text-left">
                       {isConversation(conversation) 
@@ -78,14 +70,32 @@ const RecentChats = ({ toggleModal }: { toggleModal: () => void }) => {
                       }
                     </p>
                   </div>
-                  {((hoveredChatId === itemId && !isMobile) || 
-                    (menuOpenChatId === itemId && isMobile)) && 
-                    isConversation(conversation) && (
-                    <div className="absolute right-2">
-                      <ChatOptionsMenu 
-                        conversation={conversation} 
-                        onClose={() => setMenuOpenChatId(null)}
-                      />
+                  
+                  {/* Show menu button for both mobile and desktop */}
+                  {isConversation(conversation) && (
+                    <div 
+                      className="flex-shrink-0 mr-1"
+                      onClick={(e) => handleMenuClick(e, itemId)}
+                      onTouchEnd={(e) => isMobile && handleMenuClick(e, itemId)}
+                    >
+                      {/* Menu button - only visible on hover for desktop, always visible on mobile */}
+                      {(isMobile || hoveredChatId === itemId || menuOpenChatId === itemId) && (
+                        <button
+                          type="button"
+                          className="p-1.5 rounded-md hover:opacity-80 transition-opacity duration-150"
+                          aria-label="Chat options"
+                        >
+                          <MoreVertical className="h-5 w-5 text-gray-600" />
+                        </button>
+                      )}
+                      
+                      {/* Show options menu when the button is clicked */}
+                      {menuOpenChatId === itemId && (
+                        <ChatOptionsMenu 
+                          conversation={conversation} 
+                          onClose={() => setMenuOpenChatId(null)}
+                        />
+                      )}
                     </div>
                   )}
                 </div>
