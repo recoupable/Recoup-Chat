@@ -1,17 +1,12 @@
 "use client";
 
 import cn from "classnames";
-import { useChat } from "@ai-sdk/react";
 import { Messages } from "./messages";
 import { useArtistProvider } from "@/providers/ArtistProvider";
 import { useUserProvider } from "@/providers/UserProvder";
-import useRoomCreation from "@/hooks/useRoomCreation";
 import ChatInput from "./ChatInput";
-import createMemory from "@/lib/createMemory";
-import { Message } from "ai";
 import ChatSkeleton from "../Chat/ChatSkeleton";
-import { usePendingMessages } from "@/hooks/usePendingMessages";
-import { useMessageLoader } from "@/hooks/useMessageLoader";
+import { useVercelChat } from "@/hooks/useVercelChat";
 
 interface ChatProps {
   roomId?: string;
@@ -20,56 +15,19 @@ interface ChatProps {
 export function Chat({ roomId }: ChatProps) {
   const { selectedArtist } = useArtistProvider();
   const { userData } = useUserProvider();
-  const { roomId: internalRoomId, createNewRoom } = useRoomCreation({
-    initialRoomId: roomId,
+  const {
+    messages,
+    status,
+    isLoading,
+    hasError,
+    isGeneratingResponse,
+    handleSendMessage,
+    stop,
+  } = useVercelChat({
+    roomId,
     userId: userData?.id,
     artistId: selectedArtist?.account_id,
   });
-  const { trackMessage } = usePendingMessages(internalRoomId);
-
-  const { messages, append, status, stop, setMessages } = useChat({
-    id: "recoup-chat", // Constant ID prevents state reset when route changes
-    api: `/api/chat/vercel`,
-    body: {
-      roomId: internalRoomId,
-    },
-    onFinish: (message) => {
-      if (internalRoomId) {
-        // If room exists, immediately store the message
-        createMemory(message, internalRoomId);
-      } else {
-        // Otherwise, add to pending messages
-        trackMessage(message as Message);
-      }
-    },
-    onError: () => {
-      console.error("An error occurred, please try again!");
-    },
-  });
-  const { isLoading, hasError } = useMessageLoader(
-    internalRoomId,
-    userData?.id,
-    setMessages
-  );
-
-  const isGeneratingResponse = ["streaming", "submitted"].includes(status);
-
-  const handleSendMessage = (content: string) => {
-    const message: Message = {
-      id: crypto.randomUUID(),
-      role: "user",
-      content,
-      createdAt: new Date(),
-    };
-
-    // Always append message first for immediate feedback
-    append(message);
-
-    if (!internalRoomId) {
-      trackMessage(message);
-      createNewRoom(content);
-    }
-  };
 
   if (isLoading) {
     return <ChatSkeleton />;
