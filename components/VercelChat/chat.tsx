@@ -46,8 +46,6 @@ export function Chat({ roomId }: ChatProps) {
       console.error("An error occurred, please try again!");
     },
   });
-
-  // Load existing messages using the custom hook
   const { isLoading, hasError } = useMessageLoader(
     internalRoomId,
     userData?.id,
