@@ -31,7 +31,7 @@ export function Chat({ roomId, reportId }: ChatProps) {
     deps: [messages.length, roomId],
   });
 
-  if (isLoading || (!!roomId && messages.length === 0)) {
+  if (isLoading || (!!roomId && messages.length === 0 && !reportId)) {
     return <ChatSkeleton />;
   }
 
