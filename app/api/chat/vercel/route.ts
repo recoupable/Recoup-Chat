@@ -32,14 +32,6 @@ export async function POST(request: NextRequest) {
   const stream = streamText({
     system,
     tools,
-    providerOptions: {
-      anthropic: {
-        thinking: {
-          type: "disabled",
-          budgetTokens: 12000,
-        },
-      },
-    },
     model: myProvider.languageModel(selectedModelId),
     experimental_transform: [
       smoothStream({
