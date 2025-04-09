@@ -34,7 +34,7 @@ export function useRoomCreation({
         addConversation(room);
 
         // Silently update the URL without affecting the UI or causing remount
-        router.replace(`/instant/${room.id}`, { scroll: false });
+        router.replace(`/${room.id}`, { scroll: false });
         return room.id;
       }
     } catch (error) {
