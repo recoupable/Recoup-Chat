@@ -2,51 +2,35 @@ import { Conversation } from "@/types/Chat";
 import useIsMobile from "@/hooks/useIsMobile";
 import ChatOptions from "./ChatOptions";
 import { useCallback } from "react";
+import { useChatOptions } from "@/providers/ChatOptionsProvider";
 
 interface ChatOptionsMenuProps {
   conversation: Conversation;
   onClose?: () => void;
-  onRename?: () => void;
-  onDelete?: () => void;
 }
 
 const ChatOptionsMenu = ({ 
   conversation, 
-  onClose,
-  onRename,
-  onDelete
+  onClose
 }: ChatOptionsMenuProps) => {
   const isMobile = useIsMobile();
+  const { openRenameModal, openDeleteModal } = useChatOptions();
   
-  // Use callbacks to ensure stable references
   const handleRename = useCallback((e: React.MouseEvent | React.TouchEvent) => {
     e.stopPropagation();
-    if (onRename) {
-      onRename();
-    } else if (onClose) {
-      onClose();
-    }
-  }, [onRename, onClose]);
+    openRenameModal(conversation);
+    if (onClose) onClose();
+  }, [conversation, openRenameModal, onClose]);
 
   const handleDelete = useCallback((e: React.MouseEvent | React.TouchEvent) => {
     e.stopPropagation();
-    if (onDelete) {
-      onDelete();
-    } else if (onClose) {
-      onClose();
-    }
-  }, [onDelete, onClose]);
+    openDeleteModal(conversation);
+    if (onClose) onClose();
+  }, [conversation, openDeleteModal, onClose]);
 
   const closeMenus = useCallback(() => {
     if (onClose) onClose();
   }, [onClose]);
-
-  // Add console log to verify props after component mounts
-  console.log("ChatOptionsMenu props:", {
-    hasConversation: !!conversation,
-    hasOnRename: !!onRename,
-    hasOnDelete: !!onDelete
-  });
 
   return (
     <ChatOptions 

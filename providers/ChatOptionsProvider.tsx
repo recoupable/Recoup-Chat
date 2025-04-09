@@ -40,25 +40,33 @@ export const ChatOptionsProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const openRenameModal = (conversation: Conversation) => {
-    console.log('[ChatOptionsProvider] Opening rename modal for conversation:', conversation.id);
     setCurrentConversation(conversation);
     setNewTopic(conversation.topic || '');
     setIsRenameModalOpen(true);
   };
 
   const openDeleteModal = (conversation: Conversation) => {
-    console.log('[ChatOptionsProvider] Opening delete modal for conversation:', conversation.id);
     setCurrentConversation(conversation);
     setIsDeleteModalOpen(true);
   };
 
   const handleRename = async () => {
-    console.log('[ChatOptionsProvider] Renaming conversation');
     if (!currentConversation) return;
     
     try {
-      await fetch(`/api/room/update?room_id=${currentConversation.id}&topic=${encodeURIComponent(newTopic)}`);
-      updateConversationName(currentConversation.id, newTopic);
+      // Sanitize the topic to prevent URL issues
+      const sanitizedTopic = newTopic.trim();
+      
+      // Check if topic is empty
+      if (!sanitizedTopic) {
+        return;
+      }
+      
+      // Use proper URL encoding
+      const encodedTopic = encodeURIComponent(sanitizedTopic);
+      
+      await fetch(`/api/room/update?room_id=${currentConversation.id}&topic=${encodedTopic}`);
+      updateConversationName(currentConversation.id, sanitizedTopic);
       setIsRenameModalOpen(false);
     } catch (error) {
       console.error('Error renaming chat:', error);
@@ -66,7 +74,6 @@ export const ChatOptionsProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const handleDelete = async () => {
-    console.log('[ChatOptionsProvider] Deleting conversation');
     if (!currentConversation) return;
     
     try {
