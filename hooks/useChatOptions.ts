@@ -1,63 +1,29 @@
 import { useState } from "react";
 import { Conversation } from "@/types/Chat";
-import { useConversationsProvider } from "@/providers/ConversationsProvider";
 import useIsMobile from "@/hooks/useIsMobile";
-import { useRouter } from "next/navigation";
 
 export const useChatOptions = (conversation: Conversation, onClose?: () => void) => {
+  console.log('[useChatOptions] Hook initialized with conversation:', conversation.id);
+  
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isRenameModalOpen, setIsRenameModalOpen] = useState(false);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [newTopic, setNewTopic] = useState(conversation.topic || "");
-  const { fetchConversations, updateConversationName } = useConversationsProvider();
   const isMobile = useIsMobile();
-  const router = useRouter();
-
-  const handleRename = async () => {
-    try {
-      await fetch(`/api/room/update?room_id=${conversation.id}&topic=${encodeURIComponent(newTopic)}`);
-      
-      // Use updateConversationName instead of fetchConversations to prevent reordering
-      updateConversationName(conversation.id, newTopic);
-      
-      // Close both the rename modal and the options menu
-      setIsRenameModalOpen(false);
-      setIsMenuOpen(false);
-      
-      // Call onClose to handle mobile menu state in parent component
-      if (onClose) onClose();
-    } catch (error) {
-      console.error("Error renaming chat:", error);
-    }
-  };
-
-  const handleDelete = async () => {
-    try {
-      await fetch(`/api/room/delete?room_id=${conversation.id}`);
-      fetchConversations();
-      setIsDeleteModalOpen(false);
-      
-      // Navigate to home page after deletion
-      router.push('/');
-    } catch (error) {
-      console.error("Error deleting chat:", error);
-    }
-  };
+  
+  console.log('[useChatOptions] Initial state:', { 
+    isMenuOpen, 
+    isMobile 
+  });
 
   const closeMenus = () => {
+    console.log('[useChatOptions] closeMenus called');
     setIsMenuOpen(false);
-    if (onClose) onClose();
-  };
-
-  const openRenameModal = () => {
-    setIsRenameModalOpen(true);
-  };
-
-  const openDeleteModal = () => {
-    setIsDeleteModalOpen(true);
+    if (onClose) {
+      console.log('[useChatOptions] Calling onClose callback from closeMenus');
+      onClose();
+    }
   };
 
   const toggleMenu = (e: React.MouseEvent) => {
+    console.log('[useChatOptions] toggleMenu called, current state:', !isMenuOpen);
     e.stopPropagation();
     setIsMenuOpen(!isMenuOpen);
   };
@@ -65,18 +31,8 @@ export const useChatOptions = (conversation: Conversation, onClose?: () => void)
   return {
     isMenuOpen,
     setIsMenuOpen,
-    isRenameModalOpen,
-    setIsRenameModalOpen,
-    isDeleteModalOpen,
-    setIsDeleteModalOpen,
-    newTopic,
-    setNewTopic,
     isMobile,
-    handleRename,
-    handleDelete,
     closeMenus,
-    openRenameModal,
-    openDeleteModal,
     toggleMenu
   };
 }; 
