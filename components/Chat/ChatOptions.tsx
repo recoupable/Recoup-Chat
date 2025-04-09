@@ -17,7 +17,7 @@ const ChatOptions = ({
 }: ChatOptionsProps) => {
   if (!isMenuOpen) return null;
 
-  const handleBackdropClick = (e: React.MouseEvent | React.TouchEvent) => {
+  const handleBackdropClick = () => {
     closeMenus();
   };
 
