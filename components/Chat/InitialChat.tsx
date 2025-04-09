@@ -11,10 +11,7 @@ import useVisibilityDelay from "@/hooks/useVisibilityDelay";
  * with responsive layout for both mobile and desktop
  */
 const InitialChat = () => {
-  // Refs and state
   const containerRef = useRef<HTMLDivElement>(null);
-
-  // Data providers
   const { userData } = useUserProvider();
   const { selectedArtist } = useArtistProvider();
 
@@ -23,7 +20,6 @@ const InitialChat = () => {
     userData !== undefined && selectedArtist !== undefined
   );
 
-  // Use the shared visibility hook
   const { isVisible } = useVisibilityDelay({
     shouldBeVisible: hasRequiredData,
     deps: [userData?.name, selectedArtist?.name],

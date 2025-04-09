@@ -24,7 +24,6 @@ export function Chat({ roomId }: ChatProps) {
     stop,
   } = useVercelChat({ roomId });
 
-  // Visibility control for welcome message using shared hook
   const { isVisible } = useVisibilityDelay({
     shouldBeVisible: messages.length === 0 && !roomId,
     deps: [messages.length, roomId],
