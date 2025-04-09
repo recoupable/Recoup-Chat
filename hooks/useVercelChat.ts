@@ -35,6 +35,7 @@ export function useVercelChat({ roomId }: UseVercelChatProps) {
     api: `/api/chat/vercel`,
     body: {
       roomId: internalRoomId,
+      artistId,
     },
     onFinish: (message) => {
       if (internalRoomId) {

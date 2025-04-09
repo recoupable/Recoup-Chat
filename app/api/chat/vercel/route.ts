@@ -11,13 +11,15 @@ export async function POST(request: NextRequest) {
     messages,
     isReasoningEnabled,
     roomId,
+    artistId,
   }: {
     messages: Array<Message>;
     isReasoningEnabled: boolean;
     roomId?: string;
+    artistId?: string;
   } = await request.json();
   const selectedModelId = "sonnet-3.7";
-  const system = await getSystemPrompt(roomId);
+  const system = await getSystemPrompt({ roomId, artistId });
 
   if (roomId) {
     const { lastMessage } = validateMessages(messages);

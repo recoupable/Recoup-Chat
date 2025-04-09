@@ -23,7 +23,7 @@ export async function POST(req: Request) {
     }
 
     const tools = await getMcpTools(segment_id);
-    const system = await getSystemPrompt(room_id);
+    const system = await getSystemPrompt({ roomId: room_id });
 
     const streamConfig = createStreamConfig({
       system,

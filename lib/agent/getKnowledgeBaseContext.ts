@@ -1,16 +1,13 @@
-import getArtistIdForRoom from "@/lib/supabase/getArtistIdForRoom";
 import getArtistKnowledge from "@/lib/supabase/getArtistKnowledge";
 
-export async function getKnowledgeBaseContext(roomId: string): Promise<{
-  knowledge: string;
-  artistId: string;
-}> {
+export async function getKnowledgeBaseContext(
+  artistId: string
+): Promise<string> {
   try {
-    const artistId = await getArtistIdForRoom(roomId);
-    if (!artistId) return { knowledge: "", artistId: "" };
+    if (!artistId) return "";
 
     const knowledges = await getArtistKnowledge(artistId);
-    if (!knowledges.length) return { knowledge: "", artistId };
+    if (!knowledges.length) return "";
 
     const textFiles = knowledges.filter((file) =>
       ["text/plain", "text/markdown", "application/json"].includes(file.type)
@@ -29,13 +26,10 @@ export async function getKnowledgeBaseContext(roomId: string): Promise<{
       })
     );
 
-    return {
-      knowledge: contents.filter((content) => content).join("\n\n"),
-      artistId,
-    };
+    return contents.filter((content) => content).join("\n\n");
   } catch (error) {
     console.error("[getKnowledgeBaseContext]", error);
-    return { knowledge: "", artistId: "" };
+    return "";
   }
 }
 
