@@ -12,7 +12,7 @@ export async function POST(req: Request) {
     const messages = body.messages as Message[];
     const room_id = body.roomId;
     const segment_id = body.segmentId;
-
+    const artistId = body.artistId;
     const { lastMessage, validMessages } = validateMessages(messages);
 
     if (room_id) {
@@ -23,7 +23,7 @@ export async function POST(req: Request) {
     }
 
     const tools = await getMcpTools(segment_id);
-    const system = await getSystemPrompt({ roomId: room_id });
+    const system = await getSystemPrompt({ roomId: room_id, artistId });
 
     const streamConfig = createStreamConfig({
       system,
