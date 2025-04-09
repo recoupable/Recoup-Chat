@@ -5,12 +5,16 @@ import { Messages } from "./messages";
 import ChatInput from "./ChatInput";
 import ChatSkeleton from "../Chat/ChatSkeleton";
 import { useVercelChat } from "@/hooks/useVercelChat";
+import ChatGreeting from "../Chat/ChatGreeting";
+import ChatPrompt from "../Chat/ChatPrompt";
+import { useState, useEffect } from "react";
 
 interface ChatProps {
   roomId?: string;
 }
 
 export function Chat({ roomId }: ChatProps) {
+  const [isVisible, setIsVisible] = useState(false);
   const {
     messages,
     status,
@@ -20,6 +24,17 @@ export function Chat({ roomId }: ChatProps) {
     handleSendMessage,
     stop,
   } = useVercelChat({ roomId });
+
+  // Control visibility for welcome components
+  useEffect(() => {
+    if (messages.length === 0 && !roomId) {
+      // Give a little delay for smoother transition
+      const timer = setTimeout(() => {
+        setIsVisible(true);
+      }, 300);
+      return () => clearTimeout(timer);
+    }
+  }, [messages.length, roomId]);
 
   if (isLoading || (!!roomId && messages.length === 0)) {
     return <ChatSkeleton />;
@@ -48,13 +63,9 @@ export function Chat({ roomId }: ChatProps) {
       {messages.length > 0 || !!roomId ? (
         <Messages messages={messages} status={status} />
       ) : (
-        <div className="flex flex-col gap-0.5 sm:text-2xl text-xl w-full">
-          <div className="flex flex-row gap-2 items-center">
-            <div>Welcome to the AI SDK Reasoning Preview.</div>
-          </div>
-          <div className="dark:text-zinc-500 text-zinc-400">
-            What would you like me to think about today?
-          </div>
+        <div className="w-full">
+          <ChatGreeting isVisible={isVisible} />
+          <ChatPrompt isVisible={isVisible} />
         </div>
       )}
 

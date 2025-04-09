@@ -1,26 +1,25 @@
 import { Plus_Jakarta_Sans } from "next/font/google";
+import { useUserProvider } from "@/providers/UserProvder";
+import useIsMobile from "@/hooks/useIsMobile";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ["latin"],
   weight: ["500"],
 });
 
-type ChatGreetingProps = {
-  firstName: string;
-  isLongName: boolean;
-  isVisible: boolean;
-  isMobile?: boolean;
-};
-
 /**
  * Displays the greeting message with user's name
+ * Accesses user data directly from providers
  */
-export function ChatGreeting({ 
-  firstName, 
-  isLongName, 
-  isVisible, 
-  isMobile = false
-}: ChatGreetingProps) {
+export function ChatGreeting({ isVisible }: { isVisible: boolean }) {
+  // Get user data from provider
+  const { userData } = useUserProvider();
+  const isMobile = useIsMobile();
+
+  // Compute values that were previously passed as props
+  const firstName = userData?.name?.split(" ")[0] || "";
+  const isLongName = firstName.length > 10;
+
   // Styles
   const textStyle = `
     ${plusJakartaSans.className} 
@@ -34,15 +33,15 @@ export function ChatGreeting({
     lg:tracking-[-0.3px] 
     font-medium 
   `;
-  
+
   const fadeBase = "transition-opacity duration-700 ease-out";
   const fadeStart = "opacity-0";
   const fadeEnd = "opacity-100";
-  
+
   return (
-    <div 
+    <div
       className={`
-        ${textStyle} ${isMobile ? 'mb-2' : 'mb-2'} ${fadeBase}
+        ${textStyle} ${isMobile ? "mb-2" : "mb-2"} ${fadeBase}
         ${isVisible ? fadeEnd : fadeStart}
       `}
     >
@@ -57,13 +56,11 @@ export function ChatGreeting({
       ) : (
         <span>Welcome to Recoup</span>
       )}
-      
+
       {/* For mobile with long names, show this line separately */}
-      {isLongName && (
-        <div className="mt-1 sm:hidden">Welcome to Recoup</div>
-      )}
+      {isLongName && <div className="mt-1 sm:hidden">Welcome to Recoup</div>}
     </div>
   );
 }
 
-export default ChatGreeting; 
+export default ChatGreeting;
