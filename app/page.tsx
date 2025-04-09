@@ -1,18 +1,18 @@
 "use client";
 
-import ChatSkeleton from "@/components/Chat/ChatSkeleton";
-import InitialChat from "@/components/Chat/InitialChat";
-import { useChatProvider } from "@/providers/ChatProvider";
-import { useFirstArtistRedirect } from "@/hooks/useFirstArtistRedirect";
+import { Chat } from "@/components/VercelChat/chat";
 import useAutoLogin from "@/hooks/useAutoLogin";
+import { useFirstArtistRedirect } from "@/hooks/useFirstArtistRedirect";
 
 const HomePage = () => {
   useFirstArtistRedirect();
   useAutoLogin();
-  const { isLoading } = useChatProvider();
-  
-  if (isLoading) return <ChatSkeleton />;
-  return <InitialChat />;
+
+  return (
+    <div className="flex flex-col size-full items-center">
+      <Chat />
+    </div>
+  );
 };
 
 export default HomePage;
