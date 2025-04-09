@@ -7,14 +7,13 @@ import ChatSkeleton from "../Chat/ChatSkeleton";
 import { useVercelChat } from "@/hooks/useVercelChat";
 import ChatGreeting from "../Chat/ChatGreeting";
 import ChatPrompt from "../Chat/ChatPrompt";
-import { useState, useEffect } from "react";
+import useVisibilityDelay from "@/hooks/useVisibilityDelay";
 
 interface ChatProps {
   roomId?: string;
 }
 
 export function Chat({ roomId }: ChatProps) {
-  const [isVisible, setIsVisible] = useState(false);
   const {
     messages,
     status,
@@ -25,16 +24,11 @@ export function Chat({ roomId }: ChatProps) {
     stop,
   } = useVercelChat({ roomId });
 
-  // Control visibility for welcome components
-  useEffect(() => {
-    if (messages.length === 0 && !roomId) {
-      // Give a little delay for smoother transition
-      const timer = setTimeout(() => {
-        setIsVisible(true);
-      }, 300);
-      return () => clearTimeout(timer);
-    }
-  }, [messages.length, roomId]);
+  // Visibility control for welcome message using shared hook
+  const { isVisible } = useVisibilityDelay({
+    shouldBeVisible: messages.length === 0 && !roomId,
+    deps: [messages.length, roomId],
+  });
 
   if (isLoading || (!!roomId && messages.length === 0)) {
     return <ChatSkeleton />;
