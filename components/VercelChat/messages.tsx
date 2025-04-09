@@ -116,9 +116,10 @@ export function TextMessagePart({ text }: TextMessagePartProps) {
 interface MessagesProps {
   messages: Array<UIMessage>;
   status: UseChatHelpers["status"];
+  children?: React.ReactNode;
 }
 
-export function Messages({ messages, status }: MessagesProps) {
+export function Messages({ messages, status, children }: MessagesProps) {
   const messagesRef = useRef<HTMLDivElement>(null);
   const messagesLength = useMemo(() => messages.length, [messages]);
 
@@ -133,6 +134,7 @@ export function Messages({ messages, status }: MessagesProps) {
       className="flex flex-col gap-8 overflow-y-scroll items-center w-full"
       ref={messagesRef}
     >
+      {children || null}
       {messages.map((message) => (
         <div
           key={message.id}
