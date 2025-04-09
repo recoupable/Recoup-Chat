@@ -9,12 +9,14 @@ interface UseRoomCreationProps {
   initialRoomId?: string;
   userId?: string;
   artistId?: string;
+  suggestedRoomId?: string;
 }
 
 export function useRoomCreation({
   initialRoomId,
   userId,
   artistId,
+  suggestedRoomId,
 }: UseRoomCreationProps) {
   const [roomId, setRoomId] = useState<string | undefined>(initialRoomId);
   const [isCreatingRoom, setIsCreatingRoom] = useState(false);
@@ -26,7 +28,7 @@ export function useRoomCreation({
 
     try {
       setIsCreatingRoom(true);
-      const room = await createRoom(userId, content, artistId);
+      const room = await createRoom(userId, content, artistId, suggestedRoomId);
 
       if (room) {
         // Update internal state first
