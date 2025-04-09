@@ -1,6 +1,7 @@
 import { Conversation } from "@/types/Chat";
 import useIsMobile from "@/hooks/useIsMobile";
 import ChatOptions from "./ChatOptions";
+import { useCallback } from "react";
 
 interface ChatOptionsMenuProps {
   conversation: Conversation;
@@ -15,50 +16,45 @@ const ChatOptionsMenu = ({
   onRename,
   onDelete
 }: ChatOptionsMenuProps) => {
-  console.log('[ChatOptionsMenu] Rendering with conversation:', conversation.id);
-  
   const isMobile = useIsMobile();
   
-  console.log('[ChatOptionsMenu] Props:', { isMobile, hasOnRename: !!onRename, hasOnDelete: !!onDelete });
-
-  // Handlers for button clicks - call parent props
-  const handleOpenRenameModal = (e: React.MouseEvent | React.TouchEvent) => {
-    console.log('[ChatOptionsMenu] handleOpenRenameModal called, event type:', e.type);
+  // Use callbacks to ensure stable references
+  const handleRename = useCallback((e: React.MouseEvent | React.TouchEvent) => {
     e.stopPropagation();
-    
     if (onRename) {
-      console.log('[ChatOptionsMenu] Calling parent onRename callback');
       onRename();
-    } else {
-      console.log('[ChatOptionsMenu] No onRename callback provided, just closing menu');
-      if (onClose) onClose();
+    } else if (onClose) {
+      onClose();
     }
-  };
+  }, [onRename, onClose]);
 
-  const handleOpenDeleteModal = (e: React.MouseEvent | React.TouchEvent) => {
-    console.log('[ChatOptionsMenu] handleOpenDeleteModal called, event type:', e.type);
+  const handleDelete = useCallback((e: React.MouseEvent | React.TouchEvent) => {
     e.stopPropagation();
-    
     if (onDelete) {
-      console.log('[ChatOptionsMenu] Calling parent onDelete callback');
       onDelete();
-    } else {
-      console.log('[ChatOptionsMenu] No onDelete callback provided, just closing menu');
-      if (onClose) onClose();
+    } else if (onClose) {
+      onClose();
     }
-  };
+  }, [onDelete, onClose]);
 
-  const closeMenus = () => {
+  const closeMenus = useCallback(() => {
     if (onClose) onClose();
-  };
+  }, [onClose]);
+
+  // Add console log to verify props after component mounts
+  console.log("ChatOptionsMenu props:", {
+    hasConversation: !!conversation,
+    hasOnRename: !!onRename,
+    hasOnDelete: !!onDelete
+  });
 
   return (
     <ChatOptions 
       isMenuOpen={true}
       isMobile={isMobile}
       closeMenus={closeMenus}
-      openRenameModal={handleOpenRenameModal}
-      openDeleteModal={handleOpenDeleteModal}
+      openRenameModal={handleRename}
+      openDeleteModal={handleDelete}
     />
   );
 };
