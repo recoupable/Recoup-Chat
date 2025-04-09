@@ -23,14 +23,32 @@ const ChatOptionsMenu = ({ conversation, onClose }: ChatOptionsMenuProps) => {
     setIsDeleteModalOpen
   } = useChatOptions(conversation, onClose);
 
-  const handleOpenRenameModal = (e: React.MouseEvent) => {
+  const handleOpenRenameModal = (e: React.MouseEvent | React.TouchEvent) => {
     e.stopPropagation();
-    setIsRenameModalOpen(true);
+    
+    if (isMobile) {
+      closeMenus();
+      setTimeout(() => {
+        setIsRenameModalOpen(true);
+      }, 200);
+    } else {
+      setIsRenameModalOpen(true);
+      closeMenus();
+    }
   };
 
-  const handleOpenDeleteModal = (e: React.MouseEvent) => {
+  const handleOpenDeleteModal = (e: React.MouseEvent | React.TouchEvent) => {
     e.stopPropagation();
-    setIsDeleteModalOpen(true);
+    
+    if (isMobile) {
+      closeMenus();
+      setTimeout(() => {
+        setIsDeleteModalOpen(true);
+      }, 200);
+    } else {
+      setIsDeleteModalOpen(true);
+      closeMenus();
+    }
   };
 
   return (
