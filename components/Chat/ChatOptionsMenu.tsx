@@ -1,5 +1,5 @@
 import { Conversation } from "@/types/Chat";
-import { useChatOptions } from "@/hooks/useChatOptions";
+import useIsMobile from "@/hooks/useIsMobile";
 import ChatOptions from "./ChatOptions";
 
 interface ChatOptionsMenuProps {
@@ -17,10 +17,7 @@ const ChatOptionsMenu = ({
 }: ChatOptionsMenuProps) => {
   console.log('[ChatOptionsMenu] Rendering with conversation:', conversation.id);
   
-  const { 
-    isMobile,
-    closeMenus
-  } = useChatOptions(conversation, onClose);
+  const isMobile = useIsMobile();
   
   console.log('[ChatOptionsMenu] Props:', { isMobile, hasOnRename: !!onRename, hasOnDelete: !!onDelete });
 
@@ -34,7 +31,7 @@ const ChatOptionsMenu = ({
       onRename();
     } else {
       console.log('[ChatOptionsMenu] No onRename callback provided, just closing menu');
-      closeMenus();
+      if (onClose) onClose();
     }
   };
 
@@ -47,8 +44,12 @@ const ChatOptionsMenu = ({
       onDelete();
     } else {
       console.log('[ChatOptionsMenu] No onDelete callback provided, just closing menu');
-      closeMenus();
+      if (onClose) onClose();
     }
+  };
+
+  const closeMenus = () => {
+    if (onClose) onClose();
   };
 
   return (
