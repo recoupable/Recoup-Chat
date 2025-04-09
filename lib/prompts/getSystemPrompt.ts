@@ -9,18 +9,16 @@ export async function getSystemPrompt({
   roomId?: string;
   artistId?: string;
 }): Promise<string> {
-  let systemPrompt = SYSTEM_PROMPT;
+  const resolvedArtistId = artistId || (await getArtistIdForRoom(roomId || ""));
 
-  if (roomId) {
-    const resolvedArtistId = artistId || (await getArtistIdForRoom(roomId));
-    const knowledge = await getKnowledgeBaseContext(resolvedArtistId || "");
-    if (knowledge) {
-      systemPrompt = `${SYSTEM_PROMPT}
+  let systemPrompt = `${SYSTEM_PROMPT} The active artist_account_id is ${resolvedArtistId}`;
+
+  const knowledge = await getKnowledgeBaseContext(resolvedArtistId || "");
+  if (knowledge) {
+    systemPrompt = `${systemPrompt}
 -----ARTIST KNOWLEDGE BASE-----
 ${knowledge}
------END KNOWLEDGE BASE-----
- The active artist_account_id is ${resolvedArtistId}`;
-    }
+-----END KNOWLEDGE BASE-----`;
   }
 
   return systemPrompt;
