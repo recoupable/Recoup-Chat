@@ -11,6 +11,7 @@ import { PaymentProvider } from "./PaymentProvider";
 import { MessagesProvider } from "./MessagesProvider";
 import { PromptsProvider } from "./PromptsProvider";
 import { FunnelAnalysisProvider } from "./FunnelAnalysisProvider";
+import { ModalProvider } from "./ModalProvider";
 
 const queryClient = new QueryClient();
 
@@ -26,7 +27,9 @@ const Providers = ({ children }: { children: React.ReactNode }) => (
                   <ChatProvider>
                     <PaymentProvider>
                       <FunnelAnalysisProvider>
-                        {children}
+                        <ModalProvider>
+                          {children}
+                        </ModalProvider>
                       </FunnelAnalysisProvider>
                     </PaymentProvider>
                   </ChatProvider>
