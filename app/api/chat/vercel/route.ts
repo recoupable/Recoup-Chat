@@ -9,12 +9,10 @@ import getSystemPrompt from "@/lib/prompts/getSystemPrompt";
 export async function POST(request: NextRequest) {
   const {
     messages,
-    isReasoningEnabled,
     roomId,
     artistId,
   }: {
     messages: Array<Message>;
-    isReasoningEnabled: boolean;
     roomId?: string;
     artistId?: string;
   } = await request.json();
@@ -34,17 +32,14 @@ export async function POST(request: NextRequest) {
   const stream = streamText({
     system,
     tools,
-    providerOptions:
-      selectedModelId === "sonnet-3.7" && isReasoningEnabled === false
-        ? {
-            anthropic: {
-              thinking: {
-                type: "disabled",
-                budgetTokens: 12000,
-              },
-            },
-          }
-        : {},
+    providerOptions: {
+      anthropic: {
+        thinking: {
+          type: "disabled",
+          budgetTokens: 12000,
+        },
+      },
+    },
     model: myProvider.languageModel(selectedModelId),
     experimental_transform: [
       smoothStream({
