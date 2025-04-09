@@ -1,13 +1,12 @@
 "use client";
 
 import cn from "classnames";
-import Markdown from "react-markdown";
-import { markdownComponents } from "./markdown-components";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ChevronDownIcon, ChevronUpIcon, SpinnerIcon } from "./icons";
 import { UIMessage } from "ai";
 import { UseChatHelpers } from "@ai-sdk/react";
+import ChatMarkdown from "../Chat/ChatMarkdown";
 
 interface ReasoningPart {
   type: "reasoning";
@@ -90,15 +89,11 @@ export function ReasoningMessagePart({
           >
             {part.details.map((detail, detailIndex) =>
               detail.type === "text" ? (
-                <Markdown key={detailIndex} components={markdownComponents}>
-                  {detail.text}
-                </Markdown>
+                <ChatMarkdown key={detailIndex}>{detail.text}</ChatMarkdown>
               ) : (
                 "<redacted>"
               )
             )}
-
-            {/* <Markdown components={markdownComponents}>{reasoning}</Markdown> */}
           </motion.div>
         )}
       </AnimatePresence>
@@ -113,7 +108,7 @@ interface TextMessagePartProps {
 export function TextMessagePart({ text }: TextMessagePartProps) {
   return (
     <div className="flex flex-col gap-4">
-      <Markdown components={markdownComponents}>{text}</Markdown>
+      <ChatMarkdown>{text}</ChatMarkdown>
     </div>
   );
 }
@@ -152,7 +147,7 @@ export function Messages({ messages, status }: MessagesProps) {
               "": message.role === "assistant",
             })}
           >
-            {message.parts.map((part, partIndex) => {
+            {message.parts?.map((part, partIndex) => {
               if (part.type === "text") {
                 return (
                   <TextMessagePart
