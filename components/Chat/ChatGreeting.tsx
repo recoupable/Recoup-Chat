@@ -12,15 +12,11 @@ const plusJakartaSans = Plus_Jakarta_Sans({
  * Accesses user data directly from providers
  */
 export function ChatGreeting({ isVisible }: { isVisible: boolean }) {
-  // Get user data from provider
   const { userData } = useUserProvider();
   const isMobile = useIsMobile();
-
-  // Compute values that were previously passed as props
   const firstName = userData?.name?.split(" ")[0] || "";
   const isLongName = firstName.length > 10;
 
-  // Styles
   const textStyle = `
     ${plusJakartaSans.className} 
     text-[19px]
