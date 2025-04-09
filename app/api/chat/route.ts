@@ -12,7 +12,6 @@ export async function POST(req: Request) {
     const messages = body.messages as Message[];
     const room_id = body.roomId;
     const segment_id = body.segmentId;
-    const artist_id = body.artistId;
 
     const { lastMessage, validMessages } = validateMessages(messages);
 
@@ -24,7 +23,7 @@ export async function POST(req: Request) {
     }
 
     const tools = await getMcpTools(segment_id);
-    const system = await getSystemPrompt(room_id, artist_id);
+    const system = await getSystemPrompt(room_id);
 
     const streamConfig = createStreamConfig({
       system,

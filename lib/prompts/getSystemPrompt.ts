@@ -1,24 +1,21 @@
 import { SYSTEM_PROMPT } from "@/lib/consts";
 import getKnowledgeBaseContext from "@/lib/agent/getKnowledgeBaseContext";
 
-export async function getSystemPrompt(roomId?: string, artistId?: string): Promise<string> {
+export async function getSystemPrompt(roomId?: string): Promise<string> {
   let systemPrompt = SYSTEM_PROMPT;
 
   if (roomId) {
-    const artistKnowledge = await getKnowledgeBaseContext(roomId);
-    if (artistKnowledge) {
+    const { knowledge, artistId } = await getKnowledgeBaseContext(roomId);
+    if (knowledge) {
       systemPrompt = `${SYSTEM_PROMPT}
 -----ARTIST KNOWLEDGE BASE-----
-${artistKnowledge}
------END KNOWLEDGE BASE-----`;
+${knowledge}
+-----END KNOWLEDGE BASE-----
+ The active artist_account_id is ${artistId}`;
     }
-  }
-
-  if (artistId) {
-    systemPrompt += ` The active artist_account_id is ${artistId}`;
   }
 
   return systemPrompt;
 }
 
-export default getSystemPrompt; 
+export default getSystemPrompt;
