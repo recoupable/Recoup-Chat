@@ -8,12 +8,14 @@ import { useVercelChat } from "@/hooks/useVercelChat";
 import ChatGreeting from "../Chat/ChatGreeting";
 import ChatPrompt from "../Chat/ChatPrompt";
 import useVisibilityDelay from "@/hooks/useVisibilityDelay";
+import { ChatReport } from "../Chat/ChatReport";
 
 interface ChatProps {
   roomId?: string;
+  reportId?: string;
 }
 
-export function Chat({ roomId }: ChatProps) {
+export function Chat({ roomId, reportId }: ChatProps) {
   const {
     messages,
     status,
@@ -54,7 +56,9 @@ export function Chat({ roomId }: ChatProps) {
       )}
     >
       {messages.length > 0 || !!roomId ? (
-        <Messages messages={messages} status={status} />
+        <Messages messages={messages} status={status}>
+          {reportId && <ChatReport reportId={reportId} />}
+        </Messages>
       ) : (
         <div className="w-full">
           <ChatGreeting isVisible={isVisible} />
