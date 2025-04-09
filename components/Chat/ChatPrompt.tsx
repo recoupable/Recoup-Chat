@@ -12,17 +12,11 @@ const plusJakartaSans = Plus_Jakarta_Sans({
  * Accesses data directly from providers
  */
 export function ChatPrompt({ isVisible }: { isVisible: boolean }) {
-  // Get artist data from provider
   const { selectedArtist } = useArtistProvider();
-
-  // Animation for typing effect
   const words = ["artist?", "campaign?", "fans?"];
   const { currentWord } = useTypingAnimation(words, isVisible);
-
-  // Computed values
   const artistName = selectedArtist?.name || "";
 
-  // Styles
   const textStyle = `
     ${plusJakartaSans.className} 
     text-[19px]
