@@ -109,7 +109,7 @@ export const ModalProvider = ({ children }: { children: ReactNode }) => {
     >
       {children}
 
-      {/* Render modals using portal - with high z-index for mobile */}
+      {/* Render modals using portal */}
       {isBrowser && isRenameModalOpen && currentConversation && createPortal(
         <RenameChatModal
           isOpen={isRenameModalOpen}
