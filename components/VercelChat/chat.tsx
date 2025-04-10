@@ -31,8 +31,7 @@ export function Chat({ id, reportId }: ChatProps) {
     deps: [messages.length, reportId],
   });
 
-  const isEmptyReportPage = messages.length === 0 && reportId;
-  if (isLoading || isEmptyReportPage) {
+  if (isLoading) {
     return <ChatSkeleton />;
   }
 
