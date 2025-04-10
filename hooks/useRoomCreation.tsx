@@ -15,22 +15,18 @@ export function useRoomCreation({
   userId,
   artistId,
 }: UseRoomCreationProps) {
-  const [roomId, setRoomId] = useState<string | undefined>(id);
   const [isCreatingRoom, setIsCreatingRoom] = useState(false);
   const { addConversation } = useConversationsProvider();
 
   const createNewRoom = async (content: string) => {
-    if (roomId || isCreatingRoom || !userId) return;
+    if (isCreatingRoom || !userId) return;
 
     try {
       setIsCreatingRoom(true);
       const room = await createRoom(userId, content, artistId, id);
 
       if (room) {
-        // Update internal state first
-        setRoomId(room.id);
         addConversation(room);
-
         // Silently update the URL without affecting the UI or causing remount
         window.history.replaceState({}, "", `/instant/${room.id}`);
         return room.id;
@@ -45,10 +41,8 @@ export function useRoomCreation({
   };
 
   return {
-    roomId,
     isCreatingRoom,
     createNewRoom,
-    setRoomId,
   };
 }
 

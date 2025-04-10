@@ -23,24 +23,24 @@ export function useVercelChat({ id }: UseVercelChatProps) {
   const userId = userData?.id;
   const artistId = selectedArtist?.account_id;
 
-  const { roomId: internalRoomId, createNewRoom } = useRoomCreation({
+  const { createNewRoom } = useRoomCreation({
     id,
     userId,
     artistId,
   });
-  const { trackMessage } = usePendingMessages(internalRoomId);
+  const { trackMessage } = usePendingMessages(id);
 
   const { messages, append, status, stop, setMessages } = useChat({
     id,
     api: `/api/chat/vercel`,
     body: {
-      roomId: internalRoomId,
+      roomId: id,
       artistId,
     },
     onFinish: (message) => {
-      if (internalRoomId) {
+      if (id) {
         // If room exists, immediately store the message
-        createMemory(message, internalRoomId);
+        createMemory(message, id);
       } else {
         // Otherwise, add to pending messages
         trackMessage(message as Message);
@@ -52,7 +52,7 @@ export function useVercelChat({ id }: UseVercelChatProps) {
   });
 
   const { isLoading: isMessagesLoading, hasError } = useMessageLoader(
-    messages.length === 0 ? internalRoomId : undefined,
+    messages.length === 0 ? id : undefined,
     userId,
     setMessages
   );
@@ -76,7 +76,7 @@ export function useVercelChat({ id }: UseVercelChatProps) {
     // Always append message first for immediate feedback
     append(message);
 
-    if (!internalRoomId) {
+    if (!id) {
       trackMessage(message);
       createNewRoom(content);
     }
@@ -88,7 +88,6 @@ export function useVercelChat({ id }: UseVercelChatProps) {
     status,
     isLoading,
     hasError,
-    internalRoomId,
     isGeneratingResponse,
 
     // Actions
