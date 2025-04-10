@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import createRoom from "@/lib/createRoom";
 import { useConversationsProvider } from "@/providers/ConversationsProvider";
 
@@ -18,23 +17,23 @@ export function useRoomCreation({
 }: UseRoomCreationProps) {
   const [roomId, setRoomId] = useState<string | undefined>(initialRoomId);
   const [isCreatingRoom, setIsCreatingRoom] = useState(false);
-  const router = useRouter();
   const { addConversation } = useConversationsProvider();
 
-  const createNewRoom = async (content: string) => {
+  const createNewRoom = async (content: string, customChatId?: string) => {
     if (roomId || isCreatingRoom || !userId) return;
 
     try {
       setIsCreatingRoom(true);
-      const room = await createRoom(userId, content, artistId);
+      const room = await createRoom(userId, content, artistId, customChatId);
 
       if (room) {
         // Update internal state first
         setRoomId(room.id);
         addConversation(room);
 
-        // Silently update the URL without affecting the UI or causing remount
-        router.replace(`/instant/${room.id}`, { scroll: false });
+        // Use history API directly to update URL without affecting the UI
+        // This is more reliable in production than Next.js router
+        window.history.replaceState({}, "", `/instant/${room.id}`);
         return room.id;
       }
     } catch (error) {

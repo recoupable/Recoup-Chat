@@ -30,8 +30,11 @@ export function useVercelChat({ roomId }: UseVercelChatProps) {
   });
   const { trackMessage } = usePendingMessages(internalRoomId);
 
+  // Use roomId for existing chats, chatId for new chats, or fallback to a constant
+  const chatIdToUse = roomId || "recoup-chat";
+
   const { messages, append, status, stop, setMessages } = useChat({
-    id: "recoup-chat", // Constant ID prevents state reset when route changes
+    id: chatIdToUse, // Use the dynamic chat ID
     api: `/api/chat/vercel`,
     body: {
       roomId: internalRoomId,
@@ -78,7 +81,8 @@ export function useVercelChat({ roomId }: UseVercelChatProps) {
 
     if (!internalRoomId) {
       trackMessage(message);
-      createNewRoom(content);
+      // Pass the chatId to createNewRoom to use as the room ID
+      createNewRoom(content, roomId);
     }
   };
 
