@@ -5,27 +5,42 @@ import { Message, smoothStream, streamText } from "ai";
 import { NextRequest } from "next/server";
 import { validateMessages } from "@/lib/chat/validateMessages";
 import getSystemPrompt from "@/lib/prompts/getSystemPrompt";
+import getRoom from "@/lib/supabase/getRoom";
+import { createRoomWithReport } from "@/lib/supabase/createRoomWithReport";
+import getAiTitle from "@/lib/getAiTitle";
 
 export async function POST(request: NextRequest) {
   const {
     messages,
     roomId,
     artistId,
+    accountId,
   }: {
     messages: Array<Message>;
-    roomId?: string;
+    roomId: string;
     artistId?: string;
+    accountId: string;
   } = await request.json();
   const selectedModelId = "sonnet-3.7";
   const system = await getSystemPrompt({ roomId, artistId });
+  const room = await getRoom(roomId);
 
-  if (roomId) {
-    const { lastMessage } = validateMessages(messages);
-    await createMemories({
-      room_id: roomId,
-      content: lastMessage,
+  if (!room) {
+    const title = await getAiTitle(messages[0].content);
+
+    await createRoomWithReport({
+      account_id: accountId,
+      topic: title,
+      artist_id: artistId || undefined,
+      chat_id: roomId || undefined,
     });
   }
+
+  const { lastMessage } = validateMessages(messages);
+  await createMemories({
+    room_id: roomId,
+    content: lastMessage,
+  });
 
   const tools = await getMcpTools();
 

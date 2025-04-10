@@ -9,9 +9,9 @@ import ChatGreeting from "../Chat/ChatGreeting";
 import ChatPrompt from "../Chat/ChatPrompt";
 import useVisibilityDelay from "@/hooks/useVisibilityDelay";
 import { ChatReport } from "../Chat/ChatReport";
-
+import { useParams } from "next/navigation";
 interface ChatProps {
-  id?: string;
+  id: string;
   reportId?: string;
 }
 
@@ -25,13 +25,14 @@ export function Chat({ id, reportId }: ChatProps) {
     handleSendMessage,
     stop,
   } = useVercelChat({ id });
+  const { roomId } = useParams();
 
   const { isVisible } = useVisibilityDelay({
     shouldBeVisible: messages.length === 0 && !reportId,
     deps: [messages.length, reportId],
   });
 
-  if (isLoading) {
+  if (isLoading && roomId) {
     return <ChatSkeleton />;
   }
 

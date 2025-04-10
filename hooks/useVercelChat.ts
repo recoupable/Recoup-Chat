@@ -1,14 +1,13 @@
 import { Message } from "ai";
 import { useChat } from "@ai-sdk/react";
 import createMemory from "@/lib/createMemory";
-import { usePendingMessages } from "./usePendingMessages";
 import { useMessageLoader } from "./useMessageLoader";
-import useRoomCreation from "./useRoomCreation";
 import { useUserProvider } from "@/providers/UserProvder";
 import { useArtistProvider } from "@/providers/ArtistProvider";
+import { useParams } from "next/navigation";
 
 interface UseVercelChatProps {
-  id?: string;
+  id: string;
 }
 
 /**
@@ -19,16 +18,10 @@ interface UseVercelChatProps {
 export function useVercelChat({ id }: UseVercelChatProps) {
   const { userData } = useUserProvider();
   const { selectedArtist } = useArtistProvider();
+  const { roomId } = useParams();
 
   const userId = userData?.id;
   const artistId = selectedArtist?.account_id;
-
-  const { createNewRoom } = useRoomCreation({
-    id,
-    userId,
-    artistId,
-  });
-  const { trackMessage } = usePendingMessages(id);
 
   const { messages, append, status, stop, setMessages } = useChat({
     id,
@@ -36,14 +29,12 @@ export function useVercelChat({ id }: UseVercelChatProps) {
     body: {
       roomId: id,
       artistId,
+      accountId: userId,
     },
     onFinish: (message) => {
       if (id) {
         // If room exists, immediately store the message
         createMemory(message, id);
-      } else {
-        // Otherwise, add to pending messages
-        trackMessage(message as Message);
       }
     },
     onError: () => {
@@ -76,9 +67,9 @@ export function useVercelChat({ id }: UseVercelChatProps) {
     // Always append message first for immediate feedback
     append(message);
 
-    if (!id) {
-      trackMessage(message);
-      createNewRoom(content);
+    if (!roomId) {
+      // Silently update the URL without affecting the UI or causing remount
+      window.history.replaceState({}, "", `/instant/${id}`);
     }
   };
 
