@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 import { useChatOptions } from "@/providers/ChatOptionsProvider";
-import { Conversation } from "@/types/Chat";
+import type { Conversation } from "@/types/Chat";
 
 export const useChatOptionsMenu = () => {
   const [hoveredChatId, setHoveredChatId] = useState<string | null>(null);

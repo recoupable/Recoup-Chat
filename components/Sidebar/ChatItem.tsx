@@ -1,5 +1,5 @@
-import { Conversation } from "@/types/Chat";
-import { ArtistAgent } from "@/lib/supabase/getArtistAgents";
+import type { Conversation } from "@/types/Chat";
+import type { ArtistAgent } from "@/lib/supabase/getArtistAgents";
 import { MoreVertical } from "lucide-react";
 import { memo } from "react";
 import ChatOptionsMenu from "../Chat/ChatOptionsMenu";
@@ -28,29 +28,21 @@ const ChatItem = ({
 }: ChatItemProps) => {
   const isMobile = useIsMobile();
   
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      handleItemClick(conversation);
-    }
-  };
-  
   return (
     <div className="flex items-center justify-between w-full relative">
       {/* Chat title (clickable) */}
-      <div 
-        className="flex gap-2 items-center flex-grow py-1.5 px-2 rounded-md hover:bg-gray-100 transition-colors duration-150 cursor-pointer"
+      <button 
+        type="button"
+        className="flex gap-2 items-center flex-grow py-1.5 px-2 rounded-md hover:bg-gray-100 transition-colors duration-150 cursor-pointer text-left"
         onClick={() => handleItemClick(conversation)}
-        onKeyDown={handleKeyDown}
-        tabIndex={0}
-        role="button"
       >
-        <p className="text-sm truncate max-w-[200px] text-left">
+        <span className="text-sm truncate max-w-[200px]">
           {isConversation(conversation) 
             ? (conversation.topic || "Chat Analysis")
             : conversation.type
           }
-        </p>
-      </div>
+        </span>
+      </button>
       
       {/* Show menu button for both mobile and desktop */}
       {isConversation(conversation) && (
