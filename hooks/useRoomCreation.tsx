@@ -31,9 +31,7 @@ export function useRoomCreation({
         setRoomId(room.id);
         addConversation(room);
 
-        // Use history API directly to update URL without affecting the UI
-        // This is more reliable in production than Next.js router
-        window.history.replaceState({}, "", `/instant/${room.id}`);
+        // Silently update the URL without affecting the UI or causing remount        window.history.replaceState({}, "", `/instant/${room.id}`);
         return room.id;
       }
     } catch (error) {
