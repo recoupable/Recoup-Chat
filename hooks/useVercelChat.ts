@@ -8,7 +8,7 @@ import { useUserProvider } from "@/providers/UserProvder";
 import { useArtistProvider } from "@/providers/ArtistProvider";
 
 interface UseVercelChatProps {
-  roomId?: string;
+  id?: string;
 }
 
 /**
@@ -16,7 +16,7 @@ interface UseVercelChatProps {
  * Combines useChat, useRoomCreation, usePendingMessages, and useMessageLoader
  * Accesses user and artist data directly from providers
  */
-export function useVercelChat({ roomId }: UseVercelChatProps) {
+export function useVercelChat({ id }: UseVercelChatProps) {
   const { userData } = useUserProvider();
   const { selectedArtist } = useArtistProvider();
 
@@ -24,17 +24,14 @@ export function useVercelChat({ roomId }: UseVercelChatProps) {
   const artistId = selectedArtist?.account_id;
 
   const { roomId: internalRoomId, createNewRoom } = useRoomCreation({
-    initialRoomId: roomId,
+    initialRoomId: id,
     userId,
     artistId,
   });
   const { trackMessage } = usePendingMessages(internalRoomId);
 
-  // Use roomId for existing chats, chatId for new chats, or fallback to a constant
-  const chatIdToUse = roomId || "recoup-chat";
-
   const { messages, append, status, stop, setMessages } = useChat({
-    id: chatIdToUse, // Use the dynamic chat ID
+    id,
     api: `/api/chat/vercel`,
     body: {
       roomId: internalRoomId,
@@ -64,7 +61,7 @@ export function useVercelChat({ roomId }: UseVercelChatProps) {
   // 1. We're loading messages
   // 2. We have a roomId (meaning we're intentionally loading a chat)
   // 3. We don't already have messages (important for redirects)
-  const isLoading = isMessagesLoading && !!roomId && messages.length === 0;
+  const isLoading = isMessagesLoading && !!id && messages.length === 0;
 
   const isGeneratingResponse = ["streaming", "submitted"].includes(status);
 
@@ -82,7 +79,7 @@ export function useVercelChat({ roomId }: UseVercelChatProps) {
     if (!internalRoomId) {
       trackMessage(message);
       // Pass the chatId to createNewRoom to use as the room ID
-      createNewRoom(content, roomId);
+      createNewRoom(content, id);
     }
   };
 

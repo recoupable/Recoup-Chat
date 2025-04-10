@@ -24,7 +24,7 @@ export function Chat({ roomId, reportId }: ChatProps) {
     isGeneratingResponse,
     handleSendMessage,
     stop,
-  } = useVercelChat({ roomId });
+  } = useVercelChat({ id: roomId });
 
   const { isVisible } = useVisibilityDelay({
     shouldBeVisible: messages.length === 0 && !roomId,
