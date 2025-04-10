@@ -32,7 +32,6 @@ export function Chat({ id, reportId }: ChatProps) {
   });
 
   const isEmptyReportPage = messages.length === 0 && reportId;
-  console.log("chat isEmptyReportPage", isEmptyReportPage);
   if (isLoading || isEmptyReportPage) {
     return <ChatSkeleton />;
   }
