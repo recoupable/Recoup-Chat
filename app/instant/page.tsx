@@ -6,11 +6,11 @@ import { generateUUID } from "@/lib/utils";
 
 export default function Home() {
   useAutoLogin();
-  const roomId = generateUUID();
+  const id = generateUUID();
 
   return (
     <div className="flex flex-col size-full items-center">
-      <Chat roomId={roomId} />
+      <Chat id={id} />
     </div>
   );
 }

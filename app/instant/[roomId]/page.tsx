@@ -13,7 +13,7 @@ export default async function InstantChatRoom({ params }: PageProps) {
 
   return (
     <div className="flex flex-col size-full items-center">
-      <Chat roomId={roomId} reportId={reports?.report_id} />
+      <Chat id={roomId} reportId={reports?.report_id} />
     </div>
   );
 }

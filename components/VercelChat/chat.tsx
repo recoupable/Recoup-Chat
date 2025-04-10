@@ -11,11 +11,11 @@ import useVisibilityDelay from "@/hooks/useVisibilityDelay";
 import { ChatReport } from "../Chat/ChatReport";
 
 interface ChatProps {
-  roomId?: string;
+  id?: string;
   reportId?: string;
 }
 
-export function Chat({ roomId, reportId }: ChatProps) {
+export function Chat({ id, reportId }: ChatProps) {
   const {
     messages,
     status,
@@ -24,14 +24,14 @@ export function Chat({ roomId, reportId }: ChatProps) {
     isGeneratingResponse,
     handleSendMessage,
     stop,
-  } = useVercelChat({ id: roomId });
+  } = useVercelChat({ id });
 
   const { isVisible } = useVisibilityDelay({
-    shouldBeVisible: messages.length === 0 && !roomId,
-    deps: [messages.length, roomId],
+    shouldBeVisible: messages.length === 0 && !id,
+    deps: [messages.length, id],
   });
 
-  if (isLoading || (!!roomId && messages.length === 0 && !reportId)) {
+  if (isLoading || (!!id && messages.length === 0 && !reportId)) {
     return <ChatSkeleton />;
   }
 
@@ -55,7 +55,7 @@ export function Chat({ roomId, reportId }: ChatProps) {
         }
       )}
     >
-      {messages.length > 0 || !!roomId ? (
+      {messages.length > 0 || !!id ? (
         <Messages messages={messages} status={status}>
           {reportId && <ChatReport reportId={reportId} />}
         </Messages>
