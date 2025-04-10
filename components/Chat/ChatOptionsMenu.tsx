@@ -17,15 +17,39 @@ const ChatOptionsMenu = ({
   const { openRenameModal, openDeleteModal } = useChatOptions();
   
   const handleRename = useCallback((e: React.MouseEvent | React.TouchEvent | React.KeyboardEvent) => {
-    e.stopPropagation();
-    openRenameModal(conversation);
-    if (onClose) onClose();
+    try {
+      if (!e) return;
+      e.stopPropagation();
+      
+      if (!conversation || !conversation.id) {
+        console.error("Invalid conversation object in rename handler");
+        return;
+      }
+      
+      openRenameModal(conversation);
+      if (onClose) onClose();
+    } catch (error) {
+      console.error("Error in rename handler:", error);
+      if (onClose) onClose();
+    }
   }, [conversation, openRenameModal, onClose]);
 
   const handleDelete = useCallback((e: React.MouseEvent | React.TouchEvent | React.KeyboardEvent) => {
-    e.stopPropagation();
-    openDeleteModal(conversation);
-    if (onClose) onClose();
+    try {
+      if (!e) return;
+      e.stopPropagation();
+      
+      if (!conversation || !conversation.id) {
+        console.error("Invalid conversation object in delete handler");
+        return;
+      }
+      
+      openDeleteModal(conversation);
+      if (onClose) onClose();
+    } catch (error) {
+      console.error("Error in delete handler:", error);
+      if (onClose) onClose();
+    }
   }, [conversation, openDeleteModal, onClose]);
 
   const closeMenus = useCallback(() => {

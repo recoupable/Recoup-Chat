@@ -8,11 +8,21 @@ export const useChatOptionsMenu = () => {
   const { openRenameModal, openDeleteModal } = useChatOptions();
 
   const handleMenuClick = useCallback((e: React.MouseEvent | React.TouchEvent | React.KeyboardEvent, itemId: string) => {
-    e.stopPropagation();
-    e.preventDefault();
-    
-    // Toggle menu state
-    setMenuOpenChatId(prevId => prevId === itemId ? null : itemId);
+    try {
+      // Ensure we have a valid event
+      if (!e) return;
+      
+      // Prevent default behavior and stop propagation
+      e.stopPropagation();
+      e.preventDefault();
+      
+      // Toggle menu state
+      setMenuOpenChatId(prevId => prevId === itemId ? null : itemId);
+    } catch (error) {
+      console.error("Error in handleMenuClick:", error);
+      // Fallback: Just toggle the menu without event handling
+      setMenuOpenChatId(prevId => prevId === itemId ? null : itemId);
+    }
   }, []);
 
   // Function to handle menu close

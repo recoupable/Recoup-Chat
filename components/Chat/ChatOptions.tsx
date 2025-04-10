@@ -48,10 +48,20 @@ const ChatOptions = ({
         <button
           type="button"
           className="flex items-center gap-2 w-full px-3 py-2 text-sm text-left hover:bg-gray-100"
-          onClick={openRenameModal}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
+          onClick={(e) => {
+            try {
               openRenameModal(e);
+            } catch (error) {
+              console.error("Error opening rename modal:", error);
+            }
+          }}
+          onKeyDown={(e) => {
+            try {
+              if (e.key === 'Enter' || e.key === ' ') {
+                openRenameModal(e);
+              }
+            } catch (error) {
+              console.error("Error in rename key handler:", error);
             }
           }}
           role="menuitem"
@@ -61,10 +71,20 @@ const ChatOptions = ({
         <button
           type="button"
           className="flex items-center gap-2 w-full px-3 py-2 text-sm text-left text-red-600 hover:bg-gray-100"
-          onClick={openDeleteModal}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
+          onClick={(e) => {
+            try {
               openDeleteModal(e);
+            } catch (error) {
+              console.error("Error opening delete modal:", error);
+            }
+          }}
+          onKeyDown={(e) => {
+            try {
+              if (e.key === 'Enter' || e.key === ' ') {
+                openDeleteModal(e);
+              }
+            } catch (error) {
+              console.error("Error in delete key handler:", error);
             }
           }}
           role="menuitem"

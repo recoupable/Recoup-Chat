@@ -68,10 +68,12 @@ const ChatItem = ({
           {/* Show options menu when the button is clicked */}
           {isMenuOpen && (
             <div className="absolute right-0 top-0 z-[100]">
-              <ChatOptionsMenu 
-                conversation={conversation as Conversation}
-                onClose={handleMenuClose}
-              />
+              {isConversation(conversation) ? (
+                <ChatOptionsMenu 
+                  conversation={conversation}
+                  onClose={handleMenuClose}
+                />
+              ) : null}
             </div>
           )}
         </div>

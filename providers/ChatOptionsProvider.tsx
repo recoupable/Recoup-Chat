@@ -40,14 +40,34 @@ export const ChatOptionsProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const openRenameModal = (conversation: Conversation) => {
-    setCurrentConversation(conversation);
-    setNewTopic(conversation.topic || '');
-    setIsRenameModalOpen(true);
+    try {
+      // Validate conversation object
+      if (!conversation || !conversation.id) {
+        console.error('Invalid conversation object passed to openRenameModal');
+        return;
+      }
+      
+      setCurrentConversation(conversation);
+      setNewTopic(conversation.topic || '');
+      setIsRenameModalOpen(true);
+    } catch (error) {
+      console.error('Error opening rename modal:', error);
+    }
   };
 
   const openDeleteModal = (conversation: Conversation) => {
-    setCurrentConversation(conversation);
-    setIsDeleteModalOpen(true);
+    try {
+      // Validate conversation object
+      if (!conversation || !conversation.id) {
+        console.error('Invalid conversation object passed to openDeleteModal');
+        return;
+      }
+      
+      setCurrentConversation(conversation);
+      setIsDeleteModalOpen(true);
+    } catch (error) {
+      console.error('Error opening delete modal:', error);
+    }
   };
 
   const handleRename = async () => {

@@ -63,9 +63,11 @@ const Menu = ({ toggleMenuExpanded }: { toggleMenuExpanded: () => void }) => {
       
       <div className="flex flex-col flex-grow min-h-0">
         {email && (
-          <ChatOptionsProvider>
-            <RecentChats toggleModal={toggleMenuExpanded} />
-          </ChatOptionsProvider>
+          <div className="w-full flex-grow min-h-0 flex flex-col relative">
+            <ChatOptionsProvider>
+              <RecentChats toggleModal={toggleMenuExpanded} />
+            </ChatOptionsProvider>
+          </div>
         )}
         
         <div className="shrink-0 mt-auto">
