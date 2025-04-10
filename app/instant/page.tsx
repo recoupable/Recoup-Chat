@@ -2,7 +2,7 @@
 
 import { Chat } from "@/components/VercelChat/chat";
 import useAutoLogin from "@/hooks/useAutoLogin";
-import { generateUUID } from "@/lib/utils";
+import generateUUID from "@/lib/generateUUID";
 
 export default function Home() {
   useAutoLogin();
