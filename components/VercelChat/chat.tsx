@@ -27,11 +27,13 @@ export function Chat({ id, reportId }: ChatProps) {
   } = useVercelChat({ id });
 
   const { isVisible } = useVisibilityDelay({
-    shouldBeVisible: messages.length === 0 && !id,
-    deps: [messages.length, id],
+    shouldBeVisible: messages.length === 0 && !reportId,
+    deps: [messages.length, reportId],
   });
 
-  if (isLoading || (!!id && messages.length === 0 && !reportId)) {
+  const isEmptyReportPage = messages.length === 0 && reportId;
+  console.log("chat isEmptyReportPage", isEmptyReportPage);
+  if (isLoading || isEmptyReportPage) {
     return <ChatSkeleton />;
   }
 
@@ -55,15 +57,15 @@ export function Chat({ id, reportId }: ChatProps) {
         }
       )}
     >
-      {messages.length > 0 || !!id ? (
-        <Messages messages={messages} status={status}>
-          {reportId && <ChatReport reportId={reportId} />}
-        </Messages>
-      ) : (
+      {isVisible ? (
         <div className="w-full">
           <ChatGreeting isVisible={isVisible} />
           <ChatPrompt isVisible={isVisible} />
         </div>
+      ) : (
+        <Messages messages={messages} status={status}>
+          {reportId && <ChatReport reportId={reportId} />}
+        </Messages>
       )}
 
       <div className="flex flex-col gap-4 w-full">
