@@ -6,6 +6,7 @@ import UserInfo from "../Sidebar/UserInfo";
 import Logo from "../Logo";
 import MenuItemIcon from "../MenuItemIcon";
 import { v4 as uuidV4 } from "uuid";
+import { ChatOptionsProvider } from "@/providers/ChatOptionsProvider";
 
 const Menu = ({ toggleMenuExpanded }: { toggleMenuExpanded: () => void }) => {
   const { push } = useRouter();
@@ -61,7 +62,11 @@ const Menu = ({ toggleMenuExpanded }: { toggleMenuExpanded: () => void }) => {
       </button>
       
       <div className="flex flex-col flex-grow min-h-0">
-        {email && <RecentChats toggleModal={toggleMenuExpanded} />}
+        {email && (
+          <ChatOptionsProvider>
+            <RecentChats toggleModal={toggleMenuExpanded} />
+          </ChatOptionsProvider>
+        )}
         
         <div className="shrink-0 mt-auto">
           {email && <UnlockPro />}
