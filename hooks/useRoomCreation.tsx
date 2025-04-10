@@ -31,7 +31,8 @@ export function useRoomCreation({
         setRoomId(room.id);
         addConversation(room);
 
-        // Silently update the URL without affecting the UI or causing remount        window.history.replaceState({}, "", `/instant/${room.id}`);
+        // Silently update the URL without affecting the UI or causing remount
+        window.history.replaceState({}, "", `/instant/${room.id}`);
         return room.id;
       }
     } catch (error) {
