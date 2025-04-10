@@ -19,12 +19,12 @@ export function useRoomCreation({
   const [isCreatingRoom, setIsCreatingRoom] = useState(false);
   const { addConversation } = useConversationsProvider();
 
-  const createNewRoom = async (content: string, chatId?: string) => {
+  const createNewRoom = async (content: string, id?: string) => {
     if (roomId || isCreatingRoom || !userId) return;
 
     try {
       setIsCreatingRoom(true);
-      const room = await createRoom(userId, content, artistId, chatId);
+      const room = await createRoom(userId, content, artistId, id);
 
       if (room) {
         // Update internal state first
