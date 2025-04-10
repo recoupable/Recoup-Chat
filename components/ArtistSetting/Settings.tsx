@@ -1,7 +1,6 @@
 "use client";
 
-import useIsMobile from "@/hooks/useIsMobile";
-import { MicVocal, X } from "lucide-react";
+import { MicVocal } from "lucide-react";
 import Form from "../Form";
 import { validation } from "@/lib/utils/setting";
 import { useArtistProvider } from "@/providers/ArtistProvider";
@@ -17,7 +16,6 @@ import { useFunnelAnalysisProvider } from "@/providers/FunnelAnalysisProvider";
 import AccountIdDisplay from "./AccountIdDisplay";
 
 const Settings = () => {
-  const isMobile = useIsMobile();
   const {
     toggleSettingModal,
     saveSetting,
@@ -62,11 +60,6 @@ const Settings = () => {
             )}
           </div>
         </div>
-        {!isMobile && (
-          <button type="button" onClick={toggleSettingModal}>
-            <X />
-          </button>
-        )}
       </div>
       <div className="col-span-4 space-y-1 md:space-y-2">
         <p className="text-sm">Artist Image</p>
