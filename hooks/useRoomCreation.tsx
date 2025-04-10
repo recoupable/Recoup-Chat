@@ -5,21 +5,21 @@ import createRoom from "@/lib/createRoom";
 import { useConversationsProvider } from "@/providers/ConversationsProvider";
 
 interface UseRoomCreationProps {
-  initialRoomId?: string;
+  id?: string;
   userId?: string;
   artistId?: string;
 }
 
 export function useRoomCreation({
-  initialRoomId,
+  id,
   userId,
   artistId,
 }: UseRoomCreationProps) {
-  const [roomId, setRoomId] = useState<string | undefined>(initialRoomId);
+  const [roomId, setRoomId] = useState<string | undefined>(id);
   const [isCreatingRoom, setIsCreatingRoom] = useState(false);
   const { addConversation } = useConversationsProvider();
 
-  const createNewRoom = async (content: string, id?: string) => {
+  const createNewRoom = async (content: string) => {
     if (roomId || isCreatingRoom || !userId) return;
 
     try {

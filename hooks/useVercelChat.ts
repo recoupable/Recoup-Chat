@@ -24,7 +24,7 @@ export function useVercelChat({ id }: UseVercelChatProps) {
   const artistId = selectedArtist?.account_id;
 
   const { roomId: internalRoomId, createNewRoom } = useRoomCreation({
-    initialRoomId: id,
+    id,
     userId,
     artistId,
   });
@@ -78,8 +78,7 @@ export function useVercelChat({ id }: UseVercelChatProps) {
 
     if (!internalRoomId) {
       trackMessage(message);
-      // Pass the chatId to createNewRoom to use as the room ID
-      createNewRoom(content, id);
+      createNewRoom(content);
     }
   };
 
