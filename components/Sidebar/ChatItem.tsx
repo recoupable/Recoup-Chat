@@ -12,7 +12,7 @@ interface ChatItemProps {
   isMenuOpen: boolean;
   isConversation: (item: Conversation | ArtistAgent) => item is Conversation;
   handleItemClick: (conversation: Conversation | ArtistAgent) => void;
-  handleMenuClick: (e: React.MouseEvent | React.TouchEvent, itemId: string) => void;
+  handleMenuClick: (e: React.MouseEvent | React.TouchEvent | React.KeyboardEvent, itemId: string) => void;
   handleMenuClose: () => void;
 }
 
@@ -53,6 +53,11 @@ const ChatItem = ({
               type="button"
               className="p-1.5 rounded-md hover:opacity-80 transition-opacity duration-150"
               onClick={(e) => handleMenuClick(e, itemId)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  handleMenuClick(e, itemId);
+                }
+              }}
               aria-label="Chat options"
               data-testid="chat-menu-button"
             >

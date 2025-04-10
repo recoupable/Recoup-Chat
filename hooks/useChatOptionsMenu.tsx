@@ -7,7 +7,7 @@ export const useChatOptionsMenu = () => {
   const [menuOpenChatId, setMenuOpenChatId] = useState<string | null>(null);
   const { openRenameModal, openDeleteModal } = useChatOptions();
 
-  const handleMenuClick = useCallback((e: React.MouseEvent | React.TouchEvent, itemId: string) => {
+  const handleMenuClick = useCallback((e: React.MouseEvent | React.TouchEvent | React.KeyboardEvent, itemId: string) => {
     e.stopPropagation();
     e.preventDefault();
     
