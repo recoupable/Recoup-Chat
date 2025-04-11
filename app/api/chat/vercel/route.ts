@@ -1,13 +1,20 @@
 import { myProvider } from "@/lib/models";
 import { getMcpTools } from "@/lib/tools/getMcpTools";
 import createMemories from "@/lib/supabase/createMemories";
-import { Message, smoothStream, streamText } from "ai";
+import {
+  appendResponseMessages,
+  createDataStreamResponse,
+  Message,
+  smoothStream,
+  streamText,
+} from "ai";
 import { NextRequest } from "next/server";
 import { validateMessages } from "@/lib/chat/validateMessages";
 import getSystemPrompt from "@/lib/prompts/getSystemPrompt";
 import getRoom from "@/lib/supabase/getRoom";
 import { createRoomWithReport } from "@/lib/supabase/createRoomWithReport";
-import getAiTitle from "@/lib/getAiTitle";
+import generateUUID from "@/lib/generateUUID";
+import { generateChatTitle } from "@/lib/chat/generateChatTitle";
 
 export async function POST(request: NextRequest) {
   const {
@@ -26,7 +33,7 @@ export async function POST(request: NextRequest) {
   const room = await getRoom(roomId);
 
   if (!room) {
-    const title = await getAiTitle(messages[0].content);
+    const title = await generateChatTitle(messages[0].content);
 
     await createRoomWithReport({
       account_id: accountId,
@@ -44,24 +51,47 @@ export async function POST(request: NextRequest) {
 
   const tools = await getMcpTools();
 
-  const stream = streamText({
-    system,
-    tools,
-    model: myProvider.languageModel(selectedModelId),
-    experimental_transform: [
-      smoothStream({
-        chunking: "word",
-      }),
-    ],
-    messages,
-    maxSteps: 11,
-    toolCallStreaming: true,
-  });
+  return createDataStreamResponse({
+    execute: (dataStream) => {
+      const result = streamText({
+        model: myProvider.languageModel(selectedModelId),
+        system,
+        messages,
+        maxSteps: 11,
+        experimental_transform: smoothStream({ chunking: "word" }),
+        experimental_generateMessageId: generateUUID,
+        tools,
+        onFinish: async ({ response }) => {
+          if (accountId) {
+            try {
+              const [, assistantMessage] = appendResponseMessages({
+                messages: [lastMessage],
+                responseMessages: response.messages,
+              });
 
-  return stream.toDataStreamResponse({
-    sendReasoning: true,
-    getErrorMessage: () => {
-      return `An error occurred, please try again!`;
+              await createMemories({
+                room_id: roomId,
+                content: assistantMessage.content,
+              });
+            } catch (_) {
+              console.error("Failed to save chat", _);
+            }
+          }
+        },
+        experimental_telemetry: {
+          isEnabled: true,
+          functionId: "stream-text",
+        },
+      });
+
+      result.consumeStream();
+
+      result.mergeIntoDataStream(dataStream, {
+        sendReasoning: true,
+      });
+    },
+    onError: () => {
+      return "Oops, an error occurred!";
     },
   });
 }

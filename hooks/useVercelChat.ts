@@ -1,5 +1,4 @@
 import { useChat } from "@ai-sdk/react";
-import createMemory from "@/lib/createMemory";
 import { useMessageLoader } from "./useMessageLoader";
 import { useUserProvider } from "@/providers/UserProvder";
 import { useArtistProvider } from "@/providers/ArtistProvider";
@@ -30,12 +29,6 @@ export function useVercelChat({ id }: UseVercelChatProps) {
         roomId: id,
         artistId,
         accountId: userId,
-      },
-      onFinish: (message) => {
-        if (id) {
-          // If room exists, immediately store the message
-          createMemory(message, id);
-        }
       },
       onError: () => {
         console.error("An error occurred, please try again!");
