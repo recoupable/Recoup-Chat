@@ -9,13 +9,15 @@ import ChatGreeting from "../Chat/ChatGreeting";
 import ChatPrompt from "../Chat/ChatPrompt";
 import useVisibilityDelay from "@/hooks/useVisibilityDelay";
 import { ChatReport } from "../Chat/ChatReport";
+import { useParams } from "next/navigation";
+import { useAutoLogin } from "@/hooks/useAutoLogin";
 
 interface ChatProps {
-  roomId?: string;
+  id: string;
   reportId?: string;
 }
 
-export function Chat({ roomId, reportId }: ChatProps) {
+export function Chat({ id, reportId }: ChatProps) {
   const {
     messages,
     status,
@@ -24,14 +26,18 @@ export function Chat({ roomId, reportId }: ChatProps) {
     isGeneratingResponse,
     handleSendMessage,
     stop,
-  } = useVercelChat({ roomId });
+    setInput,
+    input,
+  } = useVercelChat({ id });
+  const { roomId } = useParams();
+  useAutoLogin();
 
   const { isVisible } = useVisibilityDelay({
-    shouldBeVisible: messages.length === 0 && !roomId,
-    deps: [messages.length, roomId],
+    shouldBeVisible: messages.length === 0 && !reportId,
+    deps: [messages.length, reportId],
   });
 
-  if (isLoading || (!!roomId && messages.length === 0 && !reportId)) {
+  if (isLoading && roomId) {
     return <ChatSkeleton />;
   }
 
@@ -55,19 +61,21 @@ export function Chat({ roomId, reportId }: ChatProps) {
         }
       )}
     >
-      {messages.length > 0 || !!roomId ? (
-        <Messages messages={messages} status={status}>
-          {reportId && <ChatReport reportId={reportId} />}
-        </Messages>
-      ) : (
+      {isVisible ? (
         <div className="w-full">
           <ChatGreeting isVisible={isVisible} />
           <ChatPrompt isVisible={isVisible} />
         </div>
+      ) : (
+        <Messages messages={messages} status={status}>
+          {reportId && <ChatReport reportId={reportId} />}
+        </Messages>
       )}
 
       <div className="flex flex-col gap-4 w-full">
         <ChatInput
+          input={input}
+          setInput={setInput}
           onSendMessage={handleSendMessage}
           isGeneratingResponse={isGeneratingResponse}
           onStop={stop}

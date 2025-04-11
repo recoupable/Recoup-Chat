@@ -1,58 +1,42 @@
-import { Message } from "ai";
 import { useChat } from "@ai-sdk/react";
-import createMemory from "@/lib/createMemory";
-import { usePendingMessages } from "./usePendingMessages";
 import { useMessageLoader } from "./useMessageLoader";
-import useRoomCreation from "./useRoomCreation";
 import { useUserProvider } from "@/providers/UserProvder";
 import { useArtistProvider } from "@/providers/ArtistProvider";
+import { useParams } from "next/navigation";
 
 interface UseVercelChatProps {
-  roomId?: string;
+  id: string;
 }
 
 /**
  * A hook that provides all chat functionality for the Vercel Chat component
- * Combines useChat, useRoomCreation, usePendingMessages, and useMessageLoader
+ * Combines useChat, and useMessageLoader
  * Accesses user and artist data directly from providers
  */
-export function useVercelChat({ roomId }: UseVercelChatProps) {
+export function useVercelChat({ id }: UseVercelChatProps) {
   const { userData } = useUserProvider();
   const { selectedArtist } = useArtistProvider();
+  const { roomId } = useParams();
 
   const userId = userData?.id;
   const artistId = selectedArtist?.account_id;
 
-  const { roomId: internalRoomId, createNewRoom } = useRoomCreation({
-    initialRoomId: roomId,
-    userId,
-    artistId,
-  });
-  const { trackMessage } = usePendingMessages(internalRoomId);
-
-  const { messages, append, status, stop, setMessages } = useChat({
-    id: "recoup-chat", // Constant ID prevents state reset when route changes
-    api: `/api/chat/vercel`,
-    body: {
-      roomId: internalRoomId,
-      artistId,
-    },
-    onFinish: (message) => {
-      if (internalRoomId) {
-        // If room exists, immediately store the message
-        createMemory(message, internalRoomId);
-      } else {
-        // Otherwise, add to pending messages
-        trackMessage(message as Message);
-      }
-    },
-    onError: () => {
-      console.error("An error occurred, please try again!");
-    },
-  });
+  const { messages, handleSubmit, input, status, stop, setMessages, setInput } =
+    useChat({
+      id,
+      api: `/api/chat/vercel`,
+      body: {
+        roomId: id,
+        artistId,
+        accountId: userId,
+      },
+      onError: (e) => {
+        console.error("An error occurred, please try again!", e);
+      },
+    });
 
   const { isLoading: isMessagesLoading, hasError } = useMessageLoader(
-    messages.length === 0 ? internalRoomId : undefined,
+    messages.length === 0 ? id : undefined,
     userId,
     setMessages
   );
@@ -61,24 +45,17 @@ export function useVercelChat({ roomId }: UseVercelChatProps) {
   // 1. We're loading messages
   // 2. We have a roomId (meaning we're intentionally loading a chat)
   // 3. We don't already have messages (important for redirects)
-  const isLoading = isMessagesLoading && !!roomId && messages.length === 0;
+  const isLoading = isMessagesLoading && !!id && messages.length === 0;
 
   const isGeneratingResponse = ["streaming", "submitted"].includes(status);
 
-  const handleSendMessage = (content: string) => {
-    const message: Message = {
-      id: crypto.randomUUID(),
-      role: "user",
-      content,
-      createdAt: new Date(),
-    };
-
+  const handleSendMessage = () => {
     // Always append message first for immediate feedback
-    append(message);
+    handleSubmit(undefined);
 
-    if (!internalRoomId) {
-      trackMessage(message);
-      createNewRoom(content);
+    if (!roomId) {
+      // Silently update the URL without affecting the UI or causing remount
+      window.history.replaceState({}, "", `/instant/${id}`);
     }
   };
 
@@ -86,13 +63,14 @@ export function useVercelChat({ roomId }: UseVercelChatProps) {
     // States
     messages,
     status,
+    input,
     isLoading,
     hasError,
-    internalRoomId,
     isGeneratingResponse,
 
     // Actions
     handleSendMessage,
+    setInput,
     stop,
   };
 }
