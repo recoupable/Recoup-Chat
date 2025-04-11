@@ -1,28 +1,13 @@
-import { AI_MODEL } from "@/lib/consts";
 import { NextRequest } from "next/server";
-import OpenAI from "openai";
+import { generateChatTitle } from "@/lib/chat/generateChatTitle";
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
   const question = body.question;
 
   try {
-    const openai = new OpenAI();
+    const title = await generateChatTitle(question);
 
-    const response = await openai.chat.completions.create({
-      model: AI_MODEL,
-      messages: [
-        {
-          role: "user",
-          content: `Provide a brief title (more formal, no more than 20 characters!!!) that reflects the key elements of the given context.
-          If the question is related to a segment or contains a segment name, highlight the segment name.
-          Context: ${question}`,
-        },
-      ],
-      store: true,
-    });
-
-    const title = response.choices[0].message!.content!.toString();
     return Response.json({
       message: "success",
       title,
