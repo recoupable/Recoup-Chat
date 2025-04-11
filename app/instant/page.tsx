@@ -1,11 +1,7 @@
-"use client";
-
 import { Chat } from "@/components/VercelChat/chat";
-import useAutoLogin from "@/hooks/useAutoLogin";
 import generateUUID from "@/lib/generateUUID";
 
-export default function Home() {
-  useAutoLogin();
+export default async function Home() {
   const id = generateUUID();
 
   return (
