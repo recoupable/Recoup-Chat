@@ -23,24 +23,25 @@ export function useVercelChat({ id }: UseVercelChatProps) {
   const userId = userData?.id;
   const artistId = selectedArtist?.account_id;
 
-  const { messages, append, status, stop, setMessages } = useChat({
-    id,
-    api: `/api/chat/vercel`,
-    body: {
-      roomId: id,
-      artistId,
-      accountId: userId,
-    },
-    onFinish: (message) => {
-      if (id) {
-        // If room exists, immediately store the message
-        createMemory(message, id);
-      }
-    },
-    onError: () => {
-      console.error("An error occurred, please try again!");
-    },
-  });
+  const { messages, handleSubmit, input, status, stop, setMessages, setInput } =
+    useChat({
+      id,
+      api: `/api/chat/vercel`,
+      body: {
+        roomId: id,
+        artistId,
+        accountId: userId,
+      },
+      onFinish: (message) => {
+        if (id) {
+          // If room exists, immediately store the message
+          createMemory(message, id);
+        }
+      },
+      onError: () => {
+        console.error("An error occurred, please try again!");
+      },
+    });
 
   const { isLoading: isMessagesLoading, hasError } = useMessageLoader(
     messages.length === 0 ? id : undefined,
@@ -56,16 +57,9 @@ export function useVercelChat({ id }: UseVercelChatProps) {
 
   const isGeneratingResponse = ["streaming", "submitted"].includes(status);
 
-  const handleSendMessage = (content: string) => {
-    const message: Message = {
-      id: crypto.randomUUID(),
-      role: "user",
-      content,
-      createdAt: new Date(),
-    };
-
+  const handleSendMessage = () => {
     // Always append message first for immediate feedback
-    append(message);
+    handleSubmit(undefined);
 
     if (!roomId) {
       // Silently update the URL without affecting the UI or causing remount
@@ -77,12 +71,14 @@ export function useVercelChat({ id }: UseVercelChatProps) {
     // States
     messages,
     status,
+    input,
     isLoading,
     hasError,
     isGeneratingResponse,
 
     // Actions
     handleSendMessage,
+    setInput,
     stop,
   };
 }
