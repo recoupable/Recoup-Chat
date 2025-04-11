@@ -24,6 +24,8 @@ export function Chat({ id, reportId }: ChatProps) {
     isGeneratingResponse,
     handleSendMessage,
     stop,
+    setInput,
+    input,
   } = useVercelChat({ id });
   const { roomId } = useParams();
 
@@ -69,6 +71,8 @@ export function Chat({ id, reportId }: ChatProps) {
 
       <div className="flex flex-col gap-4 w-full">
         <ChatInput
+          input={input}
+          setInput={setInput}
           onSendMessage={handleSendMessage}
           isGeneratingResponse={isGeneratingResponse}
           onStop={stop}

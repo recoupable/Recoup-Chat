@@ -1,33 +1,32 @@
 "use client";
 
-import { useState } from "react";
 import cn from "classnames";
 import { Input } from "./input";
 import { ArrowUpIcon, StopIcon } from "./icons";
 
 interface ChatInputProps {
-  onSendMessage: (message: string) => void;
+  onSendMessage: () => void;
   isGeneratingResponse: boolean;
   onStop: () => void;
+  setInput: (input: string) => void;
+  input: string;
 }
 
 export function ChatInput({
   onSendMessage,
   isGeneratingResponse,
   onStop,
+  setInput,
+  input,
 }: ChatInputProps) {
-  const [input, setInput] = useState<string>("");
-
   const handleSend = () => {
     if (input === "") return;
 
     if (isGeneratingResponse) {
       onStop();
     } else {
-      onSendMessage(input);
+      onSendMessage();
     }
-
-    setInput("");
   };
 
   return (
