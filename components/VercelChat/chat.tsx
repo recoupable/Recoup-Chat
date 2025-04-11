@@ -10,6 +10,8 @@ import ChatPrompt from "../Chat/ChatPrompt";
 import useVisibilityDelay from "@/hooks/useVisibilityDelay";
 import { ChatReport } from "../Chat/ChatReport";
 import { useParams } from "next/navigation";
+import { useAutoLogin } from "@/hooks/useAutoLogin";
+
 interface ChatProps {
   id: string;
   reportId?: string;
@@ -28,6 +30,7 @@ export function Chat({ id, reportId }: ChatProps) {
     input,
   } = useVercelChat({ id });
   const { roomId } = useParams();
+  useAutoLogin();
 
   const { isVisible } = useVisibilityDelay({
     shouldBeVisible: messages.length === 0 && !reportId,
