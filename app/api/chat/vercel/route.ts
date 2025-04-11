@@ -88,7 +88,8 @@ export async function POST(request: NextRequest) {
         sendReasoning: true,
       });
     },
-    onError: () => {
+    onError: (e) => {
+      console.error("Error in Vercel Chat", e);
       return "Oops, an error occurred!";
     },
   });
