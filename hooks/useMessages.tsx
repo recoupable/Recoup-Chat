@@ -47,22 +47,22 @@ const useMessages = () => {
   });
 
   useEffect(() => {
-    if (!chatId) {
+    if (!roomId) {
       setMessages([]);
     }
-  }, [chatId, setMessages]);
+  }, [roomId, setMessages]);
 
   useEffect(() => {
     const fetch = async () => {
       if (!userData?.id) return;
-      if (!chatId) return;
+      if (!roomId) return;
       setIsLoading(true);
-      const initialMessages = await getClientMessages(chatId);
+      const initialMessages = await getClientMessages(roomId as string);
       setMessages(initialMessages as ChatMessage[]);
       setIsLoading(false);
     };
     fetch();
-  }, [chatId, userData, setMessages]);
+  }, [roomId, userData, setMessages]);
 
   if (segmentError) {
     console.error("[useMessages] Error fetching segment:", segmentError);
