@@ -1,4 +1,3 @@
-import { Message } from "ai";
 import { useChat } from "@ai-sdk/react";
 import createMemory from "@/lib/createMemory";
 import { useMessageLoader } from "./useMessageLoader";
