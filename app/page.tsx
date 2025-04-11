@@ -1,18 +1,14 @@
-"use client";
-
 import { Chat } from "@/components/VercelChat/chat";
-import useAutoLogin from "@/hooks/useAutoLogin";
-import { useFirstArtistRedirect } from "@/hooks/useFirstArtistRedirect";
+import generateUUID from "@/lib/generateUUID";
 
-const HomePage = () => {
-  useFirstArtistRedirect();
-  useAutoLogin();
+export const dynamic = "force-dynamic";
+
+export default async function Home() {
+  const id = generateUUID();
 
   return (
     <div className="flex flex-col size-full items-center">
-      <Chat />
+      <Chat id={id} />
     </div>
   );
-};
-
-export default HomePage;
+}
