@@ -62,20 +62,18 @@ export async function POST(request: NextRequest) {
         experimental_generateMessageId: generateUUID,
         tools,
         onFinish: async ({ response }) => {
-          if (accountId) {
-            try {
-              const [, assistantMessage] = appendResponseMessages({
-                messages: [lastMessage],
-                responseMessages: response.messages,
-              });
+          try {
+            const [, assistantMessage] = appendResponseMessages({
+              messages: [lastMessage],
+              responseMessages: response.messages,
+            });
 
-              await createMemories({
-                room_id: roomId,
-                content: assistantMessage.content,
-              });
-            } catch (_) {
-              console.error("Failed to save chat", _);
-            }
+            await createMemories({
+              room_id: roomId,
+              content: assistantMessage,
+            });
+          } catch (_) {
+            console.error("Failed to save chat", _);
           }
         },
         experimental_telemetry: {
