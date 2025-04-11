@@ -12,12 +12,12 @@ import { ChatMessage } from "@/types/reasoning";
 const useMessages = () => {
   const csrfToken = useCsrfToken();
   const { selectedArtist } = useArtistProvider();
-  const params = useParams();
-  const chatId =
-    typeof params.chat_id === "string" ? params.chat_id : undefined;
+  const { roomId } = useParams();
   const { userData } = useUserProvider();
   const [isLoading, setIsLoading] = useState(false);
-  const { data: segmentData, isError: segmentError } = useChatSegment(chatId);
+  const { data: segmentData, isError: segmentError } = useChatSegment(
+    roomId as string
+  );
 
   const {
     messages,
@@ -29,19 +29,19 @@ const useMessages = () => {
     setMessages,
     reload: reloadAiChat,
   } = useChat({
-    id: chatId,
+    id: roomId as string,
     api: `/api/chat`,
     headers: {
       "X-CSRF-Token": csrfToken,
     },
     body: {
       artistId: selectedArtist?.account_id,
-      roomId: chatId,
+      roomId: roomId as string,
       segmentId: segmentData?.segmentId,
     },
     onFinish: (message) => {
-      if (chatId) {
-        createMemory(message as ChatMessage, chatId);
+      if (roomId) {
+        createMemory(message as ChatMessage, roomId as string);
       }
     },
   });

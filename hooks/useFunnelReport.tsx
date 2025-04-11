@@ -2,6 +2,7 @@ import getSegmentReport from "@/lib/report/getSegmentReport";
 import { useParams, usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 let timer: any = null;
 
 const useFunnelReport = () => {
@@ -12,7 +13,7 @@ const useFunnelReport = () => {
   const [bannerImage, setBannerImage] = useState("");
   const [bannerArtistName, setBannerArtistName] = useState("");
   const [pitchName, setPitchName] = useState("");
-  const { chat_id: chatId } = useParams();
+  const { roomId: chatId } = useParams();
   const pathname = usePathname();
   const isReportPage = pathname.includes("/report");
 
