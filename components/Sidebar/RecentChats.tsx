@@ -13,44 +13,48 @@ import { useParams } from "next/navigation";
 
 // Helper function to get a unique ID for either type of chat room
 const getChatRoomId = (chatRoom: Conversation | ArtistAgent): string => {
-  return 'id' in chatRoom ? chatRoom.id : chatRoom.agentId;
+  return "id" in chatRoom ? chatRoom.id : chatRoom.agentId;
 };
 
 const RecentChats = ({ toggleModal }: { toggleModal: () => void }) => {
-  const { conversations, isLoading, fetchConversations } = useConversationsProvider();
+  const { conversations, isLoading, fetchConversations } =
+    useConversationsProvider();
   const { handleClick } = useClickChat();
   const [hoveredChatId, setHoveredChatId] = useState<string | null>(null);
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
   const isMobile = useMobileDetection();
   const params = useParams();
-  
+
   // Get current active chat ID from URL params
-  const activeChatId = params?.chat_id || params?.agent_id || null;
-  
+  const activeChatId = params?.roomId || params?.agentId || null;
+
   // Modal states
   const [modalState, setModalState] = useState<{
-    type: 'rename' | 'delete' | null;
+    type: "rename" | "delete" | null;
     chatRoom: Conversation | ArtistAgent | null;
   }>({ type: null, chatRoom: null });
-  
+
   // Refs for detecting outside clicks
   const menuRef = useRef<HTMLDivElement>(null);
   const buttonRefs = useRef<Record<string, HTMLButtonElement | null>>({});
-  
+
   // Handle closing the menu when clicking outside
   useOutsideClick({
     menuRef,
     buttonRefs,
     isOpen: !!openMenuId,
-    onClose: () => setOpenMenuId(null)
+    onClose: () => setOpenMenuId(null),
   });
 
   // Modal action handlers
-  const openModal = (type: 'rename' | 'delete', chatRoom: Conversation | ArtistAgent) => {
+  const openModal = (
+    type: "rename" | "delete",
+    chatRoom: Conversation | ArtistAgent
+  ) => {
     setModalState({ type, chatRoom });
     setOpenMenuId(null);
   };
-  
+
   const closeModal = () => setModalState({ type: null, chatRoom: null });
 
   // API action handlers
@@ -58,12 +62,15 @@ const RecentChats = ({ toggleModal }: { toggleModal: () => void }) => {
     try {
       await fetchConversations();
     } catch (error) {
-      console.error(`Error refreshing conversations after ${modalState.type}:`, error);
+      console.error(
+        `Error refreshing conversations after ${modalState.type}:`,
+        error
+      );
     }
   };
 
-  const isRenameModalOpen = modalState.type === 'rename';
-  const isDeleteModalOpen = modalState.type === 'delete';
+  const isRenameModalOpen = modalState.type === "rename";
+  const isDeleteModalOpen = modalState.type === "delete";
 
   return (
     <div className="w-full flex-grow min-h-0 flex flex-col">
@@ -78,7 +85,7 @@ const RecentChats = ({ toggleModal }: { toggleModal: () => void }) => {
           <>
             {conversations.map((chatRoom) => {
               const roomId = getChatRoomId(chatRoom);
-              
+
               return (
                 <ChatItem
                   key={roomId}
@@ -97,8 +104,8 @@ const RecentChats = ({ toggleModal }: { toggleModal: () => void }) => {
                   onMenuToggle={() => {
                     setOpenMenuId(openMenuId === roomId ? null : roomId);
                   }}
-                  onRenameClick={() => openModal('rename', chatRoom)}
-                  onDeleteClick={() => openModal('delete', chatRoom)}
+                  onRenameClick={() => openModal("rename", chatRoom)}
+                  onDeleteClick={() => openModal("delete", chatRoom)}
                 />
               );
             })}
@@ -113,7 +120,7 @@ const RecentChats = ({ toggleModal }: { toggleModal: () => void }) => {
         chatRoom={modalState.chatRoom}
         onRename={handleApiAction}
       />
-      
+
       <DeleteConfirmationModal
         isOpen={isDeleteModalOpen}
         onClose={closeModal}

@@ -3,17 +3,17 @@ import { Chat } from "@/components/VercelChat/chat";
 
 interface PageProps {
   params: Promise<{
-    chat_id: string;
+    roomId: string;
   }>;
 }
 
 export default async function ChatPage({ params }: PageProps) {
-  const { chat_id } = await params;
-  const reports = await getRoomReports(chat_id);
+  const { roomId } = await params;
+  const reports = await getRoomReports(roomId);
 
   return (
     <div className="flex flex-col size-full items-center">
-      <Chat roomId={chat_id} reportId={reports?.report_id} />
+      <Chat id={roomId} reportId={reports?.report_id} />
     </div>
   );
 }
