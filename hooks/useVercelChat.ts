@@ -30,8 +30,8 @@ export function useVercelChat({ id }: UseVercelChatProps) {
         artistId,
         accountId: userId,
       },
-      onError: () => {
-        console.error("An error occurred, please try again!");
+      onError: (e) => {
+        console.error("An error occurred, please try again!", e);
       },
     });
 
