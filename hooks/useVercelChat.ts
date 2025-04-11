@@ -8,6 +8,7 @@ import { useParams } from "next/navigation";
 
 interface UseVercelChatProps {
   id: string;
+  initialMessages?: Message[];
 }
 
 /**
@@ -15,7 +16,10 @@ interface UseVercelChatProps {
  * Combines useChat, useRoomCreation, usePendingMessages, and useMessageLoader
  * Accesses user and artist data directly from providers
  */
-export function useVercelChat({ id }: UseVercelChatProps) {
+export function useVercelChat({
+  id,
+  initialMessages = [],
+}: UseVercelChatProps) {
   const { userData } = useUserProvider();
   const { selectedArtist } = useArtistProvider();
   const { roomId } = useParams();
@@ -23,27 +27,30 @@ export function useVercelChat({ id }: UseVercelChatProps) {
   const userId = userData?.id;
   const artistId = selectedArtist?.account_id;
 
-  const { messages, append, status, stop, setMessages } = useChat({
-    id,
-    api: `/api/chat/vercel`,
-    body: {
-      roomId: id,
-      artistId,
-      accountId: userId,
-    },
-    onFinish: (message) => {
-      if (id) {
-        // If room exists, immediately store the message
-        createMemory(message, id);
-      }
-    },
-    onError: () => {
-      console.error("An error occurred, please try again!");
-    },
-  });
+  const { messages, append, status, stop, setMessages, input, setInput } =
+    useChat({
+      id,
+      initialMessages,
+      api: `/api/chat/vercel`,
+      body: {
+        roomId: id,
+        artistId,
+        accountId: userId,
+      },
+      onFinish: (message) => {
+        if (id) {
+          // If room exists, immediately store the message
+          createMemory(message, id);
+        }
+      },
+      onError: () => {
+        console.error("An error occurred, please try again!");
+      },
+    });
 
+  // Only use the message loader if we don't have initial messages
   const { isLoading: isMessagesLoading, hasError } = useMessageLoader(
-    messages.length === 0 ? id : undefined,
+    initialMessages.length === 0 && messages.length === 0 ? id : undefined,
     userId,
     setMessages
   );
@@ -52,7 +59,12 @@ export function useVercelChat({ id }: UseVercelChatProps) {
   // 1. We're loading messages
   // 2. We have a roomId (meaning we're intentionally loading a chat)
   // 3. We don't already have messages (important for redirects)
-  const isLoading = isMessagesLoading && !!id && messages.length === 0;
+  // 4. We don't have initial messages
+  const isLoading =
+    isMessagesLoading &&
+    !!id &&
+    messages.length === 0 &&
+    initialMessages.length === 0;
 
   const isGeneratingResponse = ["streaming", "submitted"].includes(status);
 
@@ -80,9 +92,11 @@ export function useVercelChat({ id }: UseVercelChatProps) {
     isLoading,
     hasError,
     isGeneratingResponse,
+    input,
 
     // Actions
     handleSendMessage,
+    setInput,
     stop,
   };
 }

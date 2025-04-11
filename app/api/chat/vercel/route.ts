@@ -1,67 +1,136 @@
-import { myProvider } from "@/lib/models";
-import { getMcpTools } from "@/lib/tools/getMcpTools";
-import createMemories from "@/lib/supabase/createMemories";
-import { Message, smoothStream, streamText } from "ai";
-import { NextRequest } from "next/server";
-import { validateMessages } from "@/lib/chat/validateMessages";
-import getSystemPrompt from "@/lib/prompts/getSystemPrompt";
+import {
+  UIMessage,
+  appendResponseMessages,
+  createDataStreamResponse,
+  smoothStream,
+  streamText,
+} from "ai";
+import { getSystemPrompt } from "@/lib/prompts/getSystemPrompt";
 import getRoom from "@/lib/supabase/getRoom";
-import { createRoomWithReport } from "@/lib/supabase/createRoomWithReport";
 import getAiTitle from "@/lib/getAiTitle";
+import { createRoomWithReport } from "@/lib/supabase/createRoomWithReport";
+import createMemories from "@/lib/supabase/createMemories";
+import { ANTHROPIC_MODEL } from "@/lib/consts";
+import { anthropic } from "@ai-sdk/anthropic";
+import generateUUID from "@/lib/generateUUID";
+import { CoreToolMessage, CoreAssistantMessage } from "ai";
 
-export async function POST(request: NextRequest) {
-  const {
-    messages,
-    roomId,
-    artistId,
-    accountId,
-  }: {
-    messages: Array<Message>;
-    roomId: string;
-    artistId?: string;
-    accountId: string;
-  } = await request.json();
-  const selectedModelId = "sonnet-3.7";
-  const system = await getSystemPrompt({ roomId, artistId });
-  const room = await getRoom(roomId);
+type ResponseMessageWithoutId = CoreToolMessage | CoreAssistantMessage;
+type ResponseMessage = ResponseMessageWithoutId & { id: string };
 
-  if (!room) {
-    const title = await getAiTitle(messages[0].content);
+export function getMostRecentUserMessage(messages: Array<UIMessage>) {
+  const userMessages = messages.filter((message) => message.role === "user");
+  return userMessages.at(-1);
+}
 
-    await createRoomWithReport({
-      account_id: accountId,
-      topic: title,
-      artist_id: artistId || undefined,
-      chat_id: roomId || undefined,
+export function getTrailingMessageId({
+  messages,
+}: {
+  messages: Array<ResponseMessage>;
+}): string | null {
+  const trailingMessage = messages.at(-1);
+
+  if (!trailingMessage) return null;
+
+  return trailingMessage.id;
+}
+
+export async function POST(request: Request) {
+  try {
+    const {
+      id,
+      messages,
+      accountId,
+      artistId,
+    }: {
+      id: string;
+      messages: Array<UIMessage>;
+      accountId: string;
+      artistId: string;
+    } = await request.json();
+
+    const userMessage = getMostRecentUserMessage(messages);
+
+    if (!userMessage) {
+      return new Response("No user message found", { status: 400 });
+    }
+
+    const chat = await getRoom(id);
+
+    if (!chat) {
+      const title = await getAiTitle(userMessage.content);
+
+      await createRoomWithReport({
+        chat_id: id,
+        account_id: accountId,
+        artist_id: artistId,
+        topic: title,
+      });
+    }
+
+    await createMemories({
+      room_id: id,
+      content: userMessage.content,
+    });
+
+    const system = await getSystemPrompt({ roomId: id, artistId });
+
+    return createDataStreamResponse({
+      execute: (dataStream) => {
+        const result = streamText({
+          model: anthropic(ANTHROPIC_MODEL),
+          system,
+          messages,
+          maxSteps: 5,
+          experimental_transform: smoothStream({ chunking: "word" }),
+          experimental_generateMessageId: generateUUID,
+          onFinish: async ({ response }) => {
+            if (accountId) {
+              try {
+                const assistantId = getTrailingMessageId({
+                  messages: response.messages.filter(
+                    (message) => message.role === "assistant"
+                  ),
+                });
+
+                if (!assistantId) {
+                  throw new Error("No assistant message found!");
+                }
+
+                const [, assistantMessage] = appendResponseMessages({
+                  messages: [userMessage],
+                  responseMessages: response.messages,
+                });
+
+                await createMemories({
+                  room_id: id,
+                  content: assistantMessage.content,
+                });
+              } catch (_) {
+                console.error("Failed to save chat", _);
+              }
+            }
+          },
+          experimental_telemetry: {
+            isEnabled: true,
+            functionId: "stream-text",
+          },
+        });
+
+        result.consumeStream();
+
+        result.mergeIntoDataStream(dataStream, {
+          sendReasoning: true,
+        });
+      },
+      onError: () => {
+        return "Oops, an error occurred!";
+      },
+    });
+  } catch (error) {
+    console.error(error);
+    return new Response("An error occurred while processing your request!", {
+      status: 404,
     });
   }
-
-  const { lastMessage } = validateMessages(messages);
-  await createMemories({
-    room_id: roomId,
-    content: lastMessage,
-  });
-
-  const tools = await getMcpTools();
-
-  const stream = streamText({
-    system,
-    tools,
-    model: myProvider.languageModel(selectedModelId),
-    experimental_transform: [
-      smoothStream({
-        chunking: "word",
-      }),
-    ],
-    messages,
-    maxSteps: 11,
-    toolCallStreaming: true,
-  });
-
-  return stream.toDataStreamResponse({
-    sendReasoning: true,
-    getErrorMessage: () => {
-      return `An error occurred, please try again!`;
-    },
-  });
 }

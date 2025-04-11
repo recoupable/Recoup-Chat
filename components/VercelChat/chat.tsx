@@ -1,79 +1,63 @@
 "use client";
 
-import cn from "classnames";
+import type { Message } from "ai";
+import { useChat } from "@ai-sdk/react";
 import { Messages } from "./messages";
-import ChatInput from "./ChatInput";
-import ChatSkeleton from "../Chat/ChatSkeleton";
-import { useVercelChat } from "@/hooks/useVercelChat";
-import ChatGreeting from "../Chat/ChatGreeting";
-import ChatPrompt from "../Chat/ChatPrompt";
-import useVisibilityDelay from "@/hooks/useVisibilityDelay";
-import { ChatReport } from "../Chat/ChatReport";
+import { MultimodalInput } from "./ChatInput";
+import generateUUID from "@/lib/generateUUID";
+import { toast } from "react-toastify";
 import { useParams } from "next/navigation";
-interface ChatProps {
+import { ChatPrompt } from "../Chat/ChatPrompt";
+import ChatGreeting from "../Chat/ChatGreeting";
+import { useArtistProvider } from "@/providers/ArtistProvider";
+import { useUserProvider } from "@/providers/UserProvder";
+
+export function Chat({
+  id,
+  initialMessages,
+}: {
   id: string;
-  reportId?: string;
-}
-
-export function Chat({ id, reportId }: ChatProps) {
-  const {
-    messages,
-    status,
-    isLoading,
-    hasError,
-    isGeneratingResponse,
-    handleSendMessage,
-    stop,
-  } = useVercelChat({ id });
+  initialMessages?: Message[];
+}) {
+  const { userData } = useUserProvider();
   const { roomId } = useParams();
+  const { selectedArtist } = useArtistProvider();
 
-  const { isVisible } = useVisibilityDelay({
-    shouldBeVisible: messages.length === 0 && !reportId,
-    deps: [messages.length, reportId],
-  });
+  const { messages, handleSubmit, input, setInput, status, stop, setMessages } =
+    useChat({
+      id,
+      api: "/api/chat/vercel",
+      body: {
+        id,
+        artistId: selectedArtist?.account_id,
+        accountId: userData?.id,
+      },
+      initialMessages,
+      experimental_throttle: 100,
+      sendExtraMessageFields: true,
+      generateId: generateUUID,
 
-  if (isLoading && roomId) {
-    return <ChatSkeleton />;
-  }
-
-  if (hasError) {
-    return (
-      <div className="flex items-center justify-center h-dvh">
-        <div className="text-red-500">
-          Failed to load messages. Please try again later.
-        </div>
-      </div>
-    );
-  }
+      onError: () => {
+        toast.error("An error occurred, please try again!");
+      },
+    });
 
   return (
-    <div
-      className={cn(
-        "px-4 md:px-0 pb-4 pt-8 flex flex-col h-dvh items-center w-full max-w-3xl",
-        {
-          "justify-between": messages.length > 0,
-          "justify-center gap-4": messages.length === 0,
-        }
-      )}
-    >
-      {isVisible ? (
-        <div className="w-full">
-          <ChatGreeting isVisible={isVisible} />
-          <ChatPrompt isVisible={isVisible} />
-        </div>
-      ) : (
-        <Messages messages={messages} status={status}>
-          {reportId && <ChatReport reportId={reportId} />}
-        </Messages>
-      )}
-
-      <div className="flex flex-col gap-4 w-full">
-        <ChatInput
-          onSendMessage={handleSendMessage}
-          isGeneratingResponse={isGeneratingResponse}
-          onStop={stop}
-        />
+    <>
+      <div className="px-4 md:px-0 pb-4 pt-8 flex flex-col h-dvh items-center w-full max-w-3xl">
+        <Messages status={status} messages={messages} />
+        <form className="flex flex-col gap-4 w-full">
+          <MultimodalInput
+            chatId={id}
+            input={input}
+            setInput={setInput}
+            handleSubmit={handleSubmit}
+            status={status}
+            stop={stop}
+            setMessages={setMessages}
+          />
+        </form>
       </div>
-    </div>
+    </>
   );
 }
