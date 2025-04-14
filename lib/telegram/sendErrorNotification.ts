@@ -1,10 +1,16 @@
 import { sendMessage } from "./sendMessage";
+import { Message } from "ai";
 
 interface ErrorNotificationParams {
   error: Error;
   context?: {
     userId?: string;
-    requestParams?: Record<string, unknown>;
+    requestParams?: {
+      email?: string;
+      roomId?: string;
+      messages?: Message[];
+      [key: string]: unknown;
+    };
     path?: string;
   };
 }
@@ -17,27 +23,31 @@ function formatErrorMessage({
   context,
 }: ErrorNotificationParams): string {
   const timestamp = new Date().toISOString();
-  const environment = process.env.NODE_ENV || "unknown";
+  const email = context?.requestParams?.email || "unknown";
+  const chatId = context?.requestParams?.roomId || "unknown";
 
-  let message = `🚨 *Server Error Alert*\n\n`;
-  message += `*Environment:* ${environment}\n`;
-  message += `*Timestamp:* ${timestamp}\n`;
-  message += `*Error:* ${error.message}\n`;
+  let message = `❌ Error Alert\n`;
+  message += `From: ${email}\n`;
+  message += `Chat ID: ${chatId}\n`;
+  message += `Time: ${timestamp}\n\n`;
 
-  if (error.stack) {
-    message += `*Stack:* \`\`\`${error.stack}\`\`\`\n`;
+  message += `Error Message:\n${error.message}\n\n`;
+
+  if (context?.path) {
+    message += `API Path: ${context.path}\n\n`;
   }
 
-  if (context) {
-    if (context.userId) {
-      message += `*User:* ${context.userId}\n`;
-    }
-    if (context.path) {
-      message += `*Path:* ${context.path}\n`;
-    }
-    if (context.requestParams) {
-      const paramsStr = JSON.stringify(context.requestParams, null, 2);
-      message += `*Request Params:* \`\`\`${paramsStr}\`\`\`\n`;
+  if (error.stack) {
+    // Include more of the stack trace but still limit it
+    const stackLines = error.stack.split("\n").slice(0, 8);
+    message += `Stack Trace:\n\`\`\`\n${stackLines.join("\n")}\n\`\`\`\n`;
+  }
+
+  const messages = context?.requestParams?.messages;
+  if (messages && messages.length > 0) {
+    const lastMessage = messages[messages.length - 1];
+    if (lastMessage?.content) {
+      message += `\nLast Message:\n${lastMessage.content}`;
     }
   }
 
@@ -53,11 +63,12 @@ export async function sendErrorNotification(
 ): Promise<void> {
   try {
     const message = formatErrorMessage(params);
-
-    await sendMessage(message).catch((err) => {
-      console.error("Failed to send Telegram error notification:", err);
+    // Re-enable Markdown parsing for code blocks
+    await sendMessage(message, { parse_mode: "Markdown" }).catch((err) => {
+      console.error("Failed to send error notification:", err);
     });
   } catch (err) {
+    // Catch any errors in the error handling itself to prevent cascading issues
     console.error("Error in sendErrorNotification:", err);
   }
 }
