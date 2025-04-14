@@ -3,7 +3,7 @@ import { sendErrorNotification } from "../telegram/sendErrorNotification";
 
 interface ErrorContext {
   email?: string;
-  chatId?: string;
+  roomId?: string;
   lastMessage?: Message;
   path: string;
 }

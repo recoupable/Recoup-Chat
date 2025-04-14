@@ -4,7 +4,7 @@ import { Message } from "ai";
 interface ErrorNotificationParams {
   error: Error;
   email?: string;
-  chatId?: string;
+  roomId?: string;
   path?: string;
   lastMessage?: Message;
 }
@@ -15,7 +15,7 @@ interface ErrorNotificationParams {
 function formatErrorMessage({
   error,
   email = "unknown",
-  chatId = "new chat",
+  roomId = "new chat",
   path,
   lastMessage,
 }: ErrorNotificationParams): string {
@@ -23,7 +23,7 @@ function formatErrorMessage({
 
   let message = `❌ Error Alert\n`;
   message += `From: ${email}\n`;
-  message += `Chat ID: ${chatId}\n`;
+  message += `Room ID: ${roomId}\n`;
   message += `Time: ${timestamp}\n\n`;
 
   message += `Error Message:\n${error.message}\n\n`;
