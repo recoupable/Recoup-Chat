@@ -4,7 +4,7 @@ import { sendErrorNotification } from "../telegram/sendErrorNotification";
 interface ErrorContext {
   email?: string;
   roomId?: string;
-  lastMessage?: Message;
+  messages?: Message[];
   path: string;
 }
 
