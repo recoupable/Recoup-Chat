@@ -16,31 +16,7 @@ import { createRoomWithReport } from "@/lib/supabase/createRoomWithReport";
 import generateUUID from "@/lib/generateUUID";
 import { generateChatTitle } from "@/lib/chat/generateChatTitle";
 import { sendNewConversationNotification } from "@/lib/telegram/sendNewConversationNotification";
-import { sendErrorNotification } from "@/lib/telegram/sendErrorNotification";
-
-/**
- * Helper to standardize error notifications
- */
-async function notifyError(error: unknown, body: any) {
-  let context = {};
-  try {
-    context = {
-      email: body.email,
-      chatId: body.roomId,
-      lastMessage: body.messages?.[body.messages.length - 1],
-    };
-  } catch {
-    context = {};
-  }
-
-  return sendErrorNotification({
-    error: error instanceof Error ? error : new Error(String(error)),
-    path: "/api/chat/vercel",
-    ...context,
-  }).catch((err) => {
-    console.error("Failed to send error notification:", err);
-  });
-}
+import { notifyError } from "@/lib/errors/notifyError";
 
 export async function POST(request: NextRequest) {
   const body = await request.json();
