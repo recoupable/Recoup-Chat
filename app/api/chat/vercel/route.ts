@@ -71,7 +71,6 @@ export async function POST(request: NextRequest) {
         conversationName,
       }),
     ]);
-    throw new Error("🧪 Test error notification");
 
     return createDataStreamResponse({
       execute: (dataStream) => {
