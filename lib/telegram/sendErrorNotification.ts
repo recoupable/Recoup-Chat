@@ -15,7 +15,7 @@ interface ErrorNotificationParams {
 function formatErrorMessage({
   error,
   email = "unknown",
-  chatId = "unknown",
+  chatId = "new chat",
   path,
   lastMessage,
 }: ErrorNotificationParams): string {
