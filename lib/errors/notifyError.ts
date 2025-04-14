@@ -1,12 +1,8 @@
 import { Message } from "ai";
-import { sendErrorNotification } from "../telegram/sendErrorNotification";
-
-interface ErrorContext {
-  email?: string;
-  roomId?: string;
-  messages?: Message[];
-  path: string;
-}
+import {
+  ErrorContext,
+  sendErrorNotification,
+} from "../telegram/sendErrorNotification";
 
 /**
  * Standardized error notification helper
