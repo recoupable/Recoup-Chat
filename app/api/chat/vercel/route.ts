@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
 
   const room = await getRoom(roomId);
   let conversationName = room?.topic;
-  console.log("room", room);
+
   if (!room) {
     conversationName = await generateChatTitle(messages[0].content);
 
