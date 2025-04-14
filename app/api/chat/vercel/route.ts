@@ -95,6 +95,7 @@ export async function POST(request: NextRequest) {
                 content: assistantMessage,
               });
             } catch (_) {
+              notifyError(_, body);
               console.error("Failed to save chat", _);
             }
           },
