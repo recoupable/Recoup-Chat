@@ -38,7 +38,6 @@ function formatErrorMessage({
   }
 
   if (error.stack) {
-    // Include more of the stack trace but still limit it
     const stackLines = error.stack.split("\n").slice(0, 8);
     message += `Stack Trace:\n\`\`\`\n${stackLines.join("\n")}\n\`\`\`\n`;
   }
@@ -63,12 +62,10 @@ export async function sendErrorNotification(
 ): Promise<void> {
   try {
     const message = formatErrorMessage(params);
-    // Re-enable Markdown parsing for code blocks
     await sendMessage(message, { parse_mode: "Markdown" }).catch((err) => {
       console.error("Failed to send error notification:", err);
     });
   } catch (err) {
-    // Catch any errors in the error handling itself to prevent cascading issues
     console.error("Error in sendErrorNotification:", err);
   }
 }
