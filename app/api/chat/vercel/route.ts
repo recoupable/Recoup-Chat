@@ -18,21 +18,46 @@ import { generateChatTitle } from "@/lib/chat/generateChatTitle";
 import { sendNewConversationNotification } from "@/lib/telegram/sendNewConversationNotification";
 import { sendErrorNotification } from "@/lib/telegram/sendErrorNotification";
 
-export async function POST(request: NextRequest) {
+/**
+ * Helper to standardize error notifications
+ */
+async function notifyError(error: unknown, body: any) {
+  let context = {};
   try {
-    const {
-      messages,
-      roomId,
-      artistId,
-      accountId,
-      email,
-    }: {
-      messages: Array<Message>;
-      roomId: string;
-      artistId?: string;
-      accountId: string;
-      email: string;
-    } = await request.json();
+    context = {
+      email: body.email,
+      chatId: body.roomId,
+      lastMessage: body.messages?.[body.messages.length - 1],
+    };
+  } catch {
+    context = {};
+  }
+
+  return sendErrorNotification({
+    error: error instanceof Error ? error : new Error(String(error)),
+    path: "/api/chat/vercel",
+    ...context,
+  }).catch((err) => {
+    console.error("Failed to send error notification:", err);
+  });
+}
+
+export async function POST(request: NextRequest) {
+  const body = await request.json();
+  const {
+    messages,
+    roomId,
+    artistId,
+    accountId,
+    email,
+  }: {
+    messages: Array<Message>;
+    roomId: string;
+    artistId?: string;
+    accountId: string;
+    email: string;
+  } = body;
+  try {
     const selectedModelId = "sonnet-3.7";
 
     const [room, tools] = await Promise.all([getRoom(roomId), getMcpTools()]);
@@ -72,6 +97,8 @@ export async function POST(request: NextRequest) {
       }),
     ]);
 
+    throw new Error("🧪 Test error notification");
+
     return createDataStreamResponse({
       execute: (dataStream) => {
         const result = streamText({
@@ -102,6 +129,7 @@ export async function POST(request: NextRequest) {
             functionId: "stream-text",
           },
         });
+
         result.consumeStream();
 
         result.mergeIntoDataStream(dataStream, {
@@ -110,37 +138,13 @@ export async function POST(request: NextRequest) {
       },
       onError: (e) => {
         console.error("Error in Vercel Chat", e);
-        sendErrorNotification({
-          error: e instanceof Error ? e : new Error(String(e)),
-          path: "/api/chat/vercel",
-          chatId: roomId,
-          email,
-          lastMessage: messages[messages.length - 1],
-        }).catch((err) => {
-          console.error("Failed to send error notification:", err);
-        });
-
+        notifyError(e, body);
         return "Oops, an error occurred!";
       },
     });
   } catch (e) {
     console.error("Global error in chat API:", e);
-    let requestBody;
-    try {
-      requestBody = await request.json();
-    } catch {
-      requestBody = {};
-    }
-
-    await sendErrorNotification({
-      error: e instanceof Error ? e : new Error(String(e)),
-      path: "/api/chat/vercel",
-      chatId: requestBody.roomId,
-      email: requestBody.email,
-      lastMessage: requestBody.messages?.[requestBody.messages?.length - 1],
-    }).catch((err) => {
-      console.error("Failed to send error notification:", err);
-    });
+    await notifyError(e, body);
 
     return new Response(
       JSON.stringify({
