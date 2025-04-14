@@ -3,6 +3,7 @@ import { useMessageLoader } from "./useMessageLoader";
 import { useUserProvider } from "@/providers/UserProvder";
 import { useArtistProvider } from "@/providers/ArtistProvider";
 import { useParams } from "next/navigation";
+import { reportError } from "@/lib/errors/reportError";
 
 interface UseVercelChatProps {
   id: string;
@@ -31,8 +32,14 @@ export function useVercelChat({ id }: UseVercelChatProps) {
         accountId: userId,
         email: userData?.email,
       },
-      onError: (e) => {
-        console.error("An error occurred, please try again!", e);
+      onError: (error) => {
+        console.error("Chat error:", error);
+        reportError({
+          error,
+          email: userData?.email,
+          roomId: id,
+          messages,
+        });
       },
     });
 
