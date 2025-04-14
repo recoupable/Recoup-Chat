@@ -2,10 +2,6 @@ import { z } from "zod";
 import { tool } from "ai";
 import { sendMessage } from "../telegram/sendMessage";
 
-if (!process.env.TELEGRAM_CHAT_ID) {
-  throw new Error("TELEGRAM_CHAT_ID environment variable is required");
-}
-
 const schema = z.object({
   message: z
     .string()
@@ -36,7 +32,7 @@ Time: ${new Date().toISOString()}
 Message:
 ${message}`;
 
-      await sendMessage(process.env.TELEGRAM_CHAT_ID!, formattedMessage);
+      await sendMessage(formattedMessage);
 
       return {
         success: true,
