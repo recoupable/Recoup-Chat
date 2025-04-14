@@ -52,7 +52,6 @@ export async function POST(request: NextRequest) {
     email,
     conversationName,
   });
-  console.log("system", system);
 
   const { lastMessage } = validateMessages(messages);
   await createMemories({
