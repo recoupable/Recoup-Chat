@@ -97,8 +97,6 @@ export async function POST(request: NextRequest) {
       }),
     ]);
 
-    throw new Error("🧪 Test error notification");
-
     return createDataStreamResponse({
       execute: (dataStream) => {
         const result = streamText({
@@ -131,6 +129,7 @@ export async function POST(request: NextRequest) {
         });
 
         result.consumeStream();
+        throw new Error("🧪 Test error notification");
 
         result.mergeIntoDataStream(dataStream, {
           sendReasoning: true,
