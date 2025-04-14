@@ -5,7 +5,7 @@ if (!process.env.TELEGRAM_BOT_TOKEN) {
 }
 
 const telegramClient = new TelegramBot(process.env.TELEGRAM_BOT_TOKEN, {
-  polling: true,
+  polling: false,
 });
 
 telegramClient.on("error", (error: Error) => {

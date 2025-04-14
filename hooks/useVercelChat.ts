@@ -29,6 +29,7 @@ export function useVercelChat({ id }: UseVercelChatProps) {
         roomId: id,
         artistId,
         accountId: userId,
+        email: userData?.email,
       },
       onError: (e) => {
         console.error("An error occurred, please try again!", e);

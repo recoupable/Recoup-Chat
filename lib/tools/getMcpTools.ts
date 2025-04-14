@@ -1,5 +1,6 @@
 import { experimental_createMCPClient } from "ai";
 import getSegmentFansTool from "./getSegmentFans";
+import contactTeam from "./contactTeam";
 
 export async function getMcpTools(segment_id?: string) {
   const perplexityMcpClient = await experimental_createMCPClient({
@@ -21,6 +22,7 @@ export async function getMcpTools(segment_id?: string) {
   const tools = {
     ...toolSetPerplexityWebSearch,
     ...toolSetMantleWebSearch,
+    contactTeam,
   };
 
   if (segment_id) {

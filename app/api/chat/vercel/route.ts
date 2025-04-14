@@ -22,26 +22,37 @@ export async function POST(request: NextRequest) {
     roomId,
     artistId,
     accountId,
+    email,
   }: {
     messages: Array<Message>;
     roomId: string;
     artistId?: string;
     accountId: string;
+    email: string;
   } = await request.json();
   const selectedModelId = "sonnet-3.7";
-  const system = await getSystemPrompt({ roomId, artistId });
-  const room = await getRoom(roomId);
 
+  const room = await getRoom(roomId);
+  let conversationName = room?.topic;
+  console.log("room", room);
   if (!room) {
-    const title = await generateChatTitle(messages[0].content);
+    conversationName = await generateChatTitle(messages[0].content);
 
     await createRoomWithReport({
       account_id: accountId,
-      topic: title,
+      topic: conversationName,
       artist_id: artistId || undefined,
       chat_id: roomId || undefined,
     });
   }
+
+  const system = await getSystemPrompt({
+    roomId,
+    artistId,
+    email,
+    conversationName,
+  });
+  console.log("system", system);
 
   const { lastMessage } = validateMessages(messages);
   await createMemories({
