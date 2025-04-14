@@ -3,16 +3,10 @@ import { Message } from "ai";
 
 interface ErrorNotificationParams {
   error: Error;
-  context?: {
-    userId?: string;
-    requestParams?: {
-      email?: string;
-      roomId?: string;
-      messages?: Message[];
-      [key: string]: unknown;
-    };
-    path?: string;
-  };
+  email?: string;
+  chatId?: string;
+  path?: string;
+  lastMessage?: Message;
 }
 
 /**
@@ -20,11 +14,12 @@ interface ErrorNotificationParams {
  */
 function formatErrorMessage({
   error,
-  context,
+  email = "unknown",
+  chatId = "unknown",
+  path,
+  lastMessage,
 }: ErrorNotificationParams): string {
   const timestamp = new Date().toISOString();
-  const email = context?.requestParams?.email || "unknown";
-  const chatId = context?.requestParams?.roomId || "unknown";
 
   let message = `❌ Error Alert\n`;
   message += `From: ${email}\n`;
@@ -33,8 +28,8 @@ function formatErrorMessage({
 
   message += `Error Message:\n${error.message}\n\n`;
 
-  if (context?.path) {
-    message += `API Path: ${context.path}\n\n`;
+  if (path) {
+    message += `API Path: ${path}\n\n`;
   }
 
   if (error.stack) {
@@ -42,12 +37,8 @@ function formatErrorMessage({
     message += `Stack Trace:\n\`\`\`\n${stackLines.join("\n")}\n\`\`\`\n`;
   }
 
-  const messages = context?.requestParams?.messages;
-  if (messages && messages.length > 0) {
-    const lastMessage = messages[messages.length - 1];
-    if (lastMessage?.content) {
-      message += `\nLast Message:\n${lastMessage.content}`;
-    }
+  if (lastMessage?.content) {
+    message += `\nLast Message:\n${lastMessage.content}`;
   }
 
   return message;

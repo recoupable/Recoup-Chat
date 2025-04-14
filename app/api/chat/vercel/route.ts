@@ -115,15 +115,10 @@ export async function POST(request: NextRequest) {
         console.error("Error in Vercel Chat", e);
         sendErrorNotification({
           error: e instanceof Error ? e : new Error(String(e)),
-          context: {
-            path: "/api/chat/vercel",
-            requestParams: {
-              roomId,
-              artistId,
-              accountId,
-              messageCount: messages?.length,
-            },
-          },
+          path: "/api/chat/vercel",
+          chatId: roomId,
+          email,
+          lastMessage: messages[messages.length - 1],
         }).catch((err) => {
           console.error("Failed to send error notification:", err);
         });
@@ -133,19 +128,23 @@ export async function POST(request: NextRequest) {
     });
   } catch (e) {
     console.error("Global error in chat API:", e);
+    let requestBody;
+    try {
+      requestBody = await request.json();
+    } catch {
+      requestBody = {};
+    }
 
-    // Send error notification
     await sendErrorNotification({
       error: e instanceof Error ? e : new Error(String(e)),
-      context: {
-        path: "/api/chat/vercel",
-        requestParams: await request.json().catch(() => ({})), // Try to get request body if possible
-      },
+      path: "/api/chat/vercel",
+      chatId: requestBody.roomId,
+      email: requestBody.email,
+      lastMessage: requestBody.messages?.[requestBody.messages?.length - 1],
     }).catch((err) => {
       console.error("Failed to send error notification:", err);
     });
 
-    // Return error response
     return new Response(
       JSON.stringify({
         error: "An error occurred",
