@@ -16,6 +16,7 @@ import { createRoomWithReport } from "@/lib/supabase/createRoomWithReport";
 import generateUUID from "@/lib/generateUUID";
 import { generateChatTitle } from "@/lib/chat/generateChatTitle";
 import { sendNewConversationNotification } from "@/lib/telegram/sendNewConversationNotification";
+import { sendErrorNotification } from "@/lib/telegram/sendErrorNotification";
 
 export async function POST(request: NextRequest) {
   const {
@@ -109,6 +110,21 @@ export async function POST(request: NextRequest) {
     },
     onError: (e) => {
       console.error("Error in Vercel Chat", e);
+      sendErrorNotification({
+        error: e instanceof Error ? e : new Error(String(e)),
+        context: {
+          path: "/api/chat/vercel",
+          requestParams: {
+            roomId,
+            artistId,
+            accountId,
+            messageCount: messages.length,
+          },
+        },
+      }).catch((err) => {
+        console.error("Failed to send error notification:", err);
+      });
+
       return "Oops, an error occurred!";
     },
   });
