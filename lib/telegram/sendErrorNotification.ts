@@ -6,7 +6,7 @@ interface ErrorNotificationParams {
   email?: string;
   roomId?: string;
   path?: string;
-  lastMessage?: Message;
+  messages?: Message[];
 }
 
 /**
@@ -17,7 +17,7 @@ function formatErrorMessage({
   email = "unknown",
   roomId = "new chat",
   path,
-  lastMessage,
+  messages,
 }: ErrorNotificationParams): string {
   const timestamp = new Date().toISOString();
 
@@ -37,8 +37,11 @@ function formatErrorMessage({
     message += `Stack Trace:\n\`\`\`\n${stackLines.join("\n")}\n\`\`\`\n`;
   }
 
-  if (lastMessage?.content) {
-    message += `\nLast Message:\n${lastMessage.content}`;
+  if (messages && messages.length > 0) {
+    const lastMessage = messages[messages.length - 1];
+    if (lastMessage?.content) {
+      message += `\nLast Message:\n${lastMessage.content}`;
+    }
   }
 
   return message;

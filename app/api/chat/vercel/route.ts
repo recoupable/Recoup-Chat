@@ -75,6 +75,8 @@ export async function POST(request: NextRequest) {
 
     return createDataStreamResponse({
       execute: (dataStream) => {
+        throw new Error("🧪 Test error notification");
+
         const result = streamText({
           model: myProvider.languageModel(selectedModelId),
           system,
