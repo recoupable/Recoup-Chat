@@ -20,9 +20,6 @@ import { sendErrorNotification } from "@/lib/telegram/sendErrorNotification";
 
 export async function POST(request: NextRequest) {
   try {
-    // TEMPORARY: Test error notification
-    throw new Error("🧪 Test error notification");
-
     const {
       messages,
       roomId,
@@ -105,6 +102,8 @@ export async function POST(request: NextRequest) {
             functionId: "stream-text",
           },
         });
+
+        throw new Error("🧪 Test error notification");
 
         result.consumeStream();
 
