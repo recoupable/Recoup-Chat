@@ -10,7 +10,7 @@ interface ClientErrorContext {
   };
   email?: string;
   roomId?: string;
-  path?: string;
+  path: string;
   messages?: Message[];
 }
 
