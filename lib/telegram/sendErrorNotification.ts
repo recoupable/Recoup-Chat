@@ -1,12 +1,15 @@
 import { sendMessage } from "./sendMessage";
 import { Message } from "ai";
 
-interface ErrorNotificationParams {
-  error: Error;
+export interface ErrorContext {
   email?: string;
   roomId?: string;
-  path?: string;
   messages?: Message[];
+  path: string;
+}
+
+interface ErrorNotificationParams extends ErrorContext {
+  error: Error;
 }
 
 /**
