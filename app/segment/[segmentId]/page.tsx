@@ -16,7 +16,7 @@ export default async function Page({ params }: PageProps) {
   const segmentRoom = await getSegmentRoom(segmentId);
 
   if (segmentRoom?.room_id) {
-    redirect(`/${segmentRoom.room_id}`);
+    redirect(`/chat/${segmentRoom.room_id}`);
   }
 
   let newRoomId: string | null = null;
