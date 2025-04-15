@@ -20,20 +20,20 @@ import { notifyError } from "@/lib/errors/notifyError";
 
 export async function POST(request: NextRequest) {
   const body = await request.json();
+  const {
+    messages,
+    roomId,
+    artistId,
+    accountId,
+    email,
+  }: {
+    messages: Array<Message>;
+    roomId: string;
+    artistId?: string;
+    accountId: string;
+    email: string;
+  } = body;
   try {
-    const {
-      messages,
-      roomId,
-      artistId,
-      accountId,
-      email,
-    }: {
-      messages: Array<Message>;
-      roomId: string;
-      artistId?: string;
-      accountId: string;
-      email: string;
-    } = body;
     const selectedModelId = "sonnet-3.7";
 
     const [room, tools] = await Promise.all([getRoom(roomId), getMcpTools()]);
@@ -94,9 +94,9 @@ export async function POST(request: NextRequest) {
                 room_id: roomId,
                 content: assistantMessage,
               });
-            } catch (error) {
-              notifyError(error, body);
-              console.error("Failed to save chat", error);
+            } catch (_) {
+              notifyError(_, body);
+              console.error("Failed to save chat", _);
             }
           },
           experimental_telemetry: {
@@ -111,15 +111,15 @@ export async function POST(request: NextRequest) {
           sendReasoning: true,
         });
       },
-      onError: (error) => {
-        notifyError(error, body);
-        console.error("Error in chat API:", error);
+      onError: (e) => {
+        notifyError(e, body);
+        console.error("Error in chat API:", e);
         return "Oops, an error occurred!";
       },
     });
-  } catch (error) {
-    notifyError(error, body);
-    console.error("Global error in chat API:", error);
+  } catch (e) {
+    notifyError(e, body);
+    console.error("Global error in chat API:", e);
     return new Response(
       JSON.stringify({
         error: "An error occurred",
