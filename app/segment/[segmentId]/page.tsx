@@ -64,7 +64,7 @@ export default async function Page({ params }: PageProps) {
   }
 
   if (newRoomId) {
-    redirect(`/${newRoomId}`);
+    redirect(`/chat/${newRoomId}`);
   }
 
   throw new Error("Failed to create or find room");
