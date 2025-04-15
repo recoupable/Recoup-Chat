@@ -3,7 +3,7 @@ import generateUUID from "@/lib/generateUUID";
 
 export const dynamic = "force-dynamic";
 
-export default async function Home() {
+export default async function ChatPage() {
   const id = generateUUID();
 
   return (

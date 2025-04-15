@@ -11,7 +11,7 @@ const usePrompts = () => {
   const [currentQuestion, setCurrentQuestion] = useState<Message | null>(null);
   const pathname = usePathname();
   const { funnelRawReportContent } = useFunnelReportProvider();
-  const isNewChat = pathname.includes("/new") || pathname === "/";
+  const isNewChat = pathname === "/chat" || pathname === "/";
 
   useEffect(() => {
     if (isLoading) return;
