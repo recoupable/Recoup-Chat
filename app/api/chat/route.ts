@@ -19,6 +19,7 @@ import { sendNewConversationNotification } from "@/lib/telegram/sendNewConversat
 import { notifyError } from "@/lib/errors/notifyError";
 
 export async function POST(request: NextRequest) {
+  const body = await request.json();
   try {
     const {
       messages,
@@ -32,7 +33,7 @@ export async function POST(request: NextRequest) {
       artistId?: string;
       accountId: string;
       email: string;
-    } = await request.json();
+    } = body;
     const selectedModelId = "sonnet-3.7";
 
     const [room, tools] = await Promise.all([getRoom(roomId), getMcpTools()]);
@@ -94,12 +95,7 @@ export async function POST(request: NextRequest) {
                 content: assistantMessage,
               });
             } catch (error) {
-              notifyError(error, {
-                email,
-                roomId,
-                path: "/api/chat",
-                messages,
-              });
+              notifyError(error, body);
               console.error("Failed to save chat", error);
             }
           },
@@ -116,20 +112,13 @@ export async function POST(request: NextRequest) {
         });
       },
       onError: (error) => {
-        notifyError(error, {
-          email,
-          roomId,
-          path: "/api/chat",
-          messages,
-        });
+        notifyError(error, body);
         console.error("Error in chat API:", error);
         return "Oops, an error occurred!";
       },
     });
   } catch (error) {
-    notifyError(error, {
-      path: "/api/chat",
-    });
+    notifyError(error, body);
     console.error("Global error in chat API:", error);
     return new Response(
       JSON.stringify({
