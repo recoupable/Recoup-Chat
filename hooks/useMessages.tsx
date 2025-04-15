@@ -68,14 +68,14 @@ const useMessages = () => {
   }
 
   return {
-    messages,
-    input,
+    reloadAiChat,
+    appendAiChat,
+    handleAiChatSubmit,
     handleInputChange,
-    handleSubmit: handleAiChatSubmit,
-    append: appendAiChat,
-    status,
+    input,
     setMessages,
-    reload: reloadAiChat,
+    messages: messages as ChatMessage[],
+    pending: status === "streaming" || status === "submitted",
     isLoading,
   };
 };
