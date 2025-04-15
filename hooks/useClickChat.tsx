@@ -11,7 +11,7 @@ const useClickChat = () => {
       push(`/funnels/${conversation?.type}/${conversation.agentId}`);
       return;
     }
-    push(`/${conversation.id}`);
+    push(`/chat/${conversation.id}`);
   };
 
   return {
