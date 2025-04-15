@@ -29,13 +29,6 @@ const MiniMenu = ({
         </button>
         <button
           type="button"
-          className=" p-2 rounded-md mt-2"
-          onClick={() => push("/autopilot")}
-        >
-          <Icon name="dashboard" />
-        </button>
-        <button
-          type="button"
           className=" p-2 rounded-md"
           onClick={() => goToItem("agents")}
         >

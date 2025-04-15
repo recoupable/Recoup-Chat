@@ -1,6 +1,7 @@
 import { ArrowRight } from "lucide-react";
 import Icon from "../Icon";
 import { usePaymentProvider } from "@/providers/PaymentProvider";
+
 const UnlockProCard = () => {
   const { toggleModal } = usePaymentProvider();
 
@@ -20,8 +21,8 @@ const UnlockProCard = () => {
       </div>
       <div className="bg-white grow pt-3 px-4">
         <p className="text-[11px] font-plus_jakarta_sans_bold">
-          Unlock unlimited reports and let AI find your next big brand deal on
-          autopilot.
+          Unlock unlimited reports and let AI find your next big brand deal
+          automatically.
         </p>
         <button
           type="button"

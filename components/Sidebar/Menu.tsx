@@ -15,7 +15,6 @@ const Menu = ({ toggleMenuExpanded }: { toggleMenuExpanded: () => void }) => {
   const itemClasses = "flex gap-3 items-center rounded-md px-3 py-2";
   const isAgents = pathname.includes("/agents");
   const isSegments = pathname.includes("/segments");
-  const isAutopilot = pathname === "/autopilot";
 
   const goToItem = (link?: string) => {
     if (isPrepared()) {
@@ -25,7 +24,12 @@ const Menu = ({ toggleMenuExpanded }: { toggleMenuExpanded: () => void }) => {
 
   return (
     <div className="w-full h-screen pt-10 pb-4 pl-6 pr-2 hidden md:flex flex-col">
-      <button className="mt-2 shrink-0" onClick={() => push("/")} type="button" aria-label="Home">
+      <button
+        className="mt-2 shrink-0"
+        onClick={() => push("/")}
+        type="button"
+        aria-label="Home"
+      >
         <Logo />
       </button>
       <button
@@ -34,14 +38,6 @@ const Menu = ({ toggleMenuExpanded }: { toggleMenuExpanded: () => void }) => {
         onClick={() => goToItem("new")}
       >
         {email ? "New Chat" : "Sign In"}
-      </button>
-      <button
-        className={`${itemClasses} ${isAutopilot && activeClasses} md:mt-2 shrink-0`}
-        type="button"
-        onClick={() => push("/autopilot")}
-      >
-        <MenuItemIcon name="dashboard" />
-        Autopilot
       </button>
       <button
         type="button"
@@ -59,10 +55,10 @@ const Menu = ({ toggleMenuExpanded }: { toggleMenuExpanded: () => void }) => {
         <MenuItemIcon name="segments" />
         Segments
       </button>
-      
+
       <div className="flex flex-col flex-grow min-h-0">
         {email && <RecentChats toggleModal={toggleMenuExpanded} />}
-        
+
         <div className="shrink-0 mt-auto">
           {email && <UnlockPro />}
           <UserInfo toggleMenuExpanded={toggleMenuExpanded} />

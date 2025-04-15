@@ -8,9 +8,9 @@ import Header from "@/components/Header";
 import { Suspense } from "react";
 import ArtistSettingModal from "@/components/ArtistSettingModal";
 import MobileDownloadModal from "@/components/ModalDownloadModal";
-import ArtistsSidebar from "@/components/AutoPilot/ArtistsSidebar";
+import ArtistsSidebar from "@/components/Artists/ArtistsSidebar";
 import { ToastContainer } from "react-toastify";
-import { Analytics } from '@vercel/analytics/react';
+import { Analytics } from "@vercel/analytics/react";
 
 export const metadata: Metadata = {
   title: TITLE,
