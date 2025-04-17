@@ -1,6 +1,5 @@
 import { z } from "zod";
 import { tool } from "ai";
-import { ArtistToolResponse } from "@/types/Tool";
 
 const createArtist = (question: string) =>
   tool({
@@ -19,7 +18,7 @@ const createArtist = (question: string) =>
     execute: async ({ artist_name }) => {
       return {
         context: {
-          status: ArtistToolResponse.CREATE_ARTIST,
+          status: "CREATE_ARTIST",
           args: {
             artistName: artist_name,
           },
