@@ -7,6 +7,15 @@ import useArtistMode from "./useArtistMode";
 import saveArtist from "@/lib/saveArtist";
 import useInitialArtists from "./useInitialArtists";
 
+// Helper function to sort artists alphabetically by name
+const sortArtistsAlphabetically = (artists: ArtistRecord[]): ArtistRecord[] => {
+  return [...artists].sort((a, b) => {
+    const nameA = a.name?.toLowerCase() || '';
+    const nameB = b.name?.toLowerCase() || '';
+    return nameA.localeCompare(nameB);
+  });
+};
+
 const useArtists = () => {
   const artistSetting = useArtistSetting();
   const [isLoading, setIsLoading] = useState(true);
@@ -35,10 +44,12 @@ const useArtists = () => {
     selectedArtist && activeArtistIndex >= 0
       ? [
           selectedArtist,
-          ...artists.slice(0, activeArtistIndex),
-          ...artists.slice(activeArtistIndex + 1),
+          ...sortArtistsAlphabetically([
+            ...artists.slice(0, activeArtistIndex),
+            ...artists.slice(activeArtistIndex + 1),
+          ]),
         ]
-      : artists;
+      : sortArtistsAlphabetically(artists);
 
   const getArtists = useCallback(
     async (artistId?: string) => {

@@ -29,7 +29,7 @@ const SideArtists = ({
       direction="right"
       className="!w-fit"
     >
-      <div className="no-scrollbar grow flex flex-col gap-1 overflow-y-auto overflow-x-hidden">
+      <div className="no-scrollbar grow flex flex-col gap-1 overflow-y-auto overflow-x-hidden w-full">
         {email &&
           sorted.map((artist: ArtistRecord | null) => (
             <Artist
@@ -40,13 +40,14 @@ const SideArtists = ({
           ))}
       </div>
       <button
-        className="flex px-2 py-1 gap-2 text-sm items-center text-grey-dark-1"
+        className="flex px-2 py-1 gap-2 text-sm items-center text-grey-dark-1 w-full"
         onClick={handleCreate}
+        type="button"
       >
         <div className="w-8 flex justify-center">
           <Plus className="size-5 text-grey-dark-1" />
         </div>
-        New Artist
+        <span className="text-left grow">New Artist</span>
       </button>
     </SideModal>
   );
