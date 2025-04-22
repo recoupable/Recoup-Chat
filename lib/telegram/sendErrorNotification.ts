@@ -1,22 +1,19 @@
 import { sendMessage } from "./sendMessage";
 import { Message } from "ai";
-import { formatErrorForTelegram } from "./errorFormatter";
-import { trimMessage } from "./trimMessage";
 
 export interface ErrorContext {
   email?: string;
   roomId?: string;
   messages?: Message[];
-  path?: string;
-  [key: string]: unknown; // Allow additional context properties
+  path: string;
 }
 
 interface ErrorNotificationParams extends ErrorContext {
-  error: unknown; // Accept any error type, not just Error objects
+  error: Error;
 }
 
 /**
- * Formats error message for Telegram notification with improved error serialization
+ * Formats error message for Telegram notification
  */
 function formatErrorMessage({
   error,
@@ -24,7 +21,6 @@ function formatErrorMessage({
   roomId = "new chat",
   path,
   messages,
-  ...additionalContext
 }: ErrorNotificationParams): string {
   const timestamp = new Date().toISOString();
 
@@ -33,34 +29,25 @@ function formatErrorMessage({
   message += `Room ID: ${roomId}\n`;
   message += `Time: ${timestamp}\n\n`;
 
-  // Format the error object properly using our utility
-  message += `${formatErrorForTelegram(error)}\n\n`;
+  message += `Error Message:\n${error.message}\n\n`;
 
   if (path) {
     message += `API Path: ${path}\n\n`;
   }
 
-  // Include any additional context that might be helpful
-  if (Object.keys(additionalContext).length > 0) {
-    message += "Additional Context:\n";
-    for (const [key, value] of Object.entries(additionalContext)) {
-      if (value !== undefined && key !== "error") {
-        message += `${key}: ${typeof value === "object" ? JSON.stringify(value) : value}\n`;
-      }
-    }
-    message += "\n";
+  if (error.stack) {
+    const stackLines = error.stack.split("\n").slice(0, 8);
+    message += `Stack Trace:\n\`\`\`\n${stackLines.join("\n")}\n\`\`\`\n`;
   }
 
-  // Include the last message if available
   if (messages && messages.length > 0) {
     const lastMessage = messages[messages.length - 1];
     if (lastMessage?.content) {
-      message += `Last Message:\n${lastMessage.content}`;
+      message += `\nLast Message:\n${lastMessage.content}`;
     }
   }
 
-  // Ensure the message is properly trimmed and sanitized for Telegram
-  return trimMessage(message);
+  return message;
 }
 
 /**

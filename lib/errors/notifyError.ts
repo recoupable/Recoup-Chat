@@ -10,7 +10,7 @@ import {
  */
 export async function notifyError(error: unknown, context: ErrorContext) {
   return sendErrorNotification({
-    error,
+    error: error instanceof Error ? error : new Error(String(error)),
     ...context,
   }).catch((err) => {
     console.error("Failed to send error notification:", err);
