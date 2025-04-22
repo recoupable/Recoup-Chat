@@ -18,7 +18,7 @@ export async function getPerplexityTools() {
     // Extract only the perplexity_ask tool, filtering out perplexity_reason
     const { perplexity_ask } = allPerplexityTools;
 
-    return { perplexity_ask };
+    return perplexity_ask ? { perplexity_ask } : {};
   } catch (error) {
     console.error("Failed to fetch Perplexity tools:", error);
     return {};

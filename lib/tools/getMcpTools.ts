@@ -5,7 +5,7 @@ import getArtistComments from "./getArtistComments";
 import { getPerplexityTools } from "./getPerplexityTools";
 
 export async function getMcpTools(segment_id?: string) {
-  const perplexityTools = await getPerplexityTools();
+  const perplexityTools = (await getPerplexityTools()) || {};
 
   const mantleMcpClient = await experimental_createMCPClient({
     transport: {
@@ -16,10 +16,10 @@ export async function getMcpTools(segment_id?: string) {
 
   const toolSetMantleWebSearch = await mantleMcpClient.tools();
   const tools = {
-    ...toolSetMantleWebSearch,
-    ...perplexityTools,
     contact_team: contactTeam,
     get_artist_comments: getArtistComments,
+    ...toolSetMantleWebSearch,
+    ...perplexityTools,
   };
 
   if (segment_id) {
