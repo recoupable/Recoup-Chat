@@ -1,4 +1,4 @@
-import { experimental_createMCPClient } from "ai";
+import { experimental_createMCPClient, ToolSet } from "ai";
 
 /**
  * Fetches and filters Perplexity tools, excluding the problematic perplexity_reason tool
@@ -18,7 +18,7 @@ export async function getPerplexityTools() {
     // Extract only the perplexity_ask tool, filtering out perplexity_reason
     const { perplexity_ask } = allPerplexityTools;
 
-    return { perplexity_ask };
+    return { perplexity_ask } as ToolSet;
   } catch (error) {
     console.error("Failed to fetch Perplexity tools:", error);
     return {};
