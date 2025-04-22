@@ -2,14 +2,10 @@ import { experimental_createMCPClient } from "ai";
 import getSegmentFansTool from "./getSegmentFans";
 import contactTeam from "./contactTeam";
 import getArtistComments from "./getArtistComments";
+import { getPerplexityTools } from "./getPerplexityTools";
 
 export async function getMcpTools(segment_id?: string) {
-  const perplexityMcpClient = await experimental_createMCPClient({
-    transport: {
-      type: "sse",
-      url: process.env.PERPLEXITY_MCP_SERVER as string,
-    },
-  });
+  const perplexityTools = await getPerplexityTools();
 
   const mantleMcpClient = await experimental_createMCPClient({
     transport: {
@@ -18,13 +14,12 @@ export async function getMcpTools(segment_id?: string) {
     },
   });
 
-  const toolSetPerplexityWebSearch = await perplexityMcpClient.tools();
   const toolSetMantleWebSearch = await mantleMcpClient.tools();
   const tools = {
-    ...toolSetPerplexityWebSearch,
     ...toolSetMantleWebSearch,
-    contactTeam,
-    getArtistComments,
+    ...perplexityTools,
+    contact_team: contactTeam,
+    get_artist_comments: getArtistComments,
   };
 
   if (segment_id) {
