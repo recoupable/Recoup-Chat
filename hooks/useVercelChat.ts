@@ -3,6 +3,7 @@ import { useMessageLoader } from "./useMessageLoader";
 import { useUserProvider } from "@/providers/UserProvder";
 import { useArtistProvider } from "@/providers/ArtistProvider";
 import { useParams } from "next/navigation";
+import { toast } from "react-toastify";
 
 interface UseVercelChatProps {
   id: string;
@@ -32,6 +33,7 @@ export function useVercelChat({ id }: UseVercelChatProps) {
       },
       onError: (e) => {
         console.error("An error occurred, please try again!", e);
+        toast.error("An error occurred, please try again!");
       },
     });
 
