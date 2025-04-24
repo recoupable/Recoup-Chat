@@ -1,18 +1,10 @@
-import { cn } from "@/lib/utils";
 import { UIMessage } from "ai";
 import { ReasoningMessagePart, TextMessagePart } from "./messages";
-import { Button } from "@/components/ui/button";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { PencilEditIcon } from "@/components/icons";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { AnimatePresence } from "framer-motion";
 import EditButton from "./EditButton";
+import { cn } from "@/lib/utils";
 
 const Message = ({ message }: { message: UIMessage }) => {
   const [mode, setMode] = useState<"view" | "edit">("view");
