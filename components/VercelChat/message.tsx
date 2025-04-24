@@ -1,12 +1,12 @@
 import { UIMessage } from "ai";
-import { ReasoningMessagePart, TextMessagePart } from "./messages";
+import ReasoningMessagePart from "./ReasoningMessagePart";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { AnimatePresence } from "framer-motion";
-import EditButton from "./EditButton";
 import { cn } from "@/lib/utils";
-import { MessageEditor } from "./message-editor";
 import { UseChatHelpers } from "@ai-sdk/react";
+import ViewingMessage from "./ViewingMessage";
+import EditingMessage from "./EditingMessage";
 
 const Message = ({
   message,
@@ -46,7 +46,7 @@ const Message = ({
               if (part.type === "reasoning") {
                 return (
                   <ReasoningMessagePart
-                    key={`${message.id}-${partIndex}`}
+                    key={key}
                     // @ts-expect-error export ReasoningUIPart
                     part={part}
                     isReasoning={
@@ -60,36 +60,24 @@ const Message = ({
               if (type === "text") {
                 if (mode === "view") {
                   return (
-                    <div key={key} className="flex flex-row gap-2 items-center">
-                      {message.role === "user" && (
-                        <EditButton onClick={() => setMode("edit")} />
-                      )}
-                      <div
-                        data-testid="message-content"
-                        className={cn("flex flex-col gap-4", {
-                          "dark:bg-zinc-800 bg-zinc-100 px-5 py-3.5 rounded-xl":
-                            message.role === "user",
-                        })}
-                      >
-                        <TextMessagePart text={part.text} />
-                      </div>
-                    </div>
+                    <ViewingMessage
+                      key={key}
+                      message={message}
+                      partText={part.text}
+                      setMode={setMode}
+                    />
                   );
                 }
 
                 if (mode === "edit") {
                   return (
-                    <div key={key} className="flex flex-row gap-2 items-start">
-                      <div className="size-8" />
-
-                      <MessageEditor
-                        key={message.id}
-                        message={message}
-                        setMode={setMode}
-                        setMessages={setMessages}
-                        reload={reload}
-                      />
-                    </div>
+                    <EditingMessage
+                      key={key}
+                      message={message}
+                      setMode={setMode}
+                      setMessages={setMessages}
+                      reload={reload}
+                    />
                   );
                 }
               }
