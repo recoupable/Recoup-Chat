@@ -7,6 +7,7 @@ import { ChevronDownIcon, ChevronUpIcon, SpinnerIcon } from "./icons";
 import { UIMessage } from "ai";
 import { UseChatHelpers } from "@ai-sdk/react";
 import ChatMarkdown from "../Chat/ChatMarkdown";
+import Message from "./message";
 
 interface ReasoningPart {
   type: "reasoning";
@@ -136,45 +137,7 @@ export function Messages({ messages, status, children }: MessagesProps) {
     >
       {children || null}
       {messages.map((message) => (
-        <div
-          key={message.id}
-          className={cn(
-            "flex flex-col gap-4 last-of-type:mb-12 first-of-type:mt-16 w-full"
-          )}
-        >
-          <div
-            className={cn("flex flex-col gap-2", {
-              "dark:bg-zinc-800 bg-zinc-100 px-5 py-3.5 rounded-xl w-fit ml-auto max-w-[85%] md:max-w-[65%]":
-                message.role === "user",
-              "": message.role === "assistant",
-            })}
-          >
-            {message.parts?.map((part, partIndex) => {
-              if (part.type === "text") {
-                return (
-                  <TextMessagePart
-                    key={`${message.id}-${partIndex}`}
-                    text={part.text}
-                  />
-                );
-              }
-
-              if (part.type === "reasoning") {
-                return (
-                  <ReasoningMessagePart
-                    key={`${message.id}-${partIndex}`}
-                    // @ts-expect-error export ReasoningUIPart
-                    part={part}
-                    isReasoning={
-                      status === "streaming" &&
-                      partIndex === message.parts.length - 1
-                    }
-                  />
-                );
-              }
-            })}
-          </div>
-        </div>
+        <Message key={message.id} message={message} />
       ))}
 
       {(status === "submitted" || status === "streaming") && (
