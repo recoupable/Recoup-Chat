@@ -1,17 +1,18 @@
 import { cn } from "@/lib/utils";
 import { UIMessage } from "ai";
 import { ReasoningMessagePart, TextMessagePart } from "./messages";
-import { Button } from "../ui/button";
+import { Button } from "@/components/ui/button";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "../ui/tooltip";
-import { PencilEditIcon } from "./icons";
+} from "@/components/ui/tooltip";
+import { PencilEditIcon } from "@/components/icons";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { AnimatePresence } from "framer-motion";
+import EditButton from "./EditButton";
 
 const Message = ({ message }: { message: UIMessage }) => {
   const [mode, setMode] = useState<"view" | "edit">("view");
@@ -44,23 +45,7 @@ const Message = ({ message }: { message: UIMessage }) => {
                 return (
                   <div key={key} className="flex flex-row gap-2 items-center">
                     {message.role === "user" && mode === "view" && (
-                      <TooltipProvider delayDuration={0}>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Button
-                              data-testid="message-edit-button"
-                              variant="ghost"
-                              className="px-2 h-fit rounded-full text-muted-foreground opacity-0 group-hover/message:opacity-100"
-                              onClick={() => {
-                                setMode("edit");
-                              }}
-                            >
-                              <PencilEditIcon />
-                            </Button>
-                          </TooltipTrigger>
-                          <TooltipContent>Edit message</TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
+                      <EditButton onClick={() => setMode("edit")} />
                     )}
                     <div
                       data-testid="message-content"
