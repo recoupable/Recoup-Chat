@@ -44,8 +44,6 @@ export function useVercelChat({ id }: UseVercelChatProps) {
         setHasChatApiError(true);
       },
     });
-  console.log("messages", messages);
-
   const { isLoading: isMessagesLoading, hasError } = useMessageLoader(
     messages.length === 0 ? id : undefined,
     userId,
@@ -62,13 +60,8 @@ export function useVercelChat({ id }: UseVercelChatProps) {
 
   const handleSendMessage = async () => {
     if (hasChatApiError) {
-      console.log("Deleting trailing messages", messages);
       const earliestFailedUserMessageId =
         getEarliestFailedUserMessageId(messages);
-      console.log(
-        "Earliest failed user message ID",
-        earliestFailedUserMessageId
-      );
       if (earliestFailedUserMessageId) {
         const successfulDeletion = await clientDeleteTrailingMessages({
           id: earliestFailedUserMessageId,

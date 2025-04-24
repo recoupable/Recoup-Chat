@@ -30,10 +30,6 @@ const getEarliestFailedUserMessageId = (
           const earliestUserMessage = messages.find(
             (msg) => msg.role === "user"
           );
-          console.log(
-            "Returning earliest user message isLastMessage || isNextMessageUser and hasNoAssistantMessages",
-            earliestUserMessage?.id
-          );
           return earliestUserMessage?.id || null;
         }
       }
@@ -44,10 +40,6 @@ const getEarliestFailedUserMessageId = (
     if (currentMessage.role === "assistant") {
       const isContentEmpty = !currentMessage.content;
       if (isContentEmpty) {
-        console.log(
-          "Returning earliest user message because assistant message isContentEmpty",
-          earliestUserMessageSinceLastSuccess
-        );
         return earliestUserMessageSinceLastSuccess;
       }
 
@@ -61,10 +53,6 @@ const getEarliestFailedUserMessageId = (
           (part) => part.toolInvocation?.state === "result"
         );
         if (!allToolsSuccessful) {
-          console.log(
-            "Returning earliest user message because assistant message is not successful",
-            earliestUserMessageSinceLastSuccess
-          );
           return earliestUserMessageSinceLastSuccess;
         }
       }

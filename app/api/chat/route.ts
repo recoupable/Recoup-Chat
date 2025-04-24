@@ -61,7 +61,6 @@ export async function POST(request: NextRequest) {
 
     const { lastMessage } = validateMessages(messages);
 
-    console.log("lastMessage", lastMessage);
     const [, system] = await Promise.all([
       createMemories({
         id: lastMessage.id,
@@ -92,8 +91,6 @@ export async function POST(request: NextRequest) {
                 messages: [lastMessage],
                 responseMessages: response.messages,
               });
-
-              console.log("assistantMessage", assistantMessage);
               await createMemories({
                 id: assistantMessage.id,
                 room_id: roomId,
