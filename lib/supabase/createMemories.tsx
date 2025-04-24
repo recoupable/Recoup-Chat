@@ -3,6 +3,7 @@ import supabase from "./serverClient";
 interface MemoryInput {
   room_id: string;
   content: unknown;
+  id: string;
 }
 
 const createMemories = async (memory: MemoryInput) => {

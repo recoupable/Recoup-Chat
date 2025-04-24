@@ -5,14 +5,20 @@ const getClientMessages = async (chatId: string) => {
 
     const memories = data?.data || [];
 
-    
-    return memories.map((memory: { content: { role: string; content: string } }) => ({
-      ...memory.content,
-    }));
+    return memories.map(
+      (memory: {
+        id: string;
+        content: { role: string; content: string };
+        updated_at: string;
+      }) => ({
+        id: memory.id,
+        ...memory.content,
+      })
+    );
   } catch (error) {
     console.error(error);
     return [];
   }
 };
 
-export default getClientMessages; 
+export default getClientMessages;

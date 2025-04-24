@@ -4,6 +4,10 @@ import { useUserProvider } from "@/providers/UserProvder";
 import { useArtistProvider } from "@/providers/ArtistProvider";
 import { useParams } from "next/navigation";
 import { toast } from "react-toastify";
+import { useState } from "react";
+import getEarliestFailedUserMessageId from "@/lib/messages/getEarliestFailedUserMessageId";
+import { clientDeleteTrailingMessages } from "@/lib/messages/clientDeleteTrailingMessages";
+import { generateUUID } from "@/lib/generateUUID";
 
 interface UseVercelChatProps {
   id: string;
@@ -18,9 +22,9 @@ export function useVercelChat({ id }: UseVercelChatProps) {
   const { userData } = useUserProvider();
   const { selectedArtist } = useArtistProvider();
   const { roomId } = useParams();
-
   const userId = userData?.id;
   const artistId = selectedArtist?.account_id;
+  const [hasChatApiError, setHasChatApiError] = useState(false);
 
   const { messages, handleSubmit, input, status, stop, setMessages, setInput } =
     useChat({
@@ -31,11 +35,16 @@ export function useVercelChat({ id }: UseVercelChatProps) {
         accountId: userId,
         email: userData?.email,
       },
+      experimental_throttle: 100,
+      sendExtraMessageFields: true,
+      generateId: generateUUID,
       onError: (e) => {
         console.error("An error occurred, please try again!", e);
         toast.error("An error occurred, please try again!");
+        setHasChatApiError(true);
       },
     });
+  console.log("messages", messages);
 
   const { isLoading: isMessagesLoading, hasError } = useMessageLoader(
     messages.length === 0 ? id : undefined,
@@ -51,7 +60,35 @@ export function useVercelChat({ id }: UseVercelChatProps) {
 
   const isGeneratingResponse = ["streaming", "submitted"].includes(status);
 
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
+    if (hasChatApiError) {
+      console.log("Deleting trailing messages", messages);
+      const earliestFailedUserMessageId =
+        getEarliestFailedUserMessageId(messages);
+      console.log(
+        "Earliest failed user message ID",
+        earliestFailedUserMessageId
+      );
+      if (earliestFailedUserMessageId) {
+        const successfulDeletion = await clientDeleteTrailingMessages({
+          id: earliestFailedUserMessageId,
+        });
+        if (successfulDeletion) {
+          setMessages((messages) => {
+            const index = messages.findIndex(
+              (m) => m.id === earliestFailedUserMessageId
+            );
+            if (index !== -1) {
+              return [...messages.slice(0, index)];
+            }
+
+            return messages;
+          });
+        }
+      }
+
+      setHasChatApiError(false);
+    }
     // Always append message first for immediate feedback
     handleSubmit(undefined);
 
