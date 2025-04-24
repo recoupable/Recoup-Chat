@@ -58,29 +58,33 @@ export function useVercelChat({ id }: UseVercelChatProps) {
 
   const isGeneratingResponse = ["streaming", "submitted"].includes(status);
 
+  const deleteTrailingMessages = async () => {
+    const earliestFailedUserMessageId =
+      getEarliestFailedUserMessageId(messages);
+    if (earliestFailedUserMessageId) {
+      const successfulDeletion = await clientDeleteTrailingMessages({
+        id: earliestFailedUserMessageId,
+      });
+      if (successfulDeletion) {
+        setMessages((messages) => {
+          const index = messages.findIndex(
+            (m) => m.id === earliestFailedUserMessageId
+          );
+          if (index !== -1) {
+            return [...messages.slice(0, index)];
+          }
+
+          return messages;
+        });
+      }
+    }
+
+    setHasChatApiError(false);
+  };
+
   const handleSendMessage = async () => {
     if (hasChatApiError) {
-      const earliestFailedUserMessageId =
-        getEarliestFailedUserMessageId(messages);
-      if (earliestFailedUserMessageId) {
-        const successfulDeletion = await clientDeleteTrailingMessages({
-          id: earliestFailedUserMessageId,
-        });
-        if (successfulDeletion) {
-          setMessages((messages) => {
-            const index = messages.findIndex(
-              (m) => m.id === earliestFailedUserMessageId
-            );
-            if (index !== -1) {
-              return [...messages.slice(0, index)];
-            }
-
-            return messages;
-          });
-        }
-      }
-
-      setHasChatApiError(false);
+      await deleteTrailingMessages();
     }
     // Always append message first for immediate feedback
     handleSubmit(undefined);
