@@ -5,8 +5,18 @@ import { motion } from "framer-motion";
 import { AnimatePresence } from "framer-motion";
 import EditButton from "./EditButton";
 import { cn } from "@/lib/utils";
+import { MessageEditor } from "./message-editor";
+import { UseChatHelpers } from "@ai-sdk/react";
 
-const Message = ({ message }: { message: UIMessage }) => {
+const Message = ({
+  message,
+  setMessages,
+  reload,
+}: {
+  message: UIMessage;
+  setMessages: UseChatHelpers["setMessages"];
+  reload: UseChatHelpers["reload"];
+}) => {
   const [mode, setMode] = useState<"view" | "edit">("view");
 
   return (
@@ -33,25 +43,6 @@ const Message = ({ message }: { message: UIMessage }) => {
               const { type } = part;
               const key = `message-${message.id}-part-${partIndex}`;
 
-              if (type === "text") {
-                return (
-                  <div key={key} className="flex flex-row gap-2 items-center">
-                    {message.role === "user" && mode === "view" && (
-                      <EditButton onClick={() => setMode("edit")} />
-                    )}
-                    <div
-                      data-testid="message-content"
-                      className={cn("flex flex-col gap-4", {
-                        "dark:bg-zinc-800 bg-zinc-100 px-5 py-3.5 rounded-xl":
-                          message.role === "user",
-                      })}
-                    >
-                      <TextMessagePart text={part.text} />
-                    </div>
-                  </div>
-                );
-              }
-
               if (part.type === "reasoning") {
                 return (
                   <ReasoningMessagePart
@@ -64,6 +55,43 @@ const Message = ({ message }: { message: UIMessage }) => {
                     }
                   />
                 );
+              }
+
+              if (type === "text") {
+                if (mode === "view") {
+                  return (
+                    <div key={key} className="flex flex-row gap-2 items-center">
+                      {message.role === "user" && (
+                        <EditButton onClick={() => setMode("edit")} />
+                      )}
+                      <div
+                        data-testid="message-content"
+                        className={cn("flex flex-col gap-4", {
+                          "dark:bg-zinc-800 bg-zinc-100 px-5 py-3.5 rounded-xl":
+                            message.role === "user",
+                        })}
+                      >
+                        <TextMessagePart text={part.text} />
+                      </div>
+                    </div>
+                  );
+                }
+
+                if (mode === "edit") {
+                  return (
+                    <div key={key} className="flex flex-row gap-2 items-start">
+                      <div className="size-8" />
+
+                      <MessageEditor
+                        key={message.id}
+                        message={message}
+                        setMode={setMode}
+                        setMessages={setMessages}
+                        reload={reload}
+                      />
+                    </div>
+                  );
+                }
               }
             })}
           </div>

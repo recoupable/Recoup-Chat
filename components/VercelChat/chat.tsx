@@ -28,6 +28,8 @@ export function Chat({ id, reportId }: ChatProps) {
     stop,
     setInput,
     input,
+    setMessages,
+    reload,
   } = useVercelChat({ id });
   const { roomId } = useParams();
   useAutoLogin();
@@ -67,7 +69,12 @@ export function Chat({ id, reportId }: ChatProps) {
           <ChatPrompt isVisible={isVisible} />
         </div>
       ) : (
-        <Messages messages={messages} status={status}>
+        <Messages
+          messages={messages}
+          status={status}
+          setMessages={setMessages}
+          reload={reload}
+        >
           {reportId && <ChatReport reportId={reportId} />}
         </Messages>
       )}

@@ -26,24 +26,32 @@ export function useVercelChat({ id }: UseVercelChatProps) {
   const artistId = selectedArtist?.account_id;
   const [hasChatApiError, setHasChatApiError] = useState(false);
 
-  const { messages, handleSubmit, input, status, stop, setMessages, setInput } =
-    useChat({
-      id,
-      body: {
-        roomId: id,
-        artistId,
-        accountId: userId,
-        email: userData?.email,
-      },
-      experimental_throttle: 100,
-      sendExtraMessageFields: true,
-      generateId: generateUUID,
-      onError: (e) => {
-        console.error("An error occurred, please try again!", e);
-        toast.error("An error occurred, please try again!");
-        setHasChatApiError(true);
-      },
-    });
+  const {
+    messages,
+    handleSubmit,
+    input,
+    status,
+    stop,
+    setMessages,
+    setInput,
+    reload,
+  } = useChat({
+    id,
+    body: {
+      roomId: id,
+      artistId,
+      accountId: userId,
+      email: userData?.email,
+    },
+    experimental_throttle: 100,
+    sendExtraMessageFields: true,
+    generateId: generateUUID,
+    onError: (e) => {
+      console.error("An error occurred, please try again!", e);
+      toast.error("An error occurred, please try again!");
+      setHasChatApiError(true);
+    },
+  });
   const { isLoading: isMessagesLoading, hasError } = useMessageLoader(
     messages.length === 0 ? id : undefined,
     userId,
@@ -107,6 +115,8 @@ export function useVercelChat({ id }: UseVercelChatProps) {
     // Actions
     handleSendMessage,
     setInput,
+    setMessages,
     stop,
+    reload,
   };
 }

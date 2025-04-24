@@ -117,10 +117,18 @@ export function TextMessagePart({ text }: TextMessagePartProps) {
 interface MessagesProps {
   messages: Array<UIMessage>;
   status: UseChatHelpers["status"];
+  setMessages: UseChatHelpers["setMessages"];
+  reload: UseChatHelpers["reload"];
   children?: React.ReactNode;
 }
 
-export function Messages({ messages, status, children }: MessagesProps) {
+export function Messages({
+  messages,
+  status,
+  setMessages,
+  reload,
+  children,
+}: MessagesProps) {
   const messagesRef = useRef<HTMLDivElement>(null);
   const messagesLength = useMemo(() => messages.length, [messages]);
 
@@ -137,7 +145,12 @@ export function Messages({ messages, status, children }: MessagesProps) {
     >
       {children || null}
       {messages.map((message) => (
-        <Message key={message.id} message={message} />
+        <Message
+          key={message.id}
+          message={message}
+          setMessages={setMessages}
+          reload={reload}
+        />
       ))}
 
       {(status === "submitted" || status === "streaming") && (
