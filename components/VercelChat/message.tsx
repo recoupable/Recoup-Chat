@@ -47,7 +47,6 @@ const Message = ({
                 return (
                   <ReasoningMessagePart
                     key={key}
-                    // @ts-expect-error export ReasoningUIPart
                     part={part}
                     isReasoning={
                       status === "streaming" &&
