@@ -6,7 +6,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { PencilEditIcon } from "@/components/icons";
+import { PencilEditIcon } from "./icons";
 
 interface EditButtonProps {
   onClick: () => void;
