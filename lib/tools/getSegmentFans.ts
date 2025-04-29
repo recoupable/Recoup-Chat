@@ -1,28 +1,89 @@
-import { Tool } from "ai";
 import { z } from "zod";
-import { getSegmentFans } from "../supabase/getSegmentFans";
+import { tool } from "ai";
 
-const getSegmentFansTool = (segmentId: string): Tool => ({
-  description: "Get all fans belonging to the current segment",
-  parameters: z.object({}),
-  execute: async () => {
+// Response types
+interface Fan {
+  id: string;
+  username: string;
+  avatar: string;
+  profile_url: string;
+  segment_id: string;
+  segment_name: string;
+  fan_social_id: string;
+  region: string;
+  bio: string;
+  follower_count: number;
+  following_count: number;
+  updated_at: string;
+}
+
+interface FanResponse {
+  status: "success" | "error";
+  fans: Fan[];
+  pagination: {
+    total_count: number;
+    page: number;
+    limit: number;
+    total_pages: number;
+  };
+}
+
+// Zod schema for parameter validation
+const schema = z.object({
+  segment_id: z.string().min(1, "Segment ID is required"),
+  page: z.number().min(1).optional().default(1),
+  limit: z.number().min(1).max(100).optional().default(20),
+});
+
+const getSegmentFans = tool({
+  description:
+    "Retrieve all social profiles from fans within a specific segment. This endpoint should be called after obtaining segment IDs from the Artist Segments endpoint.",
+  parameters: schema,
+  execute: async ({ segment_id, page, limit }) => {
     try {
-      const fans = await getSegmentFans(segmentId);
-      const response = JSON.stringify({ fans, error: null });
-      return response;
+      // Construct URL with query parameters
+      const url = new URL("https://api.recoupable.com/api/segment/fans");
+      url.searchParams.append("segment_id", segment_id);
+      if (page) url.searchParams.append("page", page.toString());
+      if (limit) url.searchParams.append("limit", limit.toString());
+
+      // Make the API request
+      const response = await fetch(url.toString(), {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`API request failed with status ${response.status}`);
+      }
+
+      const data = (await response.json()) as FanResponse;
+
+      return {
+        success: true,
+        ...data,
+      };
     } catch (error) {
-      const errorMessage =
-        error instanceof Error ? error.message : "Unknown error";
-      console.error("[SegmentFansTool] Error:", {
-        error: errorMessage,
-        segmentId,
-      });
-      return JSON.stringify({
+      console.error("Error fetching segment fans:", error);
+      return {
+        success: false,
+        status: "error",
+        message:
+          error instanceof Error
+            ? error.message
+            : "Failed to fetch segment fans",
         fans: [],
-        error: errorMessage,
-      });
+        pagination: {
+          total_count: 0,
+          page: page || 1,
+          limit: limit || 20,
+          total_pages: 0,
+        },
+      };
     }
   },
 });
 
-export default getSegmentFansTool;
+export default getSegmentFans;
