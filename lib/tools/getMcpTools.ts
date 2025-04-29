@@ -16,7 +16,6 @@ export async function getMcpTools() {
     get_artist_socials: getArtistSocials,
     get_segment_fans: getSegmentFans,
     get_social_posts: getSocialPosts,
-    ...toolSetMantleWebSearch,
     ...perplexityTools,
   };
 
