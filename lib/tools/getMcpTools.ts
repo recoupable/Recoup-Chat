@@ -13,8 +13,8 @@ export async function getMcpTools() {
     contact_team: contactTeam,
     get_artist_comments: getArtistComments,
     get_artist_segments: getArtistSegments,
-    get_artist_socials: getArtistSocials,
     get_segment_fans: getSegmentFans,
+    get_artist_socials: getArtistSocials,
     get_social_posts: getSocialPosts,
     ...perplexityTools,
   };
