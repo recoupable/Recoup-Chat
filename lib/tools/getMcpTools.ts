@@ -1,8 +1,9 @@
 import { experimental_createMCPClient } from "ai";
-import getSegmentFansTool from "./getSegmentFans";
+import getSegmentFans from "./getSegmentFans";
 import contactTeam from "./contactTeam";
 import getArtistComments from "./getArtistComments";
 import getArtistSegments from "./getArtistSegments";
+import getArtistSocials from "./getArtistSocials";
 import { getPerplexityTools } from "./getPerplexityTools";
 
 export async function getMcpTools() {
@@ -20,7 +21,8 @@ export async function getMcpTools() {
     contact_team: contactTeam,
     get_artist_comments: getArtistComments,
     get_artist_segments: getArtistSegments,
-    get_segment_fans: getSegmentFansTool,
+    get_artist_socials: getArtistSocials,
+    get_segment_fans: getSegmentFans,
     ...toolSetMantleWebSearch,
     ...perplexityTools,
   };
