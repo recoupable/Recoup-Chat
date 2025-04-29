@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import "react-toastify/dist/ReactToastify.css";
 import Providers from "@/providers/Providers";
@@ -13,20 +13,44 @@ import { ToastContainer } from "react-toastify";
 import { Analytics } from "@vercel/analytics/react";
 import ArtistSelectionOverlay from "@/components/ArtistSelectionOverlay";
 
-export const metadata: Metadata = {
-  title: TITLE,
-  description: META_DESCRIPTION,
-  openGraph: {
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+};
+
+export async function generateMetadata(): Promise<Metadata> {
+  const URL = process.env.NEXT_PUBLIC_URL;
+  return {
     title: TITLE,
     description: META_DESCRIPTION,
-    images: "/logo.png",
-  },
-  manifest: "/manifest.json",
-  icons: [{ rel: "icon", url: "/recoup.png" }],
-  viewport:
-    "minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no, viewport-fit=cover",
-  themeColor: [{ media: "(prefers-color-scheme: dark)", color: "#fff" }],
-};
+    other: {
+      "fc:frame": JSON.stringify({
+        version: process.env.NEXT_PUBLIC_VERSION,
+        imageUrl: process.env.NEXT_PUBLIC_IMAGE_URL,
+        button: {
+          title: `Launch ${TITLE}`,
+          action: {
+            type: "launch_frame",
+            name: TITLE,
+            url: URL,
+            splashImageUrl: process.env.NEXT_PUBLIC_SPLASH_IMAGE_URL,
+            splashBackgroundColor: `#${process.env.NEXT_PUBLIC_SPLASH_BACKGROUND_COLOR}`,
+          },
+        },
+      }),
+    },
+    openGraph: {
+      title: TITLE,
+      description: META_DESCRIPTION,
+      images: "/logo.png",
+    },
+    manifest: "/manifest.json",
+    icons: [{ rel: "icon", url: "/recoup.png" }],
+    viewport:
+      "minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no, viewport-fit=cover",
+    themeColor: [{ media: "(prefers-color-scheme: dark)", color: "#fff" }],
+  };
+}
 
 export default function RootLayout({
   children,
