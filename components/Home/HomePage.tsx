@@ -10,6 +10,7 @@ const HomePage = ({ id }: { id: string }) => {
   useEffect(() => {
     if (!isFrameReady) {
       setFrameReady();
+      console.log("setFrameReady");
     }
   }, [setFrameReady, isFrameReady]);
 
