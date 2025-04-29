@@ -11,6 +11,7 @@ import useVisibilityDelay from "@/hooks/useVisibilityDelay";
 import { ChatReport } from "../Chat/ChatReport";
 import { useParams } from "next/navigation";
 import { useAutoLogin } from "@/hooks/useAutoLogin";
+import { useArtistFromRoom } from "@/hooks/useArtistFromRoom";
 
 interface ChatProps {
   id: string;
@@ -33,7 +34,8 @@ export function Chat({ id, reportId }: ChatProps) {
   } = useVercelChat({ id });
   const { roomId } = useParams();
   useAutoLogin();
-
+  useArtistFromRoom(id);
+  
   const { isVisible } = useVisibilityDelay({
     shouldBeVisible: messages.length === 0 && !reportId,
     deps: [messages.length, reportId],

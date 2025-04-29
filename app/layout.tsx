@@ -11,6 +11,7 @@ import MobileDownloadModal from "@/components/ModalDownloadModal";
 import ArtistsSidebar from "@/components/Artists/ArtistsSidebar";
 import { ToastContainer } from "react-toastify";
 import { Analytics } from "@vercel/analytics/react";
+import ArtistSelectionOverlay from "@/components/ArtistSelectionOverlay";
 
 export const metadata: Metadata = {
   title: TITLE,
@@ -18,7 +19,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: TITLE,
     description: META_DESCRIPTION,
-    images: `/logo.png`,
+    images: "/logo.png",
   },
   manifest: "/manifest.json",
   icons: [{ rel: "icon", url: "/recoup.png" }],
@@ -51,6 +52,7 @@ export default function RootLayout({
               </div>
               <MobileDownloadModal />
             </div>
+            <ArtistSelectionOverlay />
             <ToastContainer />
           </Providers>
         </Suspense>

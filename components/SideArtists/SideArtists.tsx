@@ -17,30 +17,31 @@ const SideArtists = ({
 
   const handleCreate = () => {
     if (!isPrepared()) return;
-
     toggleCreation();
     toggleSettingModal();
+    toggleModal();
   };
+
   return (
     <SideModal
       isVisible={isVisible}
       toggleModal={toggleModal}
       containerClasses="justify-end"
       direction="right"
-      className="!w-fit"
+      className="w-[250px]"
     >
       <div className="no-scrollbar grow flex flex-col gap-1 overflow-y-auto overflow-x-hidden w-full">
         {email &&
           sorted.map((artist: ArtistRecord | null) => (
             <Artist
               artist={artist}
-              toggleDropDown={() => {}}
+              toggleDropDown={() => toggleModal()}
               key={artist?.account_id}
             />
           ))}
       </div>
       <button
-        className="flex px-2 py-1 gap-2 text-sm items-center text-grey-dark-1 w-full"
+        className="flex px-2 py-1 gap-2 text-sm items-center text-grey-dark-1 w-full hover:bg-gray-50"
         onClick={handleCreate}
         type="button"
       >

@@ -11,6 +11,7 @@ import { PaymentProvider } from "./PaymentProvider";
 import { MessagesProvider } from "./MessagesProvider";
 import { PromptsProvider } from "./PromptsProvider";
 import { FunnelAnalysisProvider } from "./FunnelAnalysisProvider";
+import { SidebarExpansionProvider } from "./SidebarExpansionContext";
 
 const queryClient = new QueryClient();
 
@@ -20,19 +21,21 @@ const Providers = ({ children }: { children: React.ReactNode }) => (
       <UserProvider>
         <FunnelReportProvider>
           <ArtistProvider>
-            <ConversationsProvider>
-              <PromptsProvider>
-                <MessagesProvider>
-                  <ChatProvider>
-                    <PaymentProvider>
-                      <FunnelAnalysisProvider>
-                        {children}
-                      </FunnelAnalysisProvider>
-                    </PaymentProvider>
-                  </ChatProvider>
-                </MessagesProvider>
-              </PromptsProvider>
-            </ConversationsProvider>
+            <SidebarExpansionProvider>
+              <ConversationsProvider>
+                <PromptsProvider>
+                  <MessagesProvider>
+                    <ChatProvider>
+                      <PaymentProvider>
+                        <FunnelAnalysisProvider>
+                          {children}
+                        </FunnelAnalysisProvider>
+                      </PaymentProvider>
+                    </ChatProvider>
+                  </MessagesProvider>
+                </PromptsProvider>
+              </ConversationsProvider>
+            </SidebarExpansionProvider>
           </ArtistProvider>
         </FunnelReportProvider>
       </UserProvider>

@@ -3,6 +3,7 @@
 import cn from "classnames";
 import { Input } from "./input";
 import { ArrowUpIcon, StopIcon } from "./icons";
+import { useArtistProvider } from "@/providers/ArtistProvider";
 
 interface ChatInputProps {
   onSendMessage: () => void;
@@ -19,8 +20,12 @@ export function ChatInput({
   setInput,
   input,
 }: ChatInputProps) {
+  // Access the artist state to check if an artist is selected
+  const { selectedArtist } = useArtistProvider();
+  const isDisabled = !selectedArtist;
+
   const handleSend = () => {
-    if (input === "") return;
+    if (input === "" || isDisabled) return;
 
     if (isGeneratingResponse) {
       onStop();
@@ -36,18 +41,21 @@ export function ChatInput({
         setInput={setInput}
         isGeneratingResponse={isGeneratingResponse}
         onSend={handleSend}
+        isDisabled={isDisabled}
       />
 
       <div className="absolute bottom-2.5 right-2.5">
         <button
+          type="button"
           className={cn(
             "size-8 flex flex-row justify-center items-center dark:bg-zinc-100 bg-zinc-900 dark:text-zinc-900 text-zinc-100 p-1.5 rounded-full hover:bg-zinc-800 dark:hover:bg-zinc-300 hover:scale-105 active:scale-95 transition-all",
             {
-              "dark:bg-zinc-200 dark:text-zinc-500":
-                isGeneratingResponse || input === "",
+              "dark:bg-zinc-200 dark:text-zinc-500 cursor-not-allowed opacity-50":
+                isGeneratingResponse || input === "" || isDisabled,
             }
           )}
           onClick={handleSend}
+          disabled={isGeneratingResponse || input === "" || isDisabled}
         >
           {isGeneratingResponse ? <StopIcon /> : <ArrowUpIcon />}
         </button>

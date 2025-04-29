@@ -9,6 +9,20 @@ const config: Config = {
   ],
   theme: {
   	extend: {
+      keyframes: {
+        "success-pulse": {
+          "0%, 100%": { opacity: "0" },
+          "50%": { opacity: "1" },
+        },
+        "ping-slow": {
+          "0%": { transform: "scale(1)", opacity: "1" },
+          "75%, 100%": { transform: "scale(2)", opacity: "0" },
+        },
+      },
+      animation: {
+        "success-pulse": "success-pulse 1.5s ease-in-out",
+        "ping-slow": "ping-slow 1.5s cubic-bezier(0, 0, 0.2, 1) infinite",
+      },
   		fontFamily: {
   			inter_medium: [
   				'Inter Medium',

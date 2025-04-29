@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { User } from "lucide-react";
 
 const ImageWithFallback = ({
   src,
@@ -7,28 +8,36 @@ const ImageWithFallback = ({
   src: string;
   className?: string;
 }) => {
-  const [currentSrc, setCurrentSrc] = useState(src);
+  const [imgError, setImgError] = useState(false);
   const [keyValue, setKeyValue] = useState(0);
 
-  const handleError = () => {
-    setCurrentSrc("https://i.imgur.com/QCdc8Ai.jpg");
-  };
-
+  // Reset error state when src changes
   useEffect(() => {
-    setKeyValue(keyValue + 1);
-    if (src) setCurrentSrc(src);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [src]);
+    setImgError(false);
+    setKeyValue((prev) => prev + 1);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // If no src or error loading image, show placeholder
+  if (!src || imgError) {
+    return (
+      <div className="w-full h-full min-w-8 min-h-8">
+        <div className={`bg-gray-100 w-full h-full flex items-center justify-center rounded-full border border-gray-200 ${className}`}>
+          <User className="w-8 h-8 text-gray-400" />
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="flex items-center justify-center">
+    <div className="w-full h-full min-w-8 min-h-8">
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         key={keyValue}
-        src={currentSrc}
-        onError={handleError}
-        className={`${className} object-cover w-full aspect-[1/1]`}
-        alt="not found pic"
+        src={src}
+        onError={() => setImgError(true)}
+        className={`object-cover w-full h-full ${className}`}
+        alt="Profile avatar"
       />
     </div>
   );

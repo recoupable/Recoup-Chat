@@ -50,7 +50,7 @@ export function ChatGreeting({ isVisible }: { isVisible: boolean }) {
           )}
         </div>
       ) : (
-        <span>Welcome to Recoup</span>
+        <span>Welcome to Recoup <span className="text-[16px] sm:text-[20px]">👋</span></span>
       )}
 
       {/* For mobile with long names, show this line separately */}

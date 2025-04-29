@@ -7,6 +7,7 @@ interface InputProps {
   setInput: (value: string) => void;
   isGeneratingResponse: boolean;
   onSend?: () => void;
+  isDisabled?: boolean;
 }
 
 export function Input({
@@ -14,6 +15,7 @@ export function Input({
   setInput,
   isGeneratingResponse,
   onSend,
+  isDisabled = false, // Default to false if not provided
 }: InputProps) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -31,10 +33,10 @@ export function Input({
   return (
     <textarea
       ref={textareaRef}
-      className="mb-12 resize-none w-full min-h-12 max-h-[200px] overflow-y-auto outline-none bg-transparent placeholder:text-zinc-400 px-2 py-2"
-      placeholder="Send a message"
+      className="mb-12 resize-none w-full min-h-12 max-h-[200px] overflow-y-auto outline-none bg-transparent placeholder:text-zinc-400 px-2 py-2 disabled:opacity-75 disabled:cursor-not-allowed"
+      placeholder={isDisabled ? "Select an artist first" : "Send a message"}
       value={input}
-      autoFocus
+      disabled={isDisabled}
       onChange={(event) => {
         setInput(event.currentTarget.value);
       }}
@@ -42,7 +44,7 @@ export function Input({
         if (event.key === "Enter" && !event.shiftKey) {
           event.preventDefault();
 
-          if (input === "") {
+          if (input === "" || isDisabled) {
             return;
           }
 

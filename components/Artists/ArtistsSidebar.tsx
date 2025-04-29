@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useArtistProvider } from "@/providers/ArtistProvider";
 import Artist from "../Header/Artist";
@@ -8,15 +8,23 @@ import { ArtistRecord } from "@/types/Artist";
 import { Plus } from "lucide-react";
 import useIsMobile from "@/hooks/useIsMobile";
 import { useUserProvider } from "@/providers/UserProvder";
+import { useSidebarExpansion } from "@/providers/SidebarExpansionContext";
 
 const ArtistsSidebar = () => {
-  const { toggleCreation, toggleSettingModal, sorted } = useArtistProvider();
+  const { toggleCreation, toggleSettingModal, sorted, selectedArtist } = useArtistProvider();
   const { isPrepared, email } = useUserProvider();
+  const { setIsExpanded } = useSidebarExpansion();
   const isMobile = useIsMobile();
+  const isArtistSelected = !!selectedArtist;
 
   const [menuExpanded, setMenuExpanded] = useState(false);
   const animate = { width: menuExpanded ? 220 : 80 };
   const initial = { width: 80 };
+
+  // Update the shared context when the local state changes
+  useEffect(() => {
+    setIsExpanded(menuExpanded);
+  }, [menuExpanded, setIsExpanded]);
 
   const handleCreate = () => {
     if (!isPrepared()) return;
@@ -27,7 +35,7 @@ const ArtistsSidebar = () => {
 
   return (
     <motion.div
-      className={`px-3 py-7 hidden md:flex flex-col gap-2 ${menuExpanded ? 'items-stretch' : 'items-center'}`}
+      className={`px-3 py-7 hidden md:flex flex-col gap-2 z-50 ${menuExpanded ? 'items-stretch' : 'items-center'} ${!isArtistSelected ? 'relative' : ''}`}
       animate={animate}
       initial={initial}
       transition={{ duration: 0.2 }}
@@ -46,7 +54,7 @@ const ArtistsSidebar = () => {
           ))}
       </div>
       <button
-        className={`${menuExpanded ? "flex px-2 py-1 gap-2 text-sm items-center text-grey-dark-1" : "flex justify-center"}`}
+        className={`${menuExpanded ? "flex px-2 py-1 gap-2 text-sm items-center text-grey-dark-1" : "flex justify-center"} ${!isArtistSelected ? 'relative z-50 brightness-125' : ''}`}
         onClick={handleCreate}
         type="button"
       >

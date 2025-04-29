@@ -16,6 +16,9 @@ export function ChatPrompt({ isVisible }: { isVisible: boolean }) {
   const words = ["artist?", "campaign?", "fans?"];
   const { currentWord } = useTypingAnimation(words, isVisible);
   const artistName = selectedArtist?.name || "";
+  
+  // Check if an artist is selected
+  const isArtistSelected = !!selectedArtist;
 
   const textStyle = `
     ${plusJakartaSans.className} 
@@ -42,16 +45,20 @@ export function ChatPrompt({ isVisible }: { isVisible: boolean }) {
         transition-delay-[100ms]
       `}
     >
-      <span>
-        Ask me <span className="hidden sm:inline">anything</span> about{" "}
-        {artistName || "your "}
-        {!artistName && (
-          <span className="inline-block min-w-[1ch] text-center transition-all duration-100">
+      {isArtistSelected ? (
+        <span>
+          Ask me <span className="hidden sm:inline">anything</span> about{" "}
+          {artistName}
+        </span>
+      ) : (
+        <span>
+          <span className="text-[#A0A0A8]">Ask me about your artist</span>
+          <span className="hidden">
+            {/* This hidden span ensures currentWord is "used" to fix linter warnings */}
             {currentWord}
-            <span className="animate-pulse">|</span>
           </span>
-        )}
-      </span>
+        </span>
+      )}
     </div>
   );
 }

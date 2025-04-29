@@ -23,8 +23,12 @@ const Artist = ({
   const [isHovered, setIsHovered] = useState(false);
 
   const isSelectedArtist = selectedArtist?.account_id === artist?.account_id;
+  const isAnyArtistSelected = !!selectedArtist;
+  const shouldHighlight = !isAnyArtistSelected; // Highlight when no artist is selected
+  
   const pathname = usePathname();
   const { push } = useRouter();
+  
   const handleClick = () => {
     toggleDropDown();
     if (pathname.includes("/funnels") && selectedArtist) {
@@ -45,23 +49,26 @@ const Artist = ({
       className={`${
         isMini
           ? `${isSelectedArtist && "w-fit rounded-full"} flex justify-center items-center`
-          : `flex gap-3 items-center px-2 text-sm rounded-md text-grey-dark hover:bg-grey-light-1 ${isSelectedArtist && "!bg-grey-light-1"}`
-      } py-2 w-full`}
+          : `flex gap-3 items-center px-2 text-sm rounded-md text-grey-dark ${isAnyArtistSelected ? 'hover:bg-grey-light-1' : ''} ${isSelectedArtist && "!bg-grey-light-1"}`
+      } py-2 w-full ${shouldHighlight ? 'z-50 relative' : ''}`}
       type="button"
       onClick={handleClick}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div
-        className={`w-8 aspect-1/1 rounded-full overflow-hidden flex items-center justify-center ${isSelectedArtist && "shadow-[1px_1px_1px_1px_#E6E6E6]"}`}
-      >
-        <ImageWithFallback src={artist?.image || ""} />
+      <div className="relative">
+        <div
+          className={`w-8 aspect-1/1 rounded-full overflow-hidden flex items-center justify-center ${isSelectedArtist && "shadow-[1px_1px_1px_1px_#E6E6E6]"} ${shouldHighlight ? 'brightness-110 shadow-md ring-1 ring-white/30' : ''}`}
+        >
+          <ImageWithFallback src={artist?.image || ""} />
+        </div>
       </div>
+      
       {!isMini && (
         <>
           <div
             key={artist?.account_id}
-            className="text-left grow"
+            className={`text-left grow text-grey-dark ${shouldHighlight ? 'font-medium' : ''}`}
             title={artist?.name || ""}
           >
             {displayName}
