@@ -8,6 +8,14 @@ interface Comment {
   social_id: string;
   comment: string;
   commented_at: string;
+  username: string;
+  avatar: string | null;
+  profile_url: string;
+  post_url: string;
+  region: string | null;
+  bio: string | null;
+  follower_count: number | null;
+  following_count: number | null;
 }
 
 interface CommentResponse {
@@ -23,24 +31,22 @@ interface CommentResponse {
 
 // Zod schema for parameter validation
 const schema = z.object({
-  artist_account_id: z.string().min(1, "Artist account ID is required"),
-  post_id: z.string().optional(),
+  post_id: z.string().min(1, "Post ID is required"),
   page: z.number().min(1).optional().default(1),
-  limit: z.number().min(1).max(100).optional().default(10),
+  limit: z.number().min(1).max(100).optional().default(20),
 });
 
-const getArtistComments = tool({
+const getPostComments = tool({
   description:
-    "Retrieve comments associated with an artist or a specific post, with support for pagination.",
+    "Retrieve comments for a specific social media post. This endpoint should be called after obtaining post IDs from the Social Posts endpoint.",
   parameters: schema,
-  execute: async ({ artist_account_id, post_id, page, limit }) => {
+  execute: async ({ post_id, page = 1, limit = 20 }) => {
     try {
       // Construct URL with query parameters
-      const url = new URL("https://api.recoupable.com/api/comments");
-      url.searchParams.append("artist_account_id", artist_account_id);
-      if (post_id) url.searchParams.append("post_id", post_id);
-      if (page) url.searchParams.append("page", page.toString());
-      if (limit) url.searchParams.append("limit", limit.toString());
+      const url = new URL("https://api.recoupable.com/api/post/comments");
+      url.searchParams.append("post_id", post_id);
+      url.searchParams.append("page", page.toString());
+      url.searchParams.append("limit", limit.toString());
 
       // Make the API request
       const response = await fetch(url.toString(), {
@@ -61,19 +67,19 @@ const getArtistComments = tool({
         ...data,
       };
     } catch (error) {
-      console.error("Error fetching artist comments:", error);
+      console.error("Error fetching post comments:", error);
       return {
         success: false,
         status: "error",
         message:
           error instanceof Error
             ? error.message
-            : "Failed to fetch artist comments",
+            : "Failed to fetch post comments",
         comments: [],
         pagination: {
           total_count: 0,
-          page: page || 1,
-          limit: limit || 10,
+          page: page,
+          limit: limit,
           total_pages: 0,
         },
       };
@@ -81,4 +87,4 @@ const getArtistComments = tool({
   },
 });
 
-export default getArtistComments;
+export default getPostComments;
