@@ -1,4 +1,5 @@
 "use client";
+
 import { useMiniKit } from "@coinbase/onchainkit/minikit";
 import { Chat } from "../VercelChat/chat";
 import { useEffect } from "react";
