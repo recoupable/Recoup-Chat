@@ -2,6 +2,7 @@ import { experimental_createMCPClient } from "ai";
 import getSegmentFansTool from "./getSegmentFans";
 import contactTeam from "./contactTeam";
 import getArtistComments from "./getArtistComments";
+import getArtistSegments from "./getArtistSegments";
 import { getPerplexityTools } from "./getPerplexityTools";
 
 export async function getMcpTools(segment_id?: string) {
@@ -18,6 +19,7 @@ export async function getMcpTools(segment_id?: string) {
   const tools = {
     contact_team: contactTeam,
     get_artist_comments: getArtistComments,
+    get_artist_segments: getArtistSegments,
     ...toolSetMantleWebSearch,
     ...perplexityTools,
   };
