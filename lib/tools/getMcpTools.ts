@@ -4,11 +4,9 @@ import getArtistSegments from "./getArtistSegments";
 import getArtistSocials from "./getArtistSocials";
 import getSocialPosts from "./getSocialPosts";
 import getPostComments from "./getPostComments";
-import { getPerplexityTools } from "./getPerplexityTools";
+import perplexityAsk from "./perplexityAsk";
 
 export async function getMcpTools() {
-  const perplexityTools = await getPerplexityTools();
-
   const tools = {
     contact_team: contactTeam,
     get_artist_segments: getArtistSegments,
@@ -16,7 +14,7 @@ export async function getMcpTools() {
     get_artist_socials: getArtistSocials,
     get_social_posts: getSocialPosts,
     get_post_comments: getPostComments,
-    ...perplexityTools,
+    perplexity_ask: perplexityAsk,
   };
 
   return tools;
