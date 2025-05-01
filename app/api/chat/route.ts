@@ -75,7 +75,6 @@ export async function POST(request: NextRequest) {
       }),
     ]);
 
-    console.log("system", system);
     return createDataStreamResponse({
       execute: (dataStream) => {
         const result = streamText({
