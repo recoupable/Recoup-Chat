@@ -1,25 +1,12 @@
 import { ImageSkeleton } from "@/components/ui/ImageSkeleton";
 import { ImageResult } from "@/components/ui/ImageResult";
-
+import { ImageGenerationResult } from "@/lib/tools/generateImage";
 /**
  * Interface for tool call props
  */
 interface ToolCallProps {
   toolName: string;
   toolCallId: string;
-}
-
-/**
- * Interface for image generation result
- */
-interface ImageGenerationResult {
-  success: boolean;
-  arweaveUrl: string | null;
-  smartAccountAddress?: string;
-  transactionHash?: string | null;
-  blockExplorerUrl?: string | null;
-  message?: string;
-  error?: string;
 }
 
 /**

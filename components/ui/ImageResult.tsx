@@ -1,15 +1,8 @@
 import Image from "next/image";
+import { ImageGenerationResult } from "@/lib/tools/generateImage";
 
 interface ImageResultProps {
-  result: {
-    success: boolean;
-    arweaveUrl: string | null;
-    smartAccountAddress?: string;
-    transactionHash?: string | null;
-    blockExplorerUrl?: string | null;
-    message?: string;
-    error?: string;
-  };
+  result: ImageGenerationResult;
 }
 
 export function ImageResult({ result }: ImageResultProps) {

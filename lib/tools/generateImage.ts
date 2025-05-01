@@ -10,12 +10,25 @@ const schema = z.object({
     .max(1000, "Prompt is too long"),
 });
 
+/**
+ * Interface for image generation result
+ */
+export interface ImageGenerationResult {
+  success: boolean;
+  arweaveUrl: string | null;
+  smartAccountAddress?: string;
+  transactionHash?: string | null;
+  blockExplorerUrl?: string | null;
+  message?: string;
+  error?: string;
+}
+
 // Define the generateImage tool
 const generateImage = tool({
   description:
     "Generate an image based on a text prompt. The image will be stored onchain with Arweave and a collection will be created onchain with Base.",
   parameters: schema,
-  execute: async ({ prompt }) => {
+  execute: async ({ prompt }): Promise<ImageGenerationResult> => {
     try {
       // Generate the image with the provided prompt
       const result = await generateAndProcessImage(prompt);
