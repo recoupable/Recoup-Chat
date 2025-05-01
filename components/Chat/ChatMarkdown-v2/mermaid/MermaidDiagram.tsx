@@ -2,8 +2,6 @@
 
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import MermaidErrorFallback from './MermaidErrorFallback'; // Import the fallback component
-// Remove Script import
-// import Script from 'next/script';
 
 // Define a type for the global mermaid object, or use any if types aren't installed
 declare global {
