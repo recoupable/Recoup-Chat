@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { SpinnerIcon, ChevronDownIcon, ChevronUpIcon } from "./icons";
-import Markdown from "../Chat/ChatMarkdown-v2/markdown";
+import ChatMarkdown from "../Chat/ChatMarkdown";
 
 interface ReasoningDetail {
   type: string;
@@ -89,7 +89,9 @@ const ReasoningMessagePart: React.FC<ReasoningMessagePartProps> = ({
           >
             {part.details.map((detail, detailIndex) =>
               detail.type === "text" ? (
-                <Markdown key={detailIndex} content={detail.text || ""} />
+                <ChatMarkdown key={detailIndex}>
+                  {detail.text || ""}
+                </ChatMarkdown>
               ) : (
                 "<redacted>"
               )
