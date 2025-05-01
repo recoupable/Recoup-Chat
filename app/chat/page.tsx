@@ -7,7 +7,7 @@ export default async function ChatPage() {
   const id = generateUUID();
 
   return (
-    <div className="flex flex-col size-full items-center">
+    <div className="flex flex-col size-full items-center overflow-hidden">
       <Chat id={id} />
     </div>
   );
