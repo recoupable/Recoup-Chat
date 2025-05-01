@@ -62,7 +62,7 @@ export default function RootLayout({
       <body>
         <Suspense>
           <Providers>
-            <div className="flex flex-col md:flex-row">
+            <div className="flex flex-col md:flex-row h-full">
               <Sidebar />
               <Header />
               <ArtistSettingModal />

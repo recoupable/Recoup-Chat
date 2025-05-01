@@ -33,6 +33,16 @@ body {
   background: white;
 }
 
+/* This CSS rule targets the first direct div child of the body element
+   and sets its height to 100% of its parent (body).
+   This ensures the main app container div fills the full viewport height,
+   which is important for proper layout of full-height components.
+   Looking at the RootLayout component, this likely targets the main wrapper div
+   that contains the Providers component and all app content. */
+body > div:first-of-type {
+  height: 100%;
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;
