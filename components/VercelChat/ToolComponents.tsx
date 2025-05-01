@@ -71,15 +71,6 @@ export function getToolResultComponent({
       </div>
     );
   }
-
-  // Default for other tools - show JSON result
-  return (
-    <div key={toolCallId}>
-      <pre className="bg-gray-50 p-4 rounded-md overflow-auto text-sm">
-        {JSON.stringify(result, null, 2)}
-      </pre>
-    </div>
-  );
 }
 
 /**
