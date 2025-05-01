@@ -34,14 +34,18 @@ export function Messages({
   const messagesLength = useMemo(() => messages.length, [messages]);
 
   useEffect(() => {
-    if (messagesRef.current) {
-      messagesRef.current.scrollTop = messagesRef.current.scrollHeight;
+    const scrollContainer = messagesRef.current;
+    if (scrollContainer) {
+      // Use requestAnimationFrame to scroll after the next browser paint
+      requestAnimationFrame(() => {
+        scrollContainer.scrollTop = scrollContainer.scrollHeight;
+      });
     }
-  }, [messagesLength]);
+  }, [messages, status]); // Add status to dependencies for streaming updates
 
   return (
     <div
-      className="flex flex-col gap-8 overflow-y-scroll items-center w-full"
+      className="flex relative flex-col gap-8 overflow-y-scroll items-center w-full"
       ref={messagesRef}
     >
       {children || null}
