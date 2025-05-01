@@ -71,16 +71,6 @@ const Markdown = memo(
         }
       );
 
-      // 3. Process <imageN> tags
-      tempContent = tempContent.replace(
-        /<image(\d+)>([\s\S]*?)<\/image\1>/g, // Match <imageN>...</imageN>
-        (match, _index, promptContent) => {
-          const id = `image-placeholder-${imageIndex++}`;
-          prompts[id] = promptContent.trim();
-          return `<div data-image-prompt-id="${id}"></div>`; // Placeholder for images
-        }
-      );
-
       return { processedContent: tempContent, mermaidCharts: charts, imagePrompts: prompts };
     }, [content]);
 
