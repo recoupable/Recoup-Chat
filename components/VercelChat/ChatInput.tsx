@@ -35,7 +35,7 @@ export function ChatInput({
   };
 
   return (
-    <div className="w-full relative p-3 dark:bg-zinc-800 rounded-2xl flex flex-col gap-1 bg-zinc-100">
+    <div className="w-full relative p-3 dark:bg-zinc-800 rounded-2xl flex flex-col gap-1 bg-zinc-100 shadow-md">
       <Input
         input={input}
         setInput={setInput}

@@ -81,7 +81,7 @@ export function Chat({ id, reportId }: ChatProps) {
         </Messages>
       )}
 
-      <div className="flex flex-col gap-4 w-full">
+      <div className="flex flex-col gap-4 w-full border shadow-lg rounded-2xl">
         <ChatInput
           input={input}
           setInput={setInput}
