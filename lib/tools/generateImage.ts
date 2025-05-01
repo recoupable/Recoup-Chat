@@ -13,7 +13,7 @@ const schema = z.object({
 // Define the generateImage tool
 const generateImage = tool({
   description:
-    "Generate an image based on a text prompt. The image will be stored on Arweave and a collection will be created on the blockchain.",
+    "Generate an image based on a text prompt. The image will be stored onchain with Arweave and a collection will be created onchain with Base.",
   parameters: schema,
   execute: async ({ prompt }) => {
     try {
