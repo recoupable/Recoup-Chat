@@ -1,4 +1,4 @@
-import { MERMAID_INSTRUCTIONS_PROMPT, SYSTEM_PROMPT } from "@/lib/consts";
+import { SYSTEM_PROMPT } from "@/lib/consts";
 import getKnowledgeBaseContext from "@/lib/agent/getKnowledgeBaseContext";
 import getArtistIdForRoom from "../supabase/getArtistIdForRoom";
 
@@ -28,11 +28,7 @@ export async function getSystemPrompt({
 ${knowledge}
 -----END KNOWLEDGE BASE-----`;
   }
-  systemPrompt = `${systemPrompt}
-  
------MERMAID INSTRUCTIONS-----
-${MERMAID_INSTRUCTIONS_PROMPT}
------END MERMAID INSTRUCTIONS-----`;
+
   return systemPrompt;
 }
 

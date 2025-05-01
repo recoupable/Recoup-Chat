@@ -5,6 +5,8 @@ import getArtistSocials from "./getArtistSocials";
 import getSocialPosts from "./getSocialPosts";
 import getPostComments from "./getPostComments";
 import perplexityAsk from "./perplexityAsk";
+// import mermaidSyntaxGeneration from "./mermaid-syntax-generation";
+
 
 export async function getMcpTools() {
   const tools = {
@@ -15,6 +17,7 @@ export async function getMcpTools() {
     get_social_posts: getSocialPosts,
     get_post_comments: getPostComments,
     perplexity_ask: perplexityAsk,
+    // mermaid_syntax_generation: mermaidSyntaxGeneration,
   };
 
   return tools;
