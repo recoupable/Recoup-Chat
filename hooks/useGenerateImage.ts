@@ -2,7 +2,6 @@ import { useState } from "react";
 
 interface GeneratedImageResponse {
   image: {
-    base64Data: string;
     mimeType: string;
   };
   arweave?: {
@@ -16,12 +15,12 @@ interface GeneratedImageResponse {
 
 export function useGenerateImage() {
   const [isGenerating, setIsGenerating] = useState(false);
-  const [generatedImage, setGeneratedImage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [arweaveUri, setArweaveUri] = useState<string | null>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [smartAccount, setSmartAccount] = useState<any | null>(null);
   const [transactionHash, setTransactionHash] = useState<string | null>(null);
+
   const generateImage = async (prompt: string) => {
     if (!prompt.trim()) return;
 
@@ -44,11 +43,8 @@ export function useGenerateImage() {
         throw new Error(data.message || "Failed to generate image");
       }
 
-      const { image, arweave, smartAccount, transactionHash } =
+      const { arweave, smartAccount, transactionHash } =
         data as GeneratedImageResponse;
-      const imageDataUrl = `data:${image.mimeType};base64,${image.base64Data}`;
-
-      setGeneratedImage(imageDataUrl);
 
       // Set Arweave URL if available
       if (arweave && arweave.url) {
@@ -81,7 +77,6 @@ export function useGenerateImage() {
   };
 
   const reset = () => {
-    setGeneratedImage(null);
     setError(null);
     setArweaveUri(null);
   };
@@ -89,7 +84,6 @@ export function useGenerateImage() {
   return {
     generateImage,
     isGenerating,
-    generatedImage,
     error,
     arweaveUri,
     smartAccount,

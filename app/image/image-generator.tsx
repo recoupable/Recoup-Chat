@@ -15,7 +15,6 @@ export function ImageGenerator() {
   const {
     generateImage,
     isGenerating,
-    generatedImage,
     error,
     arweaveUri,
     smartAccount,
@@ -82,31 +81,29 @@ export function ImageGenerator() {
         </Card>
       )}
 
-      {!isGenerating && generatedImage && (
+      {!isGenerating && arweaveUri && (
         <Card>
           <CardContent className="p-2">
             <div className="relative aspect-square max-h-[600px] w-full overflow-hidden rounded-md">
               <Image
-                src={generatedImage}
+                src={arweaveUri}
                 alt={prompt}
                 fill
                 className="object-contain"
                 priority
               />
             </div>
-            {arweaveUri && (
-              <div className="mt-4 text-center">
-                <p className="text-sm">Stored permanently on Arweave:</p>
-                <a
-                  href={arweaveUri}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-sm text-blue-500 hover:underline"
-                >
-                  {arweaveUri}
-                </a>
-              </div>
-            )}
+            <div className="mt-4 text-center">
+              <p className="text-sm">Stored permanently on Arweave:</p>
+              <a
+                href={arweaveUri}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm text-blue-500 hover:underline"
+              >
+                {arweaveUri}
+              </a>
+            </div>
             {smartAccount && (
               <div className="mt-4 text-center">
                 <p className="text-sm">Smart Account:</p>
@@ -117,7 +114,7 @@ export function ImageGenerator() {
               <div className="mt-4 text-center">
                 <p className="text-sm">Transaction Hash:</p>
                 <a
-                  href={`https://basescan.org/tx/${transactionHash}`}
+                  href={`https://sepolia.basescan.org/tx/${transactionHash}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-sm text-blue-500 hover:underline"

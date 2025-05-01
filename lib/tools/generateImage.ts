@@ -20,20 +20,16 @@ const generateImage = tool({
       // Generate the image with the provided prompt
       const result = await generateAndProcessImage(prompt);
 
-      // Create a data URL for the image to be shown in the chat
-      const imageUrl = `data:${result.image.mimeType};base64,${result.image.base64Data}`;
-
       // Create a response in a format useful for the chat interface
       return {
         success: true,
-        imageUrl,
         arweaveUrl: result.arweave?.url || null,
         smartAccountAddress: result.smartAccount.address,
         transactionHash: result.transactionHash,
         blockExplorerUrl: result.transactionHash
-          ? `https://basescan.org/tx/${result.transactionHash}`
+          ? `https://sepolia.basescan.org/tx/${result.transactionHash}`
           : null,
-        message: "Image successfully generated and stored on-chain.",
+        message: "Image successfully generated and stored onchain.",
       };
     } catch (error) {
       console.error("Error in generateImage tool:", error);
