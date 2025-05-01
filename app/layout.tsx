@@ -62,13 +62,13 @@ export default function RootLayout({
       <body>
         <Suspense>
           <Providers>
-            <div className="flex flex-col md:flex-row h-full">
+            <div className="flex flex-col md:flex-row">
               <Sidebar />
               <Header />
               <ArtistSettingModal />
-              <div className="grow flex h-[calc(100vh-72px)] md:h-screen overflow-hidden md:bg-grey-light-3">
-                <div className="size-full md:py-4 md:pl-4">
-                  <div className="size-full bg-white overflow-hidden md:rounded-xl flex flex-col md:shadow-[0px_0px_7px_0px_#80808063]">
+              <div className="grow flex h-[calc(100vh-56px)] md:h-screen overflow-hidden md:bg-grey-light-3">
+                <div className="size-full py-4 pl-4">
+                  <div className="size-full bg-white overflow-y-auto md:rounded-xl flex flex-col md:shadow-[0px_0px_7px_0px_#80808063]">
                     {children}
                   </div>
                 </div>

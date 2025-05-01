@@ -22,7 +22,7 @@ const ViewingMessage: React.FC<ViewingMessageProps> = ({
       )}
       <div
         data-testid="message-content"
-        className={cn("flex flex-col gap-4 items-center", {
+        className={cn("flex flex-col gap-4", {
           "dark:bg-zinc-800 bg-zinc-100 px-5 py-3.5 rounded-xl":
             message.role === "user",
         })}

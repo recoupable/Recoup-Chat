@@ -58,7 +58,7 @@ export function Chat({ id, reportId }: ChatProps) {
   return (
     <div
       className={cn(
-        "px-4 md:px-0 pb-4 md:pt-8 flex flex-col h-full items-center w-full max-w-3xl",
+        "px-4 md:px-0 pb-4 pt-8 flex flex-col h-dvh items-center w-full max-w-3xl",
         {
           "justify-between": messages.length > 0,
           "justify-center gap-4": messages.length === 0,
@@ -81,7 +81,7 @@ export function Chat({ id, reportId }: ChatProps) {
         </Messages>
       )}
 
-      <div className="flex flex-col gap-4 w-full border shadow-lg rounded-2xl">
+      <div className="flex flex-col gap-4 w-full">
         <ChatInput
           input={input}
           setInput={setInput}

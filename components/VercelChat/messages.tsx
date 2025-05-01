@@ -1,19 +1,22 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { SpinnerIcon } from "./icons";
 import { UIMessage } from "ai";
 import { UseChatHelpers } from "@ai-sdk/react";
 import Message from "./message";
 import Markdown from "../Chat/ChatMarkdown-v2/markdown";
-import { useInView } from "react-intersection-observer";
 
 interface TextMessagePartProps {
   text: string;
 }
 
 export function TextMessagePart({ text }: TextMessagePartProps) {
-  return <Markdown content={text} />
+  return (
+    <div className="flex flex-col gap-4">
+      <Markdown content={text} />
+    </div>
+  );
 }
 
 interface MessagesProps {
@@ -32,25 +35,17 @@ export function Messages({
   children,
 }: MessagesProps) {
   const messagesRef = useRef<HTMLDivElement>(null);
-
-  const { ref, inView } = useInView({
-    root: messagesRef.current,
-    threshold: 0,
-  });
+  const messagesLength = useMemo(() => messages.length, [messages]);
 
   useEffect(() => {
-    const scrollContainer = messagesRef.current;
-    if (scrollContainer && inView) {
-      // Use requestAnimationFrame to scroll after the next browser paint
-      requestAnimationFrame(() => {
-        scrollContainer.scrollTop = scrollContainer.scrollHeight;
-      });
+    if (messagesRef.current) {
+      messagesRef.current.scrollTop = messagesRef.current.scrollHeight;
     }
-  }, [messages, status, inView]); // Add status to dependencies for streaming updates
+  }, [messagesLength]);
 
   return (
     <div
-      className="flex relative flex-col gap-8 overflow-y-scroll items-center w-full"
+      className="flex flex-col gap-8 overflow-y-scroll items-center w-full"
       ref={messagesRef}
     >
       {children || null}
@@ -71,9 +66,6 @@ export function Messages({
           </div>
         </div>
       )}
-      <div ref={ref} className="h-4 bg-transparent select-none opacity-0 z-10 w-full flex items-center justify-center text-white font-bold" >
-        {inView ? 'Yes' : 'No'}
-      </div>
     </div>
   );
 }
