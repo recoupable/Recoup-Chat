@@ -98,7 +98,7 @@ const Markdown = memo(
     const reactElements = useMemo(() => parse(parsedHtml, parserOptions), [parsedHtml, parserOptions]);
 
     return (
-      <div className="prose prose-p:w-full prose-sm prose-pre:bg-transparent dark:prose-invert w-full overflow-hidden">
+      <div className="prose !max-w-none prose-p:w-full prose-sm prose-pre:bg-transparent dark:prose-invert w-full overflow-hidden">
         {/* <div className="flex flex-wrap -mx-1"> */}
         {reactElements}
         {/* </div> */}
