@@ -7,8 +7,7 @@ import { cn } from "@/lib/utils";
 import { UseChatHelpers } from "@ai-sdk/react";
 import ViewingMessage from "./ViewingMessage";
 import EditingMessage from "./EditingMessage";
-import { ImageSkeleton } from "@/components/ui/ImageSkeleton";
-import { ImageResult } from "@/components/ui/ImageResult";
+import { getToolCallComponent, getToolResultComponent } from "./ToolComponents";
 
 const Message = ({
   message,
@@ -87,42 +86,17 @@ const Message = ({
                 const { toolInvocation } = part;
                 const { toolName, toolCallId, state } = toolInvocation;
 
-                if (toolName === "generate_image") {
-                  if (state === "call") {
-                    return (
-                      <div key={toolCallId} className="skeleton">
-                        <ImageSkeleton />
-                      </div>
-                    );
-                  }
-
-                  if (state === "result") {
-                    const { result } = toolInvocation;
-                    return (
-                      <div key={toolCallId}>
-                        <ImageResult result={result} />
-                      </div>
-                    );
-                  }
-                }
-
                 if (state === "call") {
-                  return (
-                    <div key={toolCallId}>
-                      <div className="text-sm text-gray-500">
-                        Using {toolName}...
-                      </div>
-                    </div>
-                  );
+                  return getToolCallComponent({ toolName, toolCallId });
                 }
 
                 if (state === "result") {
                   const { result } = toolInvocation;
-                  return (
-                    <div key={toolCallId}>
-                      <pre>{JSON.stringify(result, null, 2)}</pre>
-                    </div>
-                  );
+                  return getToolResultComponent({
+                    toolName,
+                    toolCallId,
+                    result,
+                  });
                 }
               }
             })}
