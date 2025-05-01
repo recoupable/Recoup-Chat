@@ -63,6 +63,7 @@ const generateImage = tool({
 
       return {
         success: false,
+        arweaveUrl: null,
         error: errorMessage,
         message: "Failed to generate image. " + errorMessage,
       };
