@@ -5,7 +5,7 @@ import "highlight.js/styles/atom-one-dark.css";
 import { replaceLatexDelimiters } from "@/lib/chat/replaceLatexDelimiters";
 import React, { memo, useMemo } from "react";
 import markedKatex from "marked-katex-extension";
-import parse, { domToReact, HTMLReactParserOptions, Element } from 'html-react-parser';
+import parse, { HTMLReactParserOptions, Element } from 'html-react-parser';
 import MermaidDiagram from '@/components/Chat/ChatMarkdown-v2/mermaid/MermaidDiagram';
 import './markdown.css';
 
@@ -48,11 +48,10 @@ marked.use({
 
 const Markdown = memo(
   ({ content }: { content: string }) => {
-    const { processedContent, mermaidCharts, imagePrompts } = useMemo(() => {
+    const { processedContent, mermaidCharts } = useMemo(() => {
       const charts: { [key: string]: string } = {};
       const prompts: { [key: string]: string } = {};
       let chartIndex = 0;
-      let imageIndex = 0;
 
       // 1. Pre-process ```mermaid blocks
       let tempContent = content.replace(
@@ -93,7 +92,7 @@ const Markdown = memo(
         // Return undefined to let the default parsing happen for other elements
         return undefined;
       },
-    }), [mermaidCharts, imagePrompts]);
+    }), [mermaidCharts]);
 
     const reactElements = useMemo(() => parse(parsedHtml, parserOptions), [parsedHtml, parserOptions]);
 

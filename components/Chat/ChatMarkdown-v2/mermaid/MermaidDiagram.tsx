@@ -3,21 +3,29 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import MermaidErrorFallback from './MermaidErrorFallback'; // Import the fallback component
 
-// Define a type for the global mermaid object, or use any if types aren't installed
+// Define a type for common Mermaid initialization options
+type MermaidInitializeConfig = {
+  startOnLoad?: boolean;
+  securityLevel?: 'strict' | 'loose' | 'antiscript' | 'sandbox';
+  theme?: 'default' | 'base' | 'dark' | 'forest' | 'neutral' | null;
+  // Add other common config options as needed
+};
+
+// Define a type for the global mermaid object
 declare global {
   interface Window { 
     mermaid?: {
       run: (options: { nodes: HTMLElement[] }) => void;
-      initialize: (config: any) => void;
+      initialize: (config?: MermaidInitializeConfig) => void; // Use the defined type
       // Add other methods you might use
     };
   } 
 }
 
-// Define Mermaid type structure (or import from @types/mermaid if installed)
+// Define Mermaid type structure
 type MermaidApi = {
   run: (options: { nodes: HTMLElement[] }) => void;
-  initialize: (config: any) => void;
+  initialize: (config?: MermaidInitializeConfig) => void; // Use the defined type
   // Add other methods as needed
 };
 
@@ -35,7 +43,8 @@ interface MermaidDiagramProps {
 const MermaidDiagram: React.FC<MermaidDiagramProps> = ({ chart, id }) => {
     console.log('chart', chart);
   const containerRef = useRef<HTMLPreElement>(null);
-  const uniqueId = id || `mermaid-diagram-${React.useId()}`;
+  const reactId = React.useId();
+  const uniqueId = id || `mermaid-diagram-${reactId}`;
   // Use a ref to hold the dynamically imported mermaid instance
   const mermaidRef = useRef<MermaidApi | null>(null);
   // State to trigger re-render after import completes
@@ -50,8 +59,7 @@ const MermaidDiagram: React.FC<MermaidDiagramProps> = ({ chart, id }) => {
     const loadMermaid = async () => {
       console.log('Attempting to dynamically import Mermaid...', uniqueId);
       try {
-        // Use the specific ESM build path
-        // @ts-ignore - TypeScript cannot analyze remote modules
+        // @ts-expect-error - TypeScript cannot analyze remote modules
         const mermaidModule = await import(/* webpackIgnore: true */ 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs');
         // The actual API might be on the default export
         const mermaid = mermaidModule.default || mermaidModule;
