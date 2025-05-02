@@ -32,6 +32,7 @@ const Inputs = () => {
           label="Custom Instruction"
           id="instruction"
           name="instruction"
+          placeholder="Instructions added directly to the AI system prompt. Use for artist-specific tone, style guidance, or special responses."
           rows={3}
           hookToForm
         />
