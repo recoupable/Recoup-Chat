@@ -1,8 +1,17 @@
 /**
+ * Interface for serialized error objects
+ */
+export interface SerializedError {
+  name: string;
+  message: string;
+  stack?: string;
+}
+
+/**
  * Extracts serializable properties from error objects
  * Ensures errors can be properly JSON serialized
  */
-export function serializeError(error: unknown) {
+export function serializeError(error: unknown): SerializedError {
   if (error instanceof Error) {
     return {
       name: error.name,
@@ -10,5 +19,8 @@ export function serializeError(error: unknown) {
       stack: error.stack,
     };
   }
-  return { message: String(error) };
+  return {
+    name: "UnknownError",
+    message: String(error),
+  };
 }

@@ -1,15 +1,13 @@
 import { sendMessage } from "./sendMessage";
 import { Message } from "ai";
+import { SerializedError } from "../errors/serializeError";
 
 export interface ErrorContext {
   email?: string;
   roomId?: string;
   messages?: Message[];
   path: string;
-}
-
-interface ErrorNotificationParams extends ErrorContext {
-  error: Error;
+  error: SerializedError;
 }
 
 /**
@@ -21,7 +19,7 @@ function formatErrorMessage({
   roomId = "new chat",
   path,
   messages,
-}: ErrorNotificationParams): string {
+}: ErrorContext): string {
   const timestamp = new Date().toISOString();
 
   let message = `❌ Error Alert\n`;
@@ -30,6 +28,10 @@ function formatErrorMessage({
   message += `Time: ${timestamp}\n\n`;
 
   message += `Error Message:\n${error.message}\n\n`;
+
+  if (error.name) {
+    message += `Error Type: ${error.name}\n\n`;
+  }
 
   if (path) {
     message += `API Path: ${path}\n\n`;
@@ -55,7 +57,7 @@ function formatErrorMessage({
  * Non-blocking to avoid impacting API operations
  */
 export async function sendErrorNotification(
-  params: ErrorNotificationParams
+  params: ErrorContext
 ): Promise<void> {
   try {
     const message = formatErrorMessage(params);

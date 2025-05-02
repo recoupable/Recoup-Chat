@@ -7,10 +7,10 @@ import {
  * Standardized error notification helper
  * @param error The error that occurred
  * @param context Error context including user info and request details
+ * @returns Promise that resolves when notification is sent
  */
-export async function notifyError(error: unknown, context: ErrorContext) {
+export async function notifyError(context: ErrorContext) {
   return sendErrorNotification({
-    error: error instanceof Error ? error : new Error(String(error)),
     ...context,
   }).catch((err) => {
     console.error("Failed to send error notification:", err);

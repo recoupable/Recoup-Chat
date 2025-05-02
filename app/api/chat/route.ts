@@ -98,7 +98,10 @@ export async function POST(request: NextRequest) {
                 content: filterMessageContentForMemories(assistantMessage),
               });
             } catch (_) {
-              notifyError(_, body);
+              notifyError({
+                ...body,
+                error: serializeError(_),
+              });
               console.error("Failed to save chat", _);
             }
           },
@@ -115,13 +118,19 @@ export async function POST(request: NextRequest) {
         });
       },
       onError: (e) => {
-        notifyError(e, body);
+        notifyError({
+          ...body,
+          error: serializeError(e),
+        });
         console.error("Error in chat API:", e);
         return JSON.stringify(serializeError(e));
       },
     });
   } catch (e) {
-    notifyError(e, body);
+    notifyError({
+      ...body,
+      error: serializeError(e),
+    });
     console.error("Global error in chat API:", e);
     return new Response(JSON.stringify(serializeError(e)), {
       status: 500,
