@@ -16,9 +16,9 @@ import { createRoomWithReport } from "@/lib/supabase/createRoomWithReport";
 import generateUUID from "@/lib/generateUUID";
 import { generateChatTitle } from "@/lib/chat/generateChatTitle";
 import { sendNewConversationNotification } from "@/lib/telegram/sendNewConversationNotification";
-import { notifyError } from "@/lib/errors/notifyError";
 import filterMessageContentForMemories from "@/lib/messages/filterMessageContentForMemories";
 import { serializeError } from "@/lib/errors/serializeError";
+import { sendErrorNotification } from "@/lib/telegram/sendErrorNotification";
 
 export async function POST(request: NextRequest) {
   const body = await request.json();
@@ -98,7 +98,7 @@ export async function POST(request: NextRequest) {
                 content: filterMessageContentForMemories(assistantMessage),
               });
             } catch (_) {
-              notifyError({
+              sendErrorNotification({
                 ...body,
                 error: serializeError(_),
               });
@@ -118,7 +118,7 @@ export async function POST(request: NextRequest) {
         });
       },
       onError: (e) => {
-        notifyError({
+        sendErrorNotification({
           ...body,
           error: serializeError(e),
         });
@@ -127,7 +127,7 @@ export async function POST(request: NextRequest) {
       },
     });
   } catch (e) {
-    notifyError({
+    sendErrorNotification({
       ...body,
       error: serializeError(e),
     });
