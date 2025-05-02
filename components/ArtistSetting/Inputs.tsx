@@ -1,6 +1,7 @@
 import { useArtistProvider } from "@/providers/ArtistProvider";
-import TextArea from "../TextArea";
 import Input from "../Input";
+import { Textarea } from "../ui/textarea";
+import { Label } from "../ui/label";
 
 const Inputs = () => {
   const {
@@ -26,15 +27,14 @@ const Inputs = () => {
   return (
     <>
       <div className="col-span-8 space-y-1 md:space-y-2">
-        <TextArea
+        <Label htmlFor="instruction">Custom Instructions</Label>
+        <Textarea
           value={instruction}
           onChange={(e) => setInstruction(e.target.value)}
-          label="Custom Instruction"
           id="instruction"
           name="instruction"
           placeholder="Instructions added directly to the AI system prompt. Use for artist-specific tone, style guidance, or special responses."
-          rows={3}
-          hookToForm
+          rows={4}
         />
       </div>
       <div className="col-span-6 space-y-1 md:space-y-2">
