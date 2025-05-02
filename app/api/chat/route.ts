@@ -19,6 +19,18 @@ import { sendNewConversationNotification } from "@/lib/telegram/sendNewConversat
 import { notifyError } from "@/lib/errors/notifyError";
 import filterMessageContentForMemories from "@/lib/messages/filterMessageContentForMemories";
 
+// Extract serializable properties from errors
+function serializeError(error: unknown) {
+  if (error instanceof Error) {
+    return {
+      name: error.name,
+      message: error.message,
+      stack: error.stack,
+    };
+  }
+  return { message: String(error) };
+}
+
 export async function POST(request: NextRequest) {
   const body = await request.json();
   const {
@@ -116,23 +128,19 @@ export async function POST(request: NextRequest) {
       onError: (e) => {
         notifyError(e, body);
         console.error("Error in chat API:", e);
-        return "Oops, an error occurred!";
+        return e instanceof Error
+          ? `Error: ${e.message}`
+          : "Unexpected streaming error occurred";
       },
     });
   } catch (e) {
     notifyError(e, body);
     console.error("Global error in chat API:", e);
-    return new Response(
-      JSON.stringify({
-        error: "An error occurred",
-        message: "Oops, an error occurred!",
-      }),
-      {
-        status: 500,
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    return new Response(JSON.stringify(serializeError(e)), {
+      status: 500,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
   }
 }
