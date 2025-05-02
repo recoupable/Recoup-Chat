@@ -18,18 +18,7 @@ import { generateChatTitle } from "@/lib/chat/generateChatTitle";
 import { sendNewConversationNotification } from "@/lib/telegram/sendNewConversationNotification";
 import { notifyError } from "@/lib/errors/notifyError";
 import filterMessageContentForMemories from "@/lib/messages/filterMessageContentForMemories";
-
-// Extract serializable properties from errors
-function serializeError(error: unknown) {
-  if (error instanceof Error) {
-    return {
-      name: error.name,
-      message: error.message,
-      stack: error.stack,
-    };
-  }
-  return { message: String(error) };
-}
+import { serializeError } from "@/lib/errors/serializeError";
 
 export async function POST(request: NextRequest) {
   const body = await request.json();
@@ -128,9 +117,7 @@ export async function POST(request: NextRequest) {
       onError: (e) => {
         notifyError(e, body);
         console.error("Error in chat API:", e);
-        return e instanceof Error
-          ? `Error: ${e.message}`
-          : "Unexpected streaming error occurred";
+        return JSON.stringify(serializeError(e));
       },
     });
   } catch (e) {
