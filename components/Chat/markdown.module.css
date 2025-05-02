@@ -481,4 +481,12 @@
 .markdown div > table {
   max-width: 100%;
   width: 100%;
+}
+
+/* Styles for Mermaid Diagram Parent/Grandparent Overrides */
+.mermaidParentOverride,
+.mermaidGrandparentOverride {
+  background-color: white !important; /* Use !important to ensure override */
+  border: none !important;
+  padding: 0 !important;
 } 

@@ -6,6 +6,7 @@ import getSocialPosts from "./getSocialPosts";
 import getPostComments from "./getPostComments";
 import perplexityAsk from "./perplexityAsk";
 import generateImage from "./generateImage";
+import generateMermaidDiagram from "./generateMermaidDiagram";
 
 export async function getMcpTools() {
   const tools = {
@@ -17,6 +18,7 @@ export async function getMcpTools() {
     get_post_comments: getPostComments,
     perplexity_ask: perplexityAsk,
     generate_image: generateImage,
+    generate_mermaid_diagram: generateMermaidDiagram,
   };
 
   return tools;

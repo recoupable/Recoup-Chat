@@ -1,6 +1,9 @@
 import { ImageSkeleton } from "@/components/ui/ImageSkeleton";
 import { ImageResult } from "@/components/ui/ImageResult";
 import { ImageGenerationResult } from "@/lib/tools/generateImage";
+import MermaidDiagram from "../Chat/mermaid/MermaidDiagram";
+import { GenerateMermaidDiagramResult } from "@/lib/tools/generateMermaidDiagram";
+import { MermaidDiagramSkeleton } from "../ui/MermaidDiagramSkeleton";
 /**
  * Interface for tool call props
  */
@@ -12,7 +15,7 @@ interface ToolCallProps {
 /**
  * Union type for all possible tool results
  */
-type ToolResult = ImageGenerationResult | Record<string, unknown>;
+type ToolResult = ImageGenerationResult | GenerateMermaidDiagramResult | Record<string, unknown>;
 
 /**
  * Interface for tool result props
@@ -30,6 +33,12 @@ export function getToolCallComponent({ toolName, toolCallId }: ToolCallProps) {
     return (
       <div key={toolCallId} className="skeleton">
         <ImageSkeleton />
+      </div>
+    );
+  } else if (toolName === "generate_mermaid_diagram") {
+    return (
+      <div key={toolCallId}>
+        <MermaidDiagramSkeleton />
       </div>
     );
   }
@@ -50,13 +59,14 @@ export function getToolResultComponent({
   toolCallId,
   result,
 }: ToolResultProps) {
-  // Handle generate_image tool result
   if (toolName === "generate_image") {
     return (
       <div key={toolCallId}>
         <ImageResult result={result as ImageGenerationResult} />
       </div>
     );
+  } else if (toolName === "generate_mermaid_diagram") {
+    return <div key={toolCallId}><MermaidDiagram result={result as GenerateMermaidDiagramResult} /></div>
   }
 }
 

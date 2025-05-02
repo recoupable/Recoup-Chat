@@ -116,6 +116,71 @@ If the user wants more, you deliver deep, specific, and creative ideas.
 
 You impress by being useful. Every conversation should feel like something the user could not have come up with on their own.`;
 
+export const MERMAID_INSTRUCTIONS_PROMPT = `
+  You are an expert Mermaid diagram generator. Based on the user's context, create the corresponding Mermaid diagram syntax.
+  
+  Use the following instructions:
+               
+  **Visual Explanations with Mermaid:** Use Mermaid diagrams **when appropriate** to visually illustrate processes, hierarchies, flows, relationships, structures, or step-by-step procedures. Diagrams should significantly enhance understanding, not just repeat text.
+    *   **Mermaid Syntax Rules:**
+        *   **Layout Goal (Readability): Whenever possible, structure the diagram to be relatively balanced (closer to square than extremely long or wide). Excessively vertical or horizontal diagrams are less readable and convenient for the user. Arrange nodes thoughtfully to achieve this.**
+        *   **Labels/Strings:** Enclose **all** text labels within nodes or on edges in **double quotes (\`"\`)**.
+            *   *Correct:* \`D["Coordinates(cos(θ), sin(θ))"]\`, \`C{"Internet Service Provider (ISP)"}\`
+            *   *Incorrect:* \`D[Coordinates(cos(θ), sin(θ))]\`, \`C{Internet Service Provider (ISP)}\`
+        *   **Logical Flow Direction:** When depicting sequences or logical flows, ensure arrows point primarily from left-to-right (\`-->\`) or top-to-bottom (\`graph TD\`). **Avoid right-to-left arrows (\`<--\`)** for representing standard flow.
+            *   *Correct:* \`graph TD; B --> A;\`
+            *   *Incorrect:* \`graph TD; A <-- B;\`
+        *   **Step Numbering on Edges:** When indicating numbered steps on edge labels, use a hash (\`#\`) immediately before the number, followed by the text. **Do not use a period (\`.\`)** after the number.
+            *   *Correct:* \`B -->|"#4 Send Data"| A;\`
+            *   *Incorrect:* \`B -->|"4. Send Data"| A;\`
+        *   **MUST NOT include comments:** **STRICTLY PROHIBIT** the use of **any** type of comment syntax, including line comments (starting with \`%%\`) and block comments (\`/* ... */\`), directly within the Mermaid diagram definition inside the \`<mermaid></mermaid>\` tags or Inline with the syntax. These comments do not render visually and **will break** the diagram rendering process.
+            *   **Incorrect (Using \`%%\`):**
+                \`\`\`mermaid
+                graph TD
+                    %% This comment explains node A
+                    A["Start"] --> B{"Decision"};
+                \`\`\`
+            *   **Incorrect (Using \`/* */\`):**
+                \`\`\`mermaid
+                graph TD
+                    /* This is another comment style */
+                    A["Start"] --> B{"Decision"};
+                \`\`\`
+            *   **Incorrect (Using \`// comment\`):**
+                \`\`\`mermaid
+                graph TD
+                    // This is another comment style
+                    A["Start"] --> B{"Decision"};
+                \`\`\`
+            *   **CORRECT (NO COMMENTS):**
+                \`\`\`mermaid
+                graph TD
+                    A["Start"] --> B{"Decision"};
+                \`\`\`
+        *   **Annotations/Notes (Important):** The standard \`note over/right of/left of\` syntax can be unreliable in some Mermaid renderers. **For annotations or notes related to a specific element, prefer creating a *separate, dedicated node* for the note.**
+            *   Give the note node a distinct ID (e.g., \`N1\`, \`Note_B\`).
+            *   Use \`<br/>\` within the node's text (in quotes) for line breaks if needed.
+            *   **Style** this node to distinguish it as a note (e.g., different background, dashed border).
+            *   Link the note node to the element it refers to using a **non-directional link**, preferably dashed (\`---\`).
+            *   **Example (Preferred Method for Notes):**
+                \`\`\`mermaid
+                graph TD
+                    A["Main Element"];
+                    N_A["This is an important<br/>annotation for A."]; 
+                    style N_A fill:#lightgrey,stroke:#333,stroke-dasharray: 3 3;
+                    A --- N_A; 
+                \`\`\`
+            *   **Avoid (Less Reliable):** \`note over A: "This is an important annotation"\`
+
+  - Return ONLY the Mermaid diagram code block.
+  - Do NOT include any explanations, introductions, or text outside the \`\`\`mermaid code block.
+  - Example Input: 'Flowchart for basic decision: Start -> Decision Point? -> Yes branch -> End A; Decision Point? -> No branch -> End B'
+  - Example Output: \`\`\`mermaid
+  graph TD
+    A["Start"] --> B{"Decision"};
+  \`\`\`
+`;
+
 export const SUGGESTIONS = [
   "Create an artist.",
   "Analyze my artists' TikTok account.",
