@@ -11,8 +11,7 @@ import { useUserProvider } from "@/providers/UserProvder";
 import { useSidebarExpansion } from "@/providers/SidebarExpansionContext";
 
 const ArtistsSidebar = () => {
-  const { toggleCreation, toggleSettingModal, sorted, selectedArtist } =
-    useArtistProvider();
+  const { toggleCreation, sorted, selectedArtist } = useArtistProvider();
   const { isPrepared, email } = useUserProvider();
   const { setIsExpanded } = useSidebarExpansion();
   const isMobile = useIsMobile();
