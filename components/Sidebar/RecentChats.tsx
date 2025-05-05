@@ -1,7 +1,7 @@
 import useClickChat from "@/hooks/useClickChat";
 import { useConversationsProvider } from "@/providers/ConversationsProvider";
 import RecentChatSkeleton from "./RecentChatSkeleton";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import ChatItem from "./ChatItem";
 import { useMobileDetection } from "@/hooks/useMobileDetection";
 import { useOutsideClick } from "@/hooks/useOutsideClick";
@@ -25,8 +25,31 @@ const RecentChats = ({ toggleModal }: { toggleModal: () => void }) => {
   const isMobile = useMobileDetection();
   const params = useParams();
 
-  // Get current active chat ID from URL params
-  const activeChatId = params?.roomId || params?.agentId || null;
+  // Add internal state to track active chat ID
+  const [activeChatId, setActiveChatId] = useState<string | null>(
+    typeof params?.roomId === 'string' ? params.roomId :
+      typeof params?.agentId === 'string' ? params.agentId : null
+  );
+
+  // Because history.replaceState doesn't trigger events, we need to manually update the active chat ID (ref. useVercelChat hook, line 121)
+  // Update activeChatId when conversations update
+  useEffect(() => {
+    const updateActiveChatId = () => {
+      const urlChatId = window.location.pathname.match(/\/chat\/([^\/]+)/)
+
+      if (urlChatId && urlChatId[1]) {
+        setActiveChatId(urlChatId[1]);
+      } else {
+        // Handle params safely with type checking
+        const roomId = typeof params?.roomId === 'string' ? params.roomId : null;
+        const agentId = typeof params?.agentId === 'string' ? params.agentId : null;
+        setActiveChatId(roomId || agentId || null);
+      }
+    };
+
+    // Update on initial render and when dependencies change
+    updateActiveChatId();
+  }, [params, conversations]);
 
   // Modal states
   const [modalState, setModalState] = useState<{
