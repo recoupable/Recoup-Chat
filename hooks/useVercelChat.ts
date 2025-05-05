@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import getEarliestFailedUserMessageId from "@/lib/messages/getEarliestFailedUserMessageId";
 import { clientDeleteTrailingMessages } from "@/lib/messages/clientDeleteTrailingMessages";
 import { generateUUID } from "@/lib/generateUUID";
+import { usePrivy } from "@privy-io/react-auth";
 
 interface UseVercelChatProps {
   id: string;
@@ -20,6 +21,7 @@ interface UseVercelChatProps {
  * Accesses user and artist data directly from providers
  */
 export function useVercelChat({ id, initialMessages }: UseVercelChatProps) {
+  const { authenticated } = usePrivy();
   const { userData } = useUserProvider();
   const { selectedArtist } = useArtistProvider();
   const { roomId } = useParams();
@@ -115,9 +117,15 @@ export function useVercelChat({ id, initialMessages }: UseVercelChatProps) {
   };
 
   useEffect(() => {
-    if (!initialMessages || status !== "ready" || messages.length > 1) return;
+    if (
+      !initialMessages ||
+      status !== "ready" ||
+      messages.length > 1 ||
+      !authenticated
+    )
+      return;
     handleSendQueryMessages();
-  }, [initialMessages, status]);
+  }, [initialMessages, status, authenticated]);
 
   return {
     // States
