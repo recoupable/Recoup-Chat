@@ -1,41 +1,7 @@
-import React, { useEffect } from "react";
-import { useArtistProvider } from "@/providers/ArtistProvider";
+import React from "react";
 import { CreateArtistResult } from "@/lib/tools/createArtist";
 import Image from "next/image";
-import { useVercelChatContext } from "@/providers/VercelChatProvider";
-import { useConversationsProvider } from "@/providers/ConversationsProvider";
-
-/**
- * Client function to copy messages between rooms
- */
-async function copyMessagesApi(
-  sourceRoomId: string,
-  targetRoomId: string
-): Promise<boolean> {
-  try {
-    const response = await fetch("/api/memories/copy", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        sourceRoomId,
-        targetRoomId,
-        clearExisting: false,
-      }),
-    });
-
-    if (!response.ok) {
-      console.error("Failed to copy messages:", await response.text());
-      return false;
-    }
-
-    return true;
-  } catch (error) {
-    console.error("Error copying messages:", error);
-    return false;
-  }
-}
+import useCreateArtistTool from "@/hooks/useCreateArtistTool";
 
 /**
  * Props for the CreateArtistToolResult component
@@ -51,63 +17,7 @@ interface CreateArtistToolResultProps {
 export function CreateArtistToolResult({
   result,
 }: CreateArtistToolResultProps) {
-  const { getArtists } = useArtistProvider();
-  const { status, id } = useVercelChatContext();
-  const { fetchConversations } = useConversationsProvider();
-
-  useEffect(() => {
-    // Function to refresh artists list and select the new artist
-    const refreshAndSelect = async () => {
-      console.log("refreshAndSelect - result", result);
-      if (!result.artist || !result.artist.account_id) {
-        return;
-      }
-
-      console.log("refreshAndSelect - newRoomId", result.newRoomId);
-      console.log("refreshAndSelect - status", status);
-
-      // Step 1: Refresh the artists list
-      await getArtists(result.artist.account_id);
-
-      const needsRedirect = id !== result.newRoomId;
-      console.log("refreshAndSelect - needsRedirect", needsRedirect);
-      const isFinishedStreaming = status === "ready";
-      console.log(
-        "refreshAndSelect - isFinishedStreaming",
-        isFinishedStreaming
-      );
-
-      if (needsRedirect && isFinishedStreaming && result.roomId) {
-        console.log(
-          "Copying messages from",
-          result.roomId,
-          "to",
-          result.newRoomId
-        );
-
-        // Copy messages from current room to the newly created room
-        const success = await copyMessagesApi(
-          result.roomId,
-          result.newRoomId as string
-        );
-
-        await fetchConversations();
-
-        if (success) {
-          window.history.replaceState({}, "", `/chat/${result.newRoomId}`);
-
-          console.log("Messages copied successfully, redirecting to new room");
-        } else {
-          console.error("Failed to copy messages");
-        }
-      }
-    };
-
-    // Call the refresh function when the status changes
-    refreshAndSelect();
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [status]);
+  const { isProcessing, error: processingError } = useCreateArtistTool(result);
 
   // If there's an error or no artist data, show error state
   if (!result.artist) {
@@ -145,9 +55,15 @@ export function CreateArtistToolResult({
         )}
       </div>
 
-      <div>
+      <div className="flex-grow">
         <p className="font-medium">{result.artist.name}</p>
-        <p className="text-sm text-green-600">Artist created successfully</p>
+        <p className="text-sm text-green-600">
+          {isProcessing
+            ? "Setting up artist conversation..."
+            : processingError
+              ? `Created successfully but: ${processingError}`
+              : "Artist created successfully"}
+        </p>
       </div>
     </div>
   );
