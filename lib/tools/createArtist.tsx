@@ -2,6 +2,19 @@ import { z } from "zod";
 import { tool } from "ai";
 import createArtistInDb from "../supabase/createArtistInDb";
 
+/**
+ * Interface for artist creation result
+ */
+export interface CreateArtistResult {
+  artist?: {
+    account_id: string;
+    name: string;
+    image?: string;
+  };
+  message: string;
+  error?: string;
+}
+
 const createArtist = tool({
   description: `
   Create a new artist account in the system.
@@ -16,7 +29,7 @@ const createArtist = tool({
         "The account ID of the human with admin access to the new artist account"
       ),
   }),
-  execute: async ({ name, account_id }) => {
+  execute: async ({ name, account_id }): Promise<CreateArtistResult> => {
     try {
       const artist = await createArtistInDb(name, account_id);
 

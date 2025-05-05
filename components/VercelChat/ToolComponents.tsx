@@ -4,6 +4,10 @@ import { ImageGenerationResult } from "@/lib/tools/generateImage";
 import MermaidDiagram from "../Chat/mermaid/MermaidDiagram";
 import { GenerateMermaidDiagramResult } from "@/lib/tools/generateMermaidDiagram";
 import { MermaidDiagramSkeleton } from "../ui/MermaidDiagramSkeleton";
+import CreateArtistToolCall from "./tools/CreateArtistToolCall";
+import CreateArtistToolResult from "./tools/CreateArtistToolResult";
+import { CreateArtistResult } from "@/lib/tools/createArtist";
+
 /**
  * Interface for tool call props
  */
@@ -15,7 +19,11 @@ interface ToolCallProps {
 /**
  * Union type for all possible tool results
  */
-type ToolResult = ImageGenerationResult | GenerateMermaidDiagramResult | Record<string, unknown>;
+type ToolResult =
+  | ImageGenerationResult
+  | GenerateMermaidDiagramResult
+  | CreateArtistResult
+  | Record<string, unknown>;
 
 /**
  * Interface for tool result props
@@ -39,6 +47,12 @@ export function getToolCallComponent({ toolName, toolCallId }: ToolCallProps) {
     return (
       <div key={toolCallId}>
         <MermaidDiagramSkeleton />
+      </div>
+    );
+  } else if (toolName === "create_new_artist") {
+    return (
+      <div key={toolCallId}>
+        <CreateArtistToolCall />
       </div>
     );
   }
@@ -66,7 +80,17 @@ export function getToolResultComponent({
       </div>
     );
   } else if (toolName === "generate_mermaid_diagram") {
-    return <div key={toolCallId}><MermaidDiagram result={result as GenerateMermaidDiagramResult} /></div>
+    return (
+      <div key={toolCallId}>
+        <MermaidDiagram result={result as GenerateMermaidDiagramResult} />
+      </div>
+    );
+  } else if (toolName === "create_new_artist") {
+    return (
+      <div key={toolCallId}>
+        <CreateArtistToolResult result={result as CreateArtistResult} />
+      </div>
+    );
   }
 }
 
