@@ -71,6 +71,7 @@ export async function POST(request: NextRequest) {
       getSystemPrompt({
         roomId,
         artistId,
+        accountId,
         email,
         conversationName,
       }),
