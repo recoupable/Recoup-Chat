@@ -21,6 +21,7 @@ export async function copyConversation(
       .eq("id", sourceRoomId)
       .single();
 
+    console.log("copyConversation - sourceRoom", sourceRoom);
     if (roomError || !sourceRoom) {
       console.error("Error getting source room:", roomError);
       return null;
@@ -32,6 +33,7 @@ export async function copyConversation(
       artist_id: artistId,
       topic: sourceRoom.topic || "New conversation",
     });
+    console.log("copyConversation - newRoomId", newRoomId);
 
     if (!newRoomId) {
       console.error("Failed to create new room");
@@ -40,6 +42,7 @@ export async function copyConversation(
 
     // Copy messages from source room to new room
     const messagesCopied = await copyMessages(sourceRoomId, newRoomId, false);
+    console.log("copyConversation - messagesCopied", messagesCopied);
 
     if (messagesCopied === null) {
       console.error("Error copying messages, but room was created");

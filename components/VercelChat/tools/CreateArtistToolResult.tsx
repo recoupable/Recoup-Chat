@@ -26,12 +26,18 @@ export function CreateArtistToolResult({
   useEffect(() => {
     // Function to refresh artists list and select the new artist
     const refreshAndSelect = async () => {
+      console.log("refreshAndSelect - result", result);
+      console.log("refreshAndSelect - roomId", roomId);
       if (!result.artist || !result.artist.account_id || !roomId) {
         return;
       }
 
       // Step 1: Copy conversation from current room to a new room with the new artist
-      await copyRoomToArtist(roomId, result.artist.account_id);
+      const newRoomId = await copyRoomToArtist(
+        roomId,
+        result.artist.account_id
+      );
+      console.log("refreshAndSelect - newRoomId", newRoomId);
 
       // Step 2: Refresh the artists list
       await getArtists(result.artist.account_id);

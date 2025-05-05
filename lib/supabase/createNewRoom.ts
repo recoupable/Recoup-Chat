@@ -37,7 +37,6 @@ export async function createNewRoom(
       account_id,
       artist_id,
       topic: params.topic || "New conversation",
-      created_at: new Date().toISOString(),
     };
 
     // Create the room
