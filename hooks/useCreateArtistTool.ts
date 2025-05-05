@@ -41,10 +41,10 @@ export function useCreateArtistTool(result: CreateArtistResult) {
         // Step 2: Check if we need to copy messages and redirect
         const needsRedirect = id !== result.newRoomId && !!result.newRoomId;
 
-        if (needsRedirect && result.roomId) {
+        if (needsRedirect) {
           // Copy messages from current room to the newly created room
           const success = await copyMessagesClient(
-            result.roomId,
+            id as string,
             result.newRoomId as string
           );
 
