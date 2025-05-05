@@ -10,16 +10,16 @@ export type Artist = {
 
 export type ArtistRecord = {
   account_id: string;
-  account_socials: Array<SOCIAL>;
-  created_at: string;
-  id: string;
-  image: string | null;
-  instruction: string | null;
-  knowledges: any;
-  label: string | null;
   name: string | null;
-  organization: string | null;
-  updated_at: string;
+  image?: string | null;
+  account_socials?: Array<SOCIAL>;
+  created_at?: string;
+  id?: string;
+  instruction?: string | null;
+  knowledges?: any;
+  label?: string | null;
+  organization?: string | null;
+  updated_at?: string;
   isWrapped?: boolean;
 };
 
