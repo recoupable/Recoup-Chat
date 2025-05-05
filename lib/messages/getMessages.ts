@@ -1,4 +1,4 @@
-import { Message, UIMessage } from "ai";
+import { Message } from "ai";
 import generateUUID from "@/lib/generateUUID";
 
 /**
