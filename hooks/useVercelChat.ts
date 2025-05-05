@@ -117,15 +117,12 @@ export function useVercelChat({ id, initialMessages }: UseVercelChatProps) {
   };
 
   useEffect(() => {
-    if (
-      !initialMessages ||
-      status !== "ready" ||
-      messages.length > 1 ||
-      !authenticated
-    )
-      return;
+    const isFullyLoggedIn = authenticated && selectedArtist;
+    const isReady = status === "ready";
+    const hasMessages = messages.length > 1;
+    if (!initialMessages || !isReady || hasMessages || !isFullyLoggedIn) return;
     handleSendQueryMessages();
-  }, [initialMessages, status, authenticated]);
+  }, [initialMessages, status, authenticated, selectedArtist]);
 
   return {
     // States
