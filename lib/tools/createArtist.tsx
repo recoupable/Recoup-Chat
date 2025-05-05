@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { tool } from "ai";
-import createArtistFunc from "@/lib/createArtist";
+import createArtistInDb from "../supabase/createArtistInDb";
 
 const createArtist = tool({
   description: `
@@ -18,7 +18,7 @@ const createArtist = tool({
   }),
   execute: async ({ name, account_id }) => {
     try {
-      const artist = await createArtistFunc(name, account_id);
+      const artist = await createArtistInDb(name, account_id);
 
       if (!artist) {
         throw new Error("Failed to create artist");
