@@ -16,6 +16,7 @@ const useArtistAgents = () => {
         const queryString = socialIds?.map((id) => `socialId=${id}`).join("&");
         const response = await fetch(`/api/agents?${queryString}`);
         const data = await response.json();
+        if (data.error) return;
         setAgents(data);
       }
     };

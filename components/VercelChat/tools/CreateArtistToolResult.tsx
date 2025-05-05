@@ -3,6 +3,7 @@ import { useArtistProvider } from "@/providers/ArtistProvider";
 import { CreateArtistResult } from "@/lib/tools/createArtist";
 import Image from "next/image";
 import { useVercelChatContext } from "@/providers/VercelChatProvider";
+import { useConversationsProvider } from "@/providers/ConversationsProvider";
 
 /**
  * Client function to copy messages between rooms
@@ -52,6 +53,7 @@ export function CreateArtistToolResult({
 }: CreateArtistToolResultProps) {
   const { getArtists } = useArtistProvider();
   const { status, id } = useVercelChatContext();
+  const { fetchConversations } = useConversationsProvider();
 
   useEffect(() => {
     // Function to refresh artists list and select the new artist
@@ -88,6 +90,8 @@ export function CreateArtistToolResult({
           result.roomId,
           result.newRoomId as string
         );
+
+        await fetchConversations();
 
         if (success) {
           window.history.replaceState({}, "", `/chat/${result.newRoomId}`);
