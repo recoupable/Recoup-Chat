@@ -1,16 +1,17 @@
-import { useChat } from "@ai-sdk/react";
+import { Message, useChat } from "@ai-sdk/react";
 import { useMessageLoader } from "./useMessageLoader";
 import { useUserProvider } from "@/providers/UserProvder";
 import { useArtistProvider } from "@/providers/ArtistProvider";
 import { useParams } from "next/navigation";
 import { toast } from "react-toastify";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import getEarliestFailedUserMessageId from "@/lib/messages/getEarliestFailedUserMessageId";
 import { clientDeleteTrailingMessages } from "@/lib/messages/clientDeleteTrailingMessages";
 import { generateUUID } from "@/lib/generateUUID";
 
 interface UseVercelChatProps {
   id: string;
+  initialMessages?: Message[];
 }
 
 /**
@@ -18,7 +19,7 @@ interface UseVercelChatProps {
  * Combines useChat, and useMessageLoader
  * Accesses user and artist data directly from providers
  */
-export function useVercelChat({ id }: UseVercelChatProps) {
+export function useVercelChat({ id, initialMessages }: UseVercelChatProps) {
   const { userData } = useUserProvider();
   const { selectedArtist } = useArtistProvider();
   const { roomId } = useParams();
@@ -43,6 +44,7 @@ export function useVercelChat({ id }: UseVercelChatProps) {
       accountId: userId,
       email: userData?.email,
     },
+    initialMessages,
     experimental_throttle: 100,
     sendExtraMessageFields: true,
     generateId: generateUUID,
@@ -52,6 +54,7 @@ export function useVercelChat({ id }: UseVercelChatProps) {
       setHasChatApiError(true);
     },
   });
+
   const { isLoading: isMessagesLoading, hasError } = useMessageLoader(
     messages.length === 0 ? id : undefined,
     userId,
@@ -90,6 +93,10 @@ export function useVercelChat({ id }: UseVercelChatProps) {
     setHasChatApiError(false);
   };
 
+  const silentlyUpdateUrl = () => {
+    window.history.replaceState({}, "", `/chat/${id}`);
+  };
+
   const handleSendMessage = async () => {
     if (hasChatApiError) {
       await deleteTrailingMessages();
@@ -98,10 +105,19 @@ export function useVercelChat({ id }: UseVercelChatProps) {
     handleSubmit(undefined);
 
     if (!roomId) {
-      // Silently update the URL without affecting the UI or causing remount
-      window.history.replaceState({}, "", `/chat/${id}`);
+      silentlyUpdateUrl();
     }
   };
+
+  const handleSendQueryMessages = async () => {
+    await reload();
+    silentlyUpdateUrl();
+  };
+
+  useEffect(() => {
+    if (!initialMessages || status !== "ready" || roomId) return;
+    handleSendQueryMessages();
+  }, [initialMessages, status]);
 
   return {
     // States

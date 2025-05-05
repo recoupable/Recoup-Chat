@@ -3,8 +3,15 @@
 import { useMiniKit } from "@coinbase/onchainkit/minikit";
 import { Chat } from "../VercelChat/chat";
 import { useEffect } from "react";
+import { Message } from "ai";
 
-const HomePage = ({ id }: { id: string }) => {
+const HomePage = ({
+  id,
+  initialMessages,
+}: {
+  id: string;
+  initialMessages?: Message[];
+}) => {
   const { setFrameReady, isFrameReady } = useMiniKit();
 
   useEffect(() => {
@@ -15,7 +22,7 @@ const HomePage = ({ id }: { id: string }) => {
 
   return (
     <div className="flex flex-col size-full items-center">
-      <Chat id={id} />
+      <Chat id={id} initialMessages={initialMessages} />
     </div>
   );
 };

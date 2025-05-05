@@ -1,6 +1,6 @@
 import React, { createContext, useContext, ReactNode } from "react";
 import { useVercelChat } from "@/hooks/useVercelChat";
-import { UseChatHelpers } from "@ai-sdk/react";
+import { Message, UseChatHelpers } from "@ai-sdk/react";
 
 // Interface for the context data
 interface VercelChatContextType {
@@ -27,6 +27,7 @@ const VercelChatContext = createContext<VercelChatContextType | undefined>(
 interface VercelChatProviderProps {
   children: ReactNode;
   chatId: string;
+  initialMessages?: Message[];
 }
 
 /**
@@ -35,6 +36,7 @@ interface VercelChatProviderProps {
 export function VercelChatProvider({
   children,
   chatId,
+  initialMessages,
 }: VercelChatProviderProps) {
   // Use the useVercelChat hook to get the chat state and functions
   const {
@@ -49,7 +51,7 @@ export function VercelChatProvider({
     input,
     setMessages,
     reload,
-  } = useVercelChat({ id: chatId });
+  } = useVercelChat({ id: chatId, initialMessages });
 
   // Create the context value object
   const contextValue: VercelChatContextType = {

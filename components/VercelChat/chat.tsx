@@ -15,15 +15,17 @@ import {
   VercelChatProvider,
   useVercelChatContext,
 } from "@/providers/VercelChatProvider";
+import { Message } from "ai";
 
 interface ChatProps {
   id: string;
   reportId?: string;
+  initialMessages?: Message[];
 }
 
-export function Chat({ id, reportId }: ChatProps) {
+export function Chat({ id, reportId, initialMessages }: ChatProps) {
   return (
-    <VercelChatProvider chatId={id}>
+    <VercelChatProvider chatId={id} initialMessages={initialMessages}>
       <ChatContent reportId={reportId} id={id} />
     </VercelChatProvider>
   );
