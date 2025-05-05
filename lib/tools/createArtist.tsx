@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { tool } from "ai";
+import createArtistFunc from "@/lib/createArtist";
 
 const createArtist = tool({
   description: `
@@ -17,26 +18,14 @@ const createArtist = tool({
   }),
   execute: async ({ name, account_id }) => {
     try {
-      const response = await fetch(
-        `/api/artist/create?name=${encodeURIComponent(name)}&account_id=${encodeURIComponent(account_id)}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const artist = await createArtistFunc(name, account_id);
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(
-          `Failed to create artist: ${errorData.message || response.statusText}`
-        );
+      if (!artist) {
+        throw new Error("Failed to create artist");
       }
 
-      const data = await response.json();
       return {
-        artist: data.artist,
+        artist,
         message: `Successfully created artist "${name}".`,
       };
     } catch (error) {
