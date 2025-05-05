@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { tool } from "ai";
 import createArtistInDb from "../supabase/createArtistInDb";
-import copyConversation from "../supabase/copyConversation";
+import copyRoom from "../supabase/copyRoom";
 
 /**
  * Interface for artist creation result
@@ -55,7 +55,7 @@ const createArtist = tool({
       // Step 2: Copy the conversation to the new artist
       let newRoomId = null;
       if (roomId) {
-        newRoomId = await copyConversation(roomId, artist.account_id);
+        newRoomId = await copyRoom(roomId, artist.account_id);
         console.log(`Created new room for artist: ${newRoomId}`);
       }
 
