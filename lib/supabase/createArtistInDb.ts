@@ -1,4 +1,7 @@
-import supabase from "@/lib/supabase/serverClient";
+import createArtistAccount from "./artist/createArtistAccount";
+import createAccountInfo from "./artist/createAccountInfo";
+import getArtistById from "./artist/getArtistById";
+import associateArtistWithAccount from "./artist/associateArtistWithAccount";
 
 /**
  * Create a new artist in the database and associate it with an account
@@ -8,54 +11,21 @@ import supabase from "@/lib/supabase/serverClient";
  */
 export async function createArtistInDb(name: string, account_id: string) {
   try {
-    // Create the artist account
-    const { data: account, error: accountError } = await supabase
-      .from("accounts")
-      .insert({
-        name,
-      })
-      .select("*")
-      .single();
+    // Step 1: Create the artist account
+    const account = await createArtistAccount(name);
+    if (!account) return null;
 
-    if (accountError || !account) {
-      console.error("Error creating artist account:", accountError);
-      return null;
-    }
+    // Step 2: Create account info for the artist
+    const infoCreated = await createAccountInfo(account.id);
+    if (!infoCreated) return null;
 
-    // Create account info for the artist
-    const { error: infoError } = await supabase.from("account_info").insert({
-      account_id: account.id,
-    });
+    // Step 3: Get the full artist data
+    const artist = await getArtistById(account.id);
+    if (!artist) return null;
 
-    if (infoError) {
-      console.error("Error creating artist account info:", infoError);
-      return null;
-    }
-
-    // Get the full artist data
-    const { data: artist, error: artistError } = await supabase
-      .from("accounts")
-      .select("*, account_socials(*), account_info(*)")
-      .eq("id", account.id)
-      .single();
-
-    if (artistError || !artist) {
-      console.error("Error fetching created artist:", artistError);
-      return null;
-    }
-
-    // Associate the artist with the account
-    const { error: associationError } = await supabase
-      .from("account_artist_ids")
-      .insert({
-        account_id,
-        artist_id: account.id,
-      });
-
-    if (associationError) {
-      console.error("Error associating artist with account:", associationError);
-      return null;
-    }
+    // Step 4: Associate the artist with the account
+    const associated = await associateArtistWithAccount(account_id, account.id);
+    if (!associated) return null;
 
     // Return formatted artist data
     return {
