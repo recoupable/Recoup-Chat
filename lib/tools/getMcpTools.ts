@@ -8,6 +8,7 @@ import perplexityAsk from "./perplexityAsk";
 import generateImage from "./generateImage";
 import generateMermaidDiagram from "./generateMermaidDiagram";
 import createArtist from "./createArtist";
+import deleteArtist from "./deleteArtist";
 
 export async function getMcpTools() {
   const tools = {
@@ -21,6 +22,7 @@ export async function getMcpTools() {
     generate_image: generateImage,
     generate_mermaid_diagram: generateMermaidDiagram,
     create_new_artist: createArtist,
+    delete_artist: deleteArtist,
   };
 
   return tools;

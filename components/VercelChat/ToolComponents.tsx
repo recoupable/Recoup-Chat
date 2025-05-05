@@ -7,6 +7,9 @@ import { MermaidDiagramSkeleton } from "../ui/MermaidDiagramSkeleton";
 import CreateArtistToolCall from "./tools/CreateArtistToolCall";
 import CreateArtistToolResult from "./tools/CreateArtistToolResult";
 import { CreateArtistResult } from "@/lib/tools/createArtist";
+import DeleteArtistToolCall from "./tools/DeleteArtistToolCall";
+import DeleteArtistToolResult from "./tools/DeleteArtistToolResult";
+import { DeleteArtistResult } from "@/lib/tools/deleteArtist";
 
 /**
  * Interface for tool call props
@@ -23,6 +26,7 @@ type ToolResult =
   | ImageGenerationResult
   | GenerateMermaidDiagramResult
   | CreateArtistResult
+  | DeleteArtistResult
   | Record<string, unknown>;
 
 /**
@@ -53,6 +57,12 @@ export function getToolCallComponent({ toolName, toolCallId }: ToolCallProps) {
     return (
       <div key={toolCallId}>
         <CreateArtistToolCall />
+      </div>
+    );
+  } else if (toolName === "delete_artist") {
+    return (
+      <div key={toolCallId}>
+        <DeleteArtistToolCall />
       </div>
     );
   }
@@ -89,6 +99,12 @@ export function getToolResultComponent({
     return (
       <div key={toolCallId}>
         <CreateArtistToolResult result={result as CreateArtistResult} />
+      </div>
+    );
+  } else if (toolName === "delete_artist") {
+    return (
+      <div key={toolCallId}>
+        <DeleteArtistToolResult result={result as DeleteArtistResult} />
       </div>
     );
   }
