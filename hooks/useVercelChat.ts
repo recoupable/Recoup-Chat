@@ -120,7 +120,9 @@ export function useVercelChat({ id, initialMessages }: UseVercelChatProps) {
     const isFullyLoggedIn = authenticated && selectedArtist;
     const isReady = status === "ready";
     const hasMessages = messages.length > 1;
-    if (!initialMessages || !isReady || hasMessages || !isFullyLoggedIn) return;
+    const hasInitialMessages = initialMessages?.length > 0;
+    if (!hasInitialMessages || !isReady || hasMessages || !isFullyLoggedIn)
+      return;
     handleSendQueryMessages();
   }, [initialMessages, status, authenticated, selectedArtist]);
 
