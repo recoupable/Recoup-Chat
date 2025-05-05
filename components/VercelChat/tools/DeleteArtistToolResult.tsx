@@ -44,13 +44,16 @@ export function DeleteArtistToolResult({
     );
   }
 
+  // Calculate the display name for the artist
+  const artistDisplay = result.artistName ? `"${result.artistName}"` : "Artist";
+
   return (
     <div className="flex items-center space-x-4 p-3 rounded-md bg-green-50 border border-green-200 my-2">
       <div className="h-12 w-12 rounded-full bg-green-200 flex items-center justify-center">
         <span className="text-lg font-bold text-green-600">✓</span>
       </div>
       <div>
-        <p className="font-medium">Artist Deleted Successfully</p>
+        <p className="font-medium">{artistDisplay} Deleted Successfully</p>
         <p className="text-sm text-green-600">{result.message}</p>
       </div>
     </div>

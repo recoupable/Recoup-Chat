@@ -20,7 +20,7 @@ export async function getSystemPrompt({
 
   let systemPrompt = `${SYSTEM_PROMPT} 
   The active artist_account_id is ${resolvedArtistId}. 
-  The account_id is ${accountId || "Unknown"} use this to create new artists.
+  The account_id is ${accountId || "Unknown"} use this to create / delete artists.
   The active_account_email is ${email || "Unknown"}. 
   The active_conversation_id is ${roomId || "No ID"}.
   The active_conversation_name is ${conversationName || "No Chat Name"}.`;

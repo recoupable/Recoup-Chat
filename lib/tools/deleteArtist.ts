@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { tool } from "ai";
+import deleteArtistFromAccount from "../supabase/deleteArtistFromAccount";
 
 /**
  * Interface for delete artist result
@@ -7,6 +8,7 @@ import { tool } from "ai";
 export interface DeleteArtistResult {
   success: boolean;
   message: string;
+  artistName?: string;
   error?: string;
 }
 
@@ -21,12 +23,19 @@ const deleteArtist = tool({
   parameters: z.object({
     artist_account_id: z
       .string()
-      .optional()
       .describe(
-        "The account_artist_ids record ID of the artist to delete. If not provided, the active artist will be used."
+        "The ID of the artist to delete. If not provided, use the active artist_account_id."
+      ),
+    account_id: z
+      .string()
+      .describe(
+        "The ID of the account that owns the artist. If not provided, use the account_id."
       ),
   }),
-  execute: async ({ artist_account_id }): Promise<DeleteArtistResult> => {
+  execute: async ({
+    artist_account_id,
+    account_id,
+  }): Promise<DeleteArtistResult> => {
     try {
       // If no artist_account_id was provided, attempt to get the active artist
       // This would be handled by the AI when calling the tool
@@ -39,27 +48,23 @@ const deleteArtist = tool({
       }
 
       // Call the API to delete the artist
-      const response = await fetch("/api/artist/delete", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ artistAccountId: artist_account_id }),
-      });
+      const response = await deleteArtistFromAccount(
+        artist_account_id,
+        account_id
+      );
 
-      const result = await response.json();
-
-      if (!response.ok) {
+      if (!response.success) {
         return {
           success: false,
           message: "Failed to delete artist",
-          error: result.message || "Unknown error",
+          error: response.message || "Unknown error",
         };
       }
 
       return {
         success: true,
-        message: result.message || "Artist deleted successfully",
+        message: response.message || "Artist deleted successfully",
+        artistName: response.artistName,
       };
     } catch (error) {
       const errorMessage =

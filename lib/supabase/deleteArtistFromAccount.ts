@@ -1,36 +1,31 @@
 import supabase from "./serverClient";
+import getArtistById from "./artist/getArtistById";
 
 /**
  * Delete an artist association from an account
  * If no other accounts have this artist, also delete the artist account and related data
  *
- * @param artistAccountId The ID of the account_artist_ids record to delete
- * @returns Object with success status and message
+ * @param artistAccountId The ID of the artist account to delete
+ * @param ownerAccountId The ID of the owner account
+ * @returns Object with success status, message, and artist name if successful
  */
-export async function deleteArtistFromAccount(artistAccountId: string) {
+export async function deleteArtistFromAccount(
+  artistAccountId: string,
+  ownerAccountId: string
+) {
   try {
-    // First get the artist_id from the account_artist_ids table
-    const { data: artistLink, error: fetchError } = await supabase
-      .from("account_artist_ids")
-      .select("artist_id")
-      .eq("id", artistAccountId)
-      .single();
+    // First get the artist data using getArtistById utility
+    const artistData = await getArtistById(artistAccountId);
 
-    if (fetchError || !artistLink) {
-      console.error("Error fetching artist link:", fetchError);
-      return {
-        success: false,
-        message: "Could not find artist link",
-      };
-    }
-
-    const artistId = artistLink.artist_id;
+    const artistName = artistData?.name || "Unknown artist";
 
     // Delete the account_artist_ids record
-    const { error: deleteError } = await supabase
+    const { data: deletedLinks, error: deleteError } = await supabase
       .from("account_artist_ids")
       .delete()
-      .eq("id", artistAccountId);
+      .eq("artist_id", artistAccountId)
+      .eq("account_id", ownerAccountId)
+      .select();
 
     if (deleteError) {
       console.error("Error deleting artist link:", deleteError);
@@ -40,11 +35,19 @@ export async function deleteArtistFromAccount(artistAccountId: string) {
       };
     }
 
+    // If no rows were deleted, the link didn't exist
+    if (!deletedLinks || deletedLinks.length === 0) {
+      return {
+        success: false,
+        message: "Could not find artist link to delete",
+      };
+    }
+
     // Check if any other accounts still have this artist
     const { data: remainingLinks, error: checkError } = await supabase
       .from("account_artist_ids")
       .select("id")
-      .eq("artist_id", artistId);
+      .eq("artist_id", artistAccountId);
 
     if (checkError) {
       console.error("Error checking remaining links:", checkError);
@@ -52,6 +55,7 @@ export async function deleteArtistFromAccount(artistAccountId: string) {
         success: true,
         message:
           "Artist link removed, but could not verify if artist should be deleted",
+        artistName,
       };
     }
 
@@ -65,25 +69,28 @@ export async function deleteArtistFromAccount(artistAccountId: string) {
       const { error: artistDeleteError } = await supabase
         .from("accounts")
         .delete()
-        .eq("id", artistId);
+        .eq("id", artistAccountId);
 
       if (artistDeleteError) {
         console.error("Error deleting artist account:", artistDeleteError);
         return {
           success: true,
           message: "Artist link removed, but failed to delete artist account",
+          artistName,
         };
       }
 
       return {
         success: true,
         message: "Artist and all associated data deleted successfully",
+        artistName,
       };
     }
 
     return {
       success: true,
       message: "Artist link removed successfully",
+      artistName,
     };
   } catch (error) {
     console.error("Unexpected error in deleteArtistFromAccount:", error);
