@@ -2,6 +2,7 @@
 
 import { ChangeEventHandler, useEffect } from "react";
 import { useFormContext } from "react-hook-form";
+import { Textarea as ShadCNTextarea } from "./ui/textarea";
 
 interface ITextArea {
   id?: string;
@@ -44,22 +45,21 @@ function TextArea({
   return (
     <div className="relative w-full ">
       <label className="text-sm">{label}</label>
-      <textarea
+      <ShadCNTextarea
         {...(id && { id: id })}
         value={value}
         placeholder={placeholder}
-        className={`w-full !outline-none border-grey  border-[1px] px-2 py-1 md:p-2 rounded-md text-sm
-          ${className ? className : ""} ${
-            hookToForm && fieldError && fieldError?.message ? clasNameError : ""
-          }`}
+        className={`
+          outline-none border-grey border-[1px] focus-visible:ring-0 shadow-none
+          ${className ? className : ""} ${hookToForm && fieldError && fieldError?.message ? clasNameError : ""}`}
         {...(!hookToForm && {
           value: value,
           onChange: onChange,
         })}
         {...(isFullyHooked
           ? formContext.register(name, {
-              onChange: (e) => onChange && onChange(e),
-            })
+            onChange: (e) => onChange && onChange(e),
+          })
           : {})}
         name={name}
         rows={rows}
