@@ -2,6 +2,8 @@ import React, { useEffect } from "react";
 import { useArtistProvider } from "@/providers/ArtistProvider";
 import { CreateArtistResult } from "@/lib/tools/createArtist";
 import Image from "next/image";
+import copyRoomToArtist from "@/lib/supabase/copyRoomToArtist";
+import { useParams } from "next/navigation";
 
 /**
  * Props for the CreateArtistToolResult component
@@ -18,14 +20,21 @@ export function CreateArtistToolResult({
   result,
 }: CreateArtistToolResultProps) {
   const { getArtists } = useArtistProvider();
+  const params = useParams();
+  const roomId = params.roomId as string;
 
   useEffect(() => {
     // Function to refresh artists list and select the new artist
     const refreshAndSelect = async () => {
-      if (result.artist && result.artist.account_id) {
-        // Refresh the artists list
-        await getArtists(result.artist.account_id);
+      if (!result.artist || !result.artist.account_id || !roomId) {
+        return;
       }
+
+      // Step 1: Copy conversation from current room to a new room with the new artist
+      await copyRoomToArtist(roomId, result.artist.account_id);
+
+      // Step 2: Refresh the artists list
+      await getArtists(result.artist.account_id);
     };
 
     // Call the refresh function when the component mounts
