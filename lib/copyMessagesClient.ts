@@ -17,7 +17,7 @@ export async function copyMessagesClient(
       body: JSON.stringify({
         sourceRoomId,
         targetRoomId,
-        clearExisting: false,
+        clearExisting: true,
       }),
     });
 
