@@ -10,7 +10,7 @@ const getExistingHandles = (artist: ArtistRecord | null) => {
       instagram: "",
     };
 
-  const socials = artist.account_socials.filter(
+  const socials = artist.account_socials?.filter(
     (link: SOCIAL) => link?.type !== "YOUTUBE" && link?.type !== "APPLE"
   );
 
@@ -22,7 +22,7 @@ const getExistingHandles = (artist: ArtistRecord | null) => {
     instagram: "",
   };
 
-  socials.forEach((social: SOCIAL) => {
+  socials?.forEach((social: SOCIAL) => {
     const link = social.link;
     const type = social.type.toLowerCase();
 
