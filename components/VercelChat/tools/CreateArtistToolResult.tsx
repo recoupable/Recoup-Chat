@@ -2,8 +2,39 @@ import React, { useEffect } from "react";
 import { useArtistProvider } from "@/providers/ArtistProvider";
 import { CreateArtistResult } from "@/lib/tools/createArtist";
 import Image from "next/image";
-import copyRoomToArtist from "@/lib/supabase/copyRoomToArtist";
-import { useParams } from "next/navigation";
+import { useVercelChatContext } from "@/providers/VercelChatProvider";
+
+/**
+ * Client function to copy messages between rooms
+ */
+async function copyMessagesApi(
+  sourceRoomId: string,
+  targetRoomId: string
+): Promise<boolean> {
+  try {
+    const response = await fetch("/api/memories/copy", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        sourceRoomId,
+        targetRoomId,
+        clearExisting: false,
+      }),
+    });
+
+    if (!response.ok) {
+      console.error("Failed to copy messages:", await response.text());
+      return false;
+    }
+
+    return true;
+  } catch (error) {
+    console.error("Error copying messages:", error);
+    return false;
+  }
+}
 
 /**
  * Props for the CreateArtistToolResult component
@@ -20,35 +51,59 @@ export function CreateArtistToolResult({
   result,
 }: CreateArtistToolResultProps) {
   const { getArtists } = useArtistProvider();
-  const params = useParams();
-  const roomId = params.roomId as string;
+  const { status, id } = useVercelChatContext();
 
   useEffect(() => {
     // Function to refresh artists list and select the new artist
     const refreshAndSelect = async () => {
       console.log("refreshAndSelect - result", result);
-      console.log("refreshAndSelect - roomId", roomId);
-      if (!result.artist || !result.artist.account_id || !roomId) {
+      if (!result.artist || !result.artist.account_id) {
         return;
       }
 
-      // Step 1: Copy conversation from current room to a new room with the new artist
-      const newRoomId = await copyRoomToArtist(
-        roomId,
-        result.artist.account_id
-      );
-      console.log("refreshAndSelect - newRoomId", newRoomId);
+      console.log("refreshAndSelect - newRoomId", result.newRoomId);
+      console.log("refreshAndSelect - status", status);
 
-      // Step 2: Refresh the artists list
+      // Step 1: Refresh the artists list
       await getArtists(result.artist.account_id);
+
+      const needsRedirect = id !== result.newRoomId;
+      console.log("refreshAndSelect - needsRedirect", needsRedirect);
+      const isFinishedStreaming = status === "ready";
+      console.log(
+        "refreshAndSelect - isFinishedStreaming",
+        isFinishedStreaming
+      );
+
+      if (needsRedirect && isFinishedStreaming && result.roomId) {
+        console.log(
+          "Copying messages from",
+          result.roomId,
+          "to",
+          result.newRoomId
+        );
+
+        // Copy messages from current room to the newly created room
+        const success = await copyMessagesApi(
+          result.roomId,
+          result.newRoomId as string
+        );
+
+        if (success) {
+          window.history.replaceState({}, "", `/chat/${result.newRoomId}`);
+
+          console.log("Messages copied successfully, redirecting to new room");
+        } else {
+          console.error("Failed to copy messages");
+        }
+      }
     };
 
-    // Call the refresh function when the component mounts
+    // Call the refresh function when the status changes
     refreshAndSelect();
 
-    // We don't want this effect to run more than once
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [status]);
 
   // If there's an error or no artist data, show error state
   if (!result.artist) {

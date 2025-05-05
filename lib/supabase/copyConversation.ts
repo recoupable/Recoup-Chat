@@ -1,6 +1,5 @@
-import supabase from "./serverClient";
-import createNewRoom from "./createNewRoom";
 import copyMessages from "./copyMessages";
+import copyRoom from "./copyRoom";
 
 /**
  * Copies a conversation to a new room with a different artist
@@ -15,25 +14,7 @@ export async function copyConversation(
 ): Promise<string | null> {
   try {
     // Get the source room data
-    const { data: sourceRoom, error: roomError } = await supabase
-      .from("rooms")
-      .select("account_id, topic")
-      .eq("id", sourceRoomId)
-      .single();
-
-    console.log("copyConversation - sourceRoom", sourceRoom);
-    if (roomError || !sourceRoom) {
-      console.error("Error getting source room:", roomError);
-      return null;
-    }
-
-    // Create new room with same account but new artist
-    const newRoomId = await createNewRoom({
-      account_id: sourceRoom.account_id,
-      artist_id: artistId,
-      topic: sourceRoom.topic || "New conversation",
-    });
-    console.log("copyConversation - newRoomId", newRoomId);
+    const newRoomId = await copyRoom(sourceRoomId, artistId);
 
     if (!newRoomId) {
       console.error("Failed to create new room");
