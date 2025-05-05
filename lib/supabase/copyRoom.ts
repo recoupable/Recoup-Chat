@@ -1,5 +1,5 @@
-import supabase from "./serverClient";
 import createNewRoom from "./createNewRoom";
+import getRoom from "./getRoom";
 
 /**
  * Create a new room based on an existing room's data
@@ -14,16 +14,12 @@ export async function copyRoom(
   artistId: string
 ): Promise<string | null> {
   try {
-    // Get the source room data
-    const { data: sourceRoom, error: roomError } = await supabase
-      .from("rooms")
-      .select("account_id, topic")
-      .eq("id", sourceRoomId)
-      .single();
+    // Get the source room data using getRoom utility
+    const sourceRoom = await getRoom(sourceRoomId);
 
     console.log("copyRoom - sourceRoom", sourceRoom);
-    if (roomError || !sourceRoom) {
-      console.error("Error getting source room:", roomError);
+    if (!sourceRoom) {
+      console.error("Error getting source room");
       return null;
     }
 
