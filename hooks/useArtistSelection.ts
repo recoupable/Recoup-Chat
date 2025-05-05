@@ -1,7 +1,7 @@
-import { useCallback } from 'react';
-import { usePathname, useRouter } from 'next/navigation';
-import { useArtistProvider } from '@/providers/ArtistProvider';
-import type { ArtistRecord } from '@/types/Artist';
+import { useCallback } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { useArtistProvider } from "@/providers/ArtistProvider";
+import type { ArtistRecord } from "@/types/Artist";
 
 export const useArtistSelection = () => {
   const {
@@ -14,24 +14,29 @@ export const useArtistSelection = () => {
   const pathname = usePathname();
   const { push } = useRouter();
 
-  const handleSelect = useCallback((artist: ArtistRecord | null) => {
-    if (pathname.includes("/funnels") && selectedArtist) {
-      if (selectedArtist.account_id !== artist?.account_id) {
-        push("/");
+  const handleSelect = useCallback(
+    (artist: ArtistRecord | null) => {
+      if (pathname.includes("/funnels") && selectedArtist) {
+        if (selectedArtist.account_id !== artist?.account_id) {
+          push("/");
+        }
       }
-    }
-    setSelectedArtist(artist);
-  }, [pathname, selectedArtist, push, setSelectedArtist]);
+      setSelectedArtist(artist);
+    },
+    [pathname, selectedArtist, push, setSelectedArtist]
+  );
 
-  const handleEdit = useCallback((artist: ArtistRecord) => {
-    toggleUpdate(artist);
-    toggleSettingModal();
-  }, [toggleUpdate, toggleSettingModal]);
+  const handleEdit = useCallback(
+    (artist: ArtistRecord) => {
+      toggleUpdate(artist);
+      toggleSettingModal();
+    },
+    [toggleUpdate, toggleSettingModal]
+  );
 
   const handleCreate = useCallback(() => {
     toggleCreation();
-    toggleSettingModal();
-  }, [toggleCreation, toggleSettingModal]);
+  }, [toggleCreation]);
 
   return {
     selectedArtist,
@@ -39,4 +44,4 @@ export const useArtistSelection = () => {
     handleEdit,
     handleCreate,
   };
-}; 
+};

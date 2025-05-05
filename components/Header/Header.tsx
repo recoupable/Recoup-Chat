@@ -12,8 +12,13 @@ import type { ArtistRecord } from "@/types/Artist";
 const Header = () => {
   const [isOpenMobileMenu, setIsOpenMobileMenu] = useState(false);
   const [isOpenSideArtists, setIsOpenSideArtists] = useState(false);
-  const { selectedArtist, toggleSettingModal, toggleUpdate, toggleCreation, sorted } =
-    useArtistProvider();
+  const {
+    selectedArtist,
+    toggleSettingModal,
+    toggleUpdate,
+    toggleCreation,
+    sorted,
+  } = useArtistProvider();
   const isMobile = useIsMobile();
   const isArtistSelected = selectedArtist !== null;
 
@@ -29,7 +34,6 @@ const Header = () => {
 
   const handleAddArtist = () => {
     toggleCreation();
-    toggleSettingModal();
   };
 
   return (
@@ -48,15 +52,23 @@ const Header = () => {
         {isMobile && !isArtistSelected && (
           <button
             type="button"
-            onClick={sorted.length > 0 ? () => setIsOpenSideArtists(true) : handleAddArtist}
+            onClick={
+              sorted.length > 0
+                ? () => setIsOpenSideArtists(true)
+                : handleAddArtist
+            }
             className="flex items-center gap-2 bg-white text-black font-medium py-2 px-4 rounded-md shadow-md z-[50]"
-            aria-label={sorted.length > 0 ? "Select your artist" : "Add a new artist"}
+            aria-label={
+              sorted.length > 0 ? "Select your artist" : "Add a new artist"
+            }
           >
             <PlusCircle className="h-5 w-5" />
-            <span>{sorted.length > 0 ? "Select Your Artist" : "Add Your Artist"}</span>
+            <span>
+              {sorted.length > 0 ? "Select Your Artist" : "Add Your Artist"}
+            </span>
           </button>
         )}
-        
+
         {/* Show artist profile when artist is selected */}
         {selectedArtist && isMobile && (
           <div className="relative z-[50]">
@@ -67,9 +79,9 @@ const Header = () => {
               onClick={handleClickPfp}
               aria-label="Open artist options"
             >
-              <ImageWithFallback 
-                src={selectedArtist?.image || ""} 
-                className="w-full h-full object-cover rounded-full" 
+              <ImageWithFallback
+                src={selectedArtist?.image || ""}
+                className="w-full h-full object-cover rounded-full"
               />
             </button>
           </div>

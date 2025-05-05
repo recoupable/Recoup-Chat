@@ -13,12 +13,11 @@ const SideArtists = ({
   toggleModal: () => void;
 }) => {
   const { email, isPrepared } = useUserProvider();
-  const { toggleCreation, toggleSettingModal, sorted } = useArtistProvider();
+  const { toggleCreation, sorted } = useArtistProvider();
 
   const handleCreate = () => {
     if (!isPrepared()) return;
     toggleCreation();
-    toggleSettingModal();
     toggleModal();
   };
 

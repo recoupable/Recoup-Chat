@@ -21,7 +21,7 @@ const SideMenu = ({
 }) => {
   const { push } = useRouter();
   const { email, isPrepared } = useUserProvider();
-  const { selectedArtist, sorted, toggleSettingModal } = useArtistProvider();
+  const { selectedArtist, sorted, toggleCreation } = useArtistProvider();
   const hasArtists = sorted.length > 0;
   const isArtistSelected = !!selectedArtist;
 
@@ -40,7 +40,7 @@ const SideMenu = ({
       }
     } else {
       // No artists yet, open the artist creation modal
-      toggleSettingModal();
+      toggleCreation();
     }
     toggleModal();
   };
@@ -58,19 +58,21 @@ const SideMenu = ({
       >
         {email ? "New Chat" : "Sign In"}
       </button>
-      
+
       {email && !isArtistSelected && (
         <button
           type="button"
           onClick={handleArtistSelect}
           className="flex gap-3 items-center mb-2 mt-4 text-black font-semibold"
-          aria-label={hasArtists ? "Select your artist from the list" : "Add a new artist"}
+          aria-label={
+            hasArtists ? "Select your artist from the list" : "Add a new artist"
+          }
         >
           <PointerIcon className="h-5 w-5" />
           {hasArtists ? "Select Your Artist" : "Add Your Artist"}
         </button>
       )}
-      
+
       <button
         type="button"
         onClick={() => goToItem("agents")}

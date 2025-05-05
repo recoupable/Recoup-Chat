@@ -10,13 +10,12 @@ const ArtistDropDown = ({
 }: {
   setIsVisibleDropDown: Dispatch<SetStateAction<boolean>>;
 }) => {
-  const { sorted, toggleCreation, toggleSettingModal } = useArtistProvider();
+  const { sorted, toggleCreation } = useArtistProvider();
   const { isPrepared } = useUserProvider();
 
   const handleCreate = () => {
     if (!isPrepared()) return;
     toggleCreation();
-    toggleSettingModal();
   };
 
   return (
