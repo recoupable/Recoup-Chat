@@ -15,7 +15,6 @@ export interface CreateArtistResult {
   message: string;
   error?: string;
   newRoomId?: string | null;
-  roomId?: string; // The original room ID
 }
 
 const createArtist = tool({
@@ -62,7 +61,6 @@ const createArtist = tool({
         artist,
         message: `Successfully created artist "${name}".`,
         newRoomId,
-        roomId,
       };
     } catch (error) {
       const errorMessage =
@@ -72,7 +70,6 @@ const createArtist = tool({
       return {
         error: errorMessage,
         message: `Failed to create artist: ${errorMessage}`,
-        roomId,
       };
     }
   },
