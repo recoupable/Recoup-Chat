@@ -115,7 +115,7 @@ export function useVercelChat({ id, initialMessages }: UseVercelChatProps) {
   };
 
   useEffect(() => {
-    if (!initialMessages || status !== "ready" || roomId) return;
+    if (!initialMessages || status !== "ready" || messages.length > 1) return;
     handleSendQueryMessages();
   }, [initialMessages, status]);
 
