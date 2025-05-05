@@ -17,7 +17,6 @@ export async function copyRoom(
     // Get the source room data using getRoom utility
     const sourceRoom = await getRoom(sourceRoomId);
 
-    console.log("copyRoom - sourceRoom", sourceRoom);
     if (!sourceRoom) {
       console.error("Error getting source room");
       return null;
@@ -29,7 +28,6 @@ export async function copyRoom(
       artist_id: artistId,
       topic: sourceRoom.topic || "New conversation",
     });
-    console.log("copyRoom - newRoomId", newRoomId);
 
     if (!newRoomId) {
       console.error("Failed to create new room");

@@ -56,7 +56,6 @@ const createArtist = tool({
       let newRoomId = null;
       if (roomId) {
         newRoomId = await copyRoom(roomId, artist.account_id);
-        console.log(`Created new room for artist: ${newRoomId}`);
       }
 
       return {
