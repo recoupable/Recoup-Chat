@@ -34,7 +34,6 @@ export function useCreateArtistTool(result: CreateArtistResult) {
     const processCreateArtistResult = async () => {
       try {
         setIsProcessing(true);
-        console.log("Processing create artist result:", result);
 
         // Step 1: Refresh the artists list
         await getArtists(result.artist!.account_id);
