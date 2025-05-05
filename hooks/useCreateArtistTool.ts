@@ -22,12 +22,12 @@ export function useCreateArtistTool(result: CreateArtistResult) {
     const isFinishedStreaming = status === "ready";
 
     // Skip if no artist data or already processing
-    if (
+    const shouldSkip =
       !result.artist ||
       !result.artist.account_id ||
       isProcessing ||
-      !isFinishedStreaming
-    ) {
+      !isFinishedStreaming;
+    if (shouldSkip) {
       return;
     }
 
@@ -43,10 +43,6 @@ export function useCreateArtistTool(result: CreateArtistResult) {
         const needsRedirect = id !== result.newRoomId && !!result.newRoomId;
 
         if (needsRedirect && result.roomId) {
-          console.log(
-            `Copying messages from ${result.roomId} to ${result.newRoomId}`
-          );
-
           // Copy messages from current room to the newly created room
           const success = await copyMessagesClient(
             result.roomId,
@@ -59,9 +55,6 @@ export function useCreateArtistTool(result: CreateArtistResult) {
           if (success) {
             // Update the URL to point to the new conversation
             window.history.replaceState({}, "", `/chat/${result.newRoomId}`);
-            console.log(
-              "Messages copied successfully, URL updated to new room"
-            );
             setIsSuccess(true);
           } else {
             console.error("Failed to copy messages");
@@ -79,7 +72,7 @@ export function useCreateArtistTool(result: CreateArtistResult) {
     };
 
     processCreateArtistResult();
-  }, [status]);
+  }, [status, result, id, isProcessing, getArtists, fetchConversations]);
 
   return {
     isProcessing,
