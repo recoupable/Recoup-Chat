@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { tool } from "ai";
-import deleteArtistFromAccount from "../supabase/deleteArtistFromAccount";
+import deleteArtistFromAccount from "@/lib/recoup/deleteArtistFromAccount";
 
 /**
  * Interface for delete artist result

@@ -1,5 +1,7 @@
-import supabase from "./serverClient";
-import getArtistById from "./artist/getArtistById";
+import getArtistById from "@/lib/supabase/artist/getArtistById";
+import deleteAccountArtistId from "@/lib/supabase/artist/deleteAccountArtistId";
+import getAccountArtistIdsByArtistId from "@/lib/supabase/artist/getAccountArtistIdsByArtistId";
+import deleteAccountById from "@/lib/supabase/accounts/deleteAccountById";
 
 /**
  * Delete an artist association from an account
@@ -17,18 +19,16 @@ export async function deleteArtistFromAccount(
     // First get the artist data using getArtistById utility
     const artistData = await getArtistById(artistAccountId);
 
+    // Save artist name for the response
     const artistName = artistData?.name || "Unknown artist";
 
-    // Delete the account_artist_ids record
-    const { data: deletedLinks, error: deleteError } = await supabase
-      .from("account_artist_ids")
-      .delete()
-      .eq("artist_id", artistAccountId)
-      .eq("account_id", ownerAccountId)
-      .select();
+    // Delete the account_artist_ids record using utility
+    const deleteResult = await deleteAccountArtistId(
+      artistAccountId,
+      ownerAccountId
+    );
 
-    if (deleteError) {
-      console.error("Error deleting artist link:", deleteError);
+    if (!deleteResult.success) {
       return {
         success: false,
         message: "Failed to delete artist link",
@@ -36,7 +36,7 @@ export async function deleteArtistFromAccount(
     }
 
     // If no rows were deleted, the link didn't exist
-    if (!deletedLinks || deletedLinks.length === 0) {
+    if (!deleteResult.data || deleteResult.data.length === 0) {
       return {
         success: false,
         message: "Could not find artist link to delete",
@@ -44,13 +44,9 @@ export async function deleteArtistFromAccount(
     }
 
     // Check if any other accounts still have this artist
-    const { data: remainingLinks, error: checkError } = await supabase
-      .from("account_artist_ids")
-      .select("id")
-      .eq("artist_id", artistAccountId);
+    const artistLinks = await getAccountArtistIdsByArtistId(artistAccountId);
 
-    if (checkError) {
-      console.error("Error checking remaining links:", checkError);
+    if (!artistLinks.success) {
       return {
         success: true,
         message:
@@ -60,19 +56,11 @@ export async function deleteArtistFromAccount(
     }
 
     // If no other accounts have this artist, delete the artist account and related data
-    if (!remainingLinks || remainingLinks.length === 0) {
-      // The ON DELETE CASCADE should handle:
-      // - account_info
-      // - account_socials
-      // - fan_segment table
-      // - Any other tables with foreign key constraints
-      const { error: artistDeleteError } = await supabase
-        .from("accounts")
-        .delete()
-        .eq("id", artistAccountId);
+    if (!artistLinks.hasLinks) {
+      // Delete the artist account using the generic account deletion utility
+      const accountDeleteResult = await deleteAccountById(artistAccountId);
 
-      if (artistDeleteError) {
-        console.error("Error deleting artist account:", artistDeleteError);
+      if (!accountDeleteResult.success) {
         return {
           success: true,
           message: "Artist link removed, but failed to delete artist account",
