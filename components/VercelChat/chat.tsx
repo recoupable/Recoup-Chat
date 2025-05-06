@@ -45,7 +45,7 @@ function ChatContent({ reportId, id }: { reportId?: string; id: string }) {
     input,
     setMessages,
     reload,
-  } = useVercelChatContext();
+  } = useVercelChatContext()
   const { roomId } = useParams();
   useAutoLogin();
   useArtistFromRoom(id);

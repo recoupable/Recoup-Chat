@@ -1,18 +1,20 @@
+import { useState, useEffect } from "react";
 import { Message, useChat } from "@ai-sdk/react";
 import { useMessageLoader } from "./useMessageLoader";
 import { useUserProvider } from "@/providers/UserProvder";
 import { useArtistProvider } from "@/providers/ArtistProvider";
 import { useParams } from "next/navigation";
 import { toast } from "react-toastify";
-import { useEffect, useState } from "react";
 import getEarliestFailedUserMessageId from "@/lib/messages/getEarliestFailedUserMessageId";
 import { clientDeleteTrailingMessages } from "@/lib/messages/clientDeleteTrailingMessages";
 import { generateUUID } from "@/lib/generateUUID";
 import { usePrivy } from "@privy-io/react-auth";
+import { Attachment } from "@ai-sdk/ui-utils";
 
 interface UseVercelChatProps {
   id: string;
   initialMessages?: Message[];
+  uploadedAttachments?: Attachment[]; // Accept attachments from provider
 }
 
 /**
@@ -20,7 +22,11 @@ interface UseVercelChatProps {
  * Combines useChat, and useMessageLoader
  * Accesses user and artist data directly from providers
  */
-export function useVercelChat({ id, initialMessages }: UseVercelChatProps) {
+export function useVercelChat({ 
+  id, 
+  initialMessages,
+  uploadedAttachments = [] // Default to empty array
+}: UseVercelChatProps) {
   const { authenticated } = usePrivy();
   const { userData } = useUserProvider();
   const { selectedArtist } = useArtistProvider();
@@ -46,7 +52,7 @@ export function useVercelChat({ id, initialMessages }: UseVercelChatProps) {
       accountId: userId,
       email: userData?.email,
     },
-    initialMessages,
+    // initialMessages,
     experimental_throttle: 100,
     sendExtraMessageFields: true,
     generateId: generateUUID,
@@ -99,12 +105,20 @@ export function useVercelChat({ id, initialMessages }: UseVercelChatProps) {
     window.history.replaceState({}, "", `/chat/${id}`);
   };
 
-  const handleSendMessage = async () => {
+  const handleSendMessage = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    
     if (hasChatApiError) {
       await deleteTrailingMessages();
     }
-    // Always append message first for immediate feedback
-    handleSubmit(undefined);
+    
+    // Only send successfully uploaded attachments
+    const messageOptions = uploadedAttachments.length > 0 
+      ? { experimental_attachments: uploadedAttachments }
+      : undefined;
+    
+    // Submit the message
+    handleSubmit(event, messageOptions);
 
     if (!roomId) {
       silentlyUpdateUrl();
