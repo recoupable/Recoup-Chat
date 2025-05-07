@@ -1,6 +1,5 @@
 import React from "react";
 import { SpotifySearchResponse } from "@/types/spotify";
-import Image from "next/image";
 
 const cardStyle: React.CSSProperties = {
   width: 140,
@@ -113,11 +112,10 @@ const GetSpotifySearchToolResult: React.FC<{
                             justifyContent: "center",
                           }}
                         >
-                          <Image
-                            src={getImage(item) || "/placeholder.png"}
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
+                            src={getImage(item)}
                             alt={obj.name || ""}
-                            width={100}
-                            height={100}
                             style={imgStyle}
                           />
                         </div>

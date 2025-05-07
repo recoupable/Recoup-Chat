@@ -23,7 +23,6 @@ const nextConfig = {
       "avatars.githubusercontent.com", // GitHub
       "example.com", // Example domain from our mock data
       "arweave.net", // Arweave
-      "i.scdn.co", // Spotify
     ],
   },
 };
