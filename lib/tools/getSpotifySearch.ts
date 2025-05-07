@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { tool } from "ai";
+import { SpotifySearchResponse } from "../../types/spotify";
 
 // Supported Spotify search types
 const SPOTIFY_TYPES = [
@@ -15,39 +16,6 @@ const SPOTIFY_TYPES = [
 // Pluralized result keys
 export type SpotifyType = (typeof SPOTIFY_TYPES)[number];
 export type SpotifyResultKey = `${SpotifyType}s`;
-
-// Spotify Artist Search Result Type
-export interface SpotifyArtistSearchResult {
-  id: string;
-  name: string;
-  type: "artist";
-  uri: string;
-  external_urls: { spotify: string };
-  images: { url: string; height: number; width: number }[];
-  popularity: number;
-  genres: string[];
-  followers: { href: string | null; total: number };
-}
-
-// Other Spotify item types (minimal, can be extended as needed)
-export interface SpotifyAlbumSearchResult {
-  id: string;
-  name: string;
-  type: "album";
-  uri: string;
-  external_urls: { spotify: string };
-  images: { url: string; height: number; width: number }[];
-  artists: SpotifyArtistSearchResult[];
-}
-// ... (add more interfaces for track, playlist, etc. as needed)
-
-// API Response Type (partial, extend as needed)
-interface SpotifySearchResponse {
-  artists?: { items: SpotifyArtistSearchResult[]; total: number };
-  albums?: { items: SpotifyAlbumSearchResult[]; total: number };
-  // Add more as needed: tracks, playlists, shows, episodes, audiobooks
-  [key: string]: unknown;
-}
 
 // Tool return type: only includes keys for requested types
 export type GetSpotifySearchResult =
