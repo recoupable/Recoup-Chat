@@ -1,38 +1,6 @@
 import React from "react";
 import { SpotifySearchResponse } from "@/types/spotify";
 
-const cardStyle: React.CSSProperties = {
-  width: 140,
-  border: "1px solid #e5e7eb",
-  borderRadius: 8,
-  padding: 8,
-  margin: 8,
-  textAlign: "center",
-  background: "#fff",
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-  justifyContent: "flex-start",
-};
-const imgStyle: React.CSSProperties = {
-  width: 100,
-  height: 100,
-  objectFit: "cover",
-  borderRadius: 6,
-  marginBottom: 6,
-  background: "#f3f4f6",
-  display: "block",
-};
-const titleStyle: React.CSSProperties = {
-  fontWeight: 500,
-  fontSize: 15,
-  maxWidth: 120,
-  textOverflow: "ellipsis",
-  overflow: "hidden",
-  whiteSpace: "nowrap",
-  margin: "0 auto",
-};
-
 function getImage(item: unknown): string | undefined {
   if (typeof item === "object" && item !== null) {
     const obj = item as {
@@ -77,50 +45,32 @@ const GetSpotifySearchToolResult: React.FC<{
         .map(([key, value]) => {
           const section = value as { items: unknown[] };
           return (
-            <div key={key} style={{ marginBottom: 24 }}>
-              <div style={{ fontWeight: 600, fontSize: 18, marginBottom: 8 }}>
+            <div key={key} className="mb-6">
+              <div className="font-semibold text-lg mb-2">
                 {typeLabels[key] || key}
               </div>
-              <div
-                style={{
-                  display: "block",
-                  overflowX: "auto",
-                  whiteSpace: "nowrap",
-                  paddingBottom: 4,
-                  marginLeft: -8,
-                  marginRight: -8,
-                }}
-              >
+              <div className="flex flex-nowrap overflow-x-auto pb-1 -mx-2">
                 {section.items.map((item) => {
                   const obj = item as { id?: string; name?: string };
                   return (
                     <div
                       key={obj.id || Math.random()}
-                      style={{
-                        ...cardStyle,
-                        display: "inline-block",
-                        verticalAlign: "top",
-                        marginLeft: 8,
-                        marginRight: 8,
-                      }}
+                      className="w-[140px] border border-gray-200 rounded-lg p-2 m-2 text-center bg-white flex-shrink-0 flex flex-col items-center justify-start"
                     >
                       {getImage(item) && (
-                        <div
-                          style={{
-                            width: "100%",
-                            display: "flex",
-                            justifyContent: "center",
-                          }}
-                        >
+                        <div className="w-full flex justify-center">
                           {/* eslint-disable-next-line @next/next/no-img-element */}
                           <img
                             src={getImage(item)}
                             alt={obj.name || ""}
-                            style={imgStyle}
+                            className="w-[100px] h-[100px] object-cover rounded-md mb-1 block"
                           />
                         </div>
                       )}
-                      <div style={titleStyle} title={obj.name}>
+                      <div
+                        className="font-medium text-[15px] max-w-[120px] truncate mx-auto"
+                        title={obj.name}
+                      >
                         {obj.name}
                       </div>
                     </div>
