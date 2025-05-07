@@ -3,7 +3,7 @@ import { tool } from "ai";
 import { SpotifySearchResponse } from "../../types/spotify";
 
 // Supported Spotify search types
-const SPOTIFY_TYPES = [
+export const SPOTIFY_TYPES = [
   "album",
   "artist",
   "playlist",
