@@ -87,7 +87,7 @@ const Message = ({
                 const { toolName, toolCallId, state } = toolInvocation;
 
                 if (state === "call") {
-                  return getToolCallComponent({ toolName, toolCallId });
+                  return getToolCallComponent(toolInvocation);
                 }
 
                 if (state === "result") {

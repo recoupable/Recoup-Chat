@@ -12,7 +12,7 @@ import DeleteArtistToolResult from "./tools/DeleteArtistToolResult";
 import { DeleteArtistResult } from "@/lib/tools/deleteArtist";
 import GetSpotifySearchToolResult from "./tools/GetSpotifySearchToolResult";
 import { SpotifySearchResponse } from "@/types/spotify";
-import { ToolCallPart } from "ai";
+import { ToolInvocation } from "ai";
 
 /**
  * Interface for tool call props
@@ -43,7 +43,7 @@ interface ToolResultProps extends ToolCallProps {
  * Helper function to get the appropriate UI component for a tool call
  */
 
-export function getToolCallComponent({ toolName, toolCallId }: ToolCallPart) {
+export function getToolCallComponent({ toolName, toolCallId }: ToolInvocation) {
   // Handle generate_image tool call
   if (toolName === "generate_image") {
     return (
