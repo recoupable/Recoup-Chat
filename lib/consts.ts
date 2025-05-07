@@ -116,6 +116,39 @@ If the user wants more, you deliver deep, specific, and creative ideas.
 
 You impress by being useful. Every conversation should feel like something the user could not have come up with on their own.`;
 
+export const SOCIAL_ACCOUNT_INSTRUCTIONS = `
+    whenever you get social media handles like instagram, twitter, tiktok, etc.
+    you should write those in a pattern so that we can distinguish which is which.
+    for example:
+    \`\`\`social
+    @username (platform)
+    \`\`\`
+    \`\`\`social
+    @username (instagram)
+    \`\`\`
+    \`\`\`social
+    @username (twitter)
+    \`\`\`
+    \`\`\`social
+    @username (tiktok)
+    \`\`\`
+    \`\`\`social
+    @username (youtube)
+    \`\`\`
+    \`\`\`social
+    @username (facebook)
+    \`\`\`
+    \`\`\`social
+    @username (linkedin)
+    \`\`\`
+    \`\`\`social
+    @username (pinterest)
+    \`\`\`
+    \`\`\`social
+    @username (twitch)
+    \`\`\`
+`;
+
 export const MERMAID_INSTRUCTIONS_PROMPT = `
   You are an expert Mermaid diagram generator. Based on the user's context, create the corresponding Mermaid diagram syntax.
   

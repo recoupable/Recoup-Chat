@@ -1,4 +1,4 @@
-import { SYSTEM_PROMPT } from "@/lib/consts";
+import { SOCIAL_ACCOUNT_INSTRUCTIONS, SYSTEM_PROMPT } from "@/lib/consts";
 import getKnowledgeBaseContext from "@/lib/agent/getKnowledgeBaseContext";
 import getArtistIdForRoom from "../supabase/getArtistIdForRoom";
 import getArtistInstruction from "../supabase/getArtistInstruction";
@@ -41,40 +41,12 @@ ${knowledge}
 -----END KNOWLEDGE BASE-----`;
   }
 
-  systemPrompt = `${systemPrompt}
------Social Media Accounts Rendering Instructions-----
-    whenever you get social media handles like instagram, twitter, tiktok, etc.
-    you should write those in a pattern so that we can distinguish which is which.
-    for example:
-    \`\`\`social
-    @username (platform)
-    \`\`\`
-    \`\`\`social
-    @username (instagram)
-    \`\`\`
-    \`\`\`social
-    @username (twitter)
-    \`\`\`
-    \`\`\`social
-    @username (tiktok)
-    \`\`\`
-    \`\`\`social
-    @username (youtube)
-    \`\`\`
-    \`\`\`social
-    @username (facebook)
-    \`\`\`
-    \`\`\`social
-    @username (linkedin)
-    \`\`\`
-    \`\`\`social
-    @username (pinterest)
-    \`\`\`
-    \`\`\`social
-    @username (twitch)
-    \`\`\`
-
------END Social Media Accounts Rendering Instructions-----`;
+  systemPrompt = `
+    ${systemPrompt}
+    
+-----SOCIAL MEDIA ACCOUNTS RENDERING INSTRUCTIONS-----
+    ${SOCIAL_ACCOUNT_INSTRUCTIONS}
+-----END SOCIAL MEDIA ACCOUNTS RENDERING INSTRUCTIONS-----`;
 
   return systemPrompt;
 }
