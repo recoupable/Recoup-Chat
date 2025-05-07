@@ -1,6 +1,7 @@
 import React from "react";
 import { SpotifySearchResponse } from "@/types/spotify";
 import { getSpotifyImage } from "@/lib/spotify/getSpotifyImage";
+import { useVercelChatContext } from "@/providers/VercelChatProvider";
 
 const typeLabels: Record<string, string> = {
   artists: "Artists",
@@ -15,6 +16,15 @@ const typeLabels: Record<string, string> = {
 const GetSpotifySearchToolResult: React.FC<{
   result: SpotifySearchResponse;
 }> = ({ result }) => {
+  const { append } = useVercelChatContext();
+
+  const handleSelect = (name: string, type: string) => {
+    append({
+      role: "user",
+      content: `I've selected ${name} (${type})`,
+    });
+  };
+
   return (
     <div>
       {Object.entries(result)
@@ -40,7 +50,8 @@ const GetSpotifySearchToolResult: React.FC<{
                   return (
                     <div
                       key={obj.id || Math.random()}
-                      className="w-[140px] border border-gray-200 rounded-lg p-2 m-2 text-center bg-white flex-shrink-0 flex flex-col items-center justify-start"
+                      className="w-[140px] border border-gray-200 rounded-lg p-2 m-2 text-center bg-white flex-shrink-0 flex flex-col items-center justify-start cursor-pointer hover:bg-gray-50 transition"
+                      onClick={() => obj.name && handleSelect(obj.name, key)}
                     >
                       {getSpotifyImage(item) && (
                         <div className="w-full flex justify-center">
