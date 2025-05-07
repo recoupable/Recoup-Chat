@@ -37,10 +37,10 @@ const platformStyles: Record<string, {
         gradient: 'bg-gradient-to-r from-amber-500 via-pink-500 to-purple-500'
     },
     twitter: {
-        text: 'text-blue-400',
-        hover: 'hover:bg-blue-400 hover:text-white',
-        icon: 'text-blue-400 group-hover:text-white',
-        gradient: 'bg-blue-400'
+        text: 'text-blue-500',
+        hover: 'hover:bg-blue-500 hover:text-white',
+        icon: 'text-blue-500 group-hover:text-white',
+        gradient: 'bg-blue-500'
     },
     facebook: {
         text: 'text-blue-600',
