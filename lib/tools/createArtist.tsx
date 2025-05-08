@@ -23,6 +23,7 @@ const createArtist = tool({
   This tool should be called when a user wants to create a new artist profile.
   Requires the artist name, the account ID of the user with admin access to the new artist account,
   and the roomId to copy for this artist's first conversation.
+  After the artist is created, immediately call the get_spotify_search tool (with type: artist) to check for any existing Spotify artist data to connect to the new artist account.
   If called, reply with the artist name and the artist.account_id. Do not share any other info unless explicitly asked.
   `,
   parameters: z.object({

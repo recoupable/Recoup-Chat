@@ -10,6 +10,9 @@ import { CreateArtistResult } from "@/lib/tools/createArtist";
 import DeleteArtistToolCall from "./tools/DeleteArtistToolCall";
 import DeleteArtistToolResult from "./tools/DeleteArtistToolResult";
 import { DeleteArtistResult } from "@/lib/tools/deleteArtist";
+import GetSpotifySearchToolResult from "./tools/GetSpotifySearchToolResult";
+import { SpotifySearchResponse } from "@/types/spotify";
+import { ToolInvocation } from "ai";
 
 /**
  * Interface for tool call props
@@ -39,7 +42,8 @@ interface ToolResultProps extends ToolCallProps {
 /**
  * Helper function to get the appropriate UI component for a tool call
  */
-export function getToolCallComponent({ toolName, toolCallId }: ToolCallProps) {
+
+export function getToolCallComponent({ toolName, toolCallId }: ToolInvocation) {
   // Handle generate_image tool call
   if (toolName === "generate_image") {
     return (
@@ -105,6 +109,12 @@ export function getToolResultComponent({
     return (
       <div key={toolCallId}>
         <DeleteArtistToolResult result={result as DeleteArtistResult} />
+      </div>
+    );
+  } else if (toolName === "get_spotify_search") {
+    return (
+      <div key={toolCallId}>
+        <GetSpotifySearchToolResult result={result as SpotifySearchResponse} />
       </div>
     );
   }

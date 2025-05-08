@@ -38,6 +38,7 @@ export function useVercelChat({ id, initialMessages }: UseVercelChatProps) {
     setMessages,
     setInput,
     reload,
+    append,
   } = useChat({
     id,
     body: {
@@ -141,5 +142,6 @@ export function useVercelChat({ id, initialMessages }: UseVercelChatProps) {
     setMessages,
     stop,
     reload,
+    append,
   };
 }

@@ -16,6 +16,7 @@ interface VercelChatContextType {
   input: UseChatHelpers["input"];
   setMessages: UseChatHelpers["setMessages"];
   reload: UseChatHelpers["reload"];
+  append: UseChatHelpers["append"];
 }
 
 // Create the context
@@ -51,6 +52,7 @@ export function VercelChatProvider({
     input,
     setMessages,
     reload,
+    append,
   } = useVercelChat({ id: chatId, initialMessages });
 
   // Create the context value object
@@ -67,6 +69,7 @@ export function VercelChatProvider({
     input,
     setMessages,
     reload,
+    append,
   };
 
   // Provide the context value to children

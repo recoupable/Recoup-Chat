@@ -9,6 +9,7 @@ import generateImage from "./generateImage";
 import generateMermaidDiagram from "./generateMermaidDiagram";
 import createArtist from "./createArtist";
 import deleteArtist from "./deleteArtist";
+import getSpotifySearch from "./getSpotifySearch";
 
 export async function getMcpTools() {
   const tools = {
@@ -23,6 +24,7 @@ export async function getMcpTools() {
     generate_mermaid_diagram: generateMermaidDiagram,
     create_new_artist: createArtist,
     delete_artist: deleteArtist,
+    get_spotify_search: getSpotifySearch,
   };
 
   return tools;
