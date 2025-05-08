@@ -1,4 +1,4 @@
-import { SYSTEM_PROMPT } from "@/lib/consts";
+import { SOCIAL_ACCOUNT_INSTRUCTIONS, SYSTEM_PROMPT } from "@/lib/consts";
 import getKnowledgeBaseContext from "@/lib/agent/getKnowledgeBaseContext";
 import getArtistIdForRoom from "../supabase/getArtistIdForRoom";
 import getArtistInstruction from "../supabase/getArtistInstruction";
@@ -40,6 +40,13 @@ ${customInstruction}
 ${knowledge}
 -----END KNOWLEDGE BASE-----`;
   }
+
+  systemPrompt = `
+    ${systemPrompt}
+    
+-----SOCIAL MEDIA ACCOUNTS RENDERING INSTRUCTIONS-----
+    ${SOCIAL_ACCOUNT_INSTRUCTIONS}
+-----END SOCIAL MEDIA ACCOUNTS RENDERING INSTRUCTIONS-----`;
 
   return systemPrompt;
 }

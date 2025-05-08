@@ -1,12 +1,23 @@
 import React from "react";
 import { type Components } from "react-markdown";
+import SocialAccount from "./SocialAccount";
 
 interface CodeBlockProps extends React.HTMLAttributes<HTMLElement> {
   inline?: boolean;
+  className?: string;
 }
 
 const MarkdownCode: Components['code'] = (props: CodeBlockProps) => {
   const { inline, className, children } = props;
+  const content = String(children).trim();
+
+  // Check if this is a social account block
+  if (!inline && className === 'language-social') {
+    const socialInfo = SocialAccount.parse(content);
+    if (socialInfo) {
+      return <SocialAccount username={socialInfo.username} platform={socialInfo.platform} />;
+    }
+  }
 
   if (!inline) {
     return (
