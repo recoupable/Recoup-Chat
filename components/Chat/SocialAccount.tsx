@@ -2,6 +2,7 @@ import { cn } from '@/lib/utils';
 import React, { useEffect, useRef } from 'react';
 import { FaFacebook, FaTwitter, FaInstagram, FaGithub, FaLinkedin, FaTiktok, FaYoutube, FaGlobe } from 'react-icons/fa';
 import { IconType } from 'react-icons/lib';
+import { Badge } from '@/components/ui/badge';
 
 interface SocialAccountProps {
     username: string;
@@ -25,52 +26,36 @@ const platformIcons: Record<string, IconType> = {
 };
 
 const platformStyles: Record<string, {
-    text: string,
-    hover: string,
     icon: string,
-    gradient: string
+    hoverClass: string
 }> = {
     instagram: {
-        text: 'text-pink-600',
-        hover: 'hover:bg-gradient-to-r from-amber-500 via-pink-500 to-purple-500 hover:text-white',
         icon: 'text-pink-600',
-        gradient: 'bg-gradient-to-r from-amber-500 via-pink-500 to-purple-500'
+        hoverClass: 'hover:bg-pink-50 hover:text-pink-600 hover:border-pink-200'
     },
     twitter: {
-        text: 'text-blue-500',
-        hover: 'hover:bg-blue-500 hover:text-white',
-        icon: 'text-blue-500 group-hover:text-white',
-        gradient: 'bg-blue-500'
+        icon: 'text-blue-500',
+        hoverClass: 'hover:bg-blue-50 hover:text-blue-500 hover:border-blue-200'
     },
     facebook: {
-        text: 'text-blue-600',
-        hover: 'hover:bg-blue-600 hover:text-white',
-        icon: 'text-blue-600 group-hover:text-white',
-        gradient: 'bg-blue-600'
+        icon: 'text-blue-600',
+        hoverClass: 'hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200'
     },
     github: {
-        text: 'text-gray-800',
-        hover: 'hover:bg-gray-800 hover:text-white',
-        icon: 'text-gray-800 group-hover:text-white',
-        gradient: 'bg-gray-800'
+        icon: 'text-gray-800',
+        hoverClass: 'hover:bg-gray-50 hover:text-gray-800 hover:border-gray-200'
     },
     linkedin: {
-        text: 'text-blue-700',
-        hover: 'hover:bg-blue-700 hover:text-white',
-        icon: 'text-blue-700 group-hover:text-white',
-        gradient: 'bg-blue-700'
+        icon: 'text-blue-700',
+        hoverClass: 'hover:bg-blue-50 hover:text-blue-700 hover:border-blue-200'
     },
     youtube: {
-        text: 'text-red-500',
-        hover: 'hover:bg-red-500 hover:text-white',
-        icon: 'text-red-500 group-hover:text-white',
-        gradient: 'bg-red-500'
+        icon: 'text-red-500',
+        hoverClass: 'hover:bg-red-50 hover:text-red-500 hover:border-red-200'
     },
     tiktok: {
-        text: 'text-black',
-        hover: 'hover:bg-black hover:text-white',
-        icon: 'text-black group-hover:text-white',
-        gradient: 'bg-black'
+        icon: 'text-black',
+        hoverClass: 'hover:bg-gray-50 hover:text-black hover:border-gray-200'
     }
 };
 
@@ -91,10 +76,8 @@ const SocialAccount: React.FC<SocialAccountProps> & {
     const normalizedPlatform = platform.toLowerCase();
     const Icon = platformIcons[normalizedPlatform] || platformIcons.default;
     const styles = platformStyles[normalizedPlatform] || {
-        text: 'text-gray-600',
-        hover: 'hover:bg-gray-600 hover:text-white',
-        icon: 'text-gray-600 group-hover:text-white',
-        gradient: 'bg-gray-600'
+        icon: 'text-gray-500',
+        hoverClass: 'hover:bg-gray-50 hover:text-gray-700 hover:border-gray-200'
     };
     const baseUrl = platformUrls[normalizedPlatform];
 
@@ -121,14 +104,19 @@ const SocialAccount: React.FC<SocialAccountProps> & {
     };
 
     return (
-        <span ref={rendererRef} className="inline-flex items-center gap-1 group my-1 select-none">
-            <button
+        <span ref={rendererRef} className="inline-flex items-center gap-1 my-1 select-none mx-1">
+            <Badge 
+                // variant="outline" 
+                className={cn(
+                    "rounded-full cursor-pointer px-2 py-0.5 text-xs font-normal bg-transparent border-gray-200 text-gray-600 ",
+                    styles.hoverClass,
+                    "transition-colors duration-200"
+                )}
                 onClick={handleClick}
-                className={cn("inline-flex items-center gap-2 px-2 py-1 rounded-full border transition-all duration-300 hover:border-transparent", styles.hover, styles.text)}
             >
-                {Icon && <Icon className={`w-4 h-4 ${styles.icon}`} />}
-                <span className="font-medium text-sm">@{username}</span>
-            </button>
+                {Icon && <Icon className={cn("w-3 h-3 mr-1", styles.icon)} />}
+                @{username}
+            </Badge>
         </span>
     );
 };
