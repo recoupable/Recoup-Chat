@@ -13,6 +13,8 @@ import { DeleteArtistResult } from "@/lib/tools/deleteArtist";
 import GetSpotifySearchToolResult from "./tools/GetSpotifySearchToolResult";
 import { SpotifySearchResponse } from "@/types/spotify";
 import { ToolInvocation } from "ai";
+import UpdateArtistInfoSuccess from "./tools/UpdateArtistInfoSuccess";
+import { UpdateAccountInfoResult } from "@/lib/tools/updateAccountInfo";
 
 /**
  * Interface for tool call props
@@ -115,6 +117,12 @@ export function getToolResultComponent({
     return (
       <div key={toolCallId}>
         <GetSpotifySearchToolResult result={result as SpotifySearchResponse} />
+      </div>
+    );
+  } else if (toolName === "update_account_info") {
+    return (
+      <div key={toolCallId}>
+        <UpdateArtistInfoSuccess result={result as UpdateAccountInfoResult} />
       </div>
     );
   }

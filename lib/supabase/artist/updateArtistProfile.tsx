@@ -6,6 +6,9 @@ import insertAccountInfo from "@/lib/supabase/accountInfo/insertAccountInfo";
 import getAccountByEmail from "@/lib/supabase/accounts/getAccountByEmail";
 import insertAccount from "@/lib/supabase/accounts/insertAccount";
 import insertAccountArtistId from "@/lib/supabase/accountArtistIds/insertAccountArtistId";
+import type { Tables } from "@/types/database.types";
+
+export type ArtistProfile = Tables<"accounts"> & Tables<"account_info">;
 
 const updateArtistProfile = async (
   artistId: string,
@@ -15,7 +18,8 @@ const updateArtistProfile = async (
   instruction: string,
   label: string,
   knowledges: string
-) => {
+): Promise<ArtistProfile> => {
+  let accountId = artistId;
   if (artistId) {
     // Fetch current account and account_info
     const currentAccount = await getAccountById(artistId);
@@ -46,12 +50,12 @@ const updateArtistProfile = async (
         account_id: artistId,
       });
     }
-    return artistId;
   } else {
     const emailRecord = await getAccountByEmail(email);
     if (!emailRecord) throw Error("account email does not exist.");
     const newArtistAccount = await insertAccount({ name });
     if (!newArtistAccount) throw Error("failed to create new artist account");
+    accountId = newArtistAccount.id;
     await insertAccountArtistId({
       account_id: emailRecord.account_id,
       artist_id: newArtistAccount.id,
@@ -63,8 +67,19 @@ const updateArtistProfile = async (
       label,
       account_id: newArtistAccount.id,
     });
-    return newArtistAccount.id;
   }
+  // Fetch and return the latest account and account_info
+  const [account, accountInfo] = await Promise.all([
+    getAccountById(accountId),
+    getAccountInfoById(accountId),
+  ]);
+  if (!account || !accountInfo) {
+    throw new Error("Failed to fetch updated artist profile");
+  }
+  return {
+    ...accountInfo,
+    ...account,
+  };
 };
 
 export default updateArtistProfile;

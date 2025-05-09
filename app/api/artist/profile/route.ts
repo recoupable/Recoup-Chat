@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
   const knowledges = body.knowledges;
 
   try {
-    const artistAccountId = await updateArtistProfile(
+    const { account_id: artistAccountId } = await updateArtistProfile(
       artistId,
       email,
       image,
@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
       knowledges
     );
 
-    await updateArtistSocials(artistAccountId, profileUrls);
+    await updateArtistSocials(artistAccountId as string, profileUrls);
     const { data: account } = await supabase
       .from("accounts")
       .select("*, account_info(*), account_socials(*, social:socials(*))")

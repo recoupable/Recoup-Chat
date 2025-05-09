@@ -1,13 +1,15 @@
 import { z } from "zod";
 import { tool } from "ai";
-import updateArtistProfile from "@/lib/supabase/artist/updateArtistProfile";
+import updateArtistProfile, {
+  ArtistProfile,
+} from "@/lib/supabase/artist/updateArtistProfile";
 
 /**
  * Result type for updateAccountInfo tool
  */
 export interface UpdateAccountInfoResult {
   success: boolean;
-  account_id?: string;
+  artistProfile?: ArtistProfile;
   message: string;
   error?: string;
 }
@@ -62,7 +64,7 @@ const updateAccountInfo = tool({
     knowledges,
   }): Promise<UpdateAccountInfoResult> => {
     try {
-      const accountId = await updateArtistProfile(
+      const artistProfile = await updateArtistProfile(
         artistId || "",
         email || "",
         image || "",
@@ -73,8 +75,8 @@ const updateAccountInfo = tool({
       );
       return {
         success: true,
-        account_id: accountId,
-        message: `Account info updated successfully for account_id: ${accountId}`,
+        artistProfile,
+        message: `Account info updated successfully for account_id: ${artistProfile.account_id}`,
       };
     } catch (error) {
       const errorMessage =
