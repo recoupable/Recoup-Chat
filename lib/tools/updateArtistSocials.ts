@@ -2,10 +2,12 @@ import { z } from "zod";
 import { tool } from "ai";
 import updateArtistSocials from "../supabase/updateArtistSocials";
 import getSocialPlatformByLink from "../getSocialPlatformByLink";
+import type { AccountSocialWithSocial } from "../supabase/accountSocials/getAccountSocialsByAccountId";
 
 export interface UpdateArtistSocialsResult {
   success: boolean;
   message: string;
+  socials?: AccountSocialWithSocial[];
 }
 
 const schema = z.object({
@@ -34,10 +36,11 @@ const updateArtistSocialsTool = tool({
           profileUrls[platform] = url;
         }
       }
-      await updateArtistSocials(artistId, profileUrls);
+      const socials = await updateArtistSocials(artistId, profileUrls);
       return {
         success: true,
         message: "Artist socials updated successfully.",
+        socials,
       };
     } catch (error) {
       return {

@@ -12,7 +12,7 @@ import insertSocial from "./socials/insertSocial";
 const updateArtistSocials = async (
   artistId: string,
   profileUrls: Record<string, string>
-) => {
+): Promise<AccountSocialWithSocial[]> => {
   const account_socials: AccountSocialWithSocial[] =
     await getAccountSocialsByAccountId(artistId);
 
@@ -50,6 +50,9 @@ const updateArtistSocials = async (
   );
 
   await Promise.all(profilePromises);
+
+  // Return the latest joined records
+  return await getAccountSocialsByAccountId(artistId);
 };
 
 export default updateArtistSocials;

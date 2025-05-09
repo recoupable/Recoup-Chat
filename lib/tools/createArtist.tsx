@@ -28,11 +28,17 @@ export interface CreateArtistResult {
 const createArtist = tool({
   description: `
   Create a new artist account in the system.
-  This tool should be called when a user wants to create a new artist profile.
   Requires the artist name, the account ID of the user with admin access to the new artist account,
   and the roomId to copy for this artist's first conversation.
+  always follow this tool loop:
+  <tool_loop>
+    create_new_artist - create a new artist account in the system
+    get_spotify_search - check for any existing Spotify artist data to connect to the new artist account
+    update_account_info - update the new artist's profile picture based on the Spotify artist data
+    update_artist_socials - add the Spotify artist's social profiles to the new artist's socials
+  </tool_loop>
   After the artist is created, the UI should immediately call the get_spotify_search tool (with type: artist) to check for any existing Spotify artist data to connect to the new artist account. When the user selects a Spotify result, call update_account_info to update the new artist's profile picture.
-  If called, reply with the artist name and the artist.account_id. Do not share any other info unless explicitly asked.
+  If responding with successful information, reply only with the artist name and the artist.account_id. Do not share any other info unless explicitly asked.
   `,
   parameters: z.object({
     name: z.string().describe("The name of the artist to be created"),

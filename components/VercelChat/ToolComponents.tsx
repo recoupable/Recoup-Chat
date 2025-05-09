@@ -15,6 +15,8 @@ import { SpotifySearchResponse } from "@/types/spotify";
 import { ToolInvocation } from "ai";
 import UpdateArtistInfoSuccess from "./tools/UpdateArtistInfoSuccess";
 import { UpdateAccountInfoResult } from "@/lib/tools/updateAccountInfo";
+import UpdateArtistSocialsSuccess from "./tools/UpdateArtistSocialsSuccess";
+import { UpdateArtistSocialsResult } from "@/lib/tools/updateArtistSocials";
 
 /**
  * Interface for tool call props
@@ -123,6 +125,14 @@ export function getToolResultComponent({
     return (
       <div key={toolCallId}>
         <UpdateArtistInfoSuccess result={result as UpdateAccountInfoResult} />
+      </div>
+    );
+  } else if (toolName === "update_artist_socials") {
+    return (
+      <div key={toolCallId}>
+        <UpdateArtistSocialsSuccess
+          result={result as UpdateArtistSocialsResult}
+        />
       </div>
     );
   }
