@@ -11,9 +11,9 @@ const GenericSuccess = ({
 }) => {
   return (
     <div className="flex items-center space-x-4 p-3 rounded-md bg-green-50 border border-green-200 my-2">
-      {/* Artist avatar - use image if available, otherwise a placeholder */}
       <div className="h-12 w-12 rounded-full bg-green-200 flex items-center justify-center overflow-hidden">
         {image ? (
+          // eslint-disable-next-line @next/next/no-img-element
           <img
             src={image}
             alt={name}
