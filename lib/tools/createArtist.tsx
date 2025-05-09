@@ -15,6 +15,14 @@ export interface CreateArtistResult {
   message: string;
   error?: string;
   newRoomId?: string | null;
+  /**
+   * If present, the UI should immediately call get_spotify_search with this name
+   */
+  nextAction?: {
+    type: "get_spotify_search";
+    name: string;
+    artist_account_id: string;
+  };
 }
 
 const createArtist = tool({
@@ -23,7 +31,7 @@ const createArtist = tool({
   This tool should be called when a user wants to create a new artist profile.
   Requires the artist name, the account ID of the user with admin access to the new artist account,
   and the roomId to copy for this artist's first conversation.
-  After the artist is created, immediately call the get_spotify_search tool (with type: artist) to check for any existing Spotify artist data to connect to the new artist account.
+  After the artist is created, the UI should immediately call the get_spotify_search tool (with type: artist) to check for any existing Spotify artist data to connect to the new artist account. When the user selects a Spotify result, call update_account_info to update the new artist's profile picture.
   If called, reply with the artist name and the artist.account_id. Do not share any other info unless explicitly asked.
   `,
   parameters: z.object({
@@ -58,10 +66,16 @@ const createArtist = tool({
         newRoomId = await copyRoom(roomId, artist.account_id);
       }
 
+      // Step 3: Signal to UI to immediately call get_spotify_search
       return {
         artist,
-        message: `Successfully created artist "${name}".`,
+        message: `Successfully created artist "${name}". Next: Search Spotify for this artist to connect a profile picture.",`,
         newRoomId,
+        nextAction: {
+          type: "get_spotify_search",
+          name: artist.name,
+          artist_account_id: artist.account_id,
+        },
       };
     } catch (error) {
       const errorMessage =
