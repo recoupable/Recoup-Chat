@@ -10,7 +10,7 @@ import generateMermaidDiagram from "./generateMermaidDiagram";
 import createArtist from "./createArtist";
 import deleteArtist from "./deleteArtist";
 import getSpotifySearch from "./getSpotifySearch";
-
+import updateAccountInfo from "./updateAccountInfo";
 export async function getMcpTools() {
   const tools = {
     contact_team: contactTeam,
@@ -25,6 +25,7 @@ export async function getMcpTools() {
     create_new_artist: createArtist,
     delete_artist: deleteArtist,
     get_spotify_search: getSpotifySearch,
+    update_account_info: updateAccountInfo,
   };
 
   return tools;

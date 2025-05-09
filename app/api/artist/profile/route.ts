@@ -1,6 +1,6 @@
 import getFormattedArtist from "@/lib/getFormattedArtist";
 import supabase from "@/lib/supabase/serverClient";
-import updateArtistProfile from "@/lib/supabase/updateArtistProfile";
+import updateArtistProfile from "@/lib/supabase/artist/updateArtistProfile";
 import updateArtistSocials from "@/lib/supabase/updateArtistSocials";
 import { NextRequest } from "next/server";
 
@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
       name,
       instruction,
       label,
-      knowledges,
+      knowledges
     );
 
     await updateArtistSocials(artistAccountId, profileUrls);
@@ -39,7 +39,7 @@ export async function POST(req: NextRequest) {
       {
         artist: getFormattedArtist(account),
       },
-      { status: 200 },
+      { status: 200 }
     );
   } catch (error) {
     console.error(error);
