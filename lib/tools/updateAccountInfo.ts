@@ -17,16 +17,13 @@ export interface UpdateAccountInfoResult {
 const schema = z.object({
   artistId: z
     .string()
-    .optional()
     .describe(
-      "(Optional) The artist_account_id to update. Check system prompt for the active artist_account_id. If not provided, a new artist will be created using email."
+      "The artist_account_id to update. If not provided, check system prompt for the active artist_account_id."
     ),
   email: z
     .string()
     .optional()
-    .describe(
-      "(Optional) The email address to use if creating a new artist account."
-    ),
+    .describe("(Optional) The new email address for the artist."),
   image: z
     .string()
     .optional()
@@ -51,7 +48,7 @@ const schema = z.object({
 
 const updateAccountInfo = tool({
   description: `
-  Update the account_info record for an artist. All fields are optional. This tool is used to update the artist's profile image, name, instructions, label, and knowledge base. If artistId is not provided, a new artist account will be created using the provided email.
+  Update the account_info record for an artist. All fields are optional except for artistId. This tool is used to update the artist's profile image, name, instructions, label, and knowledge base. If artistId is not provided, use the active artist_account_id from the system prompt.
   `,
   parameters: schema,
   execute: async ({
@@ -65,7 +62,7 @@ const updateAccountInfo = tool({
   }): Promise<UpdateAccountInfoResult> => {
     try {
       const artistProfile = await updateArtistProfile(
-        artistId || "",
+        artistId,
         email || "",
         image || "",
         name || "",
