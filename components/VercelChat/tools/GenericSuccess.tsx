@@ -22,9 +22,7 @@ const GenericSuccess = ({
             className="h-full w-full object-cover"
           />
         ) : (
-          <span className="text-lg font-bold text-green-600">
-            {name.charAt(0).toUpperCase()}
-          </span>
+          <span className="text-lg font-bold text-green-600">✓</span>
         )}
       </div>
 
