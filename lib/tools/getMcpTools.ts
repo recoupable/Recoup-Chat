@@ -11,6 +11,8 @@ import createArtist from "./createArtist";
 import deleteArtist from "./deleteArtist";
 import getSpotifySearch from "./getSpotifySearch";
 import updateAccountInfo from "./updateAccountInfo";
+import updateArtistSocialsTool from "./updateArtistSocials";
+
 export async function getMcpTools() {
   const tools = {
     contact_team: contactTeam,
@@ -26,6 +28,7 @@ export async function getMcpTools() {
     delete_artist: deleteArtist,
     get_spotify_search: getSpotifySearch,
     update_account_info: updateAccountInfo,
+    update_artist_socials: updateArtistSocialsTool,
   };
 
   return tools;
