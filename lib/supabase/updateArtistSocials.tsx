@@ -1,65 +1,52 @@
 import getSocialPlatformByLink from "../getSocialPlatformByLink";
 import getUserNameByProfileLink from "../getUserNameByProfileLink";
-import supabase from "./serverClient";
+import getAccountSocialsByAccountId, {
+  AccountSocialWithSocial,
+} from "./accountSocials/getAccountSocialsByAccountId";
+import deleteAccountSocial from "./accountSocials/deleteAccountSocial";
+import insertAccountSocial from "./accountSocials/insertAccountSocial";
+import getAccountSocialByAccountAndSocialId from "./accountSocials/getAccountSocialByAccountAndSocialId";
+import getSocialByProfileUrl from "./socials/getSocialByProfileUrl";
+import insertSocial from "./socials/insertSocial";
 
-const updateArtistSocials = async (artistId: string, profileUrls: string) => {
-  const { data: account_socials } = await supabase
-    .from("account_socials")
-    .select("*, social:socials(*)")
-    .eq("account_id", artistId);
+const updateArtistSocials = async (
+  artistId: string,
+  profileUrls: Record<string, string>
+) => {
+  const account_socials: AccountSocialWithSocial[] =
+    await getAccountSocialsByAccountId(artistId);
 
   const profilePromises = Object.entries(profileUrls).map(
     async ([type, value]) => {
-      const { data: social } = await supabase
-        .from("socials")
-        .select("*")
-        .eq("profile_url", value)
-        .neq("profile_url", "")
-        .single();
+      const social = value ? await getSocialByProfileUrl(value) : null;
       const existingSocial = account_socials?.find(
-        // eslint-disable-next-line
-        (account_social: any) =>
-          getSocialPlatformByLink(account_social.social.profile_url) === type,
+        (account_social: AccountSocialWithSocial) =>
+          getSocialPlatformByLink(account_social.social.profile_url) === type
       );
 
       if (existingSocial) {
-        await supabase
-          .from("account_socials")
-          .delete()
-          .eq("account_id", artistId)
-          .eq("social_id", existingSocial.social.id);
+        await deleteAccountSocial(artistId, existingSocial.social.id);
       }
       if (value) {
         if (social) {
-          const { data: socials } = await supabase
-            .from("account_socials")
-            .select("*")
-            .eq("account_id", artistId)
-            .eq("social_id", social.id);
-          if (!socials?.length) {
-            await supabase.from("account_socials").insert({
-              account_id: artistId,
-              social_id: social.id,
-            });
+          const accountSocial = await getAccountSocialByAccountAndSocialId(
+            artistId,
+            social.id
+          );
+          if (!accountSocial) {
+            await insertAccountSocial(artistId, social.id);
           }
         } else {
-          const { data: new_social } = await supabase
-            .from("socials")
-            .insert({
-              username: getUserNameByProfileLink(value),
-              profile_url: value,
-            })
-            .select("*")
-            .single();
-
-          if (new_social)
-            await supabase.from("account_social").insert({
-              account_id: artistId,
-              social_id: new_social.id,
-            });
+          const new_social = await insertSocial(
+            getUserNameByProfileLink(value),
+            value
+          );
+          if (new_social) {
+            await insertAccountSocial(artistId, new_social.id);
+          }
         }
       }
-    },
+    }
   );
 
   await Promise.all(profilePromises);
