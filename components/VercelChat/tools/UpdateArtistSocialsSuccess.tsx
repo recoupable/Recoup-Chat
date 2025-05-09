@@ -18,7 +18,7 @@ const UpdateArtistSocialsSuccess: React.FC<UpdateArtistSocialsSuccessProps> = ({
       image={selectedArtist?.image || ""}
       message={result.message || "Artist socials updated successfully."}
     >
-      <div className="text-xs text-gray-500 mt-1 italic text-center">
+      <div className="text-xs text-gray-500 mt-1 italic text-start">
         {result.socials?.map((social) => social.social.profile_url).join(", ")}
       </div>
     </GenericSuccess>

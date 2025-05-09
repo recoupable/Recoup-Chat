@@ -2,6 +2,7 @@ import React from "react";
 import { DeleteArtistResult } from "@/lib/tools/deleteArtist";
 import { useEffect } from "react";
 import { useArtistProvider } from "@/providers/ArtistProvider";
+import GenericSuccess from "./GenericSuccess";
 
 /**
  * Props for the DeleteArtistToolResult component
@@ -48,15 +49,10 @@ export function DeleteArtistToolResult({
   const artistDisplay = result.artistName ? `"${result.artistName}"` : "Artist";
 
   return (
-    <div className="flex items-center space-x-4 p-3 rounded-md bg-green-50 border border-green-200 my-2">
-      <div className="h-12 w-12 rounded-full bg-green-200 flex items-center justify-center">
-        <span className="text-lg font-bold text-green-600">✓</span>
-      </div>
-      <div>
-        <p className="font-medium">{artistDisplay} Deleted Successfully</p>
-        <p className="text-sm text-green-600">{result.message}</p>
-      </div>
-    </div>
+    <GenericSuccess
+      name={`${artistDisplay} Deleted Successfully`}
+      message={result.message}
+    />
   );
 }
 
