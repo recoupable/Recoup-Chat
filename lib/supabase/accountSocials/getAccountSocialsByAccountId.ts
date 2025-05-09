@@ -1,7 +1,6 @@
 import supabase from "../serverClient";
 import type { Tables } from "@/types/database.types";
 
-// The joined 'social' field may be any shape, so we use unknown for now
 export type AccountSocialWithSocial = Tables<"account_socials"> & {
   social: Tables<"socials">;
 };
