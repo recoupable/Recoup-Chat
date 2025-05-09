@@ -80,7 +80,7 @@ const ReasoningMessagePart: React.FC<ReasoningMessagePartProps> = ({
         {isExpanded && (
           <motion.div
             key="reasoning"
-            className="text-sm dark:text-zinc-400 text-zinc-600 flex flex-col gap-4 border-l pl-3 dark:border-zinc-800"
+            className="flex flex-col gap-4 border-l pl-3 bg-primary/10 rounded-lg p-2 [&_p]:text-sm [&_li]:text-sm"
             initial="collapsed"
             animate="expanded"
             exit="collapsed"
