@@ -113,8 +113,8 @@ export function useVercelChat({ id, initialMessages }: UseVercelChatProps) {
   };
 
   const handleSendQueryMessages = async () => {
-    await reload();
     silentlyUpdateUrl();
+    await reload();
   };
 
   useEffect(() => {
