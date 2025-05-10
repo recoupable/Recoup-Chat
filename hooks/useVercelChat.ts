@@ -47,7 +47,6 @@ export function useVercelChat({ id, initialMessages }: UseVercelChatProps) {
       accountId: userId,
       email: userData?.email,
     },
-    initialMessages,
     experimental_throttle: 100,
     sendExtraMessageFields: true,
     generateId: generateUUID,
