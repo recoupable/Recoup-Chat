@@ -29,7 +29,9 @@ export function useMessageLoader(
 
       try {
         const initialMessages = await getClientMessages(roomId);
-        setMessages(initialMessages as Message[]);
+        if (initialMessages.length > 0) {
+          setMessages(initialMessages as Message[]);
+        }
       } catch (err) {
         console.error("Error loading messages:", err);
         setError(
