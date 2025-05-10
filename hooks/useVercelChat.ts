@@ -4,7 +4,7 @@ import { useUserProvider } from "@/providers/UserProvder";
 import { useArtistProvider } from "@/providers/ArtistProvider";
 import { useParams } from "next/navigation";
 import { toast } from "react-toastify";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import getEarliestFailedUserMessageId from "@/lib/messages/getEarliestFailedUserMessageId";
 import { clientDeleteTrailingMessages } from "@/lib/messages/clientDeleteTrailingMessages";
 import { generateUUID } from "@/lib/generateUUID";
@@ -28,8 +28,6 @@ export function useVercelChat({ id, initialMessages }: UseVercelChatProps) {
   const userId = userData?.id;
   const artistId = selectedArtist?.account_id;
   const [hasChatApiError, setHasChatApiError] = useState(false);
-  const hasSentInitialMessage = useRef(false);
-  const prevChatId = useRef<string | undefined>(undefined);
 
   const {
     messages,
@@ -116,16 +114,10 @@ export function useVercelChat({ id, initialMessages }: UseVercelChatProps) {
 
   const handleSendQueryMessages = async () => {
     await reload();
-    silentlyUpdateUrl();
-  };
-
-  // Reset hasSentInitialMessage when chat id changes
-  useEffect(() => {
-    if (prevChatId.current !== id) {
-      hasSentInitialMessage.current = false;
-      prevChatId.current = id;
+    if (!roomId) {
+      silentlyUpdateUrl();
     }
-  }, [id]);
+  };
 
   useEffect(() => {
     const isFullyLoggedIn = authenticated && artistId && userId;
@@ -134,19 +126,8 @@ export function useVercelChat({ id, initialMessages }: UseVercelChatProps) {
     const hasInitialMessages = initialMessages && initialMessages.length > 0;
     if (!hasInitialMessages || !isReady || hasMessages || !isFullyLoggedIn)
       return;
-    if (!hasSentInitialMessage.current) {
-      handleSendQueryMessages();
-      hasSentInitialMessage.current = true;
-    }
-  }, [
-    initialMessages,
-    status,
-    authenticated,
-    artistId,
-    userId,
-    messages.length,
-    id,
-  ]);
+    handleSendQueryMessages();
+  }, [initialMessages, status, authenticated, artistId, userId]);
 
   return {
     // States
