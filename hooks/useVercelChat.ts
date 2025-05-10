@@ -112,11 +112,9 @@ export function useVercelChat({ id, initialMessages }: UseVercelChatProps) {
     }
   };
 
-  const handleSendQueryMessages = async () => {
-    await reload();
-    if (!roomId) {
-      silentlyUpdateUrl();
-    }
+  const handleSendQueryMessages = async (initialMessage: Message) => {
+    silentlyUpdateUrl();
+    append(initialMessage);
   };
 
   useEffect(() => {
@@ -126,7 +124,7 @@ export function useVercelChat({ id, initialMessages }: UseVercelChatProps) {
     const hasInitialMessages = initialMessages && initialMessages.length > 0;
     if (!hasInitialMessages || !isReady || hasMessages || !isFullyLoggedIn)
       return;
-    handleSendQueryMessages();
+    handleSendQueryMessages(initialMessages[0]);
   }, [initialMessages, status, authenticated, artistId, userId]);
 
   return {
