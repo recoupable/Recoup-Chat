@@ -51,8 +51,8 @@ function ChatContent({ reportId, id }: { reportId?: string; id: string }) {
   useArtistFromRoom(id);
 
   const { isVisible } = useVisibilityDelay({
-    shouldBeVisible: messages.length === 0 && !reportId,
-    deps: [messages.length, reportId],
+    shouldBeVisible: messages.length === 0 && !reportId && status === "ready",
+    deps: [messages.length, reportId, status],
   });
 
   if (isLoading && roomId) {
