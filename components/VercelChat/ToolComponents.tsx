@@ -17,6 +17,8 @@ import UpdateArtistInfoSuccess from "./tools/UpdateArtistInfoSuccess";
 import { UpdateAccountInfoResult } from "@/lib/tools/updateAccountInfo";
 import UpdateArtistSocialsSuccess from "./tools/UpdateArtistSocialsSuccess";
 import { UpdateArtistSocialsResult } from "@/lib/tools/updateArtistSocials";
+import { TxtFileResult } from "@/components/ui/TxtFileResult";
+import { TxtFileGenerationResult } from "@/lib/tools/createTxtFile";
 
 /**
  * Interface for tool call props
@@ -133,6 +135,12 @@ export function getToolResultComponent({
         <UpdateArtistSocialsSuccess
           result={result as UpdateArtistSocialsResult}
         />
+      </div>
+    );
+  } else if (toolName === "generate_txt_file") {
+    return (
+      <div key={toolCallId}>
+        <TxtFileResult result={result as TxtFileGenerationResult} />
       </div>
     );
   }
