@@ -45,12 +45,16 @@ const schema = z.object({
       z.object({
         url: z.string(),
         name: z.string(),
-        type: z.string(),
+        type: z
+          .string()
+          .describe(
+            'MIME type of the file, e.g., "text/plain" for TXT files, "application/pdf" for PDFs'
+          ),
       })
     )
     .optional()
     .describe(
-      "(Optional) Array of knowledge objects ({ url, name, type }) to be stored as the knowledge base or notes for the artist."
+      "(Optional) Array of knowledge objects ({ url, name, type }) to be stored as the knowledge base or notes for the artist. The 'type' field must be a valid MIME type (e.g., 'text/plain' for TXT files)."
     ),
 });
 
