@@ -36,6 +36,9 @@ const createArtist = tool({
     get_spotify_search - check for any existing Spotify artist data to connect to the new artist account
     update_account_info - update the new artist's profile picture based on the Spotify artist data
     update_artist_socials - add the Spotify artist's social profiles to the new artist's socials
+    perplexity_ask - ask Perplexity for any additional research information about the artist
+    generate_txt_file - store the current artist research in a TXT file
+    update_account_info - update the new artist's knowledge base with the TXT file URL
   </tool_loop>
   After the artist is created, the UI should immediately call the get_spotify_search tool (with type: artist) to check for any existing Spotify artist data to connect to the new artist account. When the user selects a Spotify result, call update_account_info to update the new artist's profile picture.
   If responding with successful information, reply only with the artist name and the artist.account_id. Do not share any other info unless explicitly asked.
