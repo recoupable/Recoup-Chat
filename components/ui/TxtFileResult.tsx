@@ -51,8 +51,7 @@ export function TxtFileResult({ result }: TxtFileResultProps) {
     }
   };
 
-  let displayText: string | JSX.Element =
-    "TXT file generated and stored onchain.";
+  let displayText: string | JSX.Element = "TXT file generated.";
   if (result.arweaveUrl) {
     if (loading) {
       displayText = (
