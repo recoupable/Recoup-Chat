@@ -51,7 +51,7 @@ const ChatItem = ({
   return (
     <div 
       className={`flex gap-2 items-center w-full py-1.5 px-2 rounded-md transition-colors duration-150 relative ${
-        isActive ? 'bg-gray-100' : 'hover:bg-gray-100'
+        isActive ? 'bg-primary/10' : 'hover:bg-gray-100'
       }`}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}

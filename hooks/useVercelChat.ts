@@ -4,11 +4,12 @@ import { useUserProvider } from "@/providers/UserProvder";
 import { useArtistProvider } from "@/providers/ArtistProvider";
 import { useParams } from "next/navigation";
 import { toast } from "react-toastify";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import getEarliestFailedUserMessageId from "@/lib/messages/getEarliestFailedUserMessageId";
 import { clientDeleteTrailingMessages } from "@/lib/messages/clientDeleteTrailingMessages";
 import { generateUUID } from "@/lib/generateUUID";
 import { usePrivy } from "@privy-io/react-auth";
+import { useConversationsProvider } from "@/providers/ConversationsProvider";
 
 interface UseVercelChatProps {
   id: string;
@@ -28,6 +29,8 @@ export function useVercelChat({ id, initialMessages }: UseVercelChatProps) {
   const userId = userData?.id;
   const artistId = selectedArtist?.account_id;
   const [hasChatApiError, setHasChatApiError] = useState(false);
+  const messagesLengthRef = useRef<number>();
+  const { fetchConversations } = useConversationsProvider();
 
   const {
     messages,
@@ -55,7 +58,22 @@ export function useVercelChat({ id, initialMessages }: UseVercelChatProps) {
       toast.error("An error occurred, please try again!");
       setHasChatApiError(true);
     },
+    onFinish: () => {
+      // As onFinish triggers when a message is streamed successfully.
+      // On a new chat, usually there are 2 messages:
+      // 1. First user message
+      // 2. Second just streamed message
+      // When messages length is 2, it means second message has been streamed successfully and should also have been updated on backend
+      // So we trigger the fetchConversations to update the conversation list
+      
+      if (messagesLengthRef.current === 2) {
+        fetchConversations()
+      }
+    }
   });
+
+  // Keep messagesRef in sync with messages
+  messagesLengthRef.current = messages.length;
 
   const { isLoading: isMessagesLoading, hasError } = useMessageLoader(
     messages.length === 0 ? id : undefined,
