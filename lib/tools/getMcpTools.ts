@@ -12,6 +12,7 @@ import deleteArtist from "./deleteArtist";
 import getSpotifySearch from "./getSpotifySearch";
 import updateAccountInfo from "./updateAccountInfo";
 import updateArtistSocialsTool from "./updateArtistSocials";
+import createTxtFile from "./createTxtFile";
 
 export async function getMcpTools() {
   const tools = {
@@ -24,6 +25,7 @@ export async function getMcpTools() {
     perplexity_ask: perplexityAsk,
     generate_image: generateImage,
     generate_mermaid_diagram: generateMermaidDiagram,
+    generate_txt_file: createTxtFile,
     create_new_artist: createArtist,
     delete_artist: deleteArtist,
     get_spotify_search: getSpotifySearch,
