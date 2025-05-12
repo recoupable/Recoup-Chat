@@ -4,6 +4,7 @@ import ImageWithFallback from "../ImageWithFallback";
 import { EllipsisVertical } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
+import { cn } from "@/lib/utils";
 
 const Artist = ({
   artist,
@@ -46,11 +47,20 @@ const Artist = ({
 
   return (
     <button
-      className={`${
+      className={cn(
+        "py-2 w-full outline-none",
         isMini
-          ? `${isSelectedArtist && "w-fit rounded-full"} flex justify-center items-center`
-          : `flex gap-3 items-center px-2 text-sm rounded-md text-grey-dark ${isAnyArtistSelected ? 'hover:bg-grey-light-1' : ''} ${isSelectedArtist && "!bg-grey-light-1"}`
-      } py-2 w-full ${shouldHighlight ? 'z-50 relative' : ''}`}
+          ? [
+              "flex justify-center items-center",
+              isSelectedArtist && "w-fit rounded-full"
+            ]
+          : [
+              "flex gap-3 items-center px-2 text-sm rounded-md text-grey-dark",
+              isAnyArtistSelected && "hover:bg-grey-light-1",
+              isSelectedArtist && "!bg-primary/10"
+            ],
+        shouldHighlight && "z-50 relative"
+      )}
       type="button"
       onClick={handleClick}
       onMouseEnter={() => setIsHovered(true)}
@@ -58,9 +68,13 @@ const Artist = ({
     >
       <div className="relative">
         <div
-          className={`w-8 aspect-1/1 rounded-full overflow-hidden flex items-center justify-center ${isSelectedArtist && "shadow-[1px_1px_1px_1px_#E6E6E6]"} ${shouldHighlight ? 'brightness-110 shadow-md ring-1 ring-white/30' : ''}`}
+          className={cn(
+            "w-8 h-8 aspect-1/1 rounded-full overflow-hidden flex items-center justify-center p-0.5",
+            isSelectedArtist && "shadow-[1px_1px_1px_1px_#E6E6E6] min-w-8 min-h-8 border-2 border-primary box-content",
+            shouldHighlight && "brightness-110 shadow-md ring-1 ring-white/30"
+          )}
         >
-          <ImageWithFallback src={artist?.image || ""} />
+          <ImageWithFallback src={artist?.image || ""} className="w-full h-full object-cover rounded-full"/>
         </div>
       </div>
       
@@ -68,7 +82,10 @@ const Artist = ({
         <>
           <div
             key={artist?.account_id}
-            className={`text-left grow text-grey-dark ${shouldHighlight ? 'font-medium' : ''}`}
+            className={cn(
+              "text-left grow text-grey-dark",
+              shouldHighlight && "font-medium"
+            )}
             title={artist?.name || ""}
           >
             {displayName}
