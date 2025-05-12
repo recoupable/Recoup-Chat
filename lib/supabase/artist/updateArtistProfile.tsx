@@ -8,6 +8,12 @@ import insertAccount from "@/lib/supabase/accounts/insertAccount";
 import insertAccountArtistId from "@/lib/supabase/accountArtistIds/insertAccountArtistId";
 import type { Tables } from "@/types/database.types";
 
+export type Knowledge = {
+  url: string;
+  name: string;
+  type: string;
+};
+
 export type ArtistProfile = Tables<"accounts"> & Tables<"account_info">;
 
 const updateArtistProfile = async (
@@ -17,7 +23,7 @@ const updateArtistProfile = async (
   name: string,
   instruction: string,
   label: string,
-  knowledges: string
+  knowledges: Knowledge[] | null
 ): Promise<ArtistProfile> => {
   let accountId = artistId;
   if (artistId) {
@@ -38,7 +44,7 @@ const updateArtistProfile = async (
       const infoUpdate: Partial<typeof account_info> = {};
       infoUpdate.image = image || account_info.image;
       infoUpdate.instruction = instruction || account_info.instruction;
-      infoUpdate.knowledges = knowledges || account_info.knowledges;
+      infoUpdate.knowledges = knowledges ?? account_info.knowledges;
       infoUpdate.label = label || account_info.label;
       await updateAccountInfo(artistId, infoUpdate);
     } else {

@@ -74,7 +74,6 @@ const updateAccountInfo = tool({
   }): Promise<UpdateAccountInfoResult> => {
     try {
       // knowledges is now an array of objects or undefined
-      const knowledgesValue = knowledges ? JSON.stringify(knowledges) : "";
       const artistProfile = await updateArtistProfile(
         artistId,
         email || "",
@@ -82,7 +81,7 @@ const updateAccountInfo = tool({
         name || "",
         instruction || "",
         label || "",
-        knowledgesValue
+        knowledges || []
       );
       return {
         success: true,
