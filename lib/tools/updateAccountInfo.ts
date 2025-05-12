@@ -41,9 +41,17 @@ const schema = z.object({
     .optional()
     .describe("(Optional) The label or role for the artist."),
   knowledges: z
-    .string()
+    .array(
+      z.object({
+        url: z.string(),
+        name: z.string(),
+        type: z.string(),
+      })
+    )
     .optional()
-    .describe("(Optional) Knowledge base or notes for the artist."),
+    .describe(
+      "(Optional) Array of knowledge objects ({ url, name, type }) to be stored as the knowledge base or notes for the artist."
+    ),
 });
 
 const updateAccountInfo = tool({
@@ -61,6 +69,8 @@ const updateAccountInfo = tool({
     knowledges,
   }): Promise<UpdateAccountInfoResult> => {
     try {
+      // knowledges is now an array of objects or undefined
+      const knowledgesValue = knowledges ? JSON.stringify(knowledges) : "";
       const artistProfile = await updateArtistProfile(
         artistId,
         email || "",
@@ -68,7 +78,7 @@ const updateAccountInfo = tool({
         name || "",
         instruction || "",
         label || "",
-        knowledges || ""
+        knowledgesValue
       );
       return {
         success: true,
