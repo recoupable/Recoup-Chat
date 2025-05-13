@@ -12,7 +12,7 @@ const schema = z.object({
     .number()
     .min(1)
     .max(100)
-    .describe("Maximum number of tweets to return (1-100)"),
+    .describe("Maximum number of tweets to return (1-1000)"),
   searchMode: z
     .enum(SEARCH_MODES)
     .optional()
