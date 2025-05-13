@@ -14,6 +14,7 @@ import updateAccountInfo from "./updateAccountInfo";
 import updateArtistSocialsTool from "./updateArtistSocials";
 import createTxtFile from "./createTxtFile";
 import searchTwitter from "./searchTwitter";
+import getTwitterTrends from "./getTwitterTrends";
 
 export async function getMcpTools() {
   const tools = {
@@ -33,6 +34,7 @@ export async function getMcpTools() {
     update_account_info: updateAccountInfo,
     update_artist_socials: updateArtistSocialsTool,
     search_twitter: searchTwitter,
+    get_twitter_trends: getTwitterTrends,
   };
 
   return tools;
