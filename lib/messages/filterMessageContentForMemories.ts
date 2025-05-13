@@ -5,6 +5,7 @@ const filterMessageContentForMemories = (message: Message) => {
     role: message.role,
     parts: message.parts,
     content: message.content,
+    experimental_attachments: message.experimental_attachments,
   };
 };
 

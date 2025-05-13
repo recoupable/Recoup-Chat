@@ -3,6 +3,7 @@ import { useChatProvider } from "@/providers/ChatProvider";
 import { useEffect, useRef } from "react";
 import SideSuggestions from "./SideSuggestions";
 import { useMessagesProvider } from "@/providers/MessagesProvider";
+import { Textarea } from "../ui/textarea";
 
 const ChatInput: React.FC = () => {
   const { handleSubmit } = useChatProvider();
@@ -36,13 +37,13 @@ const ChatInput: React.FC = () => {
         </div>
         <div className="border-grey  border-[1px] shadow-grey rounded-md p-2 max-w-3xl mx-auto">
           <form onSubmit={handleSubmit} className="w-full">
-            <textarea
+            <Textarea
               ref={textareaRef}
               value={input}
               onChange={handleInputChange}
               onKeyDown={handleKeyDown}
               placeholder="Ask Recoup a question..."
-              className="bg-transparent w-full p-2 text-sm !border-none !outline-none rounded-md resize-none min-h-[40px] max-h-[200px] overflow-y-auto"
+              className="!border-none !outline-none resize-none min-h-[40px] max-h-[200px] overflow-y-auto focus-within:ring-0 focus-visible:ring-0 shadow-none"
               aria-label="Chat input"
             />
             <div className="w-full flex justify-end gap-2">

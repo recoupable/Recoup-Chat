@@ -2,8 +2,9 @@
 
 import { ChangeEventHandler, useEffect } from "react";
 import { useFormContext } from "react-hook-form";
+import { Textarea } from "../ui/textarea";
 
-interface ITextArea {
+interface IArtistInstructionTextArea {
   id?: string;
   name?: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -18,7 +19,7 @@ interface ITextArea {
   rows?: number;
 }
 
-function TextArea({
+function ArtistInstructionTextArea({
   id,
   name,
   value,
@@ -29,7 +30,7 @@ function TextArea({
   clasNameError,
   rows = 1,
   placeholder,
-}: ITextArea) {
+}: IArtistInstructionTextArea) {
   const formContext = useFormContext();
   const isFullyHooked = name && hookToForm && formContext;
 
@@ -44,22 +45,21 @@ function TextArea({
   return (
     <div className="relative w-full ">
       <label className="text-sm">{label}</label>
-      <textarea
+      <Textarea
         {...(id && { id: id })}
         value={value}
         placeholder={placeholder}
-        className={`w-full !outline-none border-grey  border-[1px] px-2 py-1 md:p-2 rounded-md text-sm
-          ${className ? className : ""} ${
-            hookToForm && fieldError && fieldError?.message ? clasNameError : ""
-          }`}
+        className={`
+          outline-none border-grey border-[1px] focus-visible:ring-0 shadow-none
+          ${className ? className : ""} ${hookToForm && fieldError && fieldError?.message ? clasNameError : ""}`}
         {...(!hookToForm && {
           value: value,
           onChange: onChange,
         })}
         {...(isFullyHooked
           ? formContext.register(name, {
-              onChange: (e) => onChange && onChange(e),
-            })
+            onChange: (e) => onChange && onChange(e),
+          })
           : {})}
         name={name}
         rows={rows}
@@ -72,9 +72,9 @@ function TextArea({
   );
 }
 
-TextArea.defaultProps = {
+ArtistInstructionTextArea.defaultProps = {
   hookToForm: false,
   type: "text",
 };
 
-export default TextArea;
+export default ArtistInstructionTextArea;

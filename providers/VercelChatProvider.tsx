@@ -1,6 +1,8 @@
 import React, { createContext, useContext, ReactNode } from "react";
 import { useVercelChat } from "@/hooks/useVercelChat";
 import { Message, UseChatHelpers } from "@ai-sdk/react";
+import useAttachments from "@/hooks/useAttachments";
+import { Attachment } from "@ai-sdk/ui-utils";
 
 // Interface for the context data
 interface VercelChatContextType {
@@ -10,13 +12,20 @@ interface VercelChatContextType {
   isLoading: boolean;
   hasError: boolean;
   isGeneratingResponse: boolean;
-  handleSendMessage: () => Promise<void>;
+  handleSendMessage: (event: React.FormEvent<HTMLFormElement>) => Promise<void>;
   stop: UseChatHelpers["stop"];
   setInput: UseChatHelpers["setInput"];
   input: UseChatHelpers["input"];
   setMessages: UseChatHelpers["setMessages"];
   reload: UseChatHelpers["reload"];
   append: UseChatHelpers["append"];
+  attachments: Attachment[];
+  pendingAttachments: Attachment[];
+  uploadedAttachments: Attachment[];
+  setAttachments: (attachments: Attachment[] | ((prev: Attachment[]) => Attachment[])) => void;
+  removeAttachment: (index: number) => void;
+  clearAttachments: () => void;
+  hasPendingUploads: boolean;
 }
 
 // Create the context
@@ -39,6 +48,17 @@ export function VercelChatProvider({
   chatId,
   initialMessages,
 }: VercelChatProviderProps) {
+  // Use the useAttachments hook to get attachment state and functions
+  const {
+    attachments,
+    pendingAttachments,
+    uploadedAttachments,
+    setAttachments,
+    removeAttachment,
+    clearAttachments,
+    hasPendingUploads,
+  } = useAttachments();
+  
   // Use the useVercelChat hook to get the chat state and functions
   const {
     messages,
@@ -53,7 +73,19 @@ export function VercelChatProvider({
     setMessages,
     reload,
     append,
-  } = useVercelChat({ id: chatId, initialMessages });
+  } = useVercelChat({ 
+    id: chatId, 
+    initialMessages,
+    uploadedAttachments // Pass attachments to useVercelChat
+  });
+  
+  // When a message is sent successfully, clear the attachments
+  const handleSendMessageWithClear = async (event: React.FormEvent<HTMLFormElement>) => {
+    await handleSendMessage(event);
+    
+    // Clear attachments after sending
+    clearAttachments();
+  };
 
   // Create the context value object
   const contextValue: VercelChatContextType = {
@@ -63,13 +95,20 @@ export function VercelChatProvider({
     isLoading,
     hasError,
     isGeneratingResponse,
-    handleSendMessage,
+    handleSendMessage: handleSendMessageWithClear,
     stop,
     setInput,
     input,
     setMessages,
     reload,
     append,
+    attachments,
+    pendingAttachments,
+    uploadedAttachments,
+    setAttachments,
+    removeAttachment,
+    clearAttachments,
+    hasPendingUploads,
   };
 
   // Provide the context value to children

@@ -6,7 +6,7 @@ import Form from "../Form";
 import { accountValidation } from "@/lib/utils/setting";
 import ImageSelect from "./ImageSelect";
 import { useUserProvider } from "@/providers/UserProvder";
-import TextArea from "../TextArea";
+import ArtistInstructionTextArea from "./ArtistInstructionTextArea";
 import Input from "../Input";
 
 const Account = () => {
@@ -64,7 +64,7 @@ const Account = () => {
         <ImageSelect />
       </div>
       <div className="col-span-12">
-        <TextArea
+        <ArtistInstructionTextArea
           value={instruction}
           onChange={(e) => setInstruction(e.target.value)}
           label="Custom Instruction"

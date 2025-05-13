@@ -8,6 +8,7 @@ import { UseChatHelpers } from "@ai-sdk/react";
 import ViewingMessage from "./ViewingMessage";
 import EditingMessage from "./EditingMessage";
 import { getToolCallComponent, getToolResultComponent } from "./ToolComponents";
+import MessageFileViewer from "./message-file-viewer";
 
 const Message = ({
   message,
@@ -40,6 +41,7 @@ const Message = ({
           )}
         >
           <div className={cn("flex flex-col gap-4 w-full")}>
+            <MessageFileViewer experimentalAttachment={message.experimental_attachments} />
             {message.parts?.map((part, partIndex) => {
               const { type } = part;
               const key = `message-${message.id}-part-${partIndex}`;
