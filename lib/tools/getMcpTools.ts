@@ -16,6 +16,7 @@ import createTxtFile from "./createTxtFile";
 import searchTwitter from "./searchTwitter";
 import getTwitterTrends from "./getTwitterTrends";
 import scrapeInstagramProfile from "./scrapeInstagramProfile";
+import getApifyScraper from "./getApifyScraper";
 
 export async function getMcpTools() {
   const tools = {
@@ -37,6 +38,7 @@ export async function getMcpTools() {
     search_twitter: searchTwitter,
     get_twitter_trends: getTwitterTrends,
     scrape_instagram_profile: scrapeInstagramProfile,
+    get_apify_scraper: getApifyScraper,
   };
 
   return tools;
