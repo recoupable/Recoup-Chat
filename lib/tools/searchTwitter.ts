@@ -5,13 +5,25 @@ import { tool } from "ai";
 const SEARCH_MODES = ["Top", "Latest", "Photos", "Videos", "Users"] as const;
 export type SearchMode = (typeof SEARCH_MODES)[number];
 
+// Common Twitter search operators
+const SEARCH_OPERATORS = {
+  from: "from:username - tweets from a specific user",
+  to: "to:username - tweets to a specific user",
+  min_faves: "min_faves:100 - tweets with at least 100 likes",
+  min_retweets: "min_retweets:10 - tweets with at least 10 retweets",
+  since: "since:2024-01-01 - tweets since a specific date",
+  until: "until:2024-01-01 - tweets until a specific date",
+  filter: "filter:links - tweets containing links",
+  lang: "lang:en - tweets in a specific language",
+} as const;
+
 // Zod schema for parameter validation
 const schema = z.object({
   query: z.string().min(1, "Search query is required"),
   maxTweets: z
     .number()
     .min(1)
-    .max(100)
+    .max(1000)
     .describe("Maximum number of tweets to return (1-1000)"),
   searchMode: z
     .enum(SEARCH_MODES)
@@ -58,8 +70,23 @@ export interface SearchTwitterResponse {
 }
 
 const searchTwitter = tool({
-  description:
-    "Search for tweets using the Recoup Twitter Search API. Accepts a query, maxTweets, and optional searchMode (Top, Latest, Photos, Videos, Users). Returns an array of tweets.",
+  description: `Search for tweets using the Recoup Twitter Search API. 
+  
+Common search operators:
+${Object.entries(SEARCH_OPERATORS)
+  .map(([operator, description]) => `- ${operator}: ${description}`)
+  .join("\n")}
+
+Example queries:
+- "from:username concert announcement" - Find concert announcements from a specific artist
+- "to:username min_faves:100" - Find popular tweets directed to an artist
+- "filter:links lang:en" - Find English tweets containing links
+- "since:2024-01-01 until:2024-03-01" - Find tweets within a date range
+
+You can combine these operators to create powerful search queries. For example:
+"from:artistname min_faves:1000 filter:links" will find popular tweets with links from a specific artist.
+
+Note: Consider using get_artist_socials first to get the artist's Twitter handle for more accurate searches.`,
   parameters: schema,
   execute: async ({
     query,
