@@ -47,11 +47,7 @@ Note: The scraping process may take some time to complete and results are not re
       }
 
       const data = await response.json();
-      return {
-        runId: data.runId,
-        datasetId: data.datasetId,
-        error: data.error,
-      };
+      return data;
     } catch (error) {
       console.error("Error in scrapeInstagramProfile tool:", error);
       return {
