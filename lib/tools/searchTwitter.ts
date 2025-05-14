@@ -71,7 +71,13 @@ export interface SearchTwitterResponse {
 
 const searchTwitter = tool({
   description: `Search for tweets using the Recoup Twitter Search API. 
-  
+
+This tool must follow this exact sequence:
+<tool_loop>
+  1. get_artist_socials - get the connected Twitter handle for the active artist
+  2. search_twitter - search for tweets using the handle and provided query
+</tool_loop>
+
 Common search operators:
 ${Object.entries(SEARCH_OPERATORS)
   .map(([operator, description]) => `- ${operator}: ${description}`)
@@ -86,7 +92,7 @@ Example queries:
 You can combine these operators to create powerful search queries. For example:
 "from:artistname min_faves:1000 filter:links" will find popular tweets with links from a specific artist.
 
-Note: Consider using get_artist_socials first to get the artist's Twitter handle for more accurate searches.`,
+Note: The tool will automatically use get_artist_socials to find the correct Twitter handle before searching.`,
   parameters: schema,
   execute: async ({
     query,
