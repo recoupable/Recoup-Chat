@@ -4,10 +4,7 @@ import { generateAndStoreTxtFile } from "@/lib/txtGeneration";
 
 // Define the schema for input validation
 const schema = z.object({
-  contents: z
-    .string()
-    .min(1, "Contents are required")
-    .max(10000, "Contents are too long"),
+  contents: z.string().min(1, "Contents are required"),
 });
 
 /**
