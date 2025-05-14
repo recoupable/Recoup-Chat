@@ -19,6 +19,10 @@ import UpdateArtistSocialsSuccess from "./tools/UpdateArtistSocialsSuccess";
 import { UpdateArtistSocialsResult } from "@/lib/tools/updateArtistSocials";
 import { TxtFileResult } from "@/components/ui/TxtFileResult";
 import { TxtFileGenerationResult } from "@/lib/tools/createTxtFile";
+import { Loader } from "lucide-react";
+import { getDisplayToolName } from "@/lib/tools/get-tools-name";
+import GenericSuccess from "./tools/GenericSuccess";
+import getToolInfo from "@/lib/utils/getToolsInfo";
 
 /**
  * Interface for tool call props
@@ -48,7 +52,6 @@ interface ToolResultProps extends ToolCallProps {
 /**
  * Helper function to get the appropriate UI component for a tool call
  */
-
 export function getToolCallComponent({ toolName, toolCallId }: ToolInvocation) {
   // Handle generate_image tool call
   if (toolName === "generate_image") {
@@ -79,8 +82,9 @@ export function getToolCallComponent({ toolName, toolCallId }: ToolInvocation) {
 
   // Default for other tools
   return (
-    <div key={toolCallId}>
-      <div className="text-sm text-gray-500">Using {toolName}...</div>
+    <div key={toolCallId} className="flex items-center gap-1 py-1 px-2 bg-primary/5 rounded-sm border w-fit text-xs">
+      <Loader className="h-3 w-3 animate-spin text-primary" />
+      <span>Using {getDisplayToolName(toolName)}</span>
     </div>
   );
 }
@@ -144,6 +148,9 @@ export function getToolResultComponent({
       </div>
     );
   }
+
+  // Default generic result for other tools
+  return <GenericSuccess name={getDisplayToolName(toolName)} message={(result as { message?: string }).message ?? getToolInfo(toolName).message} />;
 }
 
 /**
