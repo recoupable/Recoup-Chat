@@ -18,6 +18,7 @@ import getTwitterTrends from "./getTwitterTrends";
 import scrapeInstagramProfile from "./scrapeInstagramProfile";
 import getApifyScraper from "./getApifyScraper";
 import scrapeInstagramComments from "./scrapeInstagramComments";
+import artistDeepResearch from "./artistDeepResearch";
 
 export async function getMcpTools() {
   const tools = {
@@ -41,6 +42,7 @@ export async function getMcpTools() {
     scrape_instagram_profile: scrapeInstagramProfile,
     get_apify_scraper: getApifyScraper,
     scrape_instagram_comments: scrapeInstagramComments,
+    artist_deep_research: artistDeepResearch,
   };
 
   return tools;
