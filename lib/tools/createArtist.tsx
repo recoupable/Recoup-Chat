@@ -9,6 +9,7 @@ export interface CreateArtistResult {
     name: string;
     image?: string;
   };
+  artistAccountId: string;
   message: string;
   error?: string;
   newRoomId?: string | null;
@@ -70,6 +71,7 @@ IMPORTANT: After creating the artist, you MUST continue with these steps in orde
 
       return {
         artist,
+        artistAccountId: artist.account_id,
         message: `Successfully created artist "${name}". Now searching Spotify for this artist to connect their profile...`,
         newRoomId,
       };
