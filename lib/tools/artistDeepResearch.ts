@@ -26,6 +26,8 @@ const artistDeepResearch = tool({
   - Website: Branding, layout, contact info, mailing list
   - YouTube: Consistency, video quality, viewership, contact info
   - Marketing: Campaign ideas, revenue streams, collaboration opportunities, brand partnerships
+
+Do not stop after initial research - continue with looping over these steps until all the required info is gathered.  
   `,
   parameters: z.object({
     artist_account_id: z.string().describe("Artist account ID to research"),
