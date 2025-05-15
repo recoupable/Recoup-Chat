@@ -27,7 +27,7 @@ export interface CreateArtistResult {
 
 const createArtist = tool({
   description: `
-  Create a new artist account in the system.
+  Create a new artist account in the system and handles initial research.
   Requires the artist name, the account ID of the user with admin access to the new artist account,
   and the roomId to copy for this artist's first conversation.
   always follow this tool loop:
