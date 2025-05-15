@@ -3,9 +3,6 @@ import { tool } from "ai";
 import createArtistInDb from "../supabase/createArtistInDb";
 import copyRoom from "../supabase/copyRoom";
 
-/**
- * Interface for artist creation result
- */
 export interface CreateArtistResult {
   artist?: {
     account_id: string;
@@ -30,7 +27,7 @@ const createArtist = tool({
     update_artist_socials - add the Spotify artist's social profiles to the new artist's socials
     artist_deep_research - conduct comprehensive research on the artist across all platforms
   </tool_loop>
-  
+
 IMPORTANT: After creating the artist, you MUST continue with these steps in order:
   1. Call get_spotify_search with the artist's name to find their Spotify profile
   2. When a Spotify result is selected, call update_account_info to set their profile picture
