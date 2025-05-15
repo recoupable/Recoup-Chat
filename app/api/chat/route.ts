@@ -83,7 +83,7 @@ export async function POST(request: NextRequest) {
           model: myProvider.languageModel(selectedModelId),
           system,
           messages,
-          maxSteps: 11,
+          maxSteps: 111,
           experimental_transform: smoothStream({ chunking: "word" }),
           experimental_generateMessageId: generateUUID,
           tools,
