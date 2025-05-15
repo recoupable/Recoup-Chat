@@ -9,7 +9,7 @@ export interface CreateArtistResult {
     name: string;
     image?: string;
   };
-  artistAccountId: string;
+  artistAccountId?: string;
   message: string;
   error?: string;
   newRoomId?: string | null;
