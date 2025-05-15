@@ -21,9 +21,8 @@ const artistDeepResearch = tool({
   - YouTube: Consistency, video quality, viewership, contact info
   - Marketing: Campaign ideas, revenue streams, collaboration opportunities, brand partnerships
   `,
-  parameters: z.object({
-    artistId: z.string().describe("The ID of the artist to research"),
-  }),
+  parameters: z.object({}),
+  execute: async () => {},
 });
 
 export default artistDeepResearch;
