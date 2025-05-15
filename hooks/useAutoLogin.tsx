@@ -13,10 +13,13 @@ export function useAutoLogin() {
   const hasTriedLogin = useRef(false);
 
   useEffect(() => {
-    const shouldTryLogin =
-      !email && !hasTriedLogin.current && isFrameReady && !context;
+    const shouldTryLogin = !email && !hasTriedLogin.current && !isFrameReady;
+    console.log("useAutoLogin context", context);
+    console.log("useAutoLogin isFrameReady", isFrameReady);
+    console.log("useAutoLogin shouldTryLogin", shouldTryLogin);
     if (shouldTryLogin) {
       hasTriedLogin.current = true;
+      console.log("useAutoLogin calling login");
       login();
     }
   }, [email, login, context, isFrameReady]);
