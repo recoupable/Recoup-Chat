@@ -149,14 +149,14 @@ export function useVercelChat({
   };
 
   useEffect(() => {
-    const isFullyLoggedIn = authenticated && artistId && userId;
+    const isFullyLoggedIn = authenticated && userId;
     const isReady = status === "ready";
     const hasMessages = messages.length > 1;
     const hasInitialMessages = initialMessages && initialMessages.length > 0;
     if (!hasInitialMessages || !isReady || hasMessages || !isFullyLoggedIn)
       return;
     handleSendQueryMessages(initialMessages[0]);
-  }, [initialMessages, status, authenticated, artistId, userId]);
+  }, [initialMessages, status, authenticated, userId]);
 
   return {
     // States
