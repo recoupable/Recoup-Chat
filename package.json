@@ -19,6 +19,7 @@
     "@ardrive/turbo-sdk": "^1.22.1",
     "@coinbase/cdp-sdk": "^1.4.0",
     "@coinbase/onchainkit": "^0.38.8",
+    "@farcaster/frame-sdk": "^0.0.44",
     "@hookform/resolvers": "^3.9.1",
     "@privy-io/react-auth": "^1.88.4",
     "@radix-ui/react-avatar": "^1.1.3",

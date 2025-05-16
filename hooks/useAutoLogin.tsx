@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import { usePrivy } from "@privy-io/react-auth";
 import { useUserProvider } from "@/providers/UserProvder";
 import { useMiniKit } from "@coinbase/onchainkit/minikit";
+import { sdk } from "@farcaster/frame-sdk";
 
 export function useAutoLogin() {
   const { login } = usePrivy();
@@ -13,15 +14,20 @@ export function useAutoLogin() {
   const hasTriedLogin = useRef(false);
 
   useEffect(() => {
-    const shouldTryLogin = !email && !hasTriedLogin.current && !isFrameReady;
+    const init = async () => {
+      console.log("useAutoLogin calling login");
+
+      hasTriedLogin.current = true;
+      const isMiniApp = await sdk.isInMiniApp();
+      if (isMiniApp) return;
+      login();
+    };
+    const shouldTryLogin = !email && !hasTriedLogin.current;
     console.log("useAutoLogin context", context);
     console.log("useAutoLogin isFrameReady", isFrameReady);
-    console.log("useAutoLogin shouldTryLogin", shouldTryLogin);
-    if (shouldTryLogin) {
-      hasTriedLogin.current = true;
-      console.log("useAutoLogin calling login");
-      login();
-    }
+    console.log("useAutoLogin isMiniApp", shouldTryLogin);
+    if (!shouldTryLogin) return;
+    init();
   }, [email, login, context, isFrameReady]);
 }
 
