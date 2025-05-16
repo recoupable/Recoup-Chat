@@ -8,7 +8,7 @@ import { useMiniKit } from "@coinbase/onchainkit/minikit";
 export function useAutoLogin() {
   const { login } = usePrivy();
   const { email } = useUserProvider();
-  const { context, isFrameReady } = useMiniKit();
+  const { isFrameReady } = useMiniKit();
 
   const hasTriedLogin = useRef(false);
 
@@ -17,7 +17,7 @@ export function useAutoLogin() {
     if (!shouldTryLogin) return;
     hasTriedLogin.current = true;
     login();
-  }, [email, login, context, isFrameReady]);
+  }, [email, login, isFrameReady]);
 }
 
 export default useAutoLogin;
