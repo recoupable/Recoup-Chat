@@ -32,9 +32,10 @@ export function ChatInput({
 
   // Create a form ref to submit the form programmatically
   const formRef = useRef<HTMLFormElement>(null);
-  
+
   // Extracted the common disabled condition (for button)
-  const isButtonDisabled = isGeneratingResponse || input === "" || isDisabled || hasPendingUploads;
+  const isButtonDisabled =
+    isGeneratingResponse || input === "" || isDisabled || hasPendingUploads;
 
   const handleSend = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -57,7 +58,7 @@ export function ChatInput({
         ref={formRef}
         className="w-full relative p-3 dark:bg-zinc-800 rounded-2xl flex flex-col gap-1 bg-zinc-100"
         onSubmit={handleSend}
-        initial={{ opacity: 0, y: 16 }}
+        initial={{ opacity: 0, y: -16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3, ease: "easeOut" }}
       >
