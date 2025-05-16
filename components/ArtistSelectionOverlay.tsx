@@ -20,14 +20,14 @@ export function ArtistSelectionOverlay() {
   const isMobile = useIsMobile();
   const hasArtists = sorted.length > 0;
   const [showTooltip, setShowTooltip] = useState(false);
-  
+
   useEffect(() => {
     // Only show tooltip on desktop
-    const shouldShowTooltip = 
+    const shouldShowTooltip =
       !selectedArtist && // No artist selected
-      !isMobile &&      // Not on mobile
-      authenticated &&   // User is logged in
-      ready &&          // Privy is ready
+      !isMobile && // Not on mobile
+      authenticated && // User is logged in
+      ready && // Privy is ready
       !isOpenSettingModal; // Modal is closed
 
     if (shouldShowTooltip) {
@@ -41,7 +41,12 @@ export function ArtistSelectionOverlay() {
   }, [selectedArtist, isOpenSettingModal, authenticated, ready, isMobile]);
 
   // Show overlay if no artist is selected and user is authenticated
-  const shouldShowOverlay = !selectedArtist && authenticated && ready && !isOpenSettingModal;
+  const shouldShowOverlay =
+    !selectedArtist &&
+    authenticated &&
+    ready &&
+    !isOpenSettingModal &&
+    hasArtists;
 
   if (!shouldShowOverlay) {
     return null;
@@ -50,15 +55,15 @@ export function ArtistSelectionOverlay() {
   return (
     <>
       {/* Semi-transparent overlay */}
-      <div 
+      <div
         className="fixed inset-0 z-30 bg-black/80 backdrop-blur-[1px] transition-opacity duration-300 pointer-events-none"
         style={{ opacity: 1 }}
       />
-      
+
       {/* Tooltip Container - only shown on desktop */}
       {showTooltip && !isMobile && (
         <div className="fixed inset-0 z-[60] pointer-events-none">
-          <motion.div 
+          <motion.div
             className={`absolute ${hasArtists ? "top-8" : "bottom-4"}`}
             initial={{ right: "8rem" }}
             animate={{ right: isExpanded ? "15rem" : "8rem" }}
@@ -76,4 +81,4 @@ export function ArtistSelectionOverlay() {
   );
 }
 
-export default ArtistSelectionOverlay; 
+export default ArtistSelectionOverlay;
