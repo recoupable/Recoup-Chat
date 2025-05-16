@@ -16,7 +16,7 @@ export default function PrivyProvider({
           accentColor: "#003199",
           logo: "/Recoup_Icon_Wordmark_Black.svg",
         },
-        loginMethods: ["farcaster", "email"],
+        loginMethods: ["email"],
         embeddedWallets: {
           createOnLogin: "users-without-wallets",
         },
