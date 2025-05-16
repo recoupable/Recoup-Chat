@@ -13,18 +13,16 @@ const GetVideoGameCampaignPlaysResult: React.FC<{
   }
 
   return (
-    <div className="w-full max-w-2xl">
+    <div className="w-full">
       <div className="mb-2 font-semibold text-lg">
         Total Plays: <span className="text-primary">{result.total}</span>
       </div>
-      <div className="overflow-x-auto overflow-y-auto rounded border border-gray-200 bg-white max-h-64">
-        <table className="min-w-full text-xs text-left">
+      <div className="overflow-x-auto overflow-y-auto rounded border border-gray-200 bg-white max-h-64 w-full">
+        <table className="min-w-full w-full text-xs text-left">
           <thead className="bg-gray-50 border-b">
             <tr>
               <th className="px-3 py-2">Timestamp</th>
-              <th className="px-3 py-2">Client ID</th>
               <th className="px-3 py-2">Fan ID</th>
-              <th className="px-3 py-2">Game</th>
               <th className="px-3 py-2">Premium?</th>
             </tr>
           </thead>
@@ -39,9 +37,7 @@ const GetVideoGameCampaignPlaysResult: React.FC<{
                     ? new Date(row.timestamp).toLocaleString()
                     : "-"}
                 </td>
-                <td className="px-3 py-2">{row.clientId || "-"}</td>
                 <td className="px-3 py-2">{row.fanId || "-"}</td>
-                <td className="px-3 py-2">{row.game || "-"}</td>
                 <td className="px-3 py-2">{row.isPremium ? "Yes" : "No"}</td>
               </tr>
             ))}

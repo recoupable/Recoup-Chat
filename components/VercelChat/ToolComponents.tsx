@@ -152,7 +152,7 @@ export function getToolResultComponent({
     );
   } else if (toolName === "get_video_game_campaign_plays") {
     return (
-      <div key={toolCallId}>
+      <div key={toolCallId} className="w-full">
         <GetVideoGameCampaignPlaysResultComponent
           result={result as GetSpotifyPlayButtonClickedResult}
         />
