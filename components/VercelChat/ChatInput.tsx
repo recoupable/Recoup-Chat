@@ -26,9 +26,9 @@ export function ChatInput({
   input,
 }: ChatInputProps) {
   // Access the artist state to check if an artist is selected
-  const { selectedArtist } = useArtistProvider();
+  const { selectedArtist, sorted } = useArtistProvider();
   const { hasPendingUploads } = useVercelChatContext();
-  const isDisabled = !selectedArtist;
+  const isDisabled = !selectedArtist && sorted.length > 0;
 
   // Create a form ref to submit the form programmatically
   const formRef = useRef<HTMLFormElement>(null);
