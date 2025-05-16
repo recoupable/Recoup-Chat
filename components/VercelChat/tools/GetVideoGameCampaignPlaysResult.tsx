@@ -21,9 +21,13 @@ const GetVideoGameCampaignPlaysResult: React.FC<{
         <table className="min-w-full w-full text-xs text-left">
           <thead className="bg-gray-50 border-b">
             <tr>
-              <th className="px-3 py-2">Timestamp</th>
-              <th className="px-3 py-2">Fan ID</th>
-              <th className="px-3 py-2">Premium?</th>
+              <th className="px-3 py-2 sticky top-0 z-10 bg-gray-50">
+                Timestamp
+              </th>
+              <th className="px-3 py-2 sticky top-0 z-10 bg-gray-50">Fan ID</th>
+              <th className="px-3 py-2 sticky top-0 z-10 bg-gray-50">
+                Premium?
+              </th>
             </tr>
           </thead>
           <tbody>
