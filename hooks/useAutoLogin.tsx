@@ -20,7 +20,8 @@ export function useAutoLogin() {
       if (context) return;
       login();
     };
-    const shouldTryLogin = !email && !hasTriedLogin.current && !context;
+    const shouldTryLogin =
+      !email && !hasTriedLogin.current && !context && isFrameReady;
     if (!shouldTryLogin) return;
     init();
   }, [email, login, context, isFrameReady]);
