@@ -8,6 +8,7 @@ import { useRef } from "react";
 import { useVercelChatContext } from "@/providers/VercelChatProvider";
 import AttachmentsPreview from "./AttachmentsPreview";
 import PureAttachmentsButton from "./PureAttachmentsButton";
+import { motion } from "framer-motion";
 
 interface ChatInputProps {
   onSendMessage: (event: React.FormEvent<HTMLFormElement>) => void;
@@ -52,10 +53,13 @@ export function ChatInput({
       <div className="w-full">
         <AttachmentsPreview />
       </div>
-      <form
+      <motion.form
         ref={formRef}
         className="w-full relative p-3 dark:bg-zinc-800 rounded-2xl flex flex-col gap-1 bg-zinc-100"
         onSubmit={handleSend}
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3, ease: "easeOut" }}
       >
         <div className="absolute bottom-2.5 left-2.5 z-10">
           <PureAttachmentsButton />
@@ -83,7 +87,7 @@ export function ChatInput({
             {isGeneratingResponse ? <StopIcon /> : <ArrowUpIcon />}
           </button>
         </div>
-      </form>
+      </motion.form>
     </div>
   );
 }
