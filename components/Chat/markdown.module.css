@@ -488,5 +488,5 @@
 .mermaidGrandparentOverride {
   background-color: white !important; /* Use !important to ensure override */
   border: none !important;
-  padding: 0 !important;
+  @apply !py-10;
 } 

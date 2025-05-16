@@ -23,6 +23,8 @@ import { Loader } from "lucide-react";
 import { getDisplayToolName } from "@/lib/tools/get-tools-name";
 import GenericSuccess from "./tools/GenericSuccess";
 import getToolInfo from "@/lib/utils/getToolsInfo";
+import { GetSpotifyPlayButtonClickedResult } from "@/lib/supabase/getSpotifyPlayButtonClicked";
+import GetVideoGameCampaignPlaysResultComponent from "./tools/GetVideoGameCampaignPlaysResult";
 
 /**
  * Interface for tool call props
@@ -40,6 +42,7 @@ type ToolResult =
   | GenerateMermaidDiagramResult
   | CreateArtistResult
   | DeleteArtistResult
+  | GetSpotifyPlayButtonClickedResult
   | Record<string, unknown>;
 
 /**
@@ -145,6 +148,14 @@ export function getToolResultComponent({
     return (
       <div key={toolCallId}>
         <TxtFileResult result={result as TxtFileGenerationResult} />
+      </div>
+    );
+  } else if (toolName === "get_video_game_campaign_plays") {
+    return (
+      <div key={toolCallId} className="w-full">
+        <GetVideoGameCampaignPlaysResultComponent
+          result={result as GetSpotifyPlayButtonClickedResult}
+        />
       </div>
     );
   }

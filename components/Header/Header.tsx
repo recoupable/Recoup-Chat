@@ -38,7 +38,7 @@ const Header = () => {
 
   return (
     <>
-      <div className="z-[50] relative md:fixed md:right-0 md:top-0 md:w-fit md:pt-8 md:pr-8 md:justify-end flex p-4 items-center justify-between w-auto">
+      <div className="z-[50] fixed bg-white left-0 right-0 top-0 md:hidden flex p-4 items-center justify-between w-auto">
         <button
           type="button"
           className="md:hidden flex items-center gap-2 z-[50]"
