@@ -13,16 +13,10 @@ export function useAutoLogin() {
   const hasTriedLogin = useRef(false);
 
   useEffect(() => {
-    const init = async () => {
-      console.log("useAutoLogin calling login");
-
-      hasTriedLogin.current = true;
-      if (context) return;
-      login();
-    };
     const shouldTryLogin = !email && !hasTriedLogin.current && !isFrameReady;
     if (!shouldTryLogin) return;
-    init();
+    hasTriedLogin.current = true;
+    login();
   }, [email, login, context, isFrameReady]);
 }
 
