@@ -19,7 +19,7 @@ export function ImageResult({ result }: ImageResultProps) {
 
   if (!result.success) {
     return (
-      <div className="w-full max-w-md mx-auto p-4 border border-red-200 rounded-md bg-red-50">
+      <div className="w-full max-w-md mr-auto p-4 border border-red-200 rounded-md bg-red-50">
         <p className="text-sm font-medium text-red-600">
           Error generating image
         </p>
@@ -31,7 +31,7 @@ export function ImageResult({ result }: ImageResultProps) {
   }
 
   return (
-    <div className="flex justify-center">
+    <div className="flex justify-start">
       {result.arweaveUrl ? (
         <div className="border border-gray-200 rounded-2xl group cursor-pointer relative overflow-hidden max-w-md max-h-md">
           <div className="relative w-full h-full max-h-[28rem]">
