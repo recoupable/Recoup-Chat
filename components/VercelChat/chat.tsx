@@ -72,13 +72,14 @@ function ChatContent({ reportId, id }: { reportId?: string; id: string }) {
   return (
     <div
       className={cn(
-        "px-4 md:px-0 pb-4 pt-4 md:pt-8 flex flex-col h-full items-center w-full max-w-3xl",
+        "px-4 md:px-0 pb-4 flex flex-col h-full items-center w-full max-w-3xl relative",
         {
           "justify-between": messages.length > 0,
           "justify-center gap-4": messages.length === 0,
         }
       )}
     >
+      <div className="absolute w-full h-6 bg-gradient-to-t from-transparent via-white/80 to-white z-10 top-0"></div>
       {isVisible ? (
         <div className="w-full">
           <ChatGreeting isVisible={isVisible} />

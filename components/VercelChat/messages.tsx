@@ -45,7 +45,7 @@ export function Messages({
 
   return (
     <div
-      className="flex flex-col gap-8 overflow-y-scroll items-center w-full"
+      className="flex flex-col gap-8 overflow-y-scroll items-center w-full pt-6 pb-16 md:pt-8 md:pb-24"
       ref={messagesRef}
     >
       {children || null}
