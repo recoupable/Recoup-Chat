@@ -6,7 +6,7 @@ import React from "react";
  */
 export function CreateArtistToolCall() {
   return (
-    <div className="flex items-center space-x-4 p-3 rounded-md bg-gray-50 my-2">
+    <div className="flex items-center space-x-4 p-3 rounded-md bg-gray-50 my-2 max-w-xs mr-auto">
       {/* Profile picture skeleton */}
       <div className="h-12 w-12 rounded-full bg-gray-200 animate-pulse" />
 

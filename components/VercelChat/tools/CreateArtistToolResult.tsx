@@ -22,7 +22,7 @@ export function CreateArtistToolResult({
   // If there's an error or no artist data, show error state
   if (!result.artist) {
     return (
-      <div className="flex items-center space-x-4 p-3 rounded-md bg-red-50 border border-red-200 my-2">
+      <div className="flex items-center space-x-4 p-3 rounded-md bg-red-50 border border-red-200 my-2 max-w-md mr-auto">
         <div className="h-12 w-12 rounded-full bg-red-200 flex items-center justify-center">
           <span className="text-lg font-bold text-red-600">!</span>
         </div>
