@@ -6,7 +6,7 @@ import { AlertTriangle } from 'lucide-react'; // Using lucide-react for icons
  */
 const MermaidErrorFallback: React.FC = () => {
   return (
-    <div className="flex flex-col items-center justify-center p-4 border border-destructive/50 bg-destructive/10 text-destructive rounded-md text-sm my-4">
+    <div className="flex flex-col items-center justify-center p-4 border border-destructive/50 bg-destructive/10 text-destructive rounded-md text-sm my-4 max-w-md mr-auto">
       <AlertTriangle className="w-6 h-6 mb-2" />
       <p className="font-semibold">Diagram Rendering Error</p>
       <p className="text-center text-xs mt-1">
