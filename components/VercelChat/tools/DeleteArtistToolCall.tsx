@@ -5,7 +5,7 @@ import React from "react";
  */
 export function DeleteArtistToolCall() {
   return (
-    <div className="flex items-center space-x-4 p-3 rounded-md bg-gray-50 border border-gray-200 my-2">
+    <div className="flex items-center space-x-4 p-3 rounded-md bg-gray-50 border border-gray-200 my-2 max-w-sm mr-auto">
       <div className="h-12 w-12 rounded-full bg-gray-200 flex items-center justify-center">
         <div className="animate-pulse h-6 w-6 rounded-full bg-gray-400"></div>
       </div>
