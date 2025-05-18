@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { tool } from "ai";
 import { generateAndStoreTxtFile } from "@/lib/txtGeneration";
+import { IS_PROD } from "../consts";
 
 // Define the schema for input validation
 const schema = z.object({
@@ -37,7 +38,7 @@ const createTxtFile = tool({
         smartAccountAddress: result.smartAccount.address,
         transactionHash: result.transactionHash,
         blockExplorerUrl: result.transactionHash
-          ? `https://sepolia.basescan.org/tx/${result.transactionHash}`
+          ? `https://${IS_PROD ? "" : "sepolia."}basescan.org/tx/${result.transactionHash}`
           : null,
         message: "TXT file successfully generated and stored onchain.",
       };
