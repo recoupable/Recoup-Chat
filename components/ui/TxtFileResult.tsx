@@ -33,7 +33,7 @@ export function TxtFileResult({ result }: TxtFileResultProps) {
 
   if (!result.success) {
     return (
-      <div className="w-full max-w-md mx-auto p-4 border border-red-200 rounded-md bg-red-50">
+      <div className="w-full max-w-sm mr-auto p-4 border border-red-200 rounded-md bg-red-50">
         <p className="text-sm font-medium text-red-600">
           Error generating TXT file
         </p>
@@ -67,7 +67,7 @@ export function TxtFileResult({ result }: TxtFileResultProps) {
   }
 
   return (
-    <div className="w-full max-w-md mx-auto">
+    <div className="w-full max-w-md mr-auto">
       <div className="space-y-4">
         <div className="border border-gray-200 rounded-md bg-gray-50 p-4">
           <div className="mb-2 flex items-center justify-between">
