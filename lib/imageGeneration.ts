@@ -1,6 +1,7 @@
 import generateImage from "./ai/generateImage";
 import { ArweaveUploadResult } from "@/lib/arweave/uploadBase64ToArweave";
 import createCollection from "@/app/api/in_process/createCollection";
+import { uploadMetadataJson } from "./arweave/uploadMetadataJson";
 
 export interface GeneratedImageResponse {
   arweave?: ArweaveUploadResult | null;
@@ -27,10 +28,20 @@ export async function generateAndProcessImage(
   // Generate the image using OpenAI
   const image = await generateImage(prompt);
 
+  const metadataArweave = await uploadMetadataJson({
+    image: `ar://${image?.id}`,
+    content: {
+      mime: image?.fileType || "image/png",
+      uri: `ar://${image?.id}` || "",
+    },
+    description: prompt,
+    name: prompt,
+  });
+
   // Create a collection on the blockchain using the metadata id
   const result = await createCollection({
     collectionName: prompt,
-    uri: image ? `ar://${image.id}` : "",
+    uri: image ? `ar://${metadataArweave.id}` : "",
   });
   const transactionHash = result.transactionHash || null;
 
