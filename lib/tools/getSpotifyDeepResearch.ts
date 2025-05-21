@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { tool } from "ai";
 import { getArtistSocials } from "../api/artist/getArtistSocials";
+import { SPOTIFY_DEEP_RESEARCH_REQUIREMENTS } from "../consts";
 
 const TOOL_CHAIN_STEPS = [
   "get_artist_socials - get spotify account",
@@ -20,21 +21,7 @@ const getSpotifyDeepResearch = tool({
   </tool_loop>
 
   required items in deep research document:
-  - popularity info (MANDATORY):
-    * Track popularity scores (0-100) for all tracks
-    * Average popularity across all tracks
-    * Most popular tracks ranked by popularity
-    * Popularity trends over time (if available)
-  - follower metrics (MANDATORY):
-    * Current total follower count
-    * Follower growth rate (if available)
-    * Follower count by region (if available)
-    * Historical follower milestones
-  - engagement info
-  - tracklist
-  - collaborators
-  - album art
-  - album name
+  ${SPOTIFY_DEEP_RESEARCH_REQUIREMENTS}
 
   Keep going until the job is completely solved before ending your turn.
   If you're unsure, use your tools, don't guess.

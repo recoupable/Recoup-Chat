@@ -1765,3 +1765,21 @@ export const ICONS = [
   "ZoomIn",
   "ZoomOut",
 ];
+
+export const SPOTIFY_DEEP_RESEARCH_REQUIREMENTS = `
+  - popularity info (MANDATORY):
+    * Track popularity scores (0-100) for all tracks
+    * Average popularity across all tracks
+    * Most popular tracks ranked by popularity
+    * Popularity trends over time (if available)
+  - follower metrics (MANDATORY):
+    * Current total follower count
+    * Follower growth rate (if available)
+    * Follower count by region (if available)
+    * Historical follower milestones
+  - engagement info
+  - tracklist
+  - collaborators
+  - album art
+  - album name
+  `;

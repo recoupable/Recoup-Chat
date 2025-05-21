@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { tool } from "ai";
 import { getArtistSocials } from "../api/artist/getArtistSocials";
+import { SPOTIFY_DEEP_RESEARCH_REQUIREMENTS } from "../consts";
 
 const TOOL_CHAIN_STEPS = [
   "spotify_deep_research - deep research the musician discography and popularity on spotify",
@@ -18,8 +19,10 @@ const artistDeepResearch = tool({
   ${TOOL_CHAIN_STEPS.join("\n")}
   </tool_loop>
 
-  Research requirements:
-  - Spotify: Listener numbers, fan locations, release frequency, top songs, playlist features, collaborators
+  Spotify research requirements:
+  ${SPOTIFY_DEEP_RESEARCH_REQUIREMENTS}
+
+  Other research requirements:
   - Socials: Follower counts, engagement rates, top content, branding, posting consistency
   - Website: Branding, layout, contact info, mailing list
   - YouTube: Consistency, video quality, viewership, contact info
