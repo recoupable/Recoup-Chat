@@ -8,15 +8,16 @@ import { useMiniAppContext } from "@/providers/MiniAppProvider";
 export function useAutoLogin() {
   const { login } = usePrivy();
   const { email } = useUserProvider();
-  const { isMiniApp } = useMiniAppContext();
+  const { isMiniApp, isLoading: isMiniAppLoading } = useMiniAppContext();
   const hasTriedLogin = useRef(false);
 
   useEffect(() => {
-    const shouldTryLogin = !email && !hasTriedLogin.current && !isMiniApp;
+    const shouldTryLogin =
+      !email && !hasTriedLogin.current && !isMiniApp && !isMiniAppLoading;
     if (!shouldTryLogin) return;
     hasTriedLogin.current = true;
     login();
-  }, [email, login, isMiniApp]);
+  }, [email, login, isMiniApp, isMiniAppLoading]);
 }
 
 export default useAutoLogin;
