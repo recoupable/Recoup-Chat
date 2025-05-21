@@ -3,25 +3,20 @@
 import { useEffect, useRef } from "react";
 import { usePrivy } from "@privy-io/react-auth";
 import { useUserProvider } from "@/providers/UserProvder";
-import { sdk } from "@farcaster/frame-sdk";
+import { useMiniAppContext } from "@/providers/MiniAppProvider";
 
 export function useAutoLogin() {
   const { login } = usePrivy();
   const { email } = useUserProvider();
-
+  const { isMiniApp } = useMiniAppContext();
   const hasTriedLogin = useRef(false);
 
   useEffect(() => {
-    const init = async () => {
-      hasTriedLogin.current = true;
-      const isMiniApp = await sdk.isInMiniApp();
-      if (isMiniApp) return;
-      login();
-    };
-    const shouldTryLogin = !email && !hasTriedLogin.current;
+    const shouldTryLogin = !email && !hasTriedLogin.current && !isMiniApp;
     if (!shouldTryLogin) return;
-    init();
-  }, [email, login]);
+    hasTriedLogin.current = true;
+    login();
+  }, [email, login, isMiniApp]);
 }
 
 export default useAutoLogin;

@@ -13,37 +13,43 @@ import { PromptsProvider } from "./PromptsProvider";
 import { FunnelAnalysisProvider } from "./FunnelAnalysisProvider";
 import { SidebarExpansionProvider } from "./SidebarExpansionContext";
 import { MiniKitProvider } from "./MiniKitProvider";
+import WagmiProvider from "./WagmiProvider";
+import { MiniAppProvider } from "./MiniAppProvider";
 
 const queryClient = new QueryClient();
 
 const Providers = ({ children }: { children: React.ReactNode }) => (
-  <QueryClientProvider client={queryClient}>
-    <PrivyProvider>
-      <MiniKitProvider>
-        <UserProvider>
-          <FunnelReportProvider>
-            <ArtistProvider>
-              <SidebarExpansionProvider>
-                <ConversationsProvider>
-                  <PromptsProvider>
-                    <MessagesProvider>
-                      <ChatProvider>
-                        <PaymentProvider>
-                          <FunnelAnalysisProvider>
-                            {children}
-                          </FunnelAnalysisProvider>
-                        </PaymentProvider>
-                      </ChatProvider>
-                    </MessagesProvider>
-                  </PromptsProvider>
-                </ConversationsProvider>
-              </SidebarExpansionProvider>
-            </ArtistProvider>
-          </FunnelReportProvider>
-        </UserProvider>
-      </MiniKitProvider>
-    </PrivyProvider>
-  </QueryClientProvider>
+  <WagmiProvider>
+    <QueryClientProvider client={queryClient}>
+      <PrivyProvider>
+        <MiniKitProvider>
+          <MiniAppProvider>
+            <UserProvider>
+              <FunnelReportProvider>
+                <ArtistProvider>
+                  <SidebarExpansionProvider>
+                    <ConversationsProvider>
+                      <PromptsProvider>
+                        <MessagesProvider>
+                          <ChatProvider>
+                            <PaymentProvider>
+                              <FunnelAnalysisProvider>
+                                {children}
+                              </FunnelAnalysisProvider>
+                            </PaymentProvider>
+                          </ChatProvider>
+                        </MessagesProvider>
+                      </PromptsProvider>
+                    </ConversationsProvider>
+                  </SidebarExpansionProvider>
+                </ArtistProvider>
+              </FunnelReportProvider>
+            </UserProvider>
+          </MiniAppProvider>
+        </MiniKitProvider>
+      </PrivyProvider>
+    </QueryClientProvider>
+  </WagmiProvider>
 );
 
 export default Providers;
