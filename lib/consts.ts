@@ -5,7 +5,8 @@ export const IN_PROCESS_PROTOCOL_ADDRESS = IS_PROD
   ? ("0x540C18B7f99b3b599c6FeB99964498931c211858" as Address)
   : ("0x6832A997D8616707C7b68721D6E9332E77da7F6C" as Address);
 export const PAYMASTER_URL = `https://api.developer.coinbase.com/rpc/v1/${
-  IS_PROD ? "base" : "base-sepolia"}/${process.env.PAYMASTER_KEY}`;
+  IS_PROD ? "base" : "base-sepolia"
+}/${process.env.PAYMASTER_KEY}`;
 
 // STACK EVENTS
 export const MESSAGE_SENT_EVENT = "message_sent";
@@ -1772,11 +1773,8 @@ export const SPOTIFY_DEEP_RESEARCH_REQUIREMENTS = `
     * Average popularity across all tracks
     * Most popular tracks ranked by popularity
     * Popularity trends over time (if available)
-  - follower metrics (MANDATORY):
-    * Current total follower count
-    * Follower growth rate (if available)
-    * Follower count by region (if available)
-    * Historical follower milestones
+  - Spotify follower metrics (MANDATORY):
+    * Current total follower count for the artist on Spotify
   - engagement info
   - tracklist
   - collaborators
