@@ -25,6 +25,11 @@ const getSpotifyDeepResearch = tool({
     * Average popularity across all tracks
     * Most popular tracks ranked by popularity
     * Popularity trends over time (if available)
+  - follower metrics (MANDATORY):
+    * Current total follower count
+    * Follower growth rate (if available)
+    * Follower count by region (if available)
+    * Historical follower milestones
   - engagement info
   - tracklist
   - collaborators
