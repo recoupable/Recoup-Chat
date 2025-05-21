@@ -4,7 +4,7 @@ import { getArtistSocials } from "../api/artist/getArtistSocials";
 
 const TOOL_CHAIN_STEPS = [
   "get_artist_socials - get spotify account",
-  "get_spotify_artist_top_tracks - top tracks for artist",
+  "get_spotify_artist_top_tracks - get top tracks with popularity scores",
   "get_spotify_artist_albums - albums for artist",
   "get_spotify_album - album from get_spotify_artist_albums. repeat this tool for each album.",
   "<other tools to get engagement info or other missing required items>",
@@ -20,7 +20,11 @@ const getSpotifyDeepResearch = tool({
   </tool_loop>
 
   required items in deep research document:
-  - popularity info
+  - popularity info (MANDATORY):
+    * Track popularity scores (0-100) for all tracks
+    * Average popularity across all tracks
+    * Most popular tracks ranked by popularity
+    * Popularity trends over time (if available)
   - engagement info
   - tracklist
   - collaborators
