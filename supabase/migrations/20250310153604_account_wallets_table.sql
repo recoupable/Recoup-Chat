@@ -17,4 +17,4 @@ CREATE INDEX IF NOT EXISTS account_wallets_wallet_idx ON account_wallets(wallet)
 CREATE TRIGGER set_updated_at
     BEFORE UPDATE ON account_wallets
     FOR EACH ROW
-    EXECUTE FUNCTION update_updated_at_column(); 
+    EXECUTE FUNCTION trigger_set_updated_at(); 
