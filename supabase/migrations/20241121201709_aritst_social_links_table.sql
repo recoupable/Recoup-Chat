@@ -1,8 +1,5 @@
 create type "public"."social_type" as enum ('TIKTOK', 'YOUTUBE', 'INSTAGRAM', 'TWITTER', 'SPOTIFY', 'APPLE');
 
-drop table "public"."artists";
--- hi
-
 create table if not exists "public"."artists" (
     "id" uuid not null default gen_random_uuid(),
     "name" text,
