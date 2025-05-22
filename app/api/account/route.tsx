@@ -1,5 +1,4 @@
 import { NextRequest } from "next/server";
-import { getAccountByPhone } from "@/lib/supabase/getAccountByPhone";
 import getAccountByEmail from "@/lib/supabase/accounts/getAccountByEmail";
 import { getAccountByWallet } from "@/lib/supabase/accounts/getAccountByWallet";
 import { insertAccountWallet } from "@/lib/supabase/accounts/insertAccountWallet";
@@ -117,50 +116,6 @@ export async function POST(req: NextRequest) {
     console.error(error);
     const message = error instanceof Error ? error.message : "failed";
     return Response.json({ message }, { status: 400 });
-  }
-}
-
-export async function GET(request: NextRequest) {
-  try {
-    const phone = request.nextUrl.searchParams.get("phone");
-    const wallet = request.nextUrl.searchParams.get("wallet");
-
-    // If wallet is provided, check account_wallets
-    if (wallet) {
-      try {
-        const account = await getAccountByWallet(wallet);
-        return Response.json({ data: account });
-      } catch (error) {
-        console.log(
-          "Wallet not found, checking phone:",
-          error instanceof Error ? error.message : "Unknown error"
-        );
-        // Continue to phone check if wallet not found
-      }
-    }
-
-    // If phone is provided, use existing phone lookup
-    if (phone) {
-      try {
-        const data = await getAccountByPhone(phone);
-        return Response.json({ data });
-      } catch (error) {
-        const message =
-          error instanceof Error ? error.message : "Unknown error";
-        // Return 404 for "No account found" message, 500 for other errors
-        const status = message.includes("No account found") ? 404 : 500;
-        return Response.json({ error: message }, { status });
-      }
-    }
-
-    // If neither wallet nor phone provided
-    return Response.json(
-      { error: "Either phone number or wallet address is required" },
-      { status: 400 }
-    );
-  } catch (error) {
-    console.error("Error in /api/account:", error);
-    return Response.json({ error: "Internal server error" }, { status: 500 });
   }
 }
 
