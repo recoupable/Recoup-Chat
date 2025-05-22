@@ -107,7 +107,7 @@ const useUser = () => {
     };
     if (!email) return;
     init();
-  }, [email]);
+  }, [email, wagmiAddress]);
 
   return {
     address,
