@@ -16,6 +16,7 @@ import {
   useVercelChatContext,
 } from "@/providers/VercelChatProvider";
 import { Message } from "ai";
+import { NoMessages } from "./NoMessages";
 
 interface ChatProps {
   id: string;
@@ -67,6 +68,18 @@ function ChatContent({ reportId, id }: { reportId?: string; id: string }) {
         </div>
       </div>
     );
+  }
+
+  // No messages case - only show this when on a specific chat page (not on /chat)
+  const isEmptyConversation = 
+    roomId && // already on a chat page
+    !isLoading && // messages has been loaded
+    messages.length === 0 && // no messages in the conversation
+    status === "ready" && // vercel chat is in idle state
+    !reportId; // not a report page
+
+  if (isEmptyConversation) {
+    return <NoMessages />;
   }
 
   return (

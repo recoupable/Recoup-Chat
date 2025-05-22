@@ -19,7 +19,6 @@ export function useMessageLoader(
 
   useEffect(() => {
     if (!roomId || !userId) {
-      setIsLoading(false);
       return;
     }
 
@@ -32,12 +31,12 @@ export function useMessageLoader(
         if (initialMessages.length > 0) {
           setMessages(initialMessages as Message[]);
         }
+        setIsLoading(false);
       } catch (err) {
         console.error("Error loading messages:", err);
         setError(
           err instanceof Error ? err : new Error("Failed to load messages")
         );
-      } finally {
         setIsLoading(false);
       }
     };
