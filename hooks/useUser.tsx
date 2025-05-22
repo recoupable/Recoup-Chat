@@ -105,7 +105,7 @@ const useUser = () => {
       setName(data?.data?.name || "");
       setOrganization(data?.data?.organization || "");
     };
-    if (!email) return;
+    if (!email && !wagmiAddress) return;
     init();
   }, [email, wagmiAddress]);
 
