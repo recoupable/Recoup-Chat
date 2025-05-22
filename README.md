@@ -69,6 +69,56 @@ To run the evals:
 oaieval gpt-3.5-turbo recoup
 ```
 
+## Migration Error
+
+If you see this error
+
+```
+ERROR: there is no unique constraint matching given keys for referenced table "artists" (SQLSTATE 42830)
+At statement 2:
+create table if not exists "public"."artist_social_links" (
+    "id" uuid not null default gen_random_uuid(),
+    "link" text,
+    "type" social_type,
+    "artistId" uuid not null,
+    CONSTRAINT "artist_social_links_pkey" PRIMARY KEY ("id"),
+    CONSTRAINT "artist_social_links_artistId_fkey"
+    FOREIGN KEY ("artistId")
+    REFERENCES "public"."artists" ("id")
+    ON DELETE CASCADE
+)
+```
+
+Fix it by modifying `supabase/migrations/20241121201709_aritst_social_links_table.sql`
+
+1. add `drop table "public"."artists";`
+2. push your changes
+3. once migrations pass, revert the changes
+
+### Example of modified `supabase/migrations/20241121201709_aritst_social_links_table.sql`
+
+```
+create type "public"."social_type" as enum ('TIKTOK', 'YOUTUBE', 'INSTAGRAM', 'TWITTER', 'SPOTIFY', 'APPLE');
+-- FIX IS LINE 3
+drop table "public"."artists";
+create table if not exists "public"."artists" (
+    "id" uuid not null default gen_random_uuid(),
+    "name" text,
+    PRIMARY KEY ("id")
+);
+create table if not exists "public"."artist_social_links" (
+    "id" uuid not null default gen_random_uuid(),
+    "link" text,
+    "type" social_type,
+    "artistId" uuid not null,
+    primary key ("id"),
+    CONSTRAINT "artist_social_links_artistId_fkey"
+    foreign key ("artistId")
+    references "public"."artists" ("id")
+    on delete cascade
+);
+```
+
 ## Learn More
 
 To learn more about the technologies used in this project, check out the following resources:
