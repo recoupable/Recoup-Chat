@@ -37,7 +37,7 @@ export function NoMessages() {
               No messages found
             </h2>
             <p className="text-muted-foreground">
-              This conversation appears to be empty or may have exists.
+              This conversation appears to be empty or may not exist.
             </p>
           </motion.div>
 
