@@ -6,6 +6,7 @@ import { SETTING_MODE } from "@/types/Setting";
 import useArtistMode from "./useArtistMode";
 import saveArtist from "@/lib/saveArtist";
 import useInitialArtists from "./useInitialArtists";
+import useCreateArtists from "./useCreateArtists";
 
 // Helper function to sort artists alphabetically by name
 const sortArtistsAlphabetically = (artists: ArtistRecord[]): ArtistRecord[] => {
@@ -39,6 +40,7 @@ const useArtists = () => {
   const activeArtistIndex = artists.findIndex(
     (artist: ArtistRecord) => artist.account_id === selectedArtist?.account_id,
   );
+  const { isCreatingArtist, setIsCreatingArtist, updateChatState } = useCreateArtists();
 
   const sorted =
     selectedArtist && activeArtistIndex >= 0
@@ -134,6 +136,9 @@ const useArtists = () => {
     menuVisibleArtistId,
     setIsLoading,
     isLoading,
+    isCreatingArtist,
+    setIsCreatingArtist,
+    updateChatState,
   };
 };
 
