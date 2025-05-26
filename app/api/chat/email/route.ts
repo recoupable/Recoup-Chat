@@ -58,7 +58,6 @@ export async function POST(req: NextRequest) {
         { status: 200, headers: { "Content-Type": "application/json" } }
       );
     }
-
     // Fallback for other message types
     return new Response(JSON.stringify({ message: "Message received" }), {
       status: 200,
