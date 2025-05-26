@@ -38,7 +38,7 @@
     "@uiw/react-heat-map": "^2.3.2",
     "@vercel/ai-sdk-gateway": "^0.1.7",
     "@vercel/analytics": "^1.5.0",
-    "ai": "5.0.0-alpha.4",
+    "ai": "4.3.13",
     "apify-client": "^2.9.7",
     "class-variance-authority": "^0.7.1",
     "classnames": "^2.5.1",
