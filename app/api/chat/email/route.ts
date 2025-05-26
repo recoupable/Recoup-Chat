@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import sendEmail from "@/lib/sendEmail";
+import sendEmail from "@/lib/email/sendEmail";
 
 // Type for AWS SNS POST payload
 interface SnsPayload {
