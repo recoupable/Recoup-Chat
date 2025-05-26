@@ -1,11 +1,14 @@
 import { NextRequest } from "next/server";
 import https from "https";
+import sendEmail from "@/lib/sendEmail";
 
 // Type for AWS SNS POST payload
 interface SnsPayload {
   Type: "SubscriptionConfirmation" | "Notification" | string;
   SubscribeURL?: string;
-  Message?: string;
+  mail?: {
+    source?: string;
+  };
   [key: string]: unknown;
 }
 
@@ -25,6 +28,7 @@ export async function POST(req: NextRequest) {
   try {
     const body = (await req.json()) as SnsPayload;
     console.log("Received SNS email notification:", body);
+
     if (body.Type === "SubscriptionConfirmation" && body.SubscribeURL) {
       try {
         const status = await confirmSnsSubscription(body.SubscribeURL);
@@ -51,13 +55,34 @@ export async function POST(req: NextRequest) {
     }
 
     if (body.Type === "Notification") {
-      // TODO: Process the email data here
-      console.log("Received SNS email notification:", body.Message);
+      const parsedMessage = body.mail ?? { source: "noreply@example.com" };
+      const recipient = parsedMessage.source;
+      const subject = "Thank you for your email";
+      const text = "This is an automated reply. We have received your message.";
+      try {
+        const emailResponse = await sendEmail({
+          to: recipient,
+          subject,
+          text,
+        });
+        if (
+          emailResponse &&
+          typeof emailResponse !== "string" &&
+          "json" in emailResponse
+        ) {
+          console.log("Auto-reply sent:", await emailResponse.json());
+        } else {
+          console.log("Auto-reply sent (no response body)");
+        }
+      } catch (e) {
+        console.error("Failed to send auto-reply:", e);
+      }
       return new Response(
-        JSON.stringify({ message: "Notification received" }),
+        JSON.stringify({ message: "Notification received, auto-reply sent" }),
         { status: 200, headers: { "Content-Type": "application/json" } }
       );
     }
+
     // Fallback for other message types
     return new Response(JSON.stringify({ message: "Message received" }), {
       status: 200,
