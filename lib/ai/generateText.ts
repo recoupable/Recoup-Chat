@@ -1,11 +1,10 @@
 import { generateText as generate } from "ai";
-import { gateway } from "@vercel/ai-sdk-gateway";
+import { anthropic } from "@ai-sdk/anthropic";
 
 const generateText = async ({ prompt }: { prompt: string }) => {
   const result = await generate({
-    // @ts-expect-error model type
-    model: gateway("anthropic/claude-3.7-sonnet"),
-    text: prompt,
+    model: anthropic("claude-3-7-sonnet-20250219"),
+    prompt,
   });
 
   return result;
