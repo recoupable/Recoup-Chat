@@ -6,7 +6,9 @@ import generateText from "@/lib/ai/generateText";
 interface SnsPayload {
   mail?: {
     source?: string;
-    subject?: string;
+    commonHeaders?: {
+      subject?: string;
+    };
   };
   content?: string;
   [key: string]: unknown;
@@ -19,7 +21,8 @@ export async function POST(req: NextRequest) {
     const parsedMessage = body.mail ?? { source: "noreply@example.com" };
     const recipient = parsedMessage.source;
     const subject =
-      parsedMessage.subject || "Recoup - Thank you for your email";
+      parsedMessage.commonHeaders?.subject ||
+      "Recoup - Thank you for your email";
 
     // Decode the email body from base64 if present
     let decodedBody = "";
