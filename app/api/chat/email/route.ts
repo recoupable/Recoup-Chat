@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
     const text = "This is an automated reply. We have received your message.";
     try {
       const emailResponse = await sendEmail({
-        to: recipient,
+        email: recipient || "",
         subject,
         text,
       });

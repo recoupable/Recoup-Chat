@@ -1,5 +1,9 @@
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const sendEmail = async (data: any) => {
+const sendEmail = async (data: {
+  email: string;
+  subject: string;
+  text: string;
+  template?: string;
+}) => {
   try {
     const response = await fetch("https://api.resend.com/emails", {
       method: "POST",
