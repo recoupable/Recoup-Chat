@@ -4,6 +4,7 @@ const sendEmail = async (data: {
   subject: string;
   text?: string;
   html?: string;
+  headers?: Record<string, string>;
 }) => {
   try {
     const response = await fetch("https://api.resend.com/emails", {

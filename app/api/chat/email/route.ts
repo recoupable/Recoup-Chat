@@ -6,6 +6,7 @@ import generateText from "@/lib/ai/generateText";
 interface SnsPayload {
   mail?: {
     source?: string;
+    messageId?: string;
     commonHeaders?: {
       subject?: string;
     };
@@ -20,9 +21,11 @@ export async function POST(req: NextRequest) {
     console.log("Received SNS email notification:", body);
     const parsedMessage = body.mail ?? { source: "noreply@example.com" };
     const recipient = parsedMessage.source;
-    const subject =
-      parsedMessage.commonHeaders?.subject ||
-      "Recoup - Thank you for your email";
+    const messageId = parsedMessage.messageId;
+    const originalSubject = parsedMessage.commonHeaders?.subject;
+    const subject = originalSubject?.startsWith("Re:")
+      ? originalSubject
+      : `Re: ${originalSubject}`;
 
     // Decode the email body from base64 if present
     let decodedBody = "";
@@ -60,6 +63,10 @@ export async function POST(req: NextRequest) {
         to: [recipient || ""],
         subject,
         text,
+        headers: {
+          "In-Reply-To": messageId || "",
+          References: messageId || "",
+        },
       });
       if (
         emailResponse &&
