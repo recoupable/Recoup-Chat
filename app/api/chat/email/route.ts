@@ -9,6 +9,7 @@ interface SnsPayload {
   mail?: {
     source?: string;
   };
+  content?: string;
   [key: string]: unknown;
 }
 
@@ -20,13 +21,29 @@ export async function POST(req: NextRequest) {
     const recipient = parsedMessage.source;
     const subject = "Thank you for your email";
 
-    // Generate the auto-reply text using generateText
-    const prompt =
-      "write a simple auto response email for inbound musician management request. from the company Recoup. only include the email body. no headers or subject";
-    let text;
+    // Decode the email body from base64 if present
+    let decodedBody = "";
+    if (body.content) {
+      try {
+        decodedBody = Buffer.from(body.content, "base64").toString("utf-8");
+      } catch (e) {
+        console.error("Failed to decode base64 email content:", e);
+      }
+    }
 
+    // Generate the auto-reply text using generateText
+    const system = `write a simple auto response email for inbound musician management request. 
+    from the company Recoup. 
+    only include the email body. 
+    If there's an original email, be sure to reference it in the response to show that you've read it and understand the request.
+    no headers or subject`;
+
+    const prompt = decodedBody ? `original email: ${decodedBody}` : "hi";
+    let text;
+    console.log("Prompt:", prompt);
     try {
       const generated = await generateText({
+        system,
         prompt,
       });
       text = generated.text;
