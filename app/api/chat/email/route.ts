@@ -20,9 +20,8 @@ export async function POST(req: NextRequest) {
     console.log("Received SNS email notification:", body);
     const parsedMessage = body.mail ?? { source: "noreply@example.com" };
     const recipient = parsedMessage.source;
-    // Use the subject from the original email if present, for conversation threading
-    const originalSubject = parsedMessage.subject;
-    const subject = originalSubject || "Recoup - Thank you for your email";
+    const subject =
+      parsedMessage.subject || "Recoup - Thank you for your email";
 
     // Decode the email body from base64 if present
     let decodedBody = "";
