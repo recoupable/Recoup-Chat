@@ -13,7 +13,7 @@ const UserInfo = ({
     <div
       className={`w-full flex gap-3 items-center ${email ? "justify-between" : "justify-end pr-2"}`}
     >
-      {email && (
+      {userData && (
         <button
           className="flex gap-2 items-center"
           type="button"
@@ -27,7 +27,9 @@ const UserInfo = ({
             />
           </div>
           <div>
-            <p className="text-xs md:text-sm truncate max-w-[190px]">{email}</p>
+            <p className="text-xs md:text-sm truncate max-w-[190px]">
+              {userData?.name || email || userData?.wallet}
+            </p>
             <p className="text-xs md:text-sm text-left">
               {userData?.organization}
             </p>

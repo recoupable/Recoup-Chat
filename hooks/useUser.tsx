@@ -4,6 +4,7 @@ import { Address } from "viem";
 import useTrackEmail from "./useTrackEmail";
 import { uploadFile } from "@/lib/ipfs/uploadToIpfs";
 import getIpfsLink from "@/lib/ipfs/getIpfsLink";
+import { useAccount } from "wagmi";
 
 const useUser = () => {
   const { login, user, logout } = usePrivy();
@@ -19,6 +20,7 @@ const useUser = () => {
   const [imageUploading, setImageUploading] = useState(false);
   const imageRef = useRef() as any;
   const [updating, setUpdating] = useState(false);
+  const { address: wagmiAddress } = useAccount();
 
   const toggleModal = () => setIsModalOpen(!isModalOpen);
 
@@ -80,7 +82,10 @@ const useUser = () => {
     const init = async () => {
       const config = {
         method: "POST",
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({
+          email,
+          wallet: wagmiAddress,
+        }),
         headers: {
           "Content-Type": "application/json",
         },
@@ -89,7 +94,7 @@ const useUser = () => {
 
       if (!response.ok) {
         throw new Error(
-          `Email API request failed with status: ${response.status}`,
+          `Email API request failed with status: ${response.status}`
         );
       }
 
@@ -100,9 +105,9 @@ const useUser = () => {
       setName(data?.data?.name || "");
       setOrganization(data?.data?.organization || "");
     };
-    if (!email) return;
+    if (!email && !wagmiAddress) return;
     init();
-  }, [email]);
+  }, [email, wagmiAddress]);
 
   return {
     address,

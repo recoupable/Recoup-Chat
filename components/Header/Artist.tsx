@@ -5,6 +5,7 @@ import { EllipsisVertical } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
+import { motion } from "framer-motion";
 
 const Artist = ({
   artist,
@@ -51,7 +52,9 @@ const Artist = ({
     : "";
 
   return (
-    <button
+    <motion.button
+      initial={isMini ? false : true}
+      layout="position"
       className={cn(
         "py-2 w-full outline-none",
         isMini
@@ -74,9 +77,9 @@ const Artist = ({
       <div className="relative">
         <div
           className={cn(
-            "w-8 h-8 aspect-1/1 rounded-full overflow-hidden flex items-center justify-center p-0.5",
+            "w-8 h-8 aspect-1/1 rounded-full overflow-hidden flex items-center justify-center p-0.5 border-2 border-transparent transition-colors min-w-8 min-h-8 box-content",
             isSelectedArtist &&
-              "shadow-[1px_1px_1px_1px_#E6E6E6] min-w-8 min-h-8 border-2 border-primary box-content",
+              "shadow-[1px_1px_1px_1px_#E6E6E6] border-primary",
             shouldHighlight && "brightness-110 shadow-md ring-1 ring-white/30",
           )}
         >
@@ -98,24 +101,24 @@ const Artist = ({
           >
             {displayName}
           </div>
-          {(isHovered || isSelectedArtist) && (
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                if (artist) toggleUpdate(artist);
-                toggleSettingModal();
-              }}
-              className="ml-auto flex-shrink-0"
-              title="Edit artist settings"
-              aria-label="Edit artist settings"
-            >
-              <EllipsisVertical className="size-5 rotate-90" />
-            </button>
-          )}
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              if (artist) toggleUpdate(artist);
+              toggleSettingModal();
+            }}
+            className={cn("ml-auto flex-shrink-0 opacity-0 pointer-events-none", {
+              "opacity-1 pointer-events-auto": isHovered || isSelectedArtist,
+            })}
+            title="Edit artist settings"
+            aria-label="Edit artist settings"
+          >
+            <EllipsisVertical className="size-5 rotate-90" />
+          </button>
         </>
       )}
-    </button>
+    </motion.button>
   );
 };
 
