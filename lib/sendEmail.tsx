@@ -1,8 +1,9 @@
 const sendEmail = async (data: {
-  email: string;
+  from: string;
+  to: string | string[];
   subject: string;
-  text: string;
-  template?: string;
+  text?: string;
+  html?: string;
 }) => {
   try {
     const response = await fetch("https://api.resend.com/emails", {
