@@ -24,7 +24,7 @@ function confirmSnsSubscription(subscribeUrl: string): Promise<number> {
 export async function POST(req: NextRequest) {
   try {
     const body = (await req.json()) as SnsPayload;
-
+    console.log("Received SNS email notification:", body);
     if (body.Type === "SubscriptionConfirmation" && body.SubscribeURL) {
       try {
         const status = await confirmSnsSubscription(body.SubscribeURL);
