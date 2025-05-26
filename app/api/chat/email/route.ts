@@ -40,7 +40,6 @@ export async function POST(req: NextRequest) {
 
     const prompt = decodedBody ? `original email: ${decodedBody}` : "hi";
     let text;
-    console.log("Prompt:", prompt);
     try {
       const generated = await generateText({
         system,
