@@ -5,13 +5,19 @@ import { motion } from "framer-motion";
 import { useArtistProvider } from "@/providers/ArtistProvider";
 import Artist from "../Header/Artist";
 import { ArtistRecord } from "@/types/Artist";
-import { Plus } from "lucide-react";
+import { Loader, Plus } from "lucide-react";
 import useIsMobile from "@/hooks/useIsMobile";
 import { useUserProvider } from "@/providers/UserProvder";
 import { useSidebarExpansion } from "@/providers/SidebarExpansionContext";
 
 const ArtistsSidebar = () => {
-  const { toggleCreation, sorted, selectedArtist } = useArtistProvider();
+  const {
+    toggleCreation,
+    sorted,
+    selectedArtist,
+    isCreatingArtist,
+    setIsCreatingArtist,
+  } = useArtistProvider();
   const { isPrepared, email } = useUserProvider();
   const { setIsExpanded } = useSidebarExpansion();
   const isMobile = useIsMobile();
@@ -28,7 +34,7 @@ const ArtistsSidebar = () => {
 
   const handleCreate = () => {
     if (!isPrepared()) return;
-
+    setIsCreatingArtist(true);
     toggleCreation();
   };
 
@@ -58,11 +64,16 @@ const ArtistsSidebar = () => {
         className={`${menuExpanded ? "flex px-2 py-1 gap-2 text-sm items-center text-grey-dark-1" : "flex justify-center"} ${!isArtistSelected ? "relative z-50 brightness-125" : ""}`}
         onClick={handleCreate}
         type="button"
+        disabled={isCreatingArtist}
       >
         <div
           className={`w-8 flex justify-center ${!menuExpanded && "mx-auto"}`}
         >
-          <Plus className="size-5 text-grey-dark-1" />
+          {isCreatingArtist ? (
+            <Loader className="size-5 text-grey-dark-1 animate-spin" />
+          ) : (
+            <Plus className="size-5 text-grey-dark-1" />
+          )}
         </div>
         {menuExpanded && "New Artist"}
       </button>
