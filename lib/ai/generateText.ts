@@ -3,6 +3,7 @@ import { gateway } from "@vercel/ai-sdk-gateway";
 
 const generateText = async ({ prompt }: { prompt: string }) => {
   const result = await generate({
+    // @ts-expect-error model type
     model: gateway("anthropic/claude-3.7-sonnet"),
     prompt,
   });
