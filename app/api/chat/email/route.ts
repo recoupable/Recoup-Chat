@@ -4,8 +4,6 @@ import generateText from "@/lib/ai/generateText";
 
 // Type for AWS SNS POST payload
 interface SnsPayload {
-  Type: "SubscriptionConfirmation" | "Notification" | string;
-  SubscribeURL?: string;
   mail?: {
     source?: string;
     subject?: string;
