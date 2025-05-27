@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { ImageGenerationResult } from "@/lib/tools/generateImage";
 import { useImageDownloader } from "@/hooks/useImageDownloader";
-import MessageMediaDownloadButton from "../VercelChat/MessageMediaDownloadButton";
+import MessageMediaDownloadButton from "../Chat/MessageMediaDownloadButton";
 
 interface ImageResultProps {
   result: ImageGenerationResult;
