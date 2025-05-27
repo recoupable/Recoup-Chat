@@ -2,7 +2,7 @@ import getDataset from "@/lib/apify/getDataset";
 import { ApifyInstagramPost } from "@/types/Apify";
 import saveApifyInstagramPosts from "@/lib/apify/saveApifyInstagramPosts";
 import { Tables } from "@/types/database.types";
-import { apifyPayloadSchema } from "@/app/api/apify/route";
+import apifyPayloadSchema from "@/lib/apify/apifyPayloadSchema";
 import { z } from "zod";
 
 /**
