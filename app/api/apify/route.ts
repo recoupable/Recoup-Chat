@@ -18,7 +18,6 @@ const apifyPayloadSchema = z.object({
  * Accepts a POST request with a JSON payload, optionally fetches a dataset, and always responds with 200.
  */
 export async function POST(req: NextRequest) {
-  console.log("Received Apify webhook");
   try {
     const body = await req.json();
     // Optionally validate the payload shape
