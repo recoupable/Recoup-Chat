@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
 import sendEmail from "@/lib/email/sendEmail";
-import generateText from "@/lib/ai/generateText";
+import { generateEmailTextForRecipient } from "@/lib/email/generateEmailText";
 
 // Type for AWS SNS POST payload
 interface SnsPayload {
@@ -34,25 +34,11 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // Generate the auto-reply text using generateText
-    const system = `write a simple auto response email for inbound musician management request. 
-    from the company Recoup. 
-    only include the email body. 
-    If there's an original email, be sure to reference it in the response to show that you've read it and understand the request.
-    no headers or subject`;
-
-    const prompt = decodedBody ? `original email: ${decodedBody}` : "hi";
-    let text;
-    try {
-      const generated = await generateText({
-        system,
-        prompt,
-      });
-      text = generated.text;
-      console.log("Text:", text);
-    } catch (e) {
-      console.error("Failed to generate auto-reply text:", e);
-    }
+    const text = await generateEmailTextForRecipient(
+      recipient || "",
+      decodedBody
+    );
+    console.log("Text:", text);
 
     try {
       const emailResponse = await sendEmail({
