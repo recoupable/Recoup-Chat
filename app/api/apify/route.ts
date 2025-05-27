@@ -1,17 +1,7 @@
 import { NextRequest } from "next/server";
 import { z } from "zod";
 import handleApifyWebhook from "@/lib/apify/handleApifyWebhook";
-
-// Payload schema for Apify webhook
-export const apifyPayloadSchema = z.object({
-  userId: z.any(),
-  createdAt: z.any(),
-  eventType: z.any(),
-  eventData: z.any(),
-  resource: z.object({
-    defaultDatasetId: z.string(),
-  }),
-});
+import apifyPayloadSchema from "@/lib/apify/apifyPayloadSchema";
 
 /**
  * API endpoint for Apify webhooks.
