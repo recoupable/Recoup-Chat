@@ -25,6 +25,9 @@ import GenericSuccess from "./tools/GenericSuccess";
 import getToolInfo from "@/lib/utils/getToolsInfo";
 import { GetSpotifyPlayButtonClickedResult } from "@/lib/supabase/getSpotifyPlayButtonClicked";
 import GetVideoGameCampaignPlaysResultComponent from "./tools/GetVideoGameCampaignPlaysResult";
+import GetSegmentFansResult from "./tools/segment-fans/GetSegmentFansResult";
+import GetSegmentFansResultSkeleton from "./tools/segment-fans/GetSegmentFansResultSkeleton";
+import { SegmentFansResult } from "@/types/fans";
 
 /**
  * Interface for tool call props
@@ -43,6 +46,7 @@ type ToolResult =
   | CreateArtistResult
   | DeleteArtistResult
   | GetSpotifyPlayButtonClickedResult
+  | SegmentFansResult
   | Record<string, unknown>;
 
 /**
@@ -81,11 +85,20 @@ export function getToolCallComponent({ toolName, toolCallId }: ToolInvocation) {
         <DeleteArtistToolCall />
       </div>
     );
+  } else if (toolName === "get_segment_fans") {
+    return (
+      <div key={toolCallId} className="w-full">
+        <GetSegmentFansResultSkeleton />
+      </div>
+    );
   }
 
   // Default for other tools
   return (
-    <div key={toolCallId} className="flex items-center gap-1 py-1 px-2 bg-primary/5 rounded-sm border w-fit text-xs">
+    <div
+      key={toolCallId}
+      className="flex items-center gap-1 py-1 px-2 bg-primary/5 rounded-sm border w-fit text-xs"
+    >
       <Loader className="h-3 w-3 animate-spin text-primary" />
       <span>Using {getDisplayToolName(toolName)}</span>
     </div>
@@ -158,10 +171,24 @@ export function getToolResultComponent({
         />
       </div>
     );
+  } else if (toolName === "get_segment_fans") {
+    return (
+      <div key={toolCallId} className="w-full">
+        <GetSegmentFansResult result={result as SegmentFansResult} />
+      </div>
+    );
   }
 
   // Default generic result for other tools
-  return <GenericSuccess name={getDisplayToolName(toolName)} message={(result as { message?: string }).message ?? getToolInfo(toolName).message} />;
+  return (
+    <GenericSuccess
+      name={getDisplayToolName(toolName)}
+      message={
+        (result as { message?: string }).message ??
+        getToolInfo(toolName).message
+      }
+    />
+  );
 }
 
 /**
