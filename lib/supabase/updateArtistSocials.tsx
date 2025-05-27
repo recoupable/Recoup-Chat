@@ -37,10 +37,10 @@ const updateArtistSocials = async (
             await insertAccountSocial(artistId, social.id);
           }
         } else {
-          const new_social = await insertSocial(
-            getUserNameByProfileLink(value),
-            value
-          );
+          const new_social = await insertSocial({
+            username: getUserNameByProfileLink(value),
+            profile_url: value,
+          });
           if (new_social) {
             await insertAccountSocial(artistId, new_social.id);
           }
