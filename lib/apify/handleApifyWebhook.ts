@@ -1,5 +1,5 @@
 import getDataset from "@/lib/apify/getDataset";
-import { ApifyInstagramPost } from "@/lib/apify/ApifyInstagramPost";
+import { ApifyInstagramPost } from "@/types/Apify";
 import insertPosts from "@/lib/supabase/posts/insertPosts";
 import getPosts from "@/lib/supabase/posts/getPosts";
 import { TablesInsert, Tables } from "@/types/database.types";
