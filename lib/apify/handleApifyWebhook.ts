@@ -6,6 +6,9 @@ import apifyPayloadSchema from "@/lib/apify/apifyPayloadSchema";
 import { z } from "zod";
 import insertSocial from "@/lib/supabase/socials/insertSocial";
 import getSocialByProfileUrl from "@/lib/supabase/socials/getSocialByProfileUrl";
+import getAccountSocials, {
+  AccountSocialWithSocial,
+} from "@/lib/supabase/accountSocials/getAccountSocials";
 import insertSocialPosts from "@/lib/supabase/socialPosts/insertSocialPosts";
 
 /**
@@ -19,6 +22,7 @@ export default async function handleApifyWebhook(
   const datasetId = parsed.resource.defaultDatasetId;
   let supabasePosts: Tables<"posts">[] = [];
   const supabaseSocials: Tables<"socials">[] = [];
+  let accountSocials: AccountSocialWithSocial[] = [];
   if (datasetId) {
     try {
       const dataset = await getDataset(datasetId);
@@ -55,5 +59,9 @@ export default async function handleApifyWebhook(
       console.error("Failed to handle Apify webhook:", e);
     }
   }
-  return { supabasePosts, supabaseSocials };
+  if (supabaseSocials.length > 0) {
+    const socialIds = supabaseSocials.map((s) => s.id);
+    accountSocials = await getAccountSocials({ socialId: socialIds });
+  }
+  return { supabasePosts, supabaseSocials, accountSocials };
 }

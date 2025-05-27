@@ -13,12 +13,16 @@ export async function POST(req: NextRequest) {
     const parsed = apifyPayloadSchema.safeParse(body);
     console.log("Received Apify webhook:", parsed);
 
-    if (parsed.success) {
-      const result = await handleApifyWebhook(parsed.data);
-      console.log("handleApifyWebhook result:", result);
+    if (!parsed.success) {
+      return new Response(JSON.stringify({ message: "Invalid payload" }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" },
+      });
     }
+    const result = await handleApifyWebhook(parsed.data);
+    console.log("handleApifyWebhook result:", result);
 
-    return new Response(JSON.stringify({ message: "Apify webhook received" }), {
+    return new Response(JSON.stringify(result), {
       status: 200,
       headers: { "Content-Type": "application/json" },
     });
