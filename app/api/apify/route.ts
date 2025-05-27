@@ -8,7 +8,9 @@ const apifyPayloadSchema = z.object({
   createdAt: z.any(),
   eventType: z.any(),
   eventData: z.any(),
-  resource: z.any(),
+  resource: z.object({
+    defaultDatasetId: z.string(),
+  }),
 });
 
 /**
@@ -16,6 +18,7 @@ const apifyPayloadSchema = z.object({
  * Accepts a POST request with a JSON payload, optionally fetches a dataset, and always responds with 200.
  */
 export async function POST(req: NextRequest) {
+  console.log("Received Apify webhook");
   try {
     const body = await req.json();
     // Optionally validate the payload shape
@@ -25,14 +28,8 @@ export async function POST(req: NextRequest) {
       // Optionally log or handle invalid payloads
       // console.warn("Invalid Apify payload", parsed.error);
     }
-    // Try to extract datasetId from eventData or resource
-    let datasetId = null;
-    if (body.eventData && body.eventData.datasetId) {
-      datasetId = body.eventData.datasetId;
-    } else if (body.resource && typeof body.resource === "string") {
-      datasetId = body.resource;
-    }
     // If datasetId is present, call getDataset
+    const datasetId = parsed.data?.resource?.defaultDatasetId;
     let dataset = null;
     if (datasetId) {
       try {
