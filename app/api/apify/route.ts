@@ -19,6 +19,7 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     // Optionally validate the payload shape
     const parsed = apifyPayloadSchema.safeParse(body);
+    console.log("Received Apify webhook:", parsed);
     if (!parsed.success) {
       // Optionally log or handle invalid payloads
       // console.warn("Invalid Apify payload", parsed.error);
