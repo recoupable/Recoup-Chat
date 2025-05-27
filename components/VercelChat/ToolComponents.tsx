@@ -1,9 +1,9 @@
 import { ImageSkeleton } from "@/components/ui/ImageSkeleton";
 import { ImageResult } from "@/components/ui/ImageResult";
 import { ImageGenerationResult } from "@/lib/tools/generateImage";
-import MermaidDiagram from "../Chat/mermaid/MermaidDiagram";
+import MermaidDiagram from "@/components/VercelChat/tools/mermaid/MermaidDiagram";
+import { MermaidDiagramSkeleton } from "@/components/VercelChat/tools/mermaid/MermaidDiagramSkeleton";
 import { GenerateMermaidDiagramResult } from "@/lib/tools/generateMermaidDiagram";
-import { MermaidDiagramSkeleton } from "../ui/MermaidDiagramSkeleton";
 import CreateArtistToolCall from "./tools/CreateArtistToolCall";
 import CreateArtistToolResult from "./tools/CreateArtistToolResult";
 import { CreateArtistResult } from "@/lib/tools/createArtist";
@@ -25,6 +25,9 @@ import GenericSuccess from "./tools/GenericSuccess";
 import getToolInfo from "@/lib/utils/getToolsInfo";
 import { GetSpotifyPlayButtonClickedResult } from "@/lib/supabase/getSpotifyPlayButtonClicked";
 import GetVideoGameCampaignPlaysResultComponent from "./tools/GetVideoGameCampaignPlaysResult";
+import { CommentsResult } from "@/components/Chat/comments/CommentsResult";
+import { CommentsResultData } from "@/types/Comment";
+import CommentsResultSkeleton from "@/components/Chat/comments/CommentsResultSkeleton";
 
 /**
  * Interface for tool call props
@@ -43,6 +46,7 @@ type ToolResult =
   | CreateArtistResult
   | DeleteArtistResult
   | GetSpotifyPlayButtonClickedResult
+  | CommentsResultData
   | Record<string, unknown>;
 
 /**
@@ -81,11 +85,20 @@ export function getToolCallComponent({ toolName, toolCallId }: ToolInvocation) {
         <DeleteArtistToolCall />
       </div>
     );
+  } else if (toolName === "get_post_comments") {
+    return (
+      <div key={toolCallId}>
+        <CommentsResultSkeleton />
+      </div>
+    );
   }
 
   // Default for other tools
   return (
-    <div key={toolCallId} className="flex items-center gap-1 py-1 px-2 bg-primary/5 rounded-sm border w-fit text-xs">
+    <div
+      key={toolCallId}
+      className="flex items-center gap-1 py-1 px-2 bg-primary/5 rounded-sm border w-fit text-xs"
+    >
       <Loader className="h-3 w-3 animate-spin text-primary" />
       <span>Using {getDisplayToolName(toolName)}</span>
     </div>
@@ -158,10 +171,24 @@ export function getToolResultComponent({
         />
       </div>
     );
+  } else if (toolName === "get_post_comments") {
+    return (
+      <div key={toolCallId}>
+        <CommentsResult result={result as CommentsResultData} />
+      </div>
+    );
   }
 
   // Default generic result for other tools
-  return <GenericSuccess name={getDisplayToolName(toolName)} message={(result as { message?: string }).message ?? getToolInfo(toolName).message} />;
+  return (
+    <GenericSuccess
+      name={getDisplayToolName(toolName)}
+      message={
+        (result as { message?: string }).message ??
+        getToolInfo(toolName).message
+      }
+    />
+  );
 }
 
 /**
