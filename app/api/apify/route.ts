@@ -1,5 +1,4 @@
 import { NextRequest } from "next/server";
-import { z } from "zod";
 import handleApifyWebhook from "@/lib/apify/handleApifyWebhook";
 import apifyPayloadSchema from "@/lib/apify/apifyPayloadSchema";
 
