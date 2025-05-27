@@ -1,32 +1,7 @@
 import { z } from "zod";
 import { tool } from "ai";
 
-// Response types
-interface Fan {
-  id: string;
-  username: string;
-  avatar: string;
-  profile_url: string;
-  segment_id: string;
-  segment_name: string;
-  fan_social_id: string;
-  region: string;
-  bio: string;
-  follower_count: number;
-  following_count: number;
-  updated_at: string;
-}
-
-interface FanResponse {
-  status: "success" | "error";
-  fans: Fan[];
-  pagination: {
-    total_count: number;
-    page: number;
-    limit: number;
-    total_pages: number;
-  };
-}
+import { FanResponse } from "@/types/fans";
 
 // Zod schema for parameter validation
 const schema = z.object({
