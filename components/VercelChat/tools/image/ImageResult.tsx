@@ -1,20 +1,16 @@
 import Image from "next/image";
 import { ImageGenerationResult } from "@/lib/tools/generateImage";
 import { useImageDownloader } from "@/hooks/useImageDownloader";
-import MessageMediaDownloadButton from "../VercelChat/MessageMediaDownloadButton";
+import MessageMediaDownloadButton from "../../MessageMediaDownloadButton";
 
 interface ImageResultProps {
   result: ImageGenerationResult;
 }
 
 export function ImageResult({ result }: ImageResultProps) {
-  const { 
-    isDownloading, 
-    isReady, 
-    handleDownload 
-  } = useImageDownloader({
+  const { isDownloading, isReady, handleDownload } = useImageDownloader({
     imageUrl: result.arweaveUrl,
-    enabled: result.success
+    enabled: result.success,
   });
 
   if (!result.success) {
@@ -39,27 +35,33 @@ export function ImageResult({ result }: ImageResultProps) {
             <div className="absolute z-10 transition-opacity duration-300 opacity-0 group-hover:opacity-100 group-focus:opacity-100 focus-within:opacity-100 end-0 top-0 w-full">
               <div className="bg-gradient-to-t from-transparent to-black/30 h-20 w-full md:rounded-t-2xl" />
             </div>
-            
+
             {/* Bottom gradient overlay */}
             <div className="absolute z-10 transition-opacity duration-300 opacity-0 group-hover:opacity-100 group-focus:opacity-100 focus-within:opacity-100 end-0 bottom-0 w-full">
               <div className="bg-gradient-to-b from-transparent to-black/30 h-20 w-full md:rounded-b-2xl" />
             </div>
-            
+
             {/* Download Image Button */}
-            <MessageMediaDownloadButton onClick={handleDownload} overrideButtonClassName="hover:bg-gray-200/10" overrideIconClassName="text-white" isReady={isReady} isDownloading={isDownloading} />
-            
+            <MessageMediaDownloadButton
+              onClick={handleDownload}
+              overrideButtonClassName="hover:bg-gray-200/10"
+              overrideIconClassName="text-white"
+              isReady={isReady}
+              isDownloading={isDownloading}
+            />
+
             <div className="w-full h-auto max-w-md max-h-md">
-              <Image 
-                src={result.arweaveUrl} 
+              <Image
+                src={result.arweaveUrl}
                 alt="Generated image"
-                width={448} 
+                width={448}
                 height={448}
-                style={{ 
-                  width: '100%', 
-                  height: 'auto',
-                  maxWidth: '28rem',
-                  maxHeight: '28rem',
-                  objectFit: 'contain'
+                style={{
+                  width: "100%",
+                  height: "auto",
+                  maxWidth: "28rem",
+                  maxHeight: "28rem",
+                  objectFit: "contain",
                 }}
                 priority
               />
