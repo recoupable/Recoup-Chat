@@ -16,7 +16,7 @@ export default async function saveApifyInstagramPosts(
     updated_at: post.timestamp,
   }));
   const postUrls = posts.map((post) => post.post_url);
-  const saveResult = await insertPosts(posts);
+  await insertPosts(posts);
   const supabasePosts: Tables<"posts">[] = await getPosts(postUrls);
-  return { saveResult, supabasePosts };
+  return { supabasePosts };
 }

@@ -14,22 +14,19 @@ export default async function handleApifyWebhook(
   parsed: z.infer<typeof apifyPayloadSchema>
 ) {
   const datasetId = parsed.resource.defaultDatasetId;
-  let saveResult = null;
   let supabasePosts: Tables<"posts">[] = [];
   if (datasetId) {
     try {
       const dataset = await getDataset(datasetId);
       if (Array.isArray(dataset) && dataset[0]?.latestPosts) {
-        const { saveResult: sr, supabasePosts: sp } =
-          await saveApifyInstagramPosts(
-            dataset[0].latestPosts as ApifyInstagramPost[]
-          );
-        saveResult = sr;
+        const { supabasePosts: sp } = await saveApifyInstagramPosts(
+          dataset[0].latestPosts as ApifyInstagramPost[]
+        );
         supabasePosts = sp;
       }
     } catch (e) {
       console.error("Failed to handle Apify webhook:", e);
     }
   }
-  return { saveResult, supabasePosts };
+  return { supabasePosts };
 }
