@@ -1,9 +1,9 @@
-import { ImageSkeleton } from "@/components/ui/ImageSkeleton";
-import { ImageResult } from "@/components/ui/ImageResult";
+import { ImageSkeleton } from "@/components/VercelChat/tools/image/ImageSkeleton";
+import { ImageResult } from "@/components/VercelChat/tools/image/ImageResult";
 import { ImageGenerationResult } from "@/lib/tools/generateImage";
-import MermaidDiagram from "../Chat/mermaid/MermaidDiagram";
+import MermaidDiagram from "@/components/VercelChat/tools/mermaid/MermaidDiagram";
+import { MermaidDiagramSkeleton } from "@/components/VercelChat/tools/mermaid/MermaidDiagramSkeleton";
 import { GenerateMermaidDiagramResult } from "@/lib/tools/generateMermaidDiagram";
-import { MermaidDiagramSkeleton } from "../ui/MermaidDiagramSkeleton";
 import CreateArtistToolCall from "./tools/CreateArtistToolCall";
 import CreateArtistToolResult from "./tools/CreateArtistToolResult";
 import { CreateArtistResult } from "@/lib/tools/createArtist";
@@ -25,6 +25,9 @@ import GenericSuccess from "./tools/GenericSuccess";
 import getToolInfo from "@/lib/utils/getToolsInfo";
 import { GetSpotifyPlayButtonClickedResult } from "@/lib/supabase/getSpotifyPlayButtonClicked";
 import GetVideoGameCampaignPlaysResultComponent from "./tools/GetVideoGameCampaignPlaysResult";
+import { CommentsResult } from "@/components/Chat/comments/CommentsResult";
+import { CommentsResultData } from "@/types/Comment";
+import CommentsResultSkeleton from "@/components/Chat/comments/CommentsResultSkeleton";
 import GetSegmentFansResult from "./tools/segment-fans/GetSegmentFansResult";
 import GetSegmentFansResultSkeleton from "./tools/segment-fans/GetSegmentFansResultSkeleton";
 import { SegmentFansResult } from "@/types/fans";
@@ -46,6 +49,7 @@ type ToolResult =
   | CreateArtistResult
   | DeleteArtistResult
   | GetSpotifyPlayButtonClickedResult
+  | CommentsResultData
   | SegmentFansResult
   | Record<string, unknown>;
 
@@ -83,6 +87,12 @@ export function getToolCallComponent({ toolName, toolCallId }: ToolInvocation) {
     return (
       <div key={toolCallId}>
         <DeleteArtistToolCall />
+      </div>
+    );
+  } else if (toolName === "get_post_comments") {
+    return (
+      <div key={toolCallId}>
+        <CommentsResultSkeleton />
       </div>
     );
   } else if (toolName === "get_segment_fans") {
@@ -169,6 +179,12 @@ export function getToolResultComponent({
         <GetVideoGameCampaignPlaysResultComponent
           result={result as GetSpotifyPlayButtonClickedResult}
         />
+      </div>
+    );
+  } else if (toolName === "get_post_comments") {
+    return (
+      <div key={toolCallId}>
+        <CommentsResult result={result as CommentsResultData} />
       </div>
     );
   } else if (toolName === "get_segment_fans") {

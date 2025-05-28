@@ -1,33 +1,6 @@
 import { z } from "zod";
 import { tool } from "ai";
-
-// Response types
-interface Comment {
-  id: string;
-  post_id: string;
-  social_id: string;
-  comment: string;
-  commented_at: string;
-  username: string;
-  avatar: string | null;
-  profile_url: string;
-  post_url: string;
-  region: string | null;
-  bio: string | null;
-  follower_count: number | null;
-  following_count: number | null;
-}
-
-interface CommentResponse {
-  status: "success" | "error";
-  comments: Comment[];
-  pagination: {
-    total_count: number;
-    page: number;
-    limit: number;
-    total_pages: number;
-  };
-}
+import { CommentResponse } from "@/types/Comment";
 
 // Zod schema for parameter validation
 const schema = z.object({
