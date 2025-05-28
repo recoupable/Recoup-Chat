@@ -43,12 +43,12 @@ export default async function handleApifyWebhook(
         await insertSocial({
           username: firstResult.username,
           avatar: firstResult.profilePicUrl,
-          profile_url: firstResult.url + "/",
+          profile_url: firstResult.url,
           bio: firstResult.biography,
           followerCount: firstResult.followersCount,
           followingCount: firstResult.followsCount,
         });
-        const social = await getSocialByProfileUrl(firstResult.url + "/");
+        const social = await getSocialByProfileUrl(firstResult.url);
         console.log("social", social);
         if (social) {
           supabaseSocials.push(social);
