@@ -19,14 +19,7 @@ export default async function generateTxtFileEmail({
   emails: string[];
   conversationId: string;
 }) {
-  console.log("generateTxtFileEmail", {
-    rawTextFile,
-    arweaveFile,
-    emails,
-    conversationId,
-  });
   if (!emails?.length) return null;
-  console.log("emails", emails);
   const ctaUrl = `https://chat.recoupable.com/chat/${conversationId}`;
   const prompt = `You have a newly generated TXT file. Here is the data:
 
@@ -40,7 +33,7 @@ CTA URL: ${ctaUrl}
     system: `you are a record label services manager for Recoup.
       write beautiful html email.
       subject: New TXT File Notification. you're notifying music managers about a new txt file they've generated using Recoup Chat (AI Agents).
-      include a link to view the txt file.
+      include a button to view the txt file (onClick open the CTA URL).
       do not mention arweave in your email.
       call to action is to open the original conversation where the txt file was generated using Recoup Chat (AI Agents): ${ctaUrl}
       You'll be passed a raw text file and a link to view the full TXT File.
@@ -49,8 +42,6 @@ CTA URL: ${ctaUrl}
       no headers or subject`,
     prompt,
   });
-
-  console.log("text", text);
 
   return await sendEmail({
     from: "Recoup <hi@recoupable.com>",
