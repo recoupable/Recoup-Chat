@@ -27,9 +27,10 @@ duplicate_groups AS (
 SELECT 
   normalized_url,
   keep_id,
-  unnest(id_array) as duplicate_id
-FROM duplicate_groups
-WHERE unnest(id_array) != keep_id; -- Exclude the ID we're keeping
+  duplicate_id
+FROM duplicate_groups,
+LATERAL unnest(id_array) AS duplicate_id
+WHERE duplicate_id != keep_id;
 
 -- 2. Update references in account_socials
 UPDATE account_socials AS a
