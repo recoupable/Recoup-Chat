@@ -51,7 +51,7 @@ const SideMenu = ({
       <button className="mt-4" onClick={() => push("/")} type="button">
         <Logo />
       </button>
-      <div className="flex flex-col gap-2 w-full pb-2">
+      <div className="flex flex-col gap-1 w-full pb-2">
         <Button
           variant="outline"
           className="mt-4 rounded-xl md:mt-8 cursor-pointer"
@@ -76,7 +76,7 @@ const SideMenu = ({
           </Button>
         )}
         <Button
-          variant="outline"
+          variant="ghost"
           onClick={() => goToItem("agents")}
           className="rounded-xl w-full flex justify-start"
           aria-label="View agents"
@@ -85,7 +85,7 @@ const SideMenu = ({
           Agents
         </Button>
         <Button
-          variant="outline"
+           variant="ghost"
           onClick={() => goToItem("segments")}
           className="flex justify-start rounded-xl w-full"
           aria-label="View segments"
