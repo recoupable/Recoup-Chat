@@ -13,6 +13,7 @@ import insertSocialPosts from "@/lib/supabase/socialPosts/insertSocialPosts";
 import getAccountArtistIdsByArtistId from "@/lib/supabase/accountArtistIds/getAccountArtistIdsByArtistId";
 import getAccountEmails from "../supabase/accountEmails/getAccountEmails";
 import sendApifyWebhookEmail from "@/lib/apify/sendApifyWebhookEmail";
+import normalizeProfileUrl from "@/lib/utils/normalizeProfileUrl";
 
 /**
  * Handles the Apify webhook payload: fetches dataset, saves posts, saves socials, and returns results.
@@ -48,7 +49,9 @@ export default async function handleApifyWebhook(
           followerCount: firstResult.followersCount,
           followingCount: firstResult.followsCount,
         });
-        const social = await getSocialByProfileUrl(firstResult.url);
+        const normalizedUrl = normalizeProfileUrl(firstResult.url);
+        console.log("normalizedUrl", normalizedUrl);
+        const social = await getSocialByProfileUrl(normalizedUrl);
         console.log("social", social);
         if (social) {
           supabaseSocials.push(social);
