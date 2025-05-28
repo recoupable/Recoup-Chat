@@ -10,7 +10,7 @@ import getAccountSocials, {
   AccountSocialWithSocial,
 } from "@/lib/supabase/accountSocials/getAccountSocials";
 import insertSocialPosts from "@/lib/supabase/socialPosts/insertSocialPosts";
-import getAccountArtistIdsByArtistId from "@/lib/supabase/accountArtistIds/getAccountArtistIdsByArtistId";
+import getAccountArtistIds from "@/lib/supabase/accountArtistIds/getAccountArtistIds";
 import getAccountEmails from "../supabase/accountEmails/getAccountEmails";
 import sendApifyWebhookEmail from "@/lib/apify/sendApifyWebhookEmail";
 import normalizeProfileUrl from "@/lib/utils/normalizeProfileUrl";
@@ -64,8 +64,8 @@ export default async function handleApifyWebhook(
           const socialIds = [social.id];
           accountSocials = await getAccountSocials({ socialId: socialIds });
           console.log("accountSocials", accountSocials);
-          const { data } = await getAccountArtistIdsByArtistId(
-            accountSocials[0].account_id as string
+          const { data } = await getAccountArtistIds(
+            accountSocials.map((a) => a.account_id as string)
           );
           accountArtistIds = data || [];
           // Get emails for all unique account_ids
