@@ -1,7 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { Fan } from "@/types/fans";
-import formatNumber from "@/lib/utils/format-number";
+import formatFollowerCount from "@/lib/utils/formatFollowerCount";
 
 interface FanCardProps {
   fan: Fan;
@@ -49,7 +49,7 @@ const FanCard: React.FC<FanCardProps> = ({ fan, index }) => {
         <p className="text-[10px] text-gray-500 truncate">{fan.bio}</p>
         
         <div className="text-[10px] text-gray-500">
-          {formatNumber(fan.follower_count)} • {formatNumber(fan.following_count)}
+          {formatFollowerCount(fan.follower_count)} • {formatFollowerCount(fan.following_count)}
         </div>
       </div>
     </motion.div>
