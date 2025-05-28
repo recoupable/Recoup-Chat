@@ -45,11 +45,9 @@ export default async function handleApifyWebhook(
         const arweaveResult = await uploadLinkToArweave(
           firstResult.profilePicUrlHD || firstResult.profilePicUrl
         );
-        console.log("arweaveResult", arweaveResult);
         if (arweaveResult && arweaveResult.url) {
           firstResult.profilePicUrl = arweaveResult.url;
         }
-        console.log("firstResult", firstResult);
 
         await insertSocial({
           username: firstResult.username,

@@ -10,30 +10,6 @@ export async function POST(req: NextRequest) {
   const wallet = body.wallet;
 
   try {
-    // If wallet is provided, check account_wallets first
-    if (wallet) {
-      try {
-        const account = await getAccountByWallet(wallet);
-        return Response.json(
-          {
-            data: {
-              ...account.account_info[0],
-              ...account.account_emails[0],
-              ...account.account_wallets[0],
-              ...account,
-            },
-          },
-          { status: 200 }
-        );
-      } catch (error) {
-        console.log(
-          "Wallet not found, checking email:",
-          error instanceof Error ? error.message : "Unknown error"
-        );
-        // Continue to email check if wallet not found
-      }
-    }
-
     // If email is provided, check account_emails
     if (email) {
       try {
@@ -65,6 +41,30 @@ export async function POST(req: NextRequest) {
           error instanceof Error ? error.message : "Unknown error"
         );
         // Continue to create new account if email not found
+      }
+    }
+
+    // If wallet is provided, check account_wallets first
+    if (wallet) {
+      try {
+        const account = await getAccountByWallet(wallet);
+        return Response.json(
+          {
+            data: {
+              ...account.account_info[0],
+              ...account.account_emails[0],
+              ...account.account_wallets[0],
+              ...account,
+            },
+          },
+          { status: 200 }
+        );
+      } catch (error) {
+        console.log(
+          "Wallet not found, checking email:",
+          error instanceof Error ? error.message : "Unknown error"
+        );
+        // Continue to email check if wallet not found
       }
     }
 
