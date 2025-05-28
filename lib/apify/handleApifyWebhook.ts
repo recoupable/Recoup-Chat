@@ -34,7 +34,6 @@ export default async function handleApifyWebhook(
     try {
       dataset = await getDataset(datasetId);
       const firstResult = dataset[0];
-      console.log("firstResult", firstResult);
       if (Array.isArray(dataset) && firstResult?.latestPosts) {
         // Save posts
         const { supabasePosts: sp } = await saveApifyInstagramPosts(
@@ -84,7 +83,6 @@ export default async function handleApifyWebhook(
       dataset[0],
       emails.map((e) => e.email).filter(Boolean) as string[]
     );
-    console.log("sendApifyWebhookEmail result", sentEmails);
   }
   return {
     supabasePosts,
