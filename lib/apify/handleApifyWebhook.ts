@@ -18,14 +18,14 @@ import normalizeProfileUrl from "@/lib/utils/normalizeProfileUrl";
 /**
  * Handles the Apify webhook payload: fetches dataset, saves posts, saves socials, and returns results.
  * @param parsed - The parsed and validated Apify webhook payload
- * @returns An object with supabasePosts, supabaseSocials, accountSocials, accountArtistIds, accountEmails, and sentEmails
+ * @returns An object with posts, socials, accountSocials, accountArtistIds, accountEmails, and sentEmails
  */
 export default async function handleApifyWebhook(
   parsed: z.infer<typeof apifyPayloadSchema>
 ) {
   const datasetId = parsed.resource.defaultDatasetId;
-  let supabasePosts: Tables<"posts">[] = [];
-  const supabaseSocials: Tables<"socials">[] = [];
+  let posts: Tables<"posts">[] = [];
+  let social: Tables<"socials"> | null = null;
   let accountSocials: AccountSocialWithSocial[] = [];
   let accountArtistIds: Tables<"account_artist_ids">[] = [];
   let accountEmails: Tables<"account_emails">[] = [];
@@ -40,7 +40,7 @@ export default async function handleApifyWebhook(
         const { supabasePosts: sp } = await saveApifyInstagramPosts(
           firstResult.latestPosts as ApifyInstagramPost[]
         );
-        supabasePosts = sp;
+        posts = sp;
         await insertSocial({
           username: firstResult.username,
           avatar: firstResult.profilePicUrl,
@@ -50,15 +50,14 @@ export default async function handleApifyWebhook(
           followingCount: firstResult.followsCount,
         });
         const normalizedUrl = normalizeProfileUrl(firstResult.url);
-        const social = await getSocialByProfileUrl(normalizedUrl);
+        social = await getSocialByProfileUrl(normalizedUrl);
         console.log("social", social);
         if (social) {
-          supabaseSocials.push(social);
-          if (supabasePosts.length) {
-            const socialPostRows = supabasePosts.map((post) => ({
+          if (posts.length) {
+            const socialPostRows = posts.map((post) => ({
               post_id: post.id,
               updated_at: post.updated_at,
-              social_id: social.id,
+              social_id: social!.id,
             }));
             await insertSocialPosts(socialPostRows);
           }
@@ -68,8 +67,8 @@ export default async function handleApifyWebhook(
       console.error("Failed to handle Apify webhook:", e);
     }
   }
-  if (supabaseSocials.length > 0) {
-    const socialIds = supabaseSocials.map((s) => s.id);
+  if (social) {
+    const socialIds = [social.id];
     accountSocials = await getAccountSocials({ socialId: socialIds });
     console.log("accountSocials", accountSocials);
     const { data } = await getAccountArtistIdsByArtistId(
@@ -90,8 +89,8 @@ export default async function handleApifyWebhook(
     );
   }
   return {
-    supabasePosts,
-    supabaseSocials,
+    posts,
+    social,
     accountSocials,
     accountArtistIds,
     accountEmails,
