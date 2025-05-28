@@ -11,11 +11,12 @@ import getAccountSocials, {
 } from "@/lib/supabase/accountSocials/getAccountSocials";
 import insertSocialPosts from "@/lib/supabase/socialPosts/insertSocialPosts";
 import getAccountArtistIdsByArtistId from "@/lib/supabase/accountArtistIds/getAccountArtistIdsByArtistId";
+import getAccountEmails from "../supabase/accountEmails/getAccountEmails";
 
 /**
  * Handles the Apify webhook payload: fetches dataset, saves posts, saves socials, and returns results.
  * @param parsed - The parsed and validated Apify webhook payload
- * @returns An object with supabasePosts, supabaseSocials, accountSocials, and accountArtistIdsResult
+ * @returns An object with supabasePosts, supabaseSocials, accountSocials, accountArtistIds, and accountEmails
  */
 export default async function handleApifyWebhook(
   parsed: z.infer<typeof apifyPayloadSchema>
@@ -24,7 +25,8 @@ export default async function handleApifyWebhook(
   let supabasePosts: Tables<"posts">[] = [];
   const supabaseSocials: Tables<"socials">[] = [];
   let accountSocials: AccountSocialWithSocial[] = [];
-  let accountArtistIds = [];
+  let accountArtistIds: Tables<"account_artist_ids">[] = [];
+  let accountEmails: Tables<"account_emails">[] = [];
   if (datasetId) {
     try {
       const dataset = await getDataset(datasetId);
@@ -64,16 +66,22 @@ export default async function handleApifyWebhook(
   if (supabaseSocials.length > 0) {
     const socialIds = supabaseSocials.map((s) => s.id);
     accountSocials = await getAccountSocials({ socialId: socialIds });
-
     const { data } = await getAccountArtistIdsByArtistId(
       accountSocials[0].account_id as string
     );
     accountArtistIds = data || [];
+    // Get emails for all unique account_ids
+    const uniqueAccountIds = Array.from(
+      new Set(accountArtistIds.map((a) => a.account_id).filter(Boolean))
+    );
+    const emails = await getAccountEmails(uniqueAccountIds as string[]);
+    accountEmails = emails;
   }
   return {
     supabasePosts,
     supabaseSocials,
     accountSocials,
     accountArtistIds,
+    accountEmails,
   };
 }
