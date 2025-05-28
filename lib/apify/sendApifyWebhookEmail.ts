@@ -43,7 +43,7 @@ Latest Posts: ${((d.latestPosts as unknown[]) || []).map((p) => JSON.stringify(p
   return await sendEmail({
     from: "Recoup <hi@recoupable.com>",
     to: emails,
-    subject: "New Apify Dataset Notification",
+    subject: `${d.fullName} has new posts on Instagram`,
     html: text,
   });
 }
