@@ -2,10 +2,16 @@ import { z } from "zod";
 import { tool } from "ai";
 import { generateAndStoreTxtFile } from "@/lib/txtGeneration";
 import { IS_PROD } from "../consts";
+import generateTxtFileEmail from "../email/generateTxtFileEmail";
+import { ArweaveUploadResult } from "../arweave/uploadBase64ToArweave";
 
 // Define the schema for input validation
 const schema = z.object({
   contents: z.string().min(1, "Contents are required"),
+  account_id: z.string().min(1, "Pull account_id from the system prompt"),
+  active_conversation_id: z
+    .string()
+    .min(1, "Pull active_conversation_id from the system prompt"),
 });
 
 /**
@@ -26,10 +32,20 @@ const createTxtFile = tool({
   description:
     "Create a downloadable TXT file from provided contents. The file will be stored onchain with Arweave and a collection will be created onchain with Base.",
   parameters: schema,
-  execute: async ({ contents }): Promise<TxtFileGenerationResult> => {
+  execute: async ({
+    contents,
+    account_id,
+    active_conversation_id,
+  }): Promise<TxtFileGenerationResult> => {
     try {
       // Generate and store the TXT file
       const result = await generateAndStoreTxtFile(contents);
+      await generateTxtFileEmail({
+        rawTextFile: contents,
+        arweaveFile: result.arweave as ArweaveUploadResult,
+        accountId: account_id,
+        conversationId: active_conversation_id,
+      });
 
       // Create a response in a format useful for the chat interface
       return {
