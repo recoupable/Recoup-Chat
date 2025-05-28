@@ -8,7 +8,9 @@ import { ArweaveUploadResult } from "../arweave/uploadBase64ToArweave";
 // Define the schema for input validation
 const schema = z.object({
   contents: z.string().min(1, "Contents are required"),
-  account_id: z.string().min(1, "Pull account_id from the system prompt"),
+  active_account_email: z
+    .string()
+    .min(1, "Pull active_account_email from the system prompt"),
   active_conversation_id: z
     .string()
     .min(1, "Pull active_conversation_id from the system prompt"),
@@ -34,7 +36,7 @@ const createTxtFile = tool({
   parameters: schema,
   execute: async ({
     contents,
-    account_id,
+    active_account_email,
     active_conversation_id,
   }): Promise<TxtFileGenerationResult> => {
     try {
@@ -43,7 +45,7 @@ const createTxtFile = tool({
       await generateTxtFileEmail({
         rawTextFile: contents,
         arweaveFile: result.arweave as ArweaveUploadResult,
-        accountId: account_id,
+        emails: [active_account_email],
         conversationId: active_conversation_id,
       });
 

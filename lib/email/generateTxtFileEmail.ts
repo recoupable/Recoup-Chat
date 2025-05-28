@@ -1,7 +1,6 @@
 import generateText from "@/lib/ai/generateText";
 import sendEmail from "@/lib/email/sendEmail";
 import { ArweaveUploadResult } from "../arweave/uploadBase64ToArweave";
-import getAccountEmails from "../supabase/accountEmails/getAccountEmails";
 
 /**
  * Sends a Recoup Apify webhook email to a list of emails, summarizing the dataset and using a strong CTA.
@@ -12,17 +11,22 @@ import getAccountEmails from "../supabase/accountEmails/getAccountEmails";
 export default async function generateTxtFileEmail({
   rawTextFile,
   arweaveFile,
-  accountId,
+  emails,
   conversationId,
 }: {
   rawTextFile: string;
   arweaveFile: ArweaveUploadResult;
-  accountId: string;
+  emails: string[];
   conversationId: string;
 }) {
-  if (!accountId) return null;
-  const data = await getAccountEmails([accountId]);
-  const emails = data.map((d) => d.email).filter(Boolean) as string[];
+  console.log("generateTxtFileEmail", {
+    rawTextFile,
+    arweaveFile,
+    emails,
+    conversationId,
+  });
+  if (!emails?.length) return null;
+  console.log("emails", emails);
   const ctaUrl = `https://chat.recoupable.com/chat/${conversationId}`;
   const prompt = `You have a newly generated TXT file. Here is the data:
 
@@ -45,6 +49,8 @@ CTA URL: ${ctaUrl}
       no headers or subject`,
     prompt,
   });
+
+  console.log("text", text);
 
   return await sendEmail({
     from: "Recoup <hi@recoupable.com>",
