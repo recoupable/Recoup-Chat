@@ -50,7 +50,6 @@ export default async function handleApifyWebhook(
           followingCount: firstResult.followsCount,
         });
         const normalizedUrl = normalizeProfileUrl(firstResult.url);
-        console.log("normalizedUrl", normalizedUrl);
         const social = await getSocialByProfileUrl(normalizedUrl);
         console.log("social", social);
         if (social) {
