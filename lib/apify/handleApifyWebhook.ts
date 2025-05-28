@@ -14,6 +14,7 @@ import getAccountArtistIds from "@/lib/supabase/accountArtistIds/getAccountArtis
 import getAccountEmails from "../supabase/accountEmails/getAccountEmails";
 import sendApifyWebhookEmail from "@/lib/apify/sendApifyWebhookEmail";
 import normalizeProfileUrl from "@/lib/utils/normalizeProfileUrl";
+import uploadLinkToArweave from "@/lib/arweave/uploadLinkToArweave";
 
 /**
  * Handles the Apify webhook payload: fetches dataset, saves posts, saves socials, and returns results.
@@ -35,12 +36,21 @@ export default async function handleApifyWebhook(
     try {
       dataset = await getDataset(datasetId);
       const firstResult = dataset[0];
-      if (Array.isArray(dataset) && firstResult?.latestPosts) {
+      if (firstResult?.latestPosts) {
         // Save posts
         const { supabasePosts: sp } = await saveApifyInstagramPosts(
           firstResult.latestPosts as ApifyInstagramPost[]
         );
         posts = sp;
+        const arweaveResult = await uploadLinkToArweave(
+          firstResult.profilePicUrlHD || firstResult.profilePicUrl
+        );
+        console.log("arweaveResult", arweaveResult);
+        if (arweaveResult && arweaveResult.url) {
+          firstResult.profilePicUrl = arweaveResult.url;
+        }
+        console.log("firstResult", firstResult);
+
         await insertSocial({
           username: firstResult.username,
           avatar: firstResult.profilePicUrl,
@@ -77,7 +87,7 @@ export default async function handleApifyWebhook(
           accountEmails = emails;
           // Send the Apify webhook email using the new utility
           sentEmails = await sendApifyWebhookEmail(
-            dataset[0],
+            firstResult,
             emails.map((e) => e.email).filter(Boolean) as string[]
           );
         }
