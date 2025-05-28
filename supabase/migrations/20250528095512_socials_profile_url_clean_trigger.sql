@@ -1,14 +1,14 @@
--- Migration: Clean socials.profile_url (no www, no trailing slash)
+-- Migration: Clean socials.profile_url (remove protocol, www, trailing slash)
 -- This migration creates a trigger to ensure all profile_url values in the socials table
--- have no 'www.' and no trailing '/'.
+-- have no protocol (http://, https://), no 'www' (with or without dot), and no trailing '/'.
 
 -- 1. Create the cleaning function
 CREATE OR REPLACE FUNCTION clean_socials_profile_url()
 RETURNS TRIGGER AS $$
 BEGIN
-  -- Remove 'www.' from the start of the domain (if present)
-  NEW.profile_url := regexp_replace(NEW.profile_url, '^(https?://)www\\.', '\1');
-  -- Remove any trailing slash (but not from protocol)
+  -- Remove protocol (http://, https://) and all www (with or without dot) from the start
+  NEW.profile_url := regexp_replace(NEW.profile_url, '^(https?://)?(www\.?)+', '');
+  -- Remove any trailing slash
   NEW.profile_url := regexp_replace(NEW.profile_url, '/+$', '');
   RETURN NEW;
 END;
