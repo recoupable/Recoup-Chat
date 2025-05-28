@@ -43,12 +43,13 @@ export default async function handleApifyWebhook(
         await insertSocial({
           username: firstResult.username,
           avatar: firstResult.profilePicUrl,
-          profile_url: firstResult.url,
+          profile_url: firstResult.url + "/",
           bio: firstResult.biography,
           followerCount: firstResult.followersCount,
           followingCount: firstResult.followsCount,
         });
-        const social = await getSocialByProfileUrl(firstResult.url);
+        const social = await getSocialByProfileUrl(firstResult.url + "/");
+        console.log("social", social);
         if (social) {
           supabaseSocials.push(social);
           if (supabasePosts.length) {
@@ -68,6 +69,7 @@ export default async function handleApifyWebhook(
   if (supabaseSocials.length > 0) {
     const socialIds = supabaseSocials.map((s) => s.id);
     accountSocials = await getAccountSocials({ socialId: socialIds });
+    console.log("accountSocials", accountSocials);
     const { data } = await getAccountArtistIdsByArtistId(
       accountSocials[0].account_id as string
     );
@@ -77,6 +79,7 @@ export default async function handleApifyWebhook(
       new Set(accountArtistIds.map((a) => a.account_id).filter(Boolean))
     );
     const emails = await getAccountEmails(uniqueAccountIds as string[]);
+    console.log("emails", emails);
     accountEmails = emails;
     // Send the Apify webhook email using the new utility
     sentEmails = await sendApifyWebhookEmail(
