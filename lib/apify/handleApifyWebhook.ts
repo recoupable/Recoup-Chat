@@ -61,33 +61,32 @@ export default async function handleApifyWebhook(
             }));
             await insertSocialPosts(socialPostRows);
           }
+          const socialIds = [social.id];
+          accountSocials = await getAccountSocials({ socialId: socialIds });
+          console.log("accountSocials", accountSocials);
+          const { data } = await getAccountArtistIdsByArtistId(
+            accountSocials[0].account_id as string
+          );
+          accountArtistIds = data || [];
+          // Get emails for all unique account_ids
+          const uniqueAccountIds = Array.from(
+            new Set(accountArtistIds.map((a) => a.account_id).filter(Boolean))
+          );
+          const emails = await getAccountEmails(uniqueAccountIds as string[]);
+          console.log("emails", emails);
+          accountEmails = emails;
+          // Send the Apify webhook email using the new utility
+          sentEmails = await sendApifyWebhookEmail(
+            dataset[0],
+            emails.map((e) => e.email).filter(Boolean) as string[]
+          );
         }
       }
     } catch (e) {
       console.error("Failed to handle Apify webhook:", e);
     }
   }
-  if (social) {
-    const socialIds = [social.id];
-    accountSocials = await getAccountSocials({ socialId: socialIds });
-    console.log("accountSocials", accountSocials);
-    const { data } = await getAccountArtistIdsByArtistId(
-      accountSocials[0].account_id as string
-    );
-    accountArtistIds = data || [];
-    // Get emails for all unique account_ids
-    const uniqueAccountIds = Array.from(
-      new Set(accountArtistIds.map((a) => a.account_id).filter(Boolean))
-    );
-    const emails = await getAccountEmails(uniqueAccountIds as string[]);
-    console.log("emails", emails);
-    accountEmails = emails;
-    // Send the Apify webhook email using the new utility
-    sentEmails = await sendApifyWebhookEmail(
-      dataset[0],
-      emails.map((e) => e.email).filter(Boolean) as string[]
-    );
-  }
+
   return {
     posts,
     social,
