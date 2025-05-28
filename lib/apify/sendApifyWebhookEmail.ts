@@ -11,7 +11,7 @@ export default async function sendApifyWebhookEmail(
   d: Record<string, unknown>,
   emails: string[]
 ) {
-  if (!d?.length || !emails?.length) return null;
+  if (!emails?.length) return null;
   const prompt = `You have a new Apify dataset update. Here is the data:
 
 Key Data
@@ -30,11 +30,11 @@ Latest Posts: ${((d.latestPosts as unknown[]) || []).map((p) => JSON.stringify(p
   const { text } = await generateText({
     system: `you are a record label services manager for Recoup.
       write beautiful html email.
-      subject: New Apify Dataset Notification. you're notifying music managers about new posts being available on one of their roster musician's Instagram profile.
+      subject: New Apify Dataset Notification. you're notifying music managers about new posts being available for one of their roster musician's Instagram profile.
       include a link to view the instagram profile.
-      call to action is to open a chat link to learn more about the latest posts using Recoup AI Agent tools: https://chat.recoupable.com/?q=tell%20me%20about%20my%20latest%20Ig%20posts
+      call to action is to open a chat link to learn more about the latest posts using Recoup Chat (AI Agents): https://chat.recoupable.com/?q=tell%20me%20about%20my%20latest%20Ig%20posts
       You'll be passed a dataset summary for a musician profile and their latest posts on instagram.
-      your goal is to get the recipient to click a cta link to open a chat link to learn more about the latest posts.
+      your goal is to get the recipient to click a cta link to open a chat link to learn more about the latest posts using Recoup Chat (AI Agents).
       only include the email body html. 
       no headers or subject`,
     prompt,

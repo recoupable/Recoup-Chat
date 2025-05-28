@@ -81,7 +81,7 @@ export default async function handleApifyWebhook(
     accountEmails = emails;
     // Send the Apify webhook email using the new utility
     sentEmails = await sendApifyWebhookEmail(
-      dataset,
+      dataset[0],
       emails.map((e) => e.email).filter(Boolean) as string[]
     );
     console.log("sendApifyWebhookEmail result", sentEmails);
