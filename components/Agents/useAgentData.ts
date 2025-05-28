@@ -34,7 +34,7 @@ export function useAgentData() {
       });
   }, []);
 
-  // Find the special "Audience Segmentation" agent (always shown first if present)
+  // Find the special "Audience Segmentation" agent
   const funnelAgent = agents.find(
     (agent) => agent.title === "Audience Segmentation"
   );
@@ -44,11 +44,11 @@ export function useAgentData() {
       agent.title !== "Audience Segmentation" &&
       (selectedTag === "Recommended" ? true : agent.tags?.includes(selectedTag))
   );
-  // Combine the special card (if present) with the filtered agents for display
-  const gridAgents = [
-    ...(funnelAgent ? [funnelAgent] : []),
-    ...filteredAgents
-  ];
+  // Only include the special card if the selected tag is "Research Analyst"
+  const gridAgents =
+    selectedTag === "Research Analyst"
+      ? [...filteredAgents, ...(funnelAgent ? [funnelAgent] : [])]
+      : filteredAgents;
 
   return {
     tags,
