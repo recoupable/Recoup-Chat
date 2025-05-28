@@ -12,11 +12,12 @@ import getAccountSocials, {
 import insertSocialPosts from "@/lib/supabase/socialPosts/insertSocialPosts";
 import getAccountArtistIdsByArtistId from "@/lib/supabase/accountArtistIds/getAccountArtistIdsByArtistId";
 import getAccountEmails from "../supabase/accountEmails/getAccountEmails";
+import sendApifyWebhookEmail from "@/lib/apify/sendApifyWebhookEmail";
 
 /**
  * Handles the Apify webhook payload: fetches dataset, saves posts, saves socials, and returns results.
  * @param parsed - The parsed and validated Apify webhook payload
- * @returns An object with supabasePosts, supabaseSocials, accountSocials, accountArtistIds, and accountEmails
+ * @returns An object with supabasePosts, supabaseSocials, accountSocials, accountArtistIds, accountEmails, and sentEmails
  */
 export default async function handleApifyWebhook(
   parsed: z.infer<typeof apifyPayloadSchema>
@@ -27,9 +28,11 @@ export default async function handleApifyWebhook(
   let accountSocials: AccountSocialWithSocial[] = [];
   let accountArtistIds: Tables<"account_artist_ids">[] = [];
   let accountEmails: Tables<"account_emails">[] = [];
+  let sentEmails: unknown = null;
+  let dataset;
   if (datasetId) {
     try {
-      const dataset = await getDataset(datasetId);
+      dataset = await getDataset(datasetId);
       const firstResult = dataset[0];
       console.log("firstResult", firstResult);
       if (Array.isArray(dataset) && firstResult?.latestPosts) {
@@ -76,6 +79,12 @@ export default async function handleApifyWebhook(
     );
     const emails = await getAccountEmails(uniqueAccountIds as string[]);
     accountEmails = emails;
+    // Send the Apify webhook email using the new utility
+    sentEmails = await sendApifyWebhookEmail(
+      dataset,
+      emails.map((e) => e.email).filter(Boolean) as string[]
+    );
+    console.log("sendApifyWebhookEmail result", sentEmails);
   }
   return {
     supabasePosts,
@@ -83,5 +92,6 @@ export default async function handleApifyWebhook(
     accountSocials,
     accountArtistIds,
     accountEmails,
+    sentEmails,
   };
 }
