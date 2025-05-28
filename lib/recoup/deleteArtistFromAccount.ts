@@ -1,6 +1,6 @@
 import getArtistById from "@/lib/supabase/artist/getArtistById";
 import deleteAccountArtistId from "@/lib/supabase/accountArtistIds/deleteAccountArtistId";
-import getAccountArtistIdsByArtistId from "@/lib/supabase/accountArtistIds/getAccountArtistIdsByArtistId";
+import getAccountArtistIds from "@/lib/supabase/accountArtistIds/getAccountArtistIds";
 import deleteAccountById from "@/lib/supabase/accounts/deleteAccountById";
 
 /**
@@ -44,7 +44,7 @@ export async function deleteArtistFromAccount(
     }
 
     // Check if any other accounts still have this artist
-    const artistLinks = await getAccountArtistIdsByArtistId(artistAccountId);
+    const artistLinks = await getAccountArtistIds([artistAccountId]);
 
     if (!artistLinks.success) {
       return {
