@@ -12,7 +12,6 @@ export default async function sendApifyWebhookEmail(
   emails: string[]
 ) {
   if (!emails?.length) return null;
-  console.log("d", d);
   const prompt = `You have a new Apify dataset update. Here is the data:
 
 Key Data
