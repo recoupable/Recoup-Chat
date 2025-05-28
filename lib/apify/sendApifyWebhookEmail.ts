@@ -23,7 +23,6 @@ External URL: ${d.externalUrls}
 Followers: ${d.followersCount}
 Following: ${d.followsCount}
 Profile Picture: ${d.profilePicUrl}
-Related Artists: ${((d.relatedProfiles as unknown[]) || []).map((p) => JSON.stringify(p)).join(", ")}
 Latest Posts: ${((d.latestPosts as unknown[]) || []).map((p) => JSON.stringify(p)).join(", ")}
 `;
 
