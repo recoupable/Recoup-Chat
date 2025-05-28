@@ -56,9 +56,6 @@ export default async function handleApifyWebhook(
             await insertSocialPosts(socialPostRows);
           }
         }
-        // Get account_artist_ids by artistId if present
-        if (firstResult.artistId) {
-        }
       }
     } catch (e) {
       console.error("Failed to handle Apify webhook:", e);
