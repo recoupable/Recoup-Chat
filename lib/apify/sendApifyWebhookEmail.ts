@@ -12,17 +12,18 @@ export default async function sendApifyWebhookEmail(
   emails: string[]
 ) {
   if (!emails?.length) return null;
+  console.log("d", d);
   const prompt = `You have a new Apify dataset update. Here is the data:
 
 Key Data
 Full Name: ${d.fullName}
 Username: ${d.username}
 Profile URL: ${d.url}
+Profile Picture: ${d.profilePicUrl}
 Biography: ${d.biography}
 External URL: ${d.externalUrls}
 Followers: ${d.followersCount}
 Following: ${d.followsCount}
-Profile Picture: ${d.profilePicUrl}
 Latest Posts: ${((d.latestPosts as unknown[]) || []).map((p) => JSON.stringify(p)).join(", ")}
 `;
 
