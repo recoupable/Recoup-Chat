@@ -10,11 +10,12 @@ import getAccountSocials, {
   AccountSocialWithSocial,
 } from "@/lib/supabase/accountSocials/getAccountSocials";
 import insertSocialPosts from "@/lib/supabase/socialPosts/insertSocialPosts";
+import getAccountArtistIdsByArtistId from "@/lib/supabase/accountArtistIds/getAccountArtistIdsByArtistId";
 
 /**
  * Handles the Apify webhook payload: fetches dataset, saves posts, saves socials, and returns results.
  * @param parsed - The parsed and validated Apify webhook payload
- * @returns An object with supabasePosts and supabaseSocials
+ * @returns An object with supabasePosts, supabaseSocials, accountSocials, and accountArtistIdsResult
  */
 export default async function handleApifyWebhook(
   parsed: z.infer<typeof apifyPayloadSchema>
@@ -23,6 +24,7 @@ export default async function handleApifyWebhook(
   let supabasePosts: Tables<"posts">[] = [];
   const supabaseSocials: Tables<"socials">[] = [];
   let accountSocials: AccountSocialWithSocial[] = [];
+  let accountArtistIds = [];
   if (datasetId) {
     try {
       const dataset = await getDataset(datasetId);
@@ -54,6 +56,9 @@ export default async function handleApifyWebhook(
             await insertSocialPosts(socialPostRows);
           }
         }
+        // Get account_artist_ids by artistId if present
+        if (firstResult.artistId) {
+        }
       }
     } catch (e) {
       console.error("Failed to handle Apify webhook:", e);
@@ -62,6 +67,16 @@ export default async function handleApifyWebhook(
   if (supabaseSocials.length > 0) {
     const socialIds = supabaseSocials.map((s) => s.id);
     accountSocials = await getAccountSocials({ socialId: socialIds });
+
+    const { data } = await getAccountArtistIdsByArtistId(
+      accountSocials[0].account_id as string
+    );
+    accountArtistIds = data || [];
   }
-  return { supabasePosts, supabaseSocials, accountSocials };
+  return {
+    supabasePosts,
+    supabaseSocials,
+    accountSocials,
+    accountArtistIds,
+  };
 }
