@@ -54,18 +54,21 @@ export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const code = searchParams.get("code");
   const error = searchParams.get("error");
+  const state = searchParams.get("state"); // Original path to redirect back to
 
   if (error) {
     console.error("YouTube auth error:", error);
+    const redirectPath = state || "/";
     return NextResponse.redirect(
-      new URL("/?youtube_auth_error=" + encodeURIComponent(error as string), request.url)
+      new URL(redirectPath + (redirectPath.includes("?") ? "&" : "?") + "youtube_auth_error=" + encodeURIComponent(error as string), request.url)
     );
   }
 
   if (!code) {
     console.error("No authorization code provided");
+    const redirectPath = state || "/";
     return NextResponse.redirect(
-      new URL("/?youtube_auth_error=No+code+provided", request.url)
+      new URL(redirectPath + (redirectPath.includes("?") ? "&" : "?") + "youtube_auth_error=No+code+provided", request.url)
     );
   }
 
@@ -82,12 +85,16 @@ export async function GET(request: NextRequest) {
     await saveTokensToFile(tokens);
 
     console.log("YouTube authentication successful, redirecting...");
-    return NextResponse.redirect(new URL("/?youtube_auth=success", request.url));
+    const redirectPath = state || "/";
+    return NextResponse.redirect(
+      new URL(redirectPath + (redirectPath.includes("?") ? "&" : "?") + "youtube_auth=success", request.url)
+    );
   } catch (err) {
     console.error("Error in YouTube auth callback:", err);
     const errorMessage = err instanceof Error ? err.message : "Error+getting+tokens";
+    const redirectPath = state || "/";
     return NextResponse.redirect(
-      new URL("/?youtube_auth_error=" + encodeURIComponent(errorMessage), request.url)
+      new URL(redirectPath + (redirectPath.includes("?") ? "&" : "?") + "youtube_auth_error=" + encodeURIComponent(errorMessage), request.url)
     );
   }
 } 

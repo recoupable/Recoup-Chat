@@ -64,13 +64,17 @@ function handleYouTubeLogin() {
   const redirectUri = `${process.env.NEXT_PUBLIC_APP_URL}/api/auth/youtube/callback`;
   const scope = "https://www.googleapis.com/auth/youtube.readonly";
   
+  // Get current path to redirect back after authentication
+  const currentPath = window.location.pathname + window.location.search;
+  
   const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
     `client_id=${clientId}&` +
     `redirect_uri=${encodeURIComponent(redirectUri)}&` +
     `scope=${encodeURIComponent(scope)}&` +
     `response_type=code&` +
     `access_type=offline&` +
-    `prompt=consent`;
+    `prompt=consent&` +
+    `state=${encodeURIComponent(currentPath)}`;
   
   window.open(authUrl, '_blank');
 }
