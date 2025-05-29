@@ -21,7 +21,7 @@ const SideMenu = ({
   onOpenArtists?: () => void;
 }) => {
   const { push } = useRouter();
-  const { email, isPrepared } = useUserProvider();
+  const { address, isPrepared } = useUserProvider();
   const { selectedArtist, sorted, toggleCreation } = useArtistProvider();
   const hasArtists = sorted.length > 0;
   const isArtistSelected = !!selectedArtist;
@@ -56,11 +56,11 @@ const SideMenu = ({
           variant="outline"
           className="mt-4 rounded-xl md:mt-8 cursor-pointer"
           onClick={() => goToItem("chat")}
-          aria-label={email ? "Start a new chat" : "Sign in to your account"}
+          aria-label={address ? "Start a new chat" : "Sign in to your account"}
         >
-          {email ? "New Chat" : "Sign In"}
+          {address ? "New Chat" : "Sign In"}
         </Button>
-        {email && !isArtistSelected && (
+        {address && !isArtistSelected && (
           <Button
             variant="outline"
             onClick={handleArtistSelect}
@@ -85,7 +85,7 @@ const SideMenu = ({
           Agents
         </Button>
         <Button
-           variant="ghost"
+          variant="ghost"
           onClick={() => goToItem("segments")}
           className="flex justify-start rounded-xl w-full"
           aria-label="View segments"
@@ -94,7 +94,7 @@ const SideMenu = ({
           Segments
         </Button>
       </div>
-      {email && <RecentChats toggleModal={toggleModal} />}
+      {address && <RecentChats toggleModal={toggleModal} />}
       <div className="grow flex flex-col gap-1 md:gap-3 justify-end">
         <UnlockPro />
         <UserInfo toggleMenuExpanded={toggleModal} />
