@@ -26,6 +26,7 @@ import getVideoGameCampaignPlays from "./getVideoGameCampaignPlays";
 import getSpotifyDeepResearch from "./getSpotifyDeepResearch";
 import createKnowledgeBase from "./createKnowledgeBase";
 import sendEmailTool from "./sendEmailTool";
+import checkYouTubeAccess from "./checkYouTubeAccess";
 
 export async function getMcpTools() {
   const tools = {
@@ -57,6 +58,7 @@ export async function getMcpTools() {
     create_knowledge_base: createKnowledgeBase,
     get_video_game_campaign_plays: getVideoGameCampaignPlays,
     send_email: sendEmailTool,
+    check_youtube_access: checkYouTubeAccess,
   };
 
   return tools;
