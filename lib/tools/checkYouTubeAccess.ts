@@ -1,86 +1,67 @@
 import { z } from "zod";
 import { tool } from "ai";
 import { google } from "googleapis";
-import { readFile } from "fs/promises";
-import { existsSync } from "fs";
-import path from "path";
+import getYouTubeTokens from "@/lib/supabase/youtubeTokens/getYouTubeTokens";
 
-// Interface for stored YouTube tokens
-interface StoredTokens {
-  access_token: string;
-  refresh_token?: string;
-  expires_at: number;
-  created_at: number;
+// Interface for YouTube channel information
+interface YouTubeChannelInfo {
+  id: string;
+  name: string;
+  thumbnails?: {
+    default?: string | null;
+    medium?: string | null;
+    high?: string | null;
+  };
+  subscriberCount?: string;
+  videoCount?: string;
+  viewCount?: string;
+  customUrl?: string | null;
+  country?: string | null;
+  publishedAt?: string | null;
 }
 
-// Interface for YouTube channel response
-interface YouTubeChannelInfo {
+// Interface for the tool result
+interface YouTubeAccessResult {
   success: boolean;
   status: string;
   message?: string;
-  channel?: {
-    id: string;
-    title: string;
-    description: string;
-    thumbnails: {
-      default?: { url?: string | null };
-      medium?: { url?: string | null };
-      high?: { url?: string | null };
-    };
-    statistics: {
-      subscriberCount: string;
-      videoCount: string;
-      viewCount: string;
-    };
-    customUrl?: string | null;
-    country?: string | null;
-    publishedAt: string;
-  };
+  channelInfo?: YouTubeChannelInfo;
 }
 
-const TOKENS_DIR = path.join(process.cwd(), 'data');
-const TOKENS_FILE = path.join(TOKENS_DIR, 'youtube-tokens.json');
-
-async function getTokensFromFile(): Promise<StoredTokens | null> {
-  try {
-    if (!existsSync(TOKENS_FILE)) {
-      console.log('No YouTube tokens file found');
-      return null;
-    }
-
-    const fileContent = await readFile(TOKENS_FILE, 'utf8');
-    const tokens: StoredTokens = JSON.parse(fileContent);
-    
-    // Check if token has expired
-    if (Date.now() > tokens.expires_at) {
-      console.log('YouTube access token has expired');
-      return null;
-    }
-    
-    return tokens;
-  } catch (error) {
-    console.error('Error reading YouTube tokens from file:', error);
-    return null;
-  }
-}
-
-// Zod schema for parameter validation (no parameters needed for this tool)
-const schema = z.object({});
+// Zod schema for parameter validation
+const schema = z.object({
+  artist_id: z.string().describe("Artist ID to check YouTube access for. This is required as tokens are stored per artist.")
+});
 
 const checkYouTubeAccessTool = tool({
   description:
-    "Check if we have valid YouTube channel access credentials and return channel information if authenticated. " +
-    "This tool validates stored YouTube tokens and fetches basic channel information including name, picture, subscriber count, etc.",
+    "Check if YouTube access is available for a specific artist and return basic channel information. " +
+    "This tool verifies if valid YouTube OAuth tokens exist for the artist and fetches channel data. " +
+    "Returns channel name, picture, subscriber count, and other basic information if authenticated, " +
+    "or an error message if authentication is required. " +
+    "Requires artist_id parameter as each artist has their own YouTube tokens.",
   parameters: schema,
-  execute: async (): Promise<YouTubeChannelInfo> => {
+  execute: async ({ artist_id }): Promise<YouTubeAccessResult> => {
     try {
-      const storedTokens = await getTokensFromFile();
+      // Get tokens from database using artist_id
+      const storedTokens = await getYouTubeTokens(artist_id);
       
       if (!storedTokens) {
         return {
           success: false,
           status: "error",
-          message: "No valid YouTube tokens found. Please authenticate first."
+          message: "No YouTube tokens found for this artist. Please authenticate with YouTube first by visiting the OAuth authorization URL."
+        };
+      }
+
+      // Check if token has expired (with 1-minute safety buffer)
+      const now = Date.now();
+      const expiresAt = new Date(storedTokens.expires_at).getTime();
+      if (now > (expiresAt - 60000)) {
+        return {
+          success: false,
+          status: "error",
+          message: "YouTube access token has expired for this artist. Please re-authenticate by visiting the OAuth authorization URL."
         };
       }
 
@@ -93,7 +74,7 @@ const checkYouTubeAccessTool = tool({
 
       oauth2Client.setCredentials({
         access_token: storedTokens.access_token,
-        refresh_token: storedTokens.refresh_token,
+        refresh_token: storedTokens.refresh_token ?? undefined,
       });
 
       // Create YouTube API client
@@ -112,7 +93,7 @@ const checkYouTubeAccessTool = tool({
         return {
           success: false,
           status: "error",
-          message: "No YouTube channels found for this account"
+          message: "No YouTube channels found for this authenticated artist"
         };
       }
 
@@ -121,24 +102,21 @@ const checkYouTubeAccessTool = tool({
       return {
         success: true,
         status: "success",
-        message: "YouTube channel access verified successfully",
-        channel: {
+        message: "YouTube access verified successfully for artist",
+        channelInfo: {
           id: channelData.id || "",
-          title: channelData.snippet?.title || "",
-          description: channelData.snippet?.description || "",
+          name: channelData.snippet?.title || "",
           thumbnails: {
-            default: channelData.snippet?.thumbnails?.default ? { url: channelData.snippet.thumbnails.default.url } : undefined,
-            medium: channelData.snippet?.thumbnails?.medium ? { url: channelData.snippet.thumbnails.medium.url } : undefined,
-            high: channelData.snippet?.thumbnails?.high ? { url: channelData.snippet.thumbnails.high.url } : undefined,
+            default: channelData.snippet?.thumbnails?.default?.url || null,
+            medium: channelData.snippet?.thumbnails?.medium?.url || null,
+            high: channelData.snippet?.thumbnails?.high?.url || null,
           },
-          statistics: {
-            subscriberCount: channelData.statistics?.subscriberCount || "0",
-            videoCount: channelData.statistics?.videoCount || "0",
-            viewCount: channelData.statistics?.viewCount || "0",
-          },
-          customUrl: channelData.snippet?.customUrl,
-          country: channelData.snippet?.country,
-          publishedAt: channelData.snippet?.publishedAt || "",
+          subscriberCount: channelData.statistics?.subscriberCount || "0",
+          videoCount: channelData.statistics?.videoCount || "0",
+          viewCount: channelData.statistics?.viewCount || "0",
+          customUrl: channelData.snippet?.customUrl || null,
+          country: channelData.snippet?.country || null,
+          publishedAt: channelData.snippet?.publishedAt || null,
         }
       };
     } catch (error: unknown) {
@@ -149,14 +127,14 @@ const checkYouTubeAccessTool = tool({
         return {
           success: false,
           status: "error",
-          message: "YouTube authentication failed. Please sign in again."
+          message: "YouTube authentication is invalid or has expired for this artist. Please re-authenticate by visiting the OAuth authorization URL."
         };
       }
       
       return {
         success: false,
         status: "error",
-        message: error instanceof Error ? error.message : "Failed to check YouTube channel access"
+        message: error instanceof Error ? error.message : "Failed to check YouTube access for this artist. Please ensure the artist is authenticated with YouTube."
       };
     }
   },

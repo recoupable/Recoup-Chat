@@ -1,63 +1,48 @@
-import { NextResponse } from "next/server";
-import { readFile } from "fs/promises";
-import { existsSync } from "fs";
-import path from "path";
-
-// Path to stored tokens
-const TOKENS_DIR = path.join(process.cwd(), "data");
-const TOKENS_FILE = path.join(TOKENS_DIR, "youtube-tokens.json");
-
-interface StoredTokens {
-  access_token: string;
-  refresh_token?: string;
-  expires_at: number;
-  created_at: number;
-}
+import { NextRequest, NextResponse } from "next/server";
+import getYouTubeTokens from "@/lib/supabase/youtubeTokens/getYouTubeTokens";
 
 interface YouTubeStatusResponse {
   authenticated: boolean;
   message: string;
-  expiresAt?: number;
-  createdAt?: number;
+  expiresAt?: string;
+  createdAt?: string;
 }
 
-async function checkTokensFromFile(): Promise<StoredTokens | null> {
+export async function GET(request: NextRequest): Promise<NextResponse<YouTubeStatusResponse>> {
   try {
-    if (!existsSync(TOKENS_FILE)) {
-      console.log('No YouTube tokens file found');
-      return null;
+    const searchParams = request.nextUrl.searchParams;
+    const artist_id = searchParams.get("artist_id");
+
+    if (!artist_id) {
+      return NextResponse.json({
+        authenticated: false,
+        message: "Artist ID is required to check YouTube authentication status"
+      });
     }
 
-    const fileContent = await readFile(TOKENS_FILE, 'utf8');
-    const tokens: StoredTokens = JSON.parse(fileContent);
-    
-    // Check if token has expired
-    if (Date.now() > tokens.expires_at) {
-      console.log('YouTube access token has expired');
-      return null;
-    }
-    
-    return tokens;
-  } catch (error) {
-    console.error('Error reading YouTube tokens from file:', error);
-    return null;
-  }
-}
-
-export async function GET(): Promise<NextResponse<YouTubeStatusResponse>> {
-  try {
-    const storedTokens = await checkTokensFromFile();
+    // Get tokens from database
+    const storedTokens = await getYouTubeTokens(artist_id);
     
     if (!storedTokens) {
       return NextResponse.json({
         authenticated: false,
-        message: "No valid YouTube tokens found. Please authenticate first."
+        message: "No YouTube tokens found for this artist. Please authenticate first."
+      });
+    }
+
+    // Check if token has expired (with 1-minute safety buffer)
+    const now = Date.now();
+    const expiresAt = new Date(storedTokens.expires_at).getTime();
+    if (now > (expiresAt - 60000)) {
+      return NextResponse.json({
+        authenticated: false,
+        message: "YouTube access token has expired for this artist. Please re-authenticate."
       });
     }
 
     return NextResponse.json({
       authenticated: true,
-      message: "YouTube authentication is valid",
+      message: "YouTube authentication is valid for this artist",
       expiresAt: storedTokens.expires_at,
       createdAt: storedTokens.created_at
     });

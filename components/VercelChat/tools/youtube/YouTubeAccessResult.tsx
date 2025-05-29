@@ -1,9 +1,42 @@
 import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Youtube, Users, Video, Eye, Calendar, Loader } from "lucide-react";
+import { useArtistProvider } from "@/providers/ArtistProvider";
 
 // Interface matching the checkYouTubeAccess tool result
 interface YouTubeChannelInfo {
+  success: boolean;
+  status: string;
+  message?: string;
+  channelInfo?: {
+    id: string;
+    name: string;
+    thumbnails?: {
+      default?: string | null;
+      medium?: string | null;
+      high?: string | null;
+    };
+    subscriberCount?: string;
+    videoCount?: string;
+    viewCount?: string;
+    customUrl?: string | null;
+    country?: string | null;
+    publishedAt?: string | null;
+  };
+}
+
+interface YouTubeAccessResultProps {
+  result: YouTubeChannelInfo;
+}
+
+interface YouTubeStatusResponse {
+  authenticated: boolean;
+  message: string;
+  expiresAt?: number;
+  createdAt?: number;
+}
+
+interface YouTubeChannelData {
   success: boolean;
   status: string;
   message?: string;
@@ -27,78 +60,73 @@ interface YouTubeChannelInfo {
   };
 }
 
-interface YouTubeAccessResultProps {
-  result: YouTubeChannelInfo;
+// Utility functions for formatting
+function formatNumber(numStr: string): string {
+  const num = parseInt(numStr, 10);
+  if (num >= 1000000) return `${(num / 1000000).toFixed(1)}M`;
+  if (num >= 1000) return `${(num / 1000).toFixed(1)}K`;
+  return num.toString();
 }
 
-interface YouTubeStatusResponse {
-  authenticated: boolean;
-  message: string;
-  expiresAt?: number;
-  createdAt?: number;
-}
-
-// Helper function to format large numbers
-function formatNumber(num: string): string {
-  const number = parseInt(num);
-  if (number >= 1000000) {
-    return (number / 1000000).toFixed(1) + "M";
-  } else if (number >= 1000) {
-    return (number / 1000).toFixed(1) + "K";
-  }
-  return number.toLocaleString();
-}
-
-// Helper function to format date
-function formatDate(dateString: string): string {
-  try {
-    return new Date(dateString).toLocaleDateString();
-  } catch {
-    return dateString;
-  }
-}
-
-// Helper function to initiate YouTube OAuth flow
-function handleYouTubeLogin() {
-  const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
-  const redirectUri = `${process.env.NEXT_PUBLIC_APP_URL}/api/auth/youtube/callback`;
-  const scope = "https://www.googleapis.com/auth/youtube.readonly";
-  
-  // Get current path to redirect back after authentication
-  const currentPath = window.location.pathname + window.location.search;
-  
-  const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
-    `client_id=${clientId}&` +
-    `redirect_uri=${encodeURIComponent(redirectUri)}&` +
-    `scope=${encodeURIComponent(scope)}&` +
-    `response_type=code&` +
-    `access_type=offline&` +
-    `prompt=consent&` +
-    `state=${encodeURIComponent(currentPath)}`;
-  
-  window.open(authUrl, '_blank');
+function formatDate(dateStr: string): string {
+  return new Date(dateStr).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
 }
 
 export function YouTubeAccessResult({ result }: YouTubeAccessResultProps) {
+  const { selectedArtist } = useArtistProvider();
   const [currentStatus, setCurrentStatus] = useState<YouTubeStatusResponse | null>(null);
   const [isCheckingStatus, setIsCheckingStatus] = useState(true);
-  const [currentChannelInfo, setCurrentChannelInfo] = useState<YouTubeChannelInfo | null>(null);
+  const [currentChannelInfo, setCurrentChannelInfo] = useState<YouTubeChannelData | null>(null);
+
+  // Helper function to initiate YouTube OAuth flow with artist context
+  const handleYouTubeLogin = () => {
+    if (!selectedArtist?.account_id) {
+      console.error("No artist selected for YouTube authentication");
+      return;
+    }
+
+    const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
+    const redirectUri = `${process.env.NEXT_PUBLIC_APP_URL}/api/auth/youtube/callback`;
+    const scope = "https://www.googleapis.com/auth/youtube.readonly";
+    
+    // Get current path to redirect back after authentication
+    const currentPath = window.location.pathname + window.location.search;
+    
+    const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
+      `client_id=${clientId}&` +
+      `redirect_uri=${encodeURIComponent(redirectUri)}&` +
+      `scope=${encodeURIComponent(scope)}&` +
+      `response_type=code&` +
+      `access_type=offline&` +
+      `prompt=consent&` +
+      `artist_id=${encodeURIComponent(selectedArtist.account_id)}&` +
+      `state=${encodeURIComponent(currentPath)}`;
+    
+    window.open(authUrl, '_blank');
+  };
 
   // Check current authentication status on mount
   useEffect(() => {
     const checkCurrentStatus = async () => {
+      if (!selectedArtist?.account_id) {
+        setIsCheckingStatus(false);
+        return;
+      }
+
       try {
-        const response = await fetch('/api/auth/youtube/status');
+        const response = await fetch(`/api/auth/youtube/status?artist_id=${encodeURIComponent(selectedArtist.account_id)}`);
         const status: YouTubeStatusResponse = await response.json();
         setCurrentStatus(status);
 
         // If authenticated, fetch current channel info
         if (status.authenticated) {
-          // We can either call the checkYouTubeAccess tool endpoint or create a simpler channel info endpoint
-          // For now, let's create a simple channel info fetch
-          const channelResponse = await fetch('/api/auth/youtube/channel-info');
+          const channelResponse = await fetch(`/api/auth/youtube/channel-info?artist_id=${encodeURIComponent(selectedArtist.account_id)}`);
           if (channelResponse.ok) {
-            const channelData: YouTubeChannelInfo = await channelResponse.json();
+            const channelData: YouTubeChannelData = await channelResponse.json();
             setCurrentChannelInfo(channelData);
           }
         }
@@ -111,7 +139,7 @@ export function YouTubeAccessResult({ result }: YouTubeAccessResultProps) {
     };
 
     checkCurrentStatus();
-  }, []);
+  }, [selectedArtist?.account_id]);
 
   // Show loading state while checking current status
   if (isCheckingStatus) {
@@ -129,12 +157,46 @@ export function YouTubeAccessResult({ result }: YouTubeAccessResultProps) {
     );
   }
 
+  // Show error if no artist is selected
+  if (!selectedArtist) {
+    return (
+      <div className="flex flex-col space-y-3 p-4 rounded-lg bg-gray-50 border border-gray-200 my-2 max-w-md">
+        <div className="flex items-center space-x-2">
+          <Youtube className="h-5 w-5 text-gray-600" />
+          <span className="font-medium text-gray-800">Artist Required</span>
+        </div>
+        <p className="text-sm text-gray-600">Please select an artist to check YouTube access.</p>
+      </div>
+    );
+  }
+
   // Use current status if available, otherwise fall back to static result
-  const displayResult = currentChannelInfo || result;
+  const displayResult = currentChannelInfo || (result.channelInfo ? {
+    ...result,
+    channel: {
+      id: result.channelInfo.id,
+      title: result.channelInfo.name,
+      description: "",
+      thumbnails: {
+        default: { url: result.channelInfo.thumbnails?.default },
+        medium: { url: result.channelInfo.thumbnails?.medium },
+        high: { url: result.channelInfo.thumbnails?.high },
+      },
+      statistics: {
+        subscriberCount: result.channelInfo.subscriberCount || "0",
+        videoCount: result.channelInfo.videoCount || "0",
+        viewCount: result.channelInfo.viewCount || "0",
+      },
+      customUrl: result.channelInfo.customUrl,
+      country: result.channelInfo.country,
+      publishedAt: result.channelInfo.publishedAt || "",
+    }
+  } : null);
+  
   const isAuthenticated = currentStatus?.authenticated ?? result.success;
 
   // Success state - show channel information
-  if (isAuthenticated && displayResult.channel) {
+  if (isAuthenticated && displayResult?.channel) {
     const { channel } = displayResult;
     const thumbnailUrl = channel.thumbnails.high?.url || 
                         channel.thumbnails.medium?.url || 
@@ -149,6 +211,11 @@ export function YouTubeAccessResult({ result }: YouTubeAccessResultProps) {
           {currentStatus && (
             <span className="text-xs text-green-600 bg-green-100 px-2 py-1 rounded">Live</span>
           )}
+        </div>
+
+        {/* Artist Context */}
+        <div className="text-xs text-gray-600">
+          Artist: <span className="font-medium">{selectedArtist.name}</span>
         </div>
 
         {/* Channel Info */}
@@ -239,6 +306,11 @@ export function YouTubeAccessResult({ result }: YouTubeAccessResultProps) {
         )}
       </div>
 
+      {/* Artist Context */}
+      <div className="text-xs text-gray-600">
+        Artist: <span className="font-medium">{selectedArtist.name}</span>
+      </div>
+
       {/* Message */}
       <p className="text-sm text-gray-600">{errorMessage}</p>
 
@@ -253,7 +325,7 @@ export function YouTubeAccessResult({ result }: YouTubeAccessResultProps) {
       </Button>
 
       <p className="text-xs text-gray-500 text-center">
-        You&apos;ll be redirected to Google to authorize access to your YouTube channel.
+        You&apos;ll be redirected to Google to authorize access to your YouTube channel for this artist.
       </p>
     </div>
   );

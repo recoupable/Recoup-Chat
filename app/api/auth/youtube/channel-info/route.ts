@@ -1,18 +1,6 @@
 import { google } from "googleapis";
-import { NextResponse } from "next/server";
-import { readFile } from "fs/promises";
-import { existsSync } from "fs";
-import path from "path";
-
-const TOKENS_DIR = path.join(process.cwd(), 'data');
-const TOKENS_FILE = path.join(TOKENS_DIR, 'youtube-tokens.json');
-
-interface StoredTokens {
-  access_token: string;
-  refresh_token?: string;
-  expires_at: number;
-  created_at: number;
-}
+import { NextRequest, NextResponse } from "next/server";
+import getYouTubeTokens from "@/lib/supabase/youtubeTokens/getYouTubeTokens";
 
 interface YouTubeChannelInfo {
   success: boolean;
@@ -38,36 +26,38 @@ interface YouTubeChannelInfo {
   };
 }
 
-async function getTokensFromFile(): Promise<StoredTokens | null> {
+export async function GET(request: NextRequest): Promise<NextResponse<YouTubeChannelInfo>> {
   try {
-    if (!existsSync(TOKENS_FILE)) {
-      return null;
+    const searchParams = request.nextUrl.searchParams;
+    const artist_id = searchParams.get("artist_id");
+
+    if (!artist_id) {
+      return NextResponse.json({
+        success: false,
+        status: "error",
+        message: "Artist ID is required to get YouTube channel information"
+      });
     }
 
-    const fileContent = await readFile(TOKENS_FILE, 'utf8');
-    const tokens: StoredTokens = JSON.parse(fileContent);
-    
-    // Check if token has expired
-    if (Date.now() > tokens.expires_at) {
-      return null;
-    }
-    
-    return tokens;
-  } catch (error) {
-    console.error('Error reading YouTube tokens from file:', error);
-    return null;
-  }
-}
-
-export async function GET(): Promise<NextResponse<YouTubeChannelInfo>> {
-  try {
-    const storedTokens = await getTokensFromFile();
+    // Get tokens from database
+    const storedTokens = await getYouTubeTokens(artist_id);
     
     if (!storedTokens) {
       return NextResponse.json({
         success: false,
         status: "error",
-        message: "No valid YouTube tokens found. Please authenticate first."
+        message: "No YouTube tokens found for this artist. Please authenticate first."
+      });
+    }
+
+    // Check if token has expired (with 1-minute safety buffer)
+    const now = Date.now();
+    const expiresAt = new Date(storedTokens.expires_at).getTime();
+    if (now > (expiresAt - 60000)) {
+      return NextResponse.json({
+        success: false,
+        status: "error",
+        message: "YouTube access token has expired for this artist. Please re-authenticate."
       });
     }
 
@@ -80,7 +70,7 @@ export async function GET(): Promise<NextResponse<YouTubeChannelInfo>> {
 
     oauth2Client.setCredentials({
       access_token: storedTokens.access_token,
-      refresh_token: storedTokens.refresh_token,
+      refresh_token: storedTokens.refresh_token ?? undefined,
     });
 
     // Create YouTube API client
@@ -99,7 +89,7 @@ export async function GET(): Promise<NextResponse<YouTubeChannelInfo>> {
       return NextResponse.json({
         success: false,
         status: "error",
-        message: "No YouTube channels found for this account"
+        message: "No YouTube channels found for this authenticated artist"
       });
     }
 
@@ -108,7 +98,7 @@ export async function GET(): Promise<NextResponse<YouTubeChannelInfo>> {
     return NextResponse.json({
       success: true,
       status: "success",
-      message: "YouTube channel access verified successfully",
+      message: "YouTube channel access verified successfully for artist",
       channel: {
         id: channelData.id || "",
         title: channelData.snippet?.title || "",
@@ -123,8 +113,8 @@ export async function GET(): Promise<NextResponse<YouTubeChannelInfo>> {
           videoCount: channelData.statistics?.videoCount || "0",
           viewCount: channelData.statistics?.viewCount || "0",
         },
-        customUrl: channelData.snippet?.customUrl,
-        country: channelData.snippet?.country,
+        customUrl: channelData.snippet?.customUrl || null,
+        country: channelData.snippet?.country || null,
         publishedAt: channelData.snippet?.publishedAt || "",
       }
     });
@@ -136,14 +126,14 @@ export async function GET(): Promise<NextResponse<YouTubeChannelInfo>> {
       return NextResponse.json({
         success: false,
         status: "error",
-        message: "YouTube authentication failed. Please sign in again."
+        message: "YouTube authentication failed for this artist. Please sign in again."
       });
     }
     
     return NextResponse.json({
       success: false,
       status: "error",
-      message: error instanceof Error ? error.message : "Failed to fetch YouTube channel information"
+      message: error instanceof Error ? error.message : "Failed to fetch YouTube channel information for this artist"
     });
   }
 } 
