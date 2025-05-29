@@ -60,7 +60,7 @@ const useUser = () => {
   };
 
   const isPrepared = () => {
-    if (!address) {
+    if (!address && !wagmiAddress) {
       login();
       return false;
     }
