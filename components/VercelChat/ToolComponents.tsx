@@ -28,6 +28,9 @@ import GetVideoGameCampaignPlaysResultComponent from "./tools/GetVideoGameCampai
 import { CommentsResult } from "@/components/Chat/comments/CommentsResult";
 import { CommentsResultData } from "@/types/Comment";
 import CommentsResultSkeleton from "@/components/Chat/comments/CommentsResultSkeleton";
+import GetSegmentFansResult from "./tools/segment-fans/GetSegmentFansResult";
+import GetSegmentFansResultSkeleton from "./tools/segment-fans/GetSegmentFansResultSkeleton";
+import { SegmentFansResult } from "@/types/fans";
 
 /**
  * Interface for tool call props
@@ -47,6 +50,7 @@ type ToolResult =
   | DeleteArtistResult
   | GetSpotifyPlayButtonClickedResult
   | CommentsResultData
+  | SegmentFansResult
   | Record<string, unknown>;
 
 /**
@@ -89,6 +93,12 @@ export function getToolCallComponent({ toolName, toolCallId }: ToolInvocation) {
     return (
       <div key={toolCallId}>
         <CommentsResultSkeleton />
+      </div>
+    );
+  } else if (toolName === "get_segment_fans") {
+    return (
+      <div key={toolCallId} className="w-full">
+        <GetSegmentFansResultSkeleton />
       </div>
     );
   }
@@ -175,6 +185,12 @@ export function getToolResultComponent({
     return (
       <div key={toolCallId}>
         <CommentsResult result={result as CommentsResultData} />
+      </div>
+    );
+  } else if (toolName === "get_segment_fans") {
+    return (
+      <div key={toolCallId} className="w-full">
+        <GetSegmentFansResult result={result as SegmentFansResult} />
       </div>
     );
   }
