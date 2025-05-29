@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useArtistProvider } from "@/providers/ArtistProvider";
 import Artist from "../Header/Artist";
+import ArtistSkeleton from "./ArtistSkeleton";
 import { ArtistRecord } from "@/types/Artist";
 import { Loader, Plus } from "lucide-react";
 import useIsMobile from "@/hooks/useIsMobile";
@@ -17,6 +18,7 @@ const ArtistsSidebar = () => {
     selectedArtist,
     isCreatingArtist,
     setIsCreatingArtist,
+    isLoading,
   } = useArtistProvider();
   const { isPrepared, email } = useUserProvider();
   const { setIsExpanded } = useSidebarExpansion();
@@ -38,6 +40,29 @@ const ArtistsSidebar = () => {
     toggleCreation();
   };
 
+  const renderArtistList = () => {
+    if (isLoading) {
+      // Render skeleton items when loading
+      return Array.from({ length: 8 }, (_, index) => (
+        <ArtistSkeleton 
+          key={`skeleton-${index}`}
+          isMini={!menuExpanded}
+          index={index}
+        />
+      ));
+    }
+
+    // Render actual artists when loaded
+    return email && sorted.map((artist: ArtistRecord | null) => (
+      <Artist
+        artist={artist}
+        toggleDropDown={() => {}}
+        key={artist?.account_id}
+        isMini={!menuExpanded}
+      />
+    ));
+  };
+
   return (
     <motion.div
       className={`px-3 py-7 hidden md:flex flex-col gap-2 z-50 ${menuExpanded ? "items-stretch" : "items-center"} ${!isArtistSelected ? "relative" : ""}`}
@@ -50,15 +75,7 @@ const ArtistsSidebar = () => {
       <div
         className={`no-scrollbar grow flex flex-col overflow-y-auto overflow-x-hidden ${menuExpanded ? "w-full" : "items-center"}`}
       >
-        {email &&
-          sorted.map((artist: ArtistRecord | null) => (
-            <Artist
-              artist={artist}
-              toggleDropDown={() => {}}
-              key={artist?.account_id}
-              isMini={!menuExpanded}
-            />
-          ))}
+        {renderArtistList()}
       </div>
       <button
         className={`${menuExpanded ? "flex px-2 py-1 gap-2 text-sm items-center text-grey-dark-1" : "flex justify-center"} ${!isArtistSelected ? "relative z-50 brightness-125" : ""}`}
