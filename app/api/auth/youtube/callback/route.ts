@@ -12,12 +12,26 @@ export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const code = searchParams.get("code");
   const error = searchParams.get("error");
-  const state = searchParams.get("state"); // Contains original path and artist_id
-  const artist_id = searchParams.get("artist_id"); // Direct artist_id parameter
+  const state = searchParams.get("state"); // Contains JSON with path and artist_id
+  
+  // Parse state to get artist_id and redirect path
+  let artist_id: string | null = null;
+  let redirectPath = "/";
+  
+  if (state) {
+    try {
+      const stateData = JSON.parse(state);
+      artist_id = stateData.artist_id;
+      redirectPath = stateData.path || "/";
+    } catch (parseError) {
+      console.error("Error parsing state parameter:", parseError);
+      // Fallback: treat state as just the path (old format)
+      redirectPath = state;
+    }
+  }
 
   if (error) {
     console.error("YouTube auth error:", error);
-    const redirectPath = state || "/";
     return NextResponse.redirect(
       new URL(redirectPath + (redirectPath.includes("?") ? "&" : "?") + "youtube_auth_error=" + encodeURIComponent(error as string), request.url)
     );
@@ -25,7 +39,6 @@ export async function GET(request: NextRequest) {
 
   if (!code) {
     console.error("No authorization code provided");
-    const redirectPath = state || "/";
     return NextResponse.redirect(
       new URL(redirectPath + (redirectPath.includes("?") ? "&" : "?") + "youtube_auth_error=No+code+provided", request.url)
     );
@@ -44,10 +57,9 @@ export async function GET(request: NextRequest) {
       throw new Error("No access token received from YouTube");
     }
 
-    // Get artist_id from URL parameters
+    // Ensure we have artist_id from the state parameter
     if (!artist_id) {
       console.error("No artist_id provided for token storage");
-      const redirectPath = state || "/";
       return NextResponse.redirect(
         new URL(redirectPath + (redirectPath.includes("?") ? "&" : "?") + "youtube_auth_error=No+artist+specified", request.url)
       );
@@ -72,14 +84,12 @@ export async function GET(request: NextRequest) {
 
     console.log("YouTube tokens saved to database successfully for artist:", artist_id);
     console.log("YouTube authentication successful, redirecting...");
-    const redirectPath = state || "/";
     return NextResponse.redirect(
       new URL(redirectPath + (redirectPath.includes("?") ? "&" : "?") + "youtube_auth=success", request.url)
     );
   } catch (err) {
     console.error("Error in YouTube auth callback:", err);
     const errorMessage = err instanceof Error ? err.message : "Error+getting+tokens";
-    const redirectPath = state || "/";
     return NextResponse.redirect(
       new URL(redirectPath + (redirectPath.includes("?") ? "&" : "?") + "youtube_auth_error=" + encodeURIComponent(errorMessage), request.url)
     );
