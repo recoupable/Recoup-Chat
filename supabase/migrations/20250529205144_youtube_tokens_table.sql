@@ -14,10 +14,6 @@ create table if not exists "public"."youtube_tokens" (
         on delete cascade
 );
 
--- Create unique index to ensure one YouTube token per account
-create unique index if not exists "youtube_tokens_account_id_unique" 
-    on "public"."youtube_tokens" ("account_id");
-
 -- Create index for faster lookups by account_id
 create index if not exists "youtube_tokens_account_id_idx" 
     on "public"."youtube_tokens" ("account_id");
