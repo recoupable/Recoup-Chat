@@ -1,4 +1,4 @@
--- Create YouTube tokens table for storing OAuth tokens per artist
+-- Create YouTube tokens table for storing OAuth tokens per account
 create table if not exists "public"."youtube_tokens" (
     "id" uuid not null default gen_random_uuid(),
     "account_id" uuid not null,
@@ -14,7 +14,7 @@ create table if not exists "public"."youtube_tokens" (
         on delete cascade
 );
 
--- Create unique index to ensure one YouTube token per artist account
+-- Create unique index to ensure one YouTube token per account
 create unique index if not exists "youtube_tokens_account_id_unique" 
     on "public"."youtube_tokens" ("account_id");
 
