@@ -8,7 +8,8 @@ import { useAccount } from "wagmi";
 
 const useUser = () => {
   const { login, user, logout } = usePrivy();
-  const address = user?.wallet?.address as Address;
+  const { address: wagmiAddress } = useAccount();
+  const address = (user?.wallet?.address as Address) || wagmiAddress;
   const email = user?.email?.address;
   const [userData, setUserData] = useState<any>(null);
   const { trackId } = useTrackEmail();
@@ -20,7 +21,6 @@ const useUser = () => {
   const [imageUploading, setImageUploading] = useState(false);
   const imageRef = useRef() as any;
   const [updating, setUpdating] = useState(false);
-  const { address: wagmiAddress } = useAccount();
 
   const toggleModal = () => setIsModalOpen(!isModalOpen);
 
@@ -60,7 +60,7 @@ const useUser = () => {
   };
 
   const isPrepared = () => {
-    if (!address && !wagmiAddress) {
+    if (!address) {
       login();
       return false;
     }
