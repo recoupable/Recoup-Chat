@@ -30,27 +30,27 @@ interface YouTubeAccessResult {
 
 // Zod schema for parameter validation
 const schema = z.object({
-  artist_id: z.string().describe("Artist ID to check YouTube access for. This is required as tokens are stored per artist.")
+  artist_ID: z.string().describe("Artist ID to check YouTube access for. This is required as tokens are stored per account.")
 });
 
 const checkYouTubeAccessTool = tool({
   description:
-    "Check if YouTube access is available for a specific artist and return basic channel information. " +
-    "This tool verifies if valid YouTube OAuth tokens exist for the artist and fetches channel data. " +
+    "Check if YouTube access is available for a specific account and return basic channel information. " +
+    "This tool verifies if valid YouTube OAuth tokens exist for the account and fetches channel data. " +
     "Returns channel name, picture, subscriber count, and other basic information if authenticated, " +
     "or an error message if authentication is required. " +
-    "Requires artist_id parameter as each artist has their own YouTube tokens.",
+    "Requires account_id parameter as each account has their own YouTube tokens.",
   parameters: schema,
-  execute: async ({ artist_id }): Promise<YouTubeAccessResult> => {
+  execute: async ({ artist_ID }): Promise<YouTubeAccessResult> => {
     try {
-      // Get tokens from database using artist_id
-      const storedTokens = await getYouTubeTokens(artist_id);
+      // Get tokens from database using account_id
+      const storedTokens = await getYouTubeTokens(artist_ID);
       
       if (!storedTokens) {
         return {
           success: false,
           status: "error",
-          message: "No YouTube tokens found for this artist. Please authenticate with YouTube first by visiting the OAuth authorization URL."
+          message: "No YouTube tokens found for this account. Please authenticate with YouTube first by visiting the OAuth authorization URL."
         };
       }
 
@@ -61,7 +61,7 @@ const checkYouTubeAccessTool = tool({
         return {
           success: false,
           status: "error",
-          message: "YouTube access token has expired for this artist. Please re-authenticate by visiting the OAuth authorization URL."
+          message: "YouTube access token has expired for this account. Please re-authenticate by visiting the OAuth authorization URL."
         };
       }
 
@@ -93,7 +93,7 @@ const checkYouTubeAccessTool = tool({
         return {
           success: false,
           status: "error",
-          message: "No YouTube channels found for this authenticated artist"
+          message: "No YouTube channels found for this authenticated account"
         };
       }
 
@@ -102,7 +102,7 @@ const checkYouTubeAccessTool = tool({
       return {
         success: true,
         status: "success",
-        message: "YouTube access verified successfully for artist",
+        message: "YouTube access verified successfully for account",
         channelInfo: {
           id: channelData.id || "",
           name: channelData.snippet?.title || "",
@@ -127,14 +127,14 @@ const checkYouTubeAccessTool = tool({
         return {
           success: false,
           status: "error",
-          message: "YouTube authentication is invalid or has expired for this artist. Please re-authenticate by visiting the OAuth authorization URL."
+          message: "YouTube authentication is invalid or has expired for this account. Please re-authenticate by visiting the OAuth authorization URL."
         };
       }
       
       return {
         success: false,
         status: "error",
-        message: error instanceof Error ? error.message : "Failed to check YouTube access for this artist. Please ensure the artist is authenticated with YouTube."
+        message: error instanceof Error ? error.message : "Failed to check YouTube access for this account. Please ensure the account is authenticated with YouTube."
       };
     }
   },

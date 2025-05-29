@@ -1,7 +1,7 @@
-// Temporary types for youtube_tokens table until database migration is run
+// Types for youtube_tokens table
 export interface YouTubeTokensRow {
   id: string;
-  artist_id: string;
+  account_id: string;
   access_token: string;
   refresh_token: string | undefined;
   expires_at: string;
@@ -11,7 +11,7 @@ export interface YouTubeTokensRow {
 
 export interface YouTubeTokensInsert {
   id?: string;
-  artist_id: string;
+  account_id: string;
   access_token: string;
   refresh_token?: string | undefined;
   expires_at: string;
@@ -21,7 +21,7 @@ export interface YouTubeTokensInsert {
 
 export interface YouTubeTokensUpdate {
   id?: string;
-  artist_id?: string;
+  account_id?: string;
   access_token?: string;
   refresh_token?: string | undefined;
   expires_at?: string;

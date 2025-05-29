@@ -1,16 +1,16 @@
 import supabase from "@/lib/supabase/serverClient";
 
 /**
- * Delete YouTube tokens for an artist
- * @param artistId - The artist ID to delete tokens for
+ * Delete YouTube tokens for an account
+ * @param accountId - The account ID to delete tokens for
  * @returns True if deleted successfully, false otherwise
  */
-const deleteYouTubeTokens = async (artistId: string): Promise<boolean> => {
+const deleteYouTubeTokens = async (accountId: string): Promise<boolean> => {
   try {
     const { error } = await supabase
       .from("youtube_tokens")
       .delete()
-      .eq("artist_id", artistId);
+      .eq("account_id", accountId);
 
     if (error) {
       console.error("Error deleting YouTube tokens:", error);

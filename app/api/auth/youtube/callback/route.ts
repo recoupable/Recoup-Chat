@@ -12,16 +12,16 @@ export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const code = searchParams.get("code");
   const error = searchParams.get("error");
-  const state = searchParams.get("state"); // Contains JSON with path and artist_id
+  const state = searchParams.get("state"); // Contains JSON with path and account_id
   
-  // Parse state to get artist_id and redirect path
-  let artist_id: string | null = null;
+  // Parse state to get account_id and redirect path
+  let account_id: string | null = null;
   let redirectPath = "/";
   
   if (state) {
     try {
       const stateData = JSON.parse(state);
-      artist_id = stateData.artist_id;
+      account_id = stateData.account_id;
       redirectPath = stateData.path || "/";
     } catch (parseError) {
       console.error("Error parsing state parameter:", parseError);
@@ -57,11 +57,11 @@ export async function GET(request: NextRequest) {
       throw new Error("No access token received from YouTube");
     }
 
-    // Ensure we have artist_id from the state parameter
-    if (!artist_id) {
-      console.error("No artist_id provided for token storage");
+    // Ensure we have account_id from the state parameter
+    if (!account_id) {
+      console.error("No account_id provided for token storage");
       return NextResponse.redirect(
-        new URL(redirectPath + (redirectPath.includes("?") ? "&" : "?") + "youtube_auth_error=No+artist+specified", request.url)
+        new URL(redirectPath + (redirectPath.includes("?") ? "&" : "?") + "youtube_auth_error=No+account+specified", request.url)
       );
     }
 
@@ -72,7 +72,7 @@ export async function GET(request: NextRequest) {
 
     // Save tokens to database
     const result = await insertYouTubeTokens({
-      artist_id: artist_id,
+      account_id: account_id,
       access_token: tokens.access_token,
       refresh_token: tokens.refresh_token || undefined,
       expires_at: expiresAt,
@@ -82,7 +82,7 @@ export async function GET(request: NextRequest) {
       throw new Error("Failed to save YouTube tokens to database");
     }
 
-    console.log("YouTube tokens saved to database successfully for artist:", artist_id);
+    console.log("YouTube tokens saved to database successfully for account:", account_id);
     console.log("YouTube authentication successful, redirecting...");
     return NextResponse.redirect(
       new URL(redirectPath + (redirectPath.includes("?") ? "&" : "?") + "youtube_auth=success", request.url)

@@ -11,22 +11,22 @@ interface YouTubeStatusResponse {
 export async function GET(request: NextRequest): Promise<NextResponse<YouTubeStatusResponse>> {
   try {
     const searchParams = request.nextUrl.searchParams;
-    const artist_id = searchParams.get("artist_id");
+    const account_id = searchParams.get("account_id");
 
-    if (!artist_id) {
+    if (!account_id) {
       return NextResponse.json({
         authenticated: false,
-        message: "Artist ID is required to check YouTube authentication status"
+        message: "Account ID is required to check YouTube authentication status"
       });
     }
 
     // Get tokens from database
-    const storedTokens = await getYouTubeTokens(artist_id);
+    const storedTokens = await getYouTubeTokens(account_id);
     
     if (!storedTokens) {
       return NextResponse.json({
         authenticated: false,
-        message: "No YouTube tokens found for this artist. Please authenticate first."
+        message: "No YouTube tokens found for this account. Please authenticate first."
       });
     }
 
@@ -36,13 +36,13 @@ export async function GET(request: NextRequest): Promise<NextResponse<YouTubeSta
     if (now > (expiresAt - 60000)) {
       return NextResponse.json({
         authenticated: false,
-        message: "YouTube access token has expired for this artist. Please re-authenticate."
+        message: "YouTube access token has expired for this account. Please re-authenticate."
       });
     }
 
     return NextResponse.json({
       authenticated: true,
-      message: "YouTube authentication is valid for this artist",
+      message: "YouTube authentication is valid for this account",
       expiresAt: storedTokens.expires_at,
       createdAt: storedTokens.created_at
     });

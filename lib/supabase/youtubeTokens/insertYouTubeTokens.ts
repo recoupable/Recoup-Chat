@@ -2,7 +2,7 @@ import supabase from "@/lib/supabase/serverClient";
 import type { YouTubeTokensRow, YouTubeTokensInsert } from "./types";
 
 /**
- * Insert or update YouTube tokens for an artist
+ * Insert or update YouTube tokens for an account
  * Uses upsert to handle both new tokens and token refreshes
  * @param tokens - YouTube tokens data to insert/update
  * @returns Inserted/updated YouTube tokens or null if operation failed
@@ -14,7 +14,7 @@ const insertYouTubeTokens = async (
     const { data, error } = await supabase
       .from("youtube_tokens")
       .upsert(tokens, { 
-        onConflict: "artist_id",
+        onConflict: "account_id",
         ignoreDuplicates: false 
       })
       .select("*")

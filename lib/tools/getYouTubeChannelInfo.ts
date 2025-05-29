@@ -48,27 +48,27 @@ interface YouTubeChannelInfoResult {
 
 // Zod schema for parameter validation
 const schema = z.object({
-  artist_id: z.string().describe("Artist ID to get YouTube channel information for. This is required as tokens are stored per artist.")
+  account_id: z.string().describe("Account ID to get YouTube channel information for. This is required as tokens are stored per account.")
 });
 
 const getYouTubeChannelInfoTool = tool({
   description:
-    "Get detailed YouTube channel information for a specific artist including subscribers, views, videos count, and other channel statistics. " +
-    "This tool requires the artist to be authenticated with YouTube first. " +
-    "Use the check_youtube_access tool first to ensure the artist is authenticated. " +
+    "Get detailed YouTube channel information for a specific account including subscribers, views, videos count, and other channel statistics. " +
+    "This tool requires the account to be authenticated with YouTube first. " +
+    "Use the check_youtube_access tool first to ensure the account is authenticated. " +
     "Returns comprehensive channel data including basic info, statistics, thumbnails, and branding settings. " +
-    "Requires artist_id parameter as each artist has their own YouTube channel and tokens.",
+    "Requires account_id parameter as each account has their own YouTube channel and tokens.",
   parameters: schema,
-  execute: async ({ artist_id }): Promise<YouTubeChannelInfoResult> => {
+  execute: async ({ account_id }): Promise<YouTubeChannelInfoResult> => {
     try {
-      // Get tokens from database using artist_id
-      const storedTokens = await getYouTubeTokens(artist_id);
+      // Get tokens from database using account_id
+      const storedTokens = await getYouTubeTokens(account_id);
       
       if (!storedTokens) {
         return {
           success: false,
           status: "error",
-          message: "No YouTube tokens found for this artist. Please authenticate with YouTube first by using the check_youtube_access tool and following the authentication instructions."
+          message: "No YouTube tokens found for this account. Please authenticate with YouTube first by using the check_youtube_access tool and following the authentication instructions."
         };
       }
 
@@ -79,7 +79,7 @@ const getYouTubeChannelInfoTool = tool({
         return {
           success: false,
           status: "error",
-          message: "YouTube access token has expired for this artist. Please re-authenticate by using the check_youtube_access tool and following the authentication instructions."
+          message: "YouTube access token has expired for this account. Please re-authenticate by using the check_youtube_access tool and following the authentication instructions."
         };
       }
 
@@ -111,7 +111,7 @@ const getYouTubeChannelInfoTool = tool({
         return {
           success: false,
           status: "error",
-          message: "No YouTube channels found for this authenticated artist"
+          message: "No YouTube channels found for this authenticated account"
         };
       }
 
@@ -120,7 +120,7 @@ const getYouTubeChannelInfoTool = tool({
       return {
         success: true,
         status: "success",
-        message: "YouTube channel information retrieved successfully for artist",
+        message: "YouTube channel information retrieved successfully for account",
         channelInfo: {
           // Basic channel information
           id: channelData.id || "",
@@ -172,14 +172,14 @@ const getYouTubeChannelInfoTool = tool({
         return {
           success: false,
           status: "error",
-          message: "YouTube authentication is invalid or has expired for this artist. Please re-authenticate by using the check_youtube_access tool and following the authentication instructions."
+          message: "YouTube authentication is invalid or has expired for this account. Please re-authenticate by using the check_youtube_access tool and following the authentication instructions."
         };
       }
       
       return {
         success: false,
         status: "error",
-        message: error instanceof Error ? error.message : "Failed to get YouTube channel information for this artist. Please ensure the artist is authenticated with YouTube."
+        message: error instanceof Error ? error.message : "Failed to get YouTube channel information for this account. Please ensure the account is authenticated with YouTube."
       };
     }
   },

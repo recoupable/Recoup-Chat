@@ -96,6 +96,12 @@ export function YouTubeAccessResult({ result }: YouTubeAccessResultProps) {
     // Get current path to redirect back after authentication
     const currentPath = window.location.pathname + window.location.search;
     
+    // Create state object with path and account_id
+    const stateData = {
+      path: currentPath,
+      account_id: selectedArtist.account_id
+    };
+    
     const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
       `client_id=${clientId}&` +
       `redirect_uri=${encodeURIComponent(redirectUri)}&` +
@@ -103,8 +109,7 @@ export function YouTubeAccessResult({ result }: YouTubeAccessResultProps) {
       `response_type=code&` +
       `access_type=offline&` +
       `prompt=consent&` +
-      `artist_id=${encodeURIComponent(selectedArtist.account_id)}&` +
-      `state=${encodeURIComponent(currentPath)}`;
+      `state=${encodeURIComponent(JSON.stringify(stateData))}`;
     
     window.open(authUrl, '_blank');
   };
@@ -118,13 +123,13 @@ export function YouTubeAccessResult({ result }: YouTubeAccessResultProps) {
       }
 
       try {
-        const response = await fetch(`/api/auth/youtube/status?artist_id=${encodeURIComponent(selectedArtist.account_id)}`);
+        const response = await fetch(`/api/auth/youtube/status?account_id=${encodeURIComponent(selectedArtist.account_id)}`);
         const status: YouTubeStatusResponse = await response.json();
         setCurrentStatus(status);
 
         // If authenticated, fetch current channel info
         if (status.authenticated) {
-          const channelResponse = await fetch(`/api/auth/youtube/channel-info?artist_id=${encodeURIComponent(selectedArtist.account_id)}`);
+          const channelResponse = await fetch(`/api/auth/youtube/channel-info?account_id=${encodeURIComponent(selectedArtist.account_id)}`);
           if (channelResponse.ok) {
             const channelData: YouTubeChannelData = await channelResponse.json();
             setCurrentChannelInfo(channelData);

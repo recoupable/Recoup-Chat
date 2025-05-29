@@ -29,24 +29,24 @@ interface YouTubeChannelInfo {
 export async function GET(request: NextRequest): Promise<NextResponse<YouTubeChannelInfo>> {
   try {
     const searchParams = request.nextUrl.searchParams;
-    const artist_id = searchParams.get("artist_id");
+    const account_id = searchParams.get("account_id");
 
-    if (!artist_id) {
+    if (!account_id) {
       return NextResponse.json({
         success: false,
         status: "error",
-        message: "Artist ID is required to get YouTube channel information"
+        message: "Account ID is required to get YouTube channel information"
       });
     }
 
     // Get tokens from database
-    const storedTokens = await getYouTubeTokens(artist_id);
+    const storedTokens = await getYouTubeTokens(account_id);
     
     if (!storedTokens) {
       return NextResponse.json({
         success: false,
         status: "error",
-        message: "No YouTube tokens found for this artist. Please authenticate first."
+        message: "No YouTube tokens found for this account. Please authenticate first."
       });
     }
 
@@ -57,7 +57,7 @@ export async function GET(request: NextRequest): Promise<NextResponse<YouTubeCha
       return NextResponse.json({
         success: false,
         status: "error",
-        message: "YouTube access token has expired for this artist. Please re-authenticate."
+        message: "YouTube access token has expired for this account. Please re-authenticate."
       });
     }
 
@@ -89,7 +89,7 @@ export async function GET(request: NextRequest): Promise<NextResponse<YouTubeCha
       return NextResponse.json({
         success: false,
         status: "error",
-        message: "No YouTube channels found for this authenticated artist"
+        message: "No YouTube channels found for this authenticated account"
       });
     }
 
@@ -98,7 +98,7 @@ export async function GET(request: NextRequest): Promise<NextResponse<YouTubeCha
     return NextResponse.json({
       success: true,
       status: "success",
-      message: "YouTube channel access verified successfully for artist",
+      message: "YouTube channel access verified successfully for account",
       channel: {
         id: channelData.id || "",
         title: channelData.snippet?.title || "",
@@ -126,14 +126,14 @@ export async function GET(request: NextRequest): Promise<NextResponse<YouTubeCha
       return NextResponse.json({
         success: false,
         status: "error",
-        message: "YouTube authentication failed for this artist. Please sign in again."
+        message: "YouTube authentication failed for this account. Please sign in again."
       });
     }
     
     return NextResponse.json({
       success: false,
       status: "error",
-      message: error instanceof Error ? error.message : "Failed to fetch YouTube channel information for this artist"
+      message: error instanceof Error ? error.message : "Failed to fetch YouTube channel information for this account"
     });
   }
 } 
