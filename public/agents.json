@@ -111,30 +111,30 @@
     "title": "Merchandising Optimization",
     "description": "Refine merchandising approach to maximize sales and fan satisfaction.",
     "prompt": "Analyze what merchandise is selling best for artists in our genre and with our audience demographics. What price points, designs, and limited-edition strategies are working? Create a data-driven merchandise plan that maximizes profit while delighting fans.",
-    "tags": ["Merch Manager"]
+    "tags": ["Merchandise"]
   },
   {
     "title": "Commerce Funnel Analysis",
     "description": "Analyze and optimize the path from content to commerce for increased conversions.",
     "prompt": "Create a strategy that turns our social content into direct sales. Analyze which types of posts drive the most traffic to our shop, identify friction points in our current funnel, and design a seamless path from casual follower to paying customer.",
-    "tags": ["Merch Manager"]
+    "tags": ["Merchandise"]
   },
   {
     "title": "Trend Participation",
     "description": "Strategic guidance for authentic and effective trend participation.",
     "prompt": "What current trends or challenges could my artist authentically participate in that would increase visibility? Don't just list trends—explain how we could put our unique spin on them, which platforms we should focus on, and how to time our participation for maximum impact.",
-    "tags": ["PR Agent"]
+    "tags": ["PR"]
   },
   {
     "title": "Podcast Guest Acquisition",
     "description": "Find the right creators to feature on your podcast, build relationships, and send outreach emails that spark collaborations.",
     "prompt": "Find 10 creators in unexpected niches (e.g., glitch fashion, gaming modders, TikTok historians, sports crossovers) who share audience overlap with my brand. For each creator: find their email. If no contact is found, skip them and find a different creator. Draft a personalized email inviting them to be a guest on my podcast. Reference their work, explain why the collaboration makes sense, and suggest a creative topic idea for the episode. Then send the email and cc me. Repeat until 10 emails have been sent.",
-    "tags": ["Podcasts"]
+    "tags": ["Podcasts", "Outreach"]
   },
   {
     "title": "Niche Community Infiltration",
     "description": "Find overlooked communities that align with your audience, then pitch tailored collaborations to build cultural relevance.",
     "prompt": "Identify 5 hyper-niche communities (e.g., glitch art Discords, solarpunk Reddit threads, biohacking forums, VR modding groups) that share values with my brand. For each: find the moderator/admin contact email. If none, skip and find another. Draft a non corporate outreach email offering to guest-speak, co-host an AMA, or co-create content for their community. Then send the email and cc me. Repeat until 5 emails have been sent.",
-    "tags": ["Community"]
+    "tags": ["Community", "Outreach"]
   }
 ] 
