@@ -24,14 +24,11 @@ const Account = () => {
     signOut,
   } = useUserProvider();
 
-  const handleSave = async () => {};
-
   return (
     <Form
       id="account-setting"
       className="w-full grid grid-cols-12 gap-2 md:gap-3"
       validationSchema={accountValidation}
-      onSubmit={handleSave}
     >
       <div className="col-span-12 flex justify-between items-center border-b-greyborder-b-[1px] pb-3">
         <p>Account Setting</p>
