@@ -23,10 +23,10 @@ interface UseVercelChatProps {
  * Combines useChat, and useMessageLoader
  * Accesses user and artist data directly from providers
  */
-export function useVercelChat({ 
-  id, 
+export function useVercelChat({
+  id,
   initialMessages,
-  uploadedAttachments = [] // Default to empty array
+  uploadedAttachments = [], // Default to empty array
 }: UseVercelChatProps) {
   const { authenticated } = usePrivy();
   const { userData } = useUserProvider();
@@ -71,11 +71,11 @@ export function useVercelChat({
       // 2. Second just streamed message
       // When messages length is 2, it means second message has been streamed successfully and should also have been updated on backend
       // So we trigger the fetchConversations to update the conversation list
-      
+
       if (messagesLengthRef.current === 2) {
-        fetchConversations()
+        fetchConversations();
       }
-    }
+    },
   });
 
   // Keep messagesRef in sync with messages
@@ -125,16 +125,17 @@ export function useVercelChat({
 
   const handleSendMessage = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    
+
     if (hasChatApiError) {
       await deleteTrailingMessages();
     }
-    
+
     // Only send successfully uploaded attachments
-    const messageOptions = uploadedAttachments.length > 0 
-      ? { experimental_attachments: uploadedAttachments }
-      : undefined;
-    
+    const messageOptions =
+      uploadedAttachments.length > 0
+        ? { experimental_attachments: uploadedAttachments }
+        : undefined;
+
     // Submit the message
     handleSubmit(event, messageOptions);
 
@@ -149,14 +150,14 @@ export function useVercelChat({
   };
 
   useEffect(() => {
-    const isFullyLoggedIn = authenticated && userId;
+    const isFullyLoggedIn = userId;
     const isReady = status === "ready";
     const hasMessages = messages.length > 1;
     const hasInitialMessages = initialMessages && initialMessages.length > 0;
     if (!hasInitialMessages || !isReady || hasMessages || !isFullyLoggedIn)
       return;
     handleSendQueryMessages(initialMessages[0]);
-  }, [initialMessages, status, authenticated, userId]);
+  }, [initialMessages, status, userId]);
 
   return {
     // States
