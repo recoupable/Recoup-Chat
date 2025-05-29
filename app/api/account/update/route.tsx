@@ -15,8 +15,8 @@ export async function POST(req: NextRequest) {
     }
 
     await updateAccount(accountId, { name });
-    const account_info = found.account_info?.[0];
-    if (!account_info) {
+    const accountInfoRow = found.account_info?.[0];
+    if (!accountInfoRow) {
       await insertAccountInfo({
         organization,
         image,
@@ -33,7 +33,20 @@ export async function POST(req: NextRequest) {
 
     // Fetch the updated account with all joined info
     const updated = await getAccountById(accountId);
-    return Response.json({ data: updated }, { status: 200 });
+    // Spread account_info, account_wallets, account_emails into top-level
+    const info = updated?.account_info?.[0] || {};
+    const wallet = updated?.account_wallets?.[0] || {};
+    const email = updated?.account_emails?.[0] || {};
+    const response = {
+      data: {
+        name: updated?.name,
+        id: updated?.id,
+        ...info,
+        ...wallet,
+        ...email,
+      },
+    };
+    return Response.json(response, { status: 200 });
   } catch (error) {
     console.error(error);
     const message = error instanceof Error ? error.message : "failed";
