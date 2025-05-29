@@ -11,8 +11,8 @@ import useCreateArtists from "./useCreateArtists";
 // Helper function to sort artists alphabetically by name
 const sortArtistsAlphabetically = (artists: ArtistRecord[]): ArtistRecord[] => {
   return [...artists].sort((a, b) => {
-    const nameA = a.name?.toLowerCase() || '';
-    const nameB = b.name?.toLowerCase() || '';
+    const nameA = a.name?.toLowerCase() || "";
+    const nameB = b.name?.toLowerCase() || "";
     return nameA.localeCompare(nameB);
   });
 };
@@ -20,27 +20,28 @@ const sortArtistsAlphabetically = (artists: ArtistRecord[]): ArtistRecord[] => {
 const useArtists = () => {
   const artistSetting = useArtistSetting();
   const [isLoading, setIsLoading] = useState(true);
-  const { email } = useUserProvider();
+  const { email, userData } = useUserProvider();
   const [artists, setArtists] = useState<ArtistRecord[]>([]);
   const [selectedArtist, setSelectedArtist] = useState<ArtistRecord | null>(
-    null,
+    null
   );
   const [updating, setUpdating] = useState(false);
   const loading = artistSetting.imageUploading || updating;
   const artistMode = useArtistMode(
     artistSetting.clearParams,
-    artistSetting.setEditableArtist,
+    artistSetting.setEditableArtist
   );
   const { handleSelectArtist } = useInitialArtists(
     artists,
     selectedArtist,
-    setSelectedArtist,
+    setSelectedArtist
   );
   const [menuVisibleArtistId, setMenuVisibleArtistId] = useState<any>("");
   const activeArtistIndex = artists.findIndex(
-    (artist: ArtistRecord) => artist.account_id === selectedArtist?.account_id,
+    (artist: ArtistRecord) => artist.account_id === selectedArtist?.account_id
   );
-  const { isCreatingArtist, setIsCreatingArtist, updateChatState } = useCreateArtists();
+  const { isCreatingArtist, setIsCreatingArtist, updateChatState } =
+    useCreateArtists();
 
   const sorted =
     selectedArtist && activeArtistIndex >= 0
@@ -55,12 +56,12 @@ const useArtists = () => {
 
   const getArtists = useCallback(
     async (artistId?: string) => {
-      if (!email) {
+      if (!userData?.id) {
         setArtists([]);
         return;
       }
       const response = await fetch(
-        `/api/artists?email=${encodeURIComponent(email as string)}`,
+        `/api/artists?accountId=${encodeURIComponent(userData?.id as string)}`
       );
       const data = await response.json();
       setArtists(data.artists);
@@ -71,13 +72,13 @@ const useArtists = () => {
       }
       if (artistId) {
         const newUpdatedInfo = data.artists.find(
-          (artist: ArtistRecord) => artist.account_id === artistId,
+          (artist: ArtistRecord) => artist.account_id === artistId
         );
         if (newUpdatedInfo) setSelectedArtist(newUpdatedInfo);
       }
       setIsLoading(false);
     },
-    [email],
+    [userData?.id]
   );
   const saveSetting = async () => {
     setUpdating(true);
