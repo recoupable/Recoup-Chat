@@ -26,11 +26,11 @@ create index if not exists "youtube_tokens_artist_id_idx"
 create index if not exists "youtube_tokens_expires_at_idx" 
     on "public"."youtube_tokens" ("expires_at");
 
--- Add updated_at trigger
+-- Add updated_at trigger using the correct function name
 create trigger "youtube_tokens_updated_at_trigger"
     before update on "public"."youtube_tokens"
     for each row
-    execute function update_updated_at_column();
+    execute function trigger_set_updated_at();
 
 -- Enable Row Level Security
 alter table "public"."youtube_tokens" enable row level security;
