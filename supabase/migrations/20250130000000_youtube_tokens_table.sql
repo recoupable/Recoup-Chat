@@ -30,19 +30,4 @@ create index if not exists "youtube_tokens_expires_at_idx"
 create trigger "youtube_tokens_updated_at_trigger"
     before update on "public"."youtube_tokens"
     for each row
-    execute function trigger_set_updated_at();
-
--- Enable Row Level Security
-alter table "public"."youtube_tokens" enable row level security;
-
--- Create RLS policy: users can only access their own tokens
--- Note: Since artist_id references accounts(id), we use auth.uid() to match the artist account
-create policy "Users can only access their own YouTube tokens"
-    on "public"."youtube_tokens"
-    for all
-    using (artist_id = auth.uid()::uuid)
-    with check (artist_id = auth.uid()::uuid);
-
--- Grant permissions
-grant all on "public"."youtube_tokens" to authenticated;
-grant select on "public"."youtube_tokens" to anon; 
+    execute function trigger_set_updated_at(); 
