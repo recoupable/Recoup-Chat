@@ -7,7 +7,11 @@ create table if not exists "public"."youtube_tokens" (
     "expires_at" timestamp with time zone not null,
     "created_at" timestamp with time zone not null default now(),
     "updated_at" timestamp with time zone not null default now(),
-    primary key ("id")
+    primary key ("id"),
+    constraint "youtube_tokens_account_id_fkey" 
+        foreign key ("account_id") 
+        references "public"."accounts" ("id") 
+        on delete cascade
 );
 
 -- Create unique index to ensure one YouTube token per account
