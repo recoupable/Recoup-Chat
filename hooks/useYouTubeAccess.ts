@@ -31,11 +31,8 @@ interface UseYouTubeAccessResult {
   selectedArtist: ArtistRecord | null;
   currentStatus: YouTubeStatusResponse | null;
   isCheckingStatus: boolean;
-  currentChannelInfo: YouTubeChannelInfo | null;
   isAuthenticated: boolean;
-  displayResult: YouTubeChannelInfo | {
-    channel: YouTubeChannelData;
-  } | null;
+  displayResult: YouTubeChannelInfo | { channel: YouTubeChannelData; } | null;
   handleYouTubeLogin: () => void;
 }
 
@@ -43,7 +40,14 @@ export function useYouTubeAccess(result: YouTubeAccessResultType): UseYouTubeAcc
   const { selectedArtist } = useArtistProvider();
   const [currentStatus, setCurrentStatus] = useState<YouTubeStatusResponse | null>(null);
   const [isCheckingStatus, setIsCheckingStatus] = useState(true);
-  const [currentChannelInfo, setCurrentChannelInfo] = useState<YouTubeChannelInfo | null>(null);
+  
+  // Single state for channel info - starts with static data, updates with live data
+  const [channelInfo, setChannelInfo] = useState<YouTubeChannelInfo | { channel: YouTubeChannelData; } | null>(
+    result.channelInfo ? {
+      ...result,
+      channel: mapRawChannelInfoToChannelData(result.channelInfo)
+    } : null
+  );
 
   // Helper function to initiate YouTube OAuth flow with artist context
   const handleYouTubeLogin = () => {
@@ -90,12 +94,12 @@ export function useYouTubeAccess(result: YouTubeAccessResultType): UseYouTubeAcc
         const status: YouTubeStatusResponse = await response.json();
         setCurrentStatus(status);
 
-        // If authenticated, fetch current channel info
+        // If authenticated, fetch current channel info and update our single state
         if (status.authenticated) {
           const channelResponse = await fetch(`/api/auth/youtube/channel-info?account_id=${encodeURIComponent(selectedArtist.account_id)}`);
           if (channelResponse.ok) {
-            const channelData: YouTubeChannelInfo = await channelResponse.json();
-            setCurrentChannelInfo(channelData);
+            const liveChannelData: YouTubeChannelInfo = await channelResponse.json();
+            setChannelInfo(liveChannelData); // Update with live data
           }
         }
       } catch (error) {
@@ -108,12 +112,6 @@ export function useYouTubeAccess(result: YouTubeAccessResultType): UseYouTubeAcc
 
     checkCurrentStatus();
   }, [selectedArtist?.account_id]);
-
-  // Use current status if available, otherwise fall back to static result
-  const displayResult = currentChannelInfo || (result.channelInfo ? {
-    ...result,
-    channel: mapRawChannelInfoToChannelData(result.channelInfo)
-  } : null);
   
   const isAuthenticated = currentStatus?.authenticated ?? result.success;
 
@@ -121,9 +119,8 @@ export function useYouTubeAccess(result: YouTubeAccessResultType): UseYouTubeAcc
     selectedArtist,
     currentStatus,
     isCheckingStatus,
-    currentChannelInfo,
     isAuthenticated,
-    displayResult,
+    displayResult: channelInfo,
     handleYouTubeLogin,
   };
 } 
