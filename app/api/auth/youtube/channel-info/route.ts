@@ -17,6 +17,7 @@ import { YouTubeChannelInfo } from "@/types/youtube";
 import { validateYouTubeTokens } from "@/lib/youtube/token-validator";
 import { fetchYouTubeChannelInfo } from "@/lib/youtube/channel-fetcher";
 import { YouTubeErrorBuilder, YouTubeErrorMessages } from "@/lib/youtube/error-builder";
+import { mapChannelDataToAPIResponse } from "@/lib/youtube/channel-mapper";
 
 export async function GET(request: NextRequest): Promise<NextResponse<YouTubeChannelInfo>> {
   try {
@@ -42,20 +43,7 @@ export async function GET(request: NextRequest): Promise<NextResponse<YouTubeCha
     const channel = channelResult.channelData!;
     
     return YouTubeErrorBuilder.createAPISuccess("YouTube channel access verified successfully for account", {
-      channel: {
-        id: channel.id,
-        title: channel.title,
-        description: channel.description,
-        thumbnails: channel.thumbnails,
-        statistics: {
-          subscriberCount: channel.statistics.subscriberCount,
-          videoCount: channel.statistics.videoCount,
-          viewCount: channel.statistics.viewCount,
-        },
-        customUrl: channel.customUrl,
-        country: channel.country,
-        publishedAt: channel.publishedAt,
-      }
+      channel: mapChannelDataToAPIResponse(channel)
     });
   } catch (error: unknown) {
     console.error("Error fetching YouTube channel info:", error);

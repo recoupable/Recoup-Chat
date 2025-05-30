@@ -25,6 +25,7 @@ import {
   YouTubeChannelInfo,
   YouTubeChannelData
 } from "@/types/youtube";
+import { mapRawChannelInfoToChannelData } from "@/lib/youtube/channel-mapper";
 
 interface UseYouTubeAccessResult {
   selectedArtist: ArtistRecord | null;
@@ -111,24 +112,7 @@ export function useYouTubeAccess(result: YouTubeAccessResultType): UseYouTubeAcc
   // Use current status if available, otherwise fall back to static result
   const displayResult = currentChannelInfo || (result.channelInfo ? {
     ...result,
-    channel: {
-      id: result.channelInfo.id,
-      title: result.channelInfo.name,
-      description: "",
-      thumbnails: {
-        default: { url: result.channelInfo.thumbnails?.default },
-        medium: { url: result.channelInfo.thumbnails?.medium },
-        high: { url: result.channelInfo.thumbnails?.high },
-      },
-      statistics: {
-        subscriberCount: result.channelInfo.subscriberCount || "0",
-        videoCount: result.channelInfo.videoCount || "0",
-        viewCount: result.channelInfo.viewCount || "0",
-      },
-      customUrl: result.channelInfo.customUrl,
-      country: result.channelInfo.country,
-      publishedAt: result.channelInfo.publishedAt || "",
-    }
+    channel: mapRawChannelInfoToChannelData(result.channelInfo)
   } : null);
   
   const isAuthenticated = currentStatus?.authenticated ?? result.success;

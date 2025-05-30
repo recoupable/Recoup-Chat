@@ -130,6 +130,46 @@ export interface YouTubeChannelFetchResult {
   };
 }
 
+// YouTube Mapping Types (from channel-mapper.ts)
+// Type for raw channel info that can come from various sources
+export interface RawChannelInfo {
+  id?: string;
+  name?: string;
+  title?: string;
+  description?: string;
+  thumbnails?: {
+    default?: string | null;
+    medium?: string | null;
+    high?: string | null;
+  };
+  subscriberCount?: string;
+  videoCount?: string;
+  viewCount?: string;
+  customUrl?: string | null;
+  country?: string | null;
+  publishedAt?: string | null;
+}
+
+// Type for channel info from YouTubeChannelInfoResult
+export interface ChannelInfoResult {
+  id: string;
+  title: string;
+  description?: string;
+  thumbnails?: {
+    default?: { url?: string | null };
+    medium?: { url?: string | null };
+    high?: { url?: string | null };
+  };
+  statistics?: {
+    subscriberCount?: string;
+    videoCount?: string;
+    viewCount?: string;
+  };
+  customUrl?: string | null;
+  country?: string | null;
+  publishedAt?: string;
+}
+
 // Token Validation Types (from token-validator.ts)
 export interface YouTubeTokenValidationResult {
   success: boolean;

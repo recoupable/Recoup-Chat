@@ -20,6 +20,7 @@ import {
 import { useYouTubeAccess } from "@/hooks/useYouTubeAccess";
 import { YouTubeChannelDisplay } from "./YouTubeChannelDisplay";
 import { YouTubeErrorDisplay } from "./YouTubeErrorDisplay";
+import { mapChannelInfoResultToAccessResult } from "@/lib/youtube/channel-mapper";
 
 interface YouTubeAccessResultProps {
   result: YouTubeAccessResultType | YouTubeChannelInfoResult;
@@ -33,21 +34,7 @@ export function YouTubeAccessResult({ result }: YouTubeAccessResultProps) {
         success: result.success,
         status: result.status,
         message: result.message,
-        channelInfo: {
-          id: result.channelInfo.id,
-          name: result.channelInfo.title, // Map title to name
-          thumbnails: {
-            default: result.channelInfo.thumbnails.default?.url || null,
-            medium: result.channelInfo.thumbnails.medium?.url || null,
-            high: result.channelInfo.thumbnails.high?.url || null,
-          },
-          subscriberCount: result.channelInfo.statistics?.subscriberCount,
-          videoCount: result.channelInfo.statistics?.videoCount,
-          viewCount: result.channelInfo.statistics?.viewCount,
-          customUrl: result.channelInfo.customUrl,
-          country: result.channelInfo.country,
-          publishedAt: result.channelInfo.publishedAt,
-        }
+        channelInfo: mapChannelInfoResultToAccessResult(result.channelInfo)
       }
     : result as YouTubeAccessResultType; // This is already YouTubeAccessResult format
 
