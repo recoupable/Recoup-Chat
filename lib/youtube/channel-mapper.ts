@@ -8,7 +8,9 @@
 import { 
   YouTubeChannelData, 
   RawChannelInfo, 
-  ChannelInfoResult 
+  ChannelInfoResult,
+  YouTubeAccessResult,
+  YouTubeChannelInfoResult
 } from "@/types/youtube";
 
 // Union type for thumbnail formats
@@ -133,4 +135,31 @@ export function mapChannelInfoResultToAccessResult(channelInfo: ChannelInfoResul
     country: channelInfo.country,
     publishedAt: channelInfo.publishedAt,
   };
+}
+
+/**
+ * Helper function to check if result is YouTubeChannelInfoResult format
+ * @param result - Result object to check
+ * @returns Type guard for YouTubeChannelInfoResult
+ */
+export function isChannelInfoResult(result: YouTubeAccessResult | YouTubeChannelInfoResult): result is YouTubeChannelInfoResult {
+  return 'channelInfo' in result && result.channelInfo !== undefined && 'title' in result.channelInfo;
+}
+
+/**
+ * Helper function to normalize result to YouTubeAccessResult format
+ * @param result - Result in either format
+ * @returns Normalized YouTubeAccessResult
+ */
+export function normalizeResult(result: YouTubeAccessResult | YouTubeChannelInfoResult): YouTubeAccessResult {
+  if (isChannelInfoResult(result)) {
+    return {
+      success: result.success,
+      status: result.status,
+      message: result.message,
+      channelInfo: mapChannelInfoResultToAccessResult(result.channelInfo!)
+    };
+  }
+  
+  return result as YouTubeAccessResult;
 }

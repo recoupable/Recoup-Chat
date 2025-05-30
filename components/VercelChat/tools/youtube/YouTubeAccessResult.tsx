@@ -20,23 +20,14 @@ import {
 import { useYouTubeAccess } from "@/hooks/useYouTubeAccess";
 import { YouTubeChannelDisplay } from "./YouTubeChannelDisplay";
 import { YouTubeErrorDisplay } from "./YouTubeErrorDisplay";
-import { mapChannelInfoResultToAccessResult } from "@/lib/youtube/channel-mapper";
+import { normalizeResult } from "@/lib/youtube/channel-mapper";
 
 interface YouTubeAccessResultProps {
   result: YouTubeAccessResultType | YouTubeChannelInfoResult;
 }
 
 export function YouTubeAccessResult({ result }: YouTubeAccessResultProps) {
-  // Convert YouTubeChannelInfoResult to YouTubeAccessResult format for compatibility
-  const normalizedResult: YouTubeAccessResultType = 'channelInfo' in result && result.channelInfo && 'title' in result.channelInfo
-    ? {
-        // This is YouTubeChannelInfoResult format
-        success: result.success,
-        status: result.status,
-        message: result.message,
-        channelInfo: mapChannelInfoResultToAccessResult(result.channelInfo)
-      }
-    : result as YouTubeAccessResultType; // This is already YouTubeAccessResult format
+  const normalizedResult = normalizeResult(result);
 
   const {
     selectedArtist,
@@ -88,7 +79,7 @@ export function YouTubeAccessResult({ result }: YouTubeAccessResultProps) {
   }
 
   // Error state - show login button
-  const errorMessage = currentStatus?.message || result.message || "Please connect your YouTube account to access channel information.";
+  const errorMessage = currentStatus?.message || normalizedResult.message || "Please connect your YouTube account to access channel information.";
   
   return (
     <YouTubeErrorDisplay
