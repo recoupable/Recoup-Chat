@@ -10,7 +10,6 @@ import { v4 as uuidV4 } from "uuid";
 import { useArtistProvider } from "@/providers/ArtistProvider";
 import { PointerIcon } from "lucide-react";
 import { Button } from "../ui/button";
-import { useMiniAppContext } from "@/providers/MiniAppProvider";
 
 const SideMenu = ({
   isVisible,
@@ -24,7 +23,6 @@ const SideMenu = ({
   const { push } = useRouter();
   const { address, isPrepared } = useUserProvider();
   const { selectedArtist, sorted, toggleCreation } = useArtistProvider();
-  const { isMiniApp } = useMiniAppContext();
   const hasArtists = sorted.length > 0;
   const isArtistSelected = !!selectedArtist;
 
@@ -98,7 +96,7 @@ const SideMenu = ({
       </div>
       {address && <RecentChats toggleModal={toggleModal} />}
       <div className="grow flex flex-col gap-1 md:gap-3 justify-end">
-        {!isMiniApp && <UnlockPro />}
+        <UnlockPro />
         <UserInfo toggleMenuExpanded={toggleModal} />
       </div>
     </SideModal>
