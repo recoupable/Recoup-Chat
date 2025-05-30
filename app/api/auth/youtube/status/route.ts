@@ -1,12 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import getYouTubeTokens from "@/lib/supabase/youtubeTokens/getYouTubeTokens";
-
-interface YouTubeStatusResponse {
-  authenticated: boolean;
-  message: string;
-  expiresAt?: string;
-  createdAt?: string;
-}
+import { YouTubeStatusResponse } from "@/types/youtube";
 
 export async function GET(request: NextRequest): Promise<NextResponse<YouTubeStatusResponse>> {
   try {

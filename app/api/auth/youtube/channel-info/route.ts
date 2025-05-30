@@ -1,30 +1,7 @@
 import { google } from "googleapis";
 import { NextRequest, NextResponse } from "next/server";
 import getYouTubeTokens from "@/lib/supabase/youtubeTokens/getYouTubeTokens";
-
-interface YouTubeChannelInfo {
-  success: boolean;
-  status: string;
-  message?: string;
-  channel?: {
-    id: string;
-    title: string;
-    description: string;
-    thumbnails: {
-      default?: { url?: string | null };
-      medium?: { url?: string | null };
-      high?: { url?: string | null };
-    };
-    statistics: {
-      subscriberCount: string;
-      videoCount: string;
-      viewCount: string;
-    };
-    customUrl?: string | null;
-    country?: string | null;
-    publishedAt: string;
-  };
-}
+import { YouTubeChannelInfo } from "@/types/youtube";
 
 export async function GET(request: NextRequest): Promise<NextResponse<YouTubeChannelInfo>> {
   try {

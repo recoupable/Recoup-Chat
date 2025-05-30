@@ -2,49 +2,7 @@ import { z } from "zod";
 import { tool } from "ai";
 import { google } from "googleapis";
 import getYouTubeTokens from "@/lib/supabase/youtubeTokens/getYouTubeTokens";
-
-// Interface for YouTube channel information response
-interface YouTubeChannelInfoResult {
-  success: boolean;
-  status: string;
-  message?: string;
-  channelInfo?: {
-    // Basic channel information
-    id: string;
-    title: string;
-    description: string;
-    customUrl?: string | null;
-    country?: string | null;
-    publishedAt: string;
-    
-    // Channel thumbnails
-    thumbnails: {
-      default?: { url?: string | null };
-      medium?: { url?: string | null };
-      high?: { url?: string | null };
-    };
-    
-    // Channel statistics
-    statistics: {
-      subscriberCount: string;
-      videoCount: string;
-      viewCount: string;
-      hiddenSubscriberCount: boolean;
-    };
-    
-    // Channel branding
-    branding: {
-      keywords?: string | null;
-      defaultLanguage?: string | null;
-    };
-    
-    // Authentication metadata
-    authentication: {
-      tokenCreatedAt: string;
-      tokenExpiresAt: string;
-    };
-  };
-}
+import { YouTubeChannelInfoResult } from "@/types/youtube";
 
 // Zod schema for parameter validation
 const schema = z.object({

@@ -1,5 +1,5 @@
 import supabase from "@/lib/supabase/serverClient";
-import type { YouTubeTokensRow } from "./types";
+import type { YouTubeTokensRow } from "@/types/youtube";
 
 /**
  * Get YouTube tokens for a specific account

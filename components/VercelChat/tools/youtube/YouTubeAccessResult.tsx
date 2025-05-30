@@ -2,63 +2,11 @@ import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Youtube, Users, Video, Eye, Calendar, Loader } from "lucide-react";
 import { useArtistProvider } from "@/providers/ArtistProvider";
-
-// Interface matching the checkYouTubeAccess tool result
-interface YouTubeChannelInfo {
-  success: boolean;
-  status: string;
-  message?: string;
-  channelInfo?: {
-    id: string;
-    name: string;
-    thumbnails?: {
-      default?: string | null;
-      medium?: string | null;
-      high?: string | null;
-    };
-    subscriberCount?: string;
-    videoCount?: string;
-    viewCount?: string;
-    customUrl?: string | null;
-    country?: string | null;
-    publishedAt?: string | null;
-  };
-}
-
-interface YouTubeAccessResultProps {
-  result: YouTubeChannelInfo;
-}
-
-interface YouTubeStatusResponse {
-  authenticated: boolean;
-  message: string;
-  expiresAt?: number;
-  createdAt?: number;
-}
-
-interface YouTubeChannelData {
-  success: boolean;
-  status: string;
-  message?: string;
-  channel?: {
-    id: string;
-    title: string;
-    description: string;
-    thumbnails: {
-      default?: { url?: string | null };
-      medium?: { url?: string | null };
-      high?: { url?: string | null };
-    };
-    statistics: {
-      subscriberCount: string;
-      videoCount: string;
-      viewCount: string;
-    };
-    customUrl?: string | null;
-    country?: string | null;
-    publishedAt: string;
-  };
-}
+import { 
+  YouTubeAccessResult as YouTubeAccessResultType,
+  YouTubeStatusResponse,
+  YouTubeChannelInfo
+} from "@/types/youtube";
 
 // Utility functions for formatting
 function formatNumber(numStr: string): string {
@@ -76,11 +24,15 @@ function formatDate(dateStr: string): string {
   });
 }
 
+interface YouTubeAccessResultProps {
+  result: YouTubeAccessResultType;
+}
+
 export function YouTubeAccessResult({ result }: YouTubeAccessResultProps) {
   const { selectedArtist } = useArtistProvider();
   const [currentStatus, setCurrentStatus] = useState<YouTubeStatusResponse | null>(null);
   const [isCheckingStatus, setIsCheckingStatus] = useState(true);
-  const [currentChannelInfo, setCurrentChannelInfo] = useState<YouTubeChannelData | null>(null);
+  const [currentChannelInfo, setCurrentChannelInfo] = useState<YouTubeChannelInfo | null>(null);
 
   // Helper function to initiate YouTube OAuth flow with artist context
   const handleYouTubeLogin = () => {
@@ -131,7 +83,7 @@ export function YouTubeAccessResult({ result }: YouTubeAccessResultProps) {
         if (status.authenticated) {
           const channelResponse = await fetch(`/api/auth/youtube/channel-info?account_id=${encodeURIComponent(selectedArtist.account_id)}`);
           if (channelResponse.ok) {
-            const channelData: YouTubeChannelData = await channelResponse.json();
+            const channelData: YouTubeChannelInfo = await channelResponse.json();
             setCurrentChannelInfo(channelData);
           }
         }
