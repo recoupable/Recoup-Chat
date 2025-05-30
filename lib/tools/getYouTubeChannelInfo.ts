@@ -1,8 +1,8 @@
 import { z } from "zod";
 import { tool } from "ai";
-import getYouTubeTokens from "@/lib/supabase/youtubeTokens/getYouTubeTokens";
 import { YouTubeChannelInfoResult } from "@/types/youtube";
 import { createYouTubeAPIClient } from "@/lib/youtube/oauth-client";
+import { validateYouTubeTokens } from "@/lib/youtube/token-validator";
 
 // Zod schema for parameter validation
 const schema = z.object({
@@ -19,32 +19,20 @@ const getYouTubeChannelInfoTool = tool({
   parameters: schema,
   execute: async ({ account_id }): Promise<YouTubeChannelInfoResult> => {
     try {
-      // Get tokens from database using account_id
-      const storedTokens = await getYouTubeTokens(account_id);
-      
-      if (!storedTokens) {
+      // Validate YouTube tokens
+      const tokenValidation = await validateYouTubeTokens(account_id);
+      if (!tokenValidation.success) {
         return {
           success: false,
           status: "error",
-          message: "No YouTube tokens found for this account. Please authenticate with YouTube first by using the check_youtube_access tool and following the authentication instructions."
+          message: tokenValidation.error!.message
         };
       }
 
-      // Check if token has expired (with 1-minute safety buffer)
-      const now = Date.now();
-      const expiresAt = new Date(storedTokens.expires_at).getTime();
-      if (now > (expiresAt - 60000)) {
-        return {
-          success: false,
-          status: "error",
-          message: "YouTube access token has expired for this account. Please re-authenticate by using the check_youtube_access tool and following the authentication instructions."
-        };
-      }
-
-      // Create YouTube API client with stored tokens
+      // Create YouTube API client with validated tokens
       const youtube = createYouTubeAPIClient(
-        storedTokens.access_token,
-        storedTokens.refresh_token ?? undefined
+        tokenValidation.tokens!.access_token,
+        tokenValidation.tokens!.refresh_token ?? undefined
       );
 
       // Fetch comprehensive channel information
@@ -105,8 +93,8 @@ const getYouTubeChannelInfoTool = tool({
           
           // Authentication metadata
           authentication: {
-            tokenCreatedAt: storedTokens.created_at,
-            tokenExpiresAt: storedTokens.expires_at,
+            tokenCreatedAt: tokenValidation.tokens!.created_at,
+            tokenExpiresAt: tokenValidation.tokens!.expires_at,
           },
         }
       };

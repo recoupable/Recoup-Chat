@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import getYouTubeTokens from "@/lib/supabase/youtubeTokens/getYouTubeTokens";
 import { YouTubeChannelInfo } from "@/types/youtube";
 import { createYouTubeAPIClient } from "@/lib/youtube/oauth-client";
+import { validateYouTubeTokens } from "@/lib/youtube/token-validator";
 
 export async function GET(request: NextRequest): Promise<NextResponse<YouTubeChannelInfo>> {
   try {
@@ -16,32 +16,20 @@ export async function GET(request: NextRequest): Promise<NextResponse<YouTubeCha
       });
     }
 
-    // Get tokens from database
-    const storedTokens = await getYouTubeTokens(account_id);
-    
-    if (!storedTokens) {
+    // Validate YouTube tokens
+    const tokenValidation = await validateYouTubeTokens(account_id);
+    if (!tokenValidation.success) {
       return NextResponse.json({
         success: false,
         status: "error",
-        message: "No YouTube tokens found for this account. Please authenticate first."
+        message: tokenValidation.error!.message
       });
     }
 
-    // Check if token has expired (with 1-minute safety buffer)
-    const now = Date.now();
-    const expiresAt = new Date(storedTokens.expires_at).getTime();
-    if (now > (expiresAt - 60000)) {
-      return NextResponse.json({
-        success: false,
-        status: "error",
-        message: "YouTube access token has expired for this account. Please re-authenticate."
-      });
-    }
-
-    // Create YouTube API client with stored tokens
+    // Create YouTube API client with validated tokens
     const youtube = createYouTubeAPIClient(
-      storedTokens.access_token,
-      storedTokens.refresh_token ?? undefined
+      tokenValidation.tokens!.access_token,
+      tokenValidation.tokens!.refresh_token ?? undefined
     );
 
     // Fetch channel information

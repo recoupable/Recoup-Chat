@@ -1,8 +1,8 @@
 import { z } from "zod";
 import { tool } from "ai";
-import getYouTubeTokens from "@/lib/supabase/youtubeTokens/getYouTubeTokens";
 import { YouTubeAccessResult } from "@/types/youtube";
 import { createYouTubeAPIClient } from "@/lib/youtube/oauth-client";
+import { validateYouTubeTokens } from "@/lib/youtube/token-validator";
 
 // Zod schema for parameter validation
 const schema = z.object({
@@ -19,32 +19,20 @@ const checkYouTubeAccessTool = tool({
   parameters: schema,
   execute: async ({ artist_ID }): Promise<YouTubeAccessResult> => {
     try {
-      // Get tokens from database using account_id
-      const storedTokens = await getYouTubeTokens(artist_ID);
-      
-      if (!storedTokens) {
+      // Validate YouTube tokens
+      const tokenValidation = await validateYouTubeTokens(artist_ID);
+      if (!tokenValidation.success) {
         return {
           success: false,
           status: "error",
-          message: "No YouTube tokens found for this account. Please authenticate with YouTube first by visiting the OAuth authorization URL."
+          message: tokenValidation.error!.message
         };
       }
 
-      // Check if token has expired (with 1-minute safety buffer)
-      const now = Date.now();
-      const expiresAt = new Date(storedTokens.expires_at).getTime();
-      if (now > (expiresAt - 60000)) {
-        return {
-          success: false,
-          status: "error",
-          message: "YouTube access token has expired for this account. Please re-authenticate by visiting the OAuth authorization URL."
-        };
-      }
-
-      // Create YouTube API client with stored tokens
+      // Create YouTube API client with validated tokens
       const youtube = createYouTubeAPIClient(
-        storedTokens.access_token,
-        storedTokens.refresh_token ?? undefined
+        tokenValidation.tokens!.access_token,
+        tokenValidation.tokens!.refresh_token ?? undefined
       );
 
       // Fetch channel information
