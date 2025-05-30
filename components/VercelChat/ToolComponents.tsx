@@ -31,6 +31,33 @@ import CommentsResultSkeleton from "@/components/Chat/comments/CommentsResultSke
 import GetSegmentFansResult from "./tools/segment-fans/GetSegmentFansResult";
 import GetSegmentFansResultSkeleton from "./tools/segment-fans/GetSegmentFansResultSkeleton";
 import { SegmentFansResult } from "@/types/fans";
+import YouTubeAccessResult from "./tools/youtube/YouTubeAccessResult";
+import YouTubeAccessSkeleton from "./tools/youtube/YouTubeAccessSkeleton";
+
+// Interface for YouTube channel response (matching checkYouTubeAccess tool)
+interface YouTubeChannelInfo {
+  success: boolean;
+  status: string;
+  message?: string;
+  channel?: {
+    id: string;
+    title: string;
+    description: string;
+    thumbnails: {
+      default?: { url?: string | null };
+      medium?: { url?: string | null };
+      high?: { url?: string | null };
+    };
+    statistics: {
+      subscriberCount: string;
+      videoCount: string;
+      viewCount: string;
+    };
+    customUrl?: string | null;
+    country?: string | null;
+    publishedAt: string;
+  };
+}
 
 /**
  * Interface for tool call props
@@ -51,6 +78,7 @@ type ToolResult =
   | GetSpotifyPlayButtonClickedResult
   | CommentsResultData
   | SegmentFansResult
+  | YouTubeChannelInfo
   | Record<string, unknown>;
 
 /**
@@ -99,6 +127,12 @@ export function getToolCallComponent({ toolName, toolCallId }: ToolInvocation) {
     return (
       <div key={toolCallId} className="w-full">
         <GetSegmentFansResultSkeleton />
+      </div>
+    );
+  } else if (toolName === "check_youtube_access") {
+    return (
+      <div key={toolCallId}>
+        <YouTubeAccessSkeleton />
       </div>
     );
   }
@@ -191,6 +225,13 @@ export function getToolResultComponent({
     return (
       <div key={toolCallId} className="w-full">
         <GetSegmentFansResult result={result as SegmentFansResult} />
+      </div>
+    );
+  } else if (toolName === "check_youtube_access") {
+    return (
+      <div key={toolCallId}>
+        {/* {JSON.stringify(result)} */}
+        <YouTubeAccessResult result={result as YouTubeChannelInfo} />
       </div>
     );
   }
