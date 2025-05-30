@@ -134,22 +134,3 @@ export function mapChannelInfoResultToAccessResult(channelInfo: ChannelInfoResul
     publishedAt: channelInfo.publishedAt,
   };
 }
-
-/**
- * Maps YouTubeChannelData to API response channel format
- * Used in API routes to standardize the response structure
- * @param channel - YouTubeChannelData from channel fetcher
- * @returns Channel object for API response
- */
-export function mapChannelDataToAPIResponse(channel: YouTubeChannelData) {
-  const { statistics, ...baseChannel } = channel;
-  
-  return {
-    ...baseChannel,
-    statistics: {
-      subscriberCount: statistics.subscriberCount,
-      videoCount: statistics.videoCount,
-      viewCount: statistics.viewCount,
-    },
-  };
-} 
