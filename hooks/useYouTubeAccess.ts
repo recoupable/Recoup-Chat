@@ -27,7 +27,6 @@ import {
 import mapRawChannelInfoToChannelData  from "@/lib/youtube/mappers/mapRawChannelInfoToChannelData";
 
 interface UseYouTubeAccessResult {
-  selectedArtist: ArtistRecord | null;
   status: YouTubeStatusResponse | null;
   isCheckingStatus: boolean;
   isAuthenticated: boolean;
@@ -114,7 +113,6 @@ export function useYouTubeAccess(result: YouTubeAccessResultType, selectedArtist
   const isAuthenticated = status?.authenticated ?? result.success;
 
   return {
-    selectedArtist,
     status,
     isCheckingStatus,
     isAuthenticated,
