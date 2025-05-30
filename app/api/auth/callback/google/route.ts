@@ -1,38 +1,14 @@
 /**
- * YouTube OAuth2 Callback Route Handler
+ * YouTube OAuth2 Callback Route
  * 
- * This API route handles the OAuth2 callback from Google when users authenticate 
- * their YouTube accounts for artist/account integration.
+ * Handles Google OAuth redirect after YouTube authentication.
  * 
- * OAUTH FLOW:
- * 1. User clicks "Connect YouTube Account" button in the UI
- * 2. They are redirected to Google's OAuth2 authorization endpoint
- * 3. User grants permissions to access their YouTube channel
- * 4. Google redirects back to this callback route with authorization code
- * 5. This route exchanges the code for access/refresh tokens
- * 6. Tokens are stored in database linked to the specific account
- * 7. User is redirected back to original page with success/error status
+ * PROCESS:
+ * - Exchanges authorization code for access/refresh tokens
+ * - Saves tokens to database linked to account_id from state parameter
+ * - Redirects back to original page with success/error status
  * 
- * STATE PARAMETER:
- * - Contains JSON with { path: originalPage, account_id: artistAccountId }
- * - Ensures tokens are saved for the correct artist/account
- * - Allows redirect back to the exact page user was on
- * 
- * DATABASE OPERATIONS:
- * - Saves YouTube access/refresh tokens to `youtube_tokens` table
- * - Links tokens to specific account via account_id foreign key
- * - Sets expiration timestamp with 1-minute safety buffer
- * 
- * ERROR HANDLING:
- * - OAuth errors (user denied access, invalid request, etc.)
- * - Missing authorization code from Google
- * - Token exchange failures
- * - Database save errors
- * - Missing account context
- * 
- * REDIRECT BEHAVIOR:
- * - Success: Redirects to original page with ?youtube_auth=success
- * - Error: Redirects to original page with ?youtube_auth_error=<message>
+ * STATE: Contains JSON with { path, account_id } for context preservation
  */
 
 import { NextRequest, NextResponse } from "next/server";

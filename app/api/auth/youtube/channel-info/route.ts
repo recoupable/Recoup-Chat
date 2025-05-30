@@ -1,3 +1,17 @@
+/**
+ * YouTube Channel Information API Route
+ * 
+ * Fetches authenticated YouTube channel data for a specific account.
+ * 
+ * REQUIRES: 
+ * - account_id query parameter
+ * - Valid YouTube tokens in database for the account
+ * 
+ * RETURNS:
+ * - Channel details (title, thumbnails, statistics, etc.)
+ * - Error if not authenticated or account not found
+ */
+
 import { NextRequest, NextResponse } from "next/server";
 import { YouTubeChannelInfo } from "@/types/youtube";
 import { validateYouTubeTokens } from "@/lib/youtube/token-validator";
