@@ -205,22 +205,10 @@ export interface YouTubeTokensRow {
   updated_at: string;
 }
 
-export interface YouTubeTokensInsert {
+export type YouTubeTokensInsert = Omit<YouTubeTokensRow, 'id' | 'created_at' | 'updated_at'> & {
   id?: string;
-  account_id: string;
-  access_token: string;
-  refresh_token?: string | undefined;
-  expires_at: string;
   created_at?: string;
   updated_at?: string;
-}
+};
 
-export interface YouTubeTokensUpdate {
-  id?: string;
-  account_id?: string;
-  access_token?: string;
-  refresh_token?: string | undefined;
-  expires_at?: string;
-  created_at?: string;
-  updated_at?: string;
-} 
+export type YouTubeTokensUpdate = Partial<YouTubeTokensRow>; 
