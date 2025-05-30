@@ -5,12 +5,14 @@
 
 import { ChannelInfoResult } from "@/types/youtube";
 import { normalizeStatistics } from "./normalizeStatistics";
-import { normalizeThumbnails } from "./normalizeThumbnails";
+import normalizeThumbnails from "./normalizeThumbnails";
 
-export function mapChannelInfoResultToAccessResult(channelInfo: ChannelInfoResult) {
+export function mapChannelInfoResultToAccessResult(
+  channelInfo: ChannelInfoResult
+) {
   const stats = normalizeStatistics(channelInfo);
   const thumbnails = normalizeThumbnails(channelInfo.thumbnails);
-  
+
   return {
     id: channelInfo.id,
     name: channelInfo.title, // Map title to name for compatibility
@@ -26,4 +28,4 @@ export function mapChannelInfoResultToAccessResult(channelInfo: ChannelInfoResul
     country: channelInfo.country,
     publishedAt: channelInfo.publishedAt,
   };
-} 
+}

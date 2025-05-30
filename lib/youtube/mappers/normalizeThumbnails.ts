@@ -4,7 +4,7 @@
 
 import { ThumbnailSource } from "@/types/youtube";
 
-export function normalizeThumbnails(thumbnails: ThumbnailSource) {
+function normalizeThumbnails(thumbnails: ThumbnailSource) {
   if (!thumbnails) {
     return {
       default: { url: null },
@@ -14,7 +14,7 @@ export function normalizeThumbnails(thumbnails: ThumbnailSource) {
   }
 
   // Handle flat thumbnail format (string URLs)
-  if (typeof thumbnails.default === 'string' || thumbnails.default === null) {
+  if (typeof thumbnails.default === "string" || thumbnails.default === null) {
     return {
       default: { url: thumbnails.default || null },
       medium: { url: (thumbnails.medium as string) || null },
@@ -24,8 +24,14 @@ export function normalizeThumbnails(thumbnails: ThumbnailSource) {
 
   // Handle nested thumbnail format (objects with url property)
   return {
-    default: { url: (thumbnails.default as { url?: string | null })?.url || null },
-    medium: { url: (thumbnails.medium as { url?: string | null })?.url || null },
+    default: {
+      url: (thumbnails.default as { url?: string | null })?.url || null,
+    },
+    medium: {
+      url: (thumbnails.medium as { url?: string | null })?.url || null,
+    },
     high: { url: (thumbnails.high as { url?: string | null })?.url || null },
   };
-} 
+}
+
+export default normalizeThumbnails;
