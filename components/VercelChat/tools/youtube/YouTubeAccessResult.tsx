@@ -90,7 +90,7 @@ export function YouTubeAccessResult({ result }: YouTubeAccessResultProps) {
     }
 
     const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
-    const redirectUri = `${process.env.NEXT_PUBLIC_APP_URL}/api/auth/youtube/callback`;
+    const redirectUri = `${process.env.NEXT_PUBLIC_APP_URL}/api/auth/callback/google`;
     const scope = "https://www.googleapis.com/auth/youtube.readonly";
     
     // Get current path to redirect back after authentication
