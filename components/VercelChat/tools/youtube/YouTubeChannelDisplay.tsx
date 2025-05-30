@@ -44,7 +44,7 @@ export function YouTubeChannelDisplay({ channel, artistName, isLive }: YouTubeCh
 
         <div className="flex-grow min-w-0">
           <h3 className="font-semibold text-gray-900 truncate">{channel.title}</h3>
-          {channel.customUrl && <p className="text-sm text-gray-600">@{channel.customUrl}</p>}
+          {channel.customUrl && <p className="text-sm text-gray-600">{channel.customUrl}</p>}
           {channel.country && <p className="text-xs text-gray-500">{channel.country}</p>}
         </div>
       </div>
