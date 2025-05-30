@@ -96,6 +96,64 @@ export interface YouTubeChannelInfoResult {
   };
 }
 
+// YouTube Channel Data Types (from channel-fetcher.ts)
+export interface YouTubeChannelData {
+  id: string;
+  title: string;
+  description: string;
+  thumbnails: {
+    default?: { url?: string | null };
+    medium?: { url?: string | null };
+    high?: { url?: string | null };
+  };
+  statistics: {
+    subscriberCount: string;
+    videoCount: string;
+    viewCount: string;
+    hiddenSubscriberCount?: boolean;
+  };
+  customUrl?: string | null;
+  country?: string | null;
+  publishedAt: string;
+  branding?: {
+    keywords?: string | null;
+    defaultLanguage?: string | null;
+  };
+}
+
+export interface YouTubeChannelFetchResult {
+  success: boolean;
+  channelData?: YouTubeChannelData;
+  error?: {
+    code: 'NO_CHANNELS' | 'API_ERROR';
+    message: string;
+  };
+}
+
+// Token Validation Types (from token-validator.ts)
+export interface YouTubeTokenValidationResult {
+  success: boolean;
+  tokens?: YouTubeTokensRow;
+  error?: {
+    code: 'NO_TOKENS' | 'EXPIRED' | 'FETCH_ERROR';
+    message: string;
+  };
+}
+
+// Component Props Types
+export interface YouTubeChannelDisplayProps {
+  channel: YouTubeChannelData;
+  artistName: string;
+  isLive?: boolean;
+}
+
+export interface YouTubeErrorDisplayProps {
+  artistName: string;
+  errorMessage: string;
+  onLogin: () => void;
+  isLive?: boolean;
+}
+
 // YouTube Database Token Types
 export interface YouTubeTokensRow {
   id: string;

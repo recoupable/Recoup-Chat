@@ -1,31 +1,8 @@
 import React from "react";
 import { Youtube, Users, Video, Eye, Calendar } from "lucide-react";
+import { YouTubeChannelDisplayProps } from "@/types/youtube";
 import formatFollowerCount from "@/lib/utils/formatFollowerCount";
 import formatTimestamp from "@/lib/utils/formatTimestamp";
-
-interface ChannelData {
-  id: string;
-  title: string;
-  thumbnails: {
-    default?: { url?: string | null };
-    medium?: { url?: string | null };
-    high?: { url?: string | null };
-  };
-  statistics: {
-    subscriberCount: string;
-    videoCount: string;
-    viewCount: string;
-  };
-  customUrl?: string | null;
-  country?: string | null;
-  publishedAt: string;
-}
-
-interface YouTubeChannelDisplayProps {
-  channel: ChannelData;
-  artistName: string;
-  isLive?: boolean;
-}
 
 export function YouTubeChannelDisplay({ channel, artistName, isLive }: YouTubeChannelDisplayProps) {
   const thumbnailUrl = channel.thumbnails.high?.url || 

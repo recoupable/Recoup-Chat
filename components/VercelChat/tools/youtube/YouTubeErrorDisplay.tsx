@@ -1,13 +1,7 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Youtube } from "lucide-react";
-
-interface YouTubeErrorDisplayProps {
-  artistName: string;
-  errorMessage: string;
-  onLogin: () => void;
-  isLive?: boolean;
-}
+import { YouTubeErrorDisplayProps } from "@/types/youtube";
 
 export function YouTubeErrorDisplay({ artistName, errorMessage, onLogin, isLive }: YouTubeErrorDisplayProps) {
   return (

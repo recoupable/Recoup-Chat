@@ -1,15 +1,6 @@
 import getYouTubeTokens from "@/lib/supabase/youtubeTokens/getYouTubeTokens";
-import { YouTubeTokensRow } from "@/types/youtube";
+import { YouTubeTokenValidationResult } from "@/types/youtube";
 import { YouTubeErrorBuilder, YouTubeErrorMessages } from "@/lib/youtube/error-builder";
-
-export interface YouTubeTokenValidationResult {
-  success: boolean;
-  tokens?: YouTubeTokensRow;
-  error?: {
-    code: 'NO_TOKENS' | 'EXPIRED' | 'FETCH_ERROR';
-    message: string;
-  };
-}
 
 /**
  * Validates YouTube tokens for a given account

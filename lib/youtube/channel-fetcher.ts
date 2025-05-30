@@ -1,39 +1,10 @@
 import { createYouTubeAPIClient } from "@/lib/youtube/oauth-client";
-import { YouTubeTokensRow } from "@/types/youtube";
+import { 
+  YouTubeTokensRow,
+  YouTubeChannelData,
+  YouTubeChannelFetchResult
+} from "@/types/youtube";
 import { YouTubeErrorBuilder, YouTubeErrorMessages } from "@/lib/youtube/error-builder";
-
-export interface YouTubeChannelData {
-  id: string;
-  title: string;
-  description: string;
-  thumbnails: {
-    default?: { url?: string | null };
-    medium?: { url?: string | null };
-    high?: { url?: string | null };
-  };
-  statistics: {
-    subscriberCount: string;
-    videoCount: string;
-    viewCount: string;
-    hiddenSubscriberCount?: boolean;
-  };
-  customUrl?: string | null;
-  country?: string | null;
-  publishedAt: string;
-  branding?: {
-    keywords?: string | null;
-    defaultLanguage?: string | null;
-  };
-}
-
-export interface YouTubeChannelFetchResult {
-  success: boolean;
-  channelData?: YouTubeChannelData;
-  error?: {
-    code: 'NO_CHANNELS' | 'API_ERROR';
-    message: string;
-  };
-}
 
 /**
  * Fetches YouTube channel information using authenticated tokens

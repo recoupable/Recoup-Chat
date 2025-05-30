@@ -4,7 +4,8 @@ import { ArtistRecord } from "@/types/Artist";
 import { 
   YouTubeAccessResult as YouTubeAccessResultType,
   YouTubeStatusResponse,
-  YouTubeChannelInfo
+  YouTubeChannelInfo,
+  YouTubeChannelData
 } from "@/types/youtube";
 
 interface UseYouTubeAccessResult {
@@ -14,24 +15,7 @@ interface UseYouTubeAccessResult {
   currentChannelInfo: YouTubeChannelInfo | null;
   isAuthenticated: boolean;
   displayResult: YouTubeChannelInfo | {
-    channel: {
-      id: string;
-      title: string;
-      description: string;
-      thumbnails: {
-        default?: { url?: string };
-        medium?: { url?: string };
-        high?: { url?: string };
-      };
-      statistics: {
-        subscriberCount: string;
-        videoCount: string;
-        viewCount: string;
-      };
-      customUrl?: string | null;
-      country?: string | null;
-      publishedAt: string;
-    };
+    channel: YouTubeChannelData;
   } | null;
   handleYouTubeLogin: () => void;
 }
