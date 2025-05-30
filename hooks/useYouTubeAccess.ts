@@ -17,7 +17,6 @@
  */
 
 import { useEffect, useState } from "react";
-import { useArtistProvider } from "@/providers/ArtistProvider";
 import { ArtistRecord } from "@/types/Artist";
 import { 
   YouTubeAccessResult as YouTubeAccessResultType,
@@ -36,8 +35,7 @@ interface UseYouTubeAccessResult {
   login: () => void;
 }
 
-export function useYouTubeAccess(result: YouTubeAccessResultType): UseYouTubeAccessResult {
-  const { selectedArtist } = useArtistProvider();
+export function useYouTubeAccess(result: YouTubeAccessResultType, selectedArtist: ArtistRecord | null): UseYouTubeAccessResult {
   const [status, setStatus] = useState<YouTubeStatusResponse | null>(null);
   const [isCheckingStatus, setIsCheckingStatus] = useState(true);
   
