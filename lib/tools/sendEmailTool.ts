@@ -1,15 +1,16 @@
 import { z } from "zod";
 import { tool } from "ai";
 import sendEmail from "../email/sendEmail";
+import { RECOUP_FROM_EMAIL } from "../consts";
 
 const sendEmailTool = tool({
-  description: `Send an email using the Resend API. Requires 'from', 'to', and 'subject'. Optionally include 'text', 'html', and custom headers.\n\nNotes:\n- The 'from' address must use the recoupable.com domain.\n- If not, it will fallback to hi@recoupable.com.\n- Use context to make the email creative and engaging.\n- Use this tool to send transactional or notification emails to users or admins.`,
+  description: `Send an email using the Resend API. Requires 'from', 'to', and 'subject'. Optionally include 'text', 'html', and custom headers.\n\nNotes:\n- The 'from' address must use the recoupable.com domain.\n- If not, it will fallback to ${RECOUP_FROM_EMAIL}.\n- Use context to make the email creative and engaging.\n- Use this tool to send transactional or notification emails to users or admins.`,
   parameters: z.object({
     from: z
       .string()
       .email()
       .describe(
-        "Sender email address (must be @recoupable.com; will fallback to hi@recoupable.com if not)"
+        `Sender email address (must be @recoupable.com; will fallback to ${RECOUP_FROM_EMAIL} if not)`
       ),
     to: z
       .union([z.string().email(), z.array(z.string().email())])
@@ -42,7 +43,7 @@ const sendEmailTool = tool({
     // Enforce recoupable.com domain for 'from' address
     let safeFrom = from;
     if (!/^[^@]+@recoupable\\.com$/i.test(from)) {
-      safeFrom = "hi@recoupable.com";
+      safeFrom = RECOUP_FROM_EMAIL;
     }
     try {
       const response = await sendEmail({

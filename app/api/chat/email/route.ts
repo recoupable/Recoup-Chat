@@ -1,6 +1,7 @@
 import { NextRequest } from "next/server";
 import sendEmail from "@/lib/email/sendEmail";
 import { generateEmailTextForRecipient } from "@/lib/email/generateEmailText";
+import { RECOUP_FROM_EMAIL } from "@/lib/consts";
 
 // Type for AWS SNS POST payload
 interface SnsPayload {
@@ -42,7 +43,7 @@ export async function POST(req: NextRequest) {
 
     try {
       const emailResponse = await sendEmail({
-        from: "Recoup <hi@recoupable.com>",
+        from: RECOUP_FROM_EMAIL,
         to: [recipient || ""],
         subject,
         text,

@@ -1,6 +1,7 @@
 import generateText from "@/lib/ai/generateText";
 import sendEmail from "@/lib/email/sendEmail";
 import { ArweaveUploadResult } from "../arweave/uploadBase64ToArweave";
+import { RECOUP_FROM_EMAIL } from "../consts";
 
 /**
  * Sends a Recoup Apify webhook email to a list of emails, summarizing the dataset and using a strong CTA.
@@ -44,7 +45,7 @@ CTA URL: ${ctaUrl}
   });
 
   return await sendEmail({
-    from: "Recoup <hi@recoupable.com>",
+    from: RECOUP_FROM_EMAIL,
     to: emails,
     subject: `Recoup - New TXT File Created`,
     html: text,

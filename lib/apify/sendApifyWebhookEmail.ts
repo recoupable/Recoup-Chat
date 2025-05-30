@@ -1,5 +1,6 @@
 import generateText from "@/lib/ai/generateText";
 import sendEmail from "@/lib/email/sendEmail";
+import { RECOUP_FROM_EMAIL } from "../consts";
 
 /**
  * Sends a Recoup Apify webhook email to a list of emails, summarizing the dataset and using a strong CTA.
@@ -40,7 +41,7 @@ Latest Posts: ${((d.latestPosts as unknown[]) || []).map((p) => JSON.stringify(p
   });
 
   return await sendEmail({
-    from: "Recoup <hi@recoupable.com>",
+    from: RECOUP_FROM_EMAIL,
     to: emails,
     subject: `${d.fullName} has new posts on Instagram`,
     html: text,
