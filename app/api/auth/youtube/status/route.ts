@@ -23,31 +23,28 @@ export async function GET(request: NextRequest): Promise<NextResponse<YouTubeSta
     const account_id = searchParams.get("account_id");
 
     if (!account_id) {
-      return NextResponse.json(
-        YouTubeErrorBuilder.createAuthStatusError(YouTubeErrorMessages.NO_ACCOUNT_ID + " to check YouTube authentication status")
-      );
+      const error = YouTubeErrorBuilder.createAuthStatusError(YouTubeErrorMessages.NO_ACCOUNT_ID + " to check YouTube authentication status");
+      return NextResponse.json(error);
     }
 
     // Validate YouTube tokens
     const tokenValidation = await validateYouTubeTokens(account_id);
+    
     if (!tokenValidation.success) {
-      return NextResponse.json(
-        YouTubeErrorBuilder.createAuthStatusError(tokenValidation.error!.message)
-      );
+      const error = YouTubeErrorBuilder.createAuthStatusError(tokenValidation.error!.message);
+      return NextResponse.json(error);
     }
 
-    return NextResponse.json(
-      YouTubeErrorBuilder.createAuthStatusSuccess(
-        "YouTube authentication is valid for this account",
-        tokenValidation.tokens!.expires_at,
-        tokenValidation.tokens!.created_at
-      )
+    const success = YouTubeErrorBuilder.createAuthStatusSuccess(
+      "YouTube authentication is valid for this account",
+      tokenValidation.tokens!.expires_at,
+      tokenValidation.tokens!.created_at
     );
+    return NextResponse.json(success);
   } catch (error) {
-    console.error("Error checking YouTube auth status:", error);
+    console.error("YouTube status API error:", error);
     
-    return NextResponse.json(
-      YouTubeErrorBuilder.createAuthStatusError(YouTubeErrorMessages.STATUS_CHECK_FAILED)
-    );
+    const errorResponse = YouTubeErrorBuilder.createAuthStatusError(YouTubeErrorMessages.STATUS_CHECK_FAILED);
+    return NextResponse.json(errorResponse);
   }
 } 
