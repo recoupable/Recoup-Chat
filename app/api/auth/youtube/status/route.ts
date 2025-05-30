@@ -1,3 +1,17 @@
+/**
+ * YouTube Authentication Status API Route
+ * 
+ * Checks if an account has valid YouTube authentication tokens.
+ * 
+ * REQUIRES: 
+ * - account_id query parameter
+ * 
+ * RETURNS:
+ * - Authentication status (true/false)
+ * - Token expiry and creation timestamps if authenticated
+ * - Error message if tokens invalid/expired
+ */
+
 import { NextRequest, NextResponse } from "next/server";
 import { YouTubeStatusResponse } from "@/types/youtube";
 import { validateYouTubeTokens } from "@/lib/youtube/token-validator";
