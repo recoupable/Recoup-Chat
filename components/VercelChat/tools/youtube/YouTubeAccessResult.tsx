@@ -1,15 +1,56 @@
+/**
+ * YouTube Access Result Component
+ * 
+ * Displays YouTube channel information or authentication status.
+ * Handles the unified YouTube tool response that includes both
+ * authentication checking and channel data fetching.
+ * 
+ * DISPLAYS:
+ * - Channel information if authenticated
+ * - Authentication instructions if not authenticated
+ * - Loading states during verification
+ */
+
 import React from "react";
 import { Youtube, Loader } from "lucide-react";
-import { YouTubeAccessResult as YouTubeAccessResultType } from "@/types/youtube";
+import { 
+  YouTubeAccessResult as YouTubeAccessResultType,
+  YouTubeChannelInfoResult
+} from "@/types/youtube";
 import { useYouTubeAccess } from "@/hooks/useYouTubeAccess";
 import { YouTubeChannelDisplay } from "./YouTubeChannelDisplay";
 import { YouTubeErrorDisplay } from "./YouTubeErrorDisplay";
 
 interface YouTubeAccessResultProps {
-  result: YouTubeAccessResultType;
+  result: YouTubeAccessResultType | YouTubeChannelInfoResult;
 }
 
 export function YouTubeAccessResult({ result }: YouTubeAccessResultProps) {
+  // Convert YouTubeChannelInfoResult to YouTubeAccessResult format for compatibility
+  const normalizedResult: YouTubeAccessResultType = 'channelInfo' in result && result.channelInfo && 'title' in result.channelInfo
+    ? {
+        // This is YouTubeChannelInfoResult format
+        success: result.success,
+        status: result.status,
+        message: result.message,
+        channelInfo: {
+          id: result.channelInfo.id,
+          name: result.channelInfo.title, // Map title to name
+          thumbnails: {
+            default: result.channelInfo.thumbnails.default?.url || null,
+            medium: result.channelInfo.thumbnails.medium?.url || null,
+            high: result.channelInfo.thumbnails.high?.url || null,
+          },
+          subscriberCount: result.channelInfo.statistics?.subscriberCount,
+          videoCount: result.channelInfo.statistics?.videoCount,
+          viewCount: result.channelInfo.statistics?.viewCount,
+          customUrl: result.channelInfo.customUrl,
+          country: result.channelInfo.country,
+          publishedAt: result.channelInfo.publishedAt,
+        }
+      }
+    : result as YouTubeAccessResultType; // This is already YouTubeAccessResult format
+
   const {
     selectedArtist,
     currentStatus,
@@ -17,7 +58,7 @@ export function YouTubeAccessResult({ result }: YouTubeAccessResultProps) {
     isAuthenticated,
     displayResult,
     handleYouTubeLogin,
-  } = useYouTubeAccess(result);
+  } = useYouTubeAccess(normalizedResult);
 
   // Show loading state while checking current status
   if (isCheckingStatus) {
