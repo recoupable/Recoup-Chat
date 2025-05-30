@@ -10,38 +10,10 @@ import {
   RawChannelInfo, 
   ChannelInfoResult,
   YouTubeAccessResult,
-  YouTubeChannelInfoResult
+  YouTubeChannelInfoResult,
+  ThumbnailSource,
+  StatisticsSource
 } from "@/types/youtube";
-
-// Union type for thumbnail formats
-type ThumbnailSource = {
-  default?: string | { url?: string | null } | null;
-  medium?: string | { url?: string | null } | null;
-  high?: string | { url?: string | null } | null;
-} | undefined;
-
-// Union type for sources that might have statistics in different formats
-type StatisticsSource = {
-  subscriberCount?: string;
-  videoCount?: string;
-  viewCount?: string;
-  statistics?: {
-    subscriberCount?: string;
-    videoCount?: string;
-    viewCount?: string;
-  };
-};
-
-// Union type for base channel data sources
-type BaseChannelSource = {
-  id?: string;
-  name?: string;
-  title?: string;
-  description?: string;
-  customUrl?: string | null;
-  country?: string | null;
-  publishedAt?: string | null;
-};
 
 /**
  * Helper function to normalize thumbnails from various formats to standardized format
@@ -86,7 +58,7 @@ function normalizeStatistics(source: StatisticsSource) {
 /**
  * Helper function to create base channel data structure
  */
-function createBaseChannelData(source: BaseChannelSource): Omit<YouTubeChannelData, 'statistics' | 'thumbnails'> {
+function createBaseChannelData(source: RawChannelInfo): Omit<YouTubeChannelData, 'statistics' | 'thumbnails'> {
   return {
     id: source.id || "",
     title: source.name || source.title || "",
