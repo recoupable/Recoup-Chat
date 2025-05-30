@@ -29,16 +29,16 @@ import { mapRawChannelInfoToChannelData } from "@/lib/youtube/channel-mapper";
 
 interface UseYouTubeAccessResult {
   selectedArtist: ArtistRecord | null;
-  currentStatus: YouTubeStatusResponse | null;
+  status: YouTubeStatusResponse | null;
   isCheckingStatus: boolean;
   isAuthenticated: boolean;
   displayResult: YouTubeChannelInfo | { channel: YouTubeChannelData; } | null;
-  handleYouTubeLogin: () => void;
+  login: () => void;
 }
 
 export function useYouTubeAccess(result: YouTubeAccessResultType): UseYouTubeAccessResult {
   const { selectedArtist } = useArtistProvider();
-  const [currentStatus, setCurrentStatus] = useState<YouTubeStatusResponse | null>(null);
+  const [status, setStatus] = useState<YouTubeStatusResponse | null>(null);
   const [isCheckingStatus, setIsCheckingStatus] = useState(true);
   
   // Single state for channel info - starts with static data, updates with live data
@@ -50,7 +50,7 @@ export function useYouTubeAccess(result: YouTubeAccessResultType): UseYouTubeAcc
   );
 
   // Helper function to initiate YouTube OAuth flow with artist context
-  const handleYouTubeLogin = () => {
+  const login = () => {
     if (!selectedArtist?.account_id) {
       console.error("No artist selected for YouTube authentication");
       return;
@@ -83,7 +83,7 @@ export function useYouTubeAccess(result: YouTubeAccessResultType): UseYouTubeAcc
 
   // Check current authentication status on mount
   useEffect(() => {
-    const checkCurrentStatus = async () => {
+    const checkStatus = async () => {
       if (!selectedArtist?.account_id) {
         setIsCheckingStatus(false);
         return;
@@ -91,11 +91,11 @@ export function useYouTubeAccess(result: YouTubeAccessResultType): UseYouTubeAcc
 
       try {
         const response = await fetch(`/api/auth/youtube/status?account_id=${encodeURIComponent(selectedArtist.account_id)}`);
-        const status: YouTubeStatusResponse = await response.json();
-        setCurrentStatus(status);
+        const statusData: YouTubeStatusResponse = await response.json();
+        setStatus(statusData);
 
         // If authenticated, fetch current channel info and update our single state
-        if (status.authenticated) {
+        if (statusData.authenticated) {
           const channelResponse = await fetch(`/api/auth/youtube/channel-info?account_id=${encodeURIComponent(selectedArtist.account_id)}`);
           if (channelResponse.ok) {
             const liveChannelData: YouTubeChannelInfo = await channelResponse.json();
@@ -104,23 +104,23 @@ export function useYouTubeAccess(result: YouTubeAccessResultType): UseYouTubeAcc
         }
       } catch (error) {
         console.error('Error checking YouTube status:', error);
-        setCurrentStatus({ authenticated: false, message: 'Failed to check authentication status' });
+        setStatus({ authenticated: false, message: 'Failed to check authentication status' });
       } finally {
         setIsCheckingStatus(false);
       }
     };
 
-    checkCurrentStatus();
+    checkStatus();
   }, [selectedArtist?.account_id]);
   
-  const isAuthenticated = currentStatus?.authenticated ?? result.success;
+  const isAuthenticated = status?.authenticated ?? result.success;
 
   return {
     selectedArtist,
-    currentStatus,
+    status,
     isCheckingStatus,
     isAuthenticated,
     displayResult: channelInfo,
-    handleYouTubeLogin,
+    login,
   };
 } 

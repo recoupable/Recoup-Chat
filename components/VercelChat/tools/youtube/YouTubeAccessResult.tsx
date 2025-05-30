@@ -31,11 +31,11 @@ export function YouTubeAccessResult({ result }: YouTubeAccessResultProps) {
 
   const {
     selectedArtist,
-    currentStatus,
+    status,
     isCheckingStatus,
     isAuthenticated,
     displayResult,
-    handleYouTubeLogin,
+    login,
   } = useYouTubeAccess(normalizedResult);
 
   // Show loading state while checking current status
@@ -73,20 +73,20 @@ export function YouTubeAccessResult({ result }: YouTubeAccessResultProps) {
       <YouTubeChannelDisplay
         channel={displayResult.channel}
         artistName={selectedArtist.name || "Unknown Artist"}
-        isLive={!!currentStatus}
+        isLive={!!status}
       />
     );
   }
 
   // Error state - show login button
-  const errorMessage = currentStatus?.message || normalizedResult.message || "Please connect your YouTube account to access channel information.";
+  const errorMessage = status?.message || normalizedResult.message || "Please connect your YouTube account to access channel information.";
   
   return (
     <YouTubeErrorDisplay
       artistName={selectedArtist.name || "Unknown Artist"}
       errorMessage={errorMessage}
-      onLogin={handleYouTubeLogin}
-      isLive={!!currentStatus}
+      onLogin={login}
+      isLive={!!status}
     />
   );
 }
