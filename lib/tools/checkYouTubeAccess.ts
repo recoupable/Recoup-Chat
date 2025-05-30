@@ -1,8 +1,8 @@
 import { z } from "zod";
 import { tool } from "ai";
-import { google } from "googleapis";
 import getYouTubeTokens from "@/lib/supabase/youtubeTokens/getYouTubeTokens";
 import { YouTubeAccessResult } from "@/types/youtube";
+import { createYouTubeAPIClient } from "@/lib/youtube/oauth-client";
 
 // Zod schema for parameter validation
 const schema = z.object({
@@ -41,23 +41,11 @@ const checkYouTubeAccessTool = tool({
         };
       }
 
-      // Set up OAuth2 client with stored tokens
-      const oauth2Client = new google.auth.OAuth2(
-        process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
-        process.env.GOOGLE_CLIENT_SECRET,
-        `${process.env.NEXT_PUBLIC_APP_URL}/api/auth/callback/google`
+      // Create YouTube API client with stored tokens
+      const youtube = createYouTubeAPIClient(
+        storedTokens.access_token,
+        storedTokens.refresh_token ?? undefined
       );
-
-      oauth2Client.setCredentials({
-        access_token: storedTokens.access_token,
-        refresh_token: storedTokens.refresh_token ?? undefined,
-      });
-
-      // Create YouTube API client
-      const youtube = google.youtube({
-        version: "v3",
-        auth: oauth2Client,
-      });
 
       // Fetch channel information
       const response = await youtube.channels.list({

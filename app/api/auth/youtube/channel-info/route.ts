@@ -1,7 +1,7 @@
-import { google } from "googleapis";
 import { NextRequest, NextResponse } from "next/server";
 import getYouTubeTokens from "@/lib/supabase/youtubeTokens/getYouTubeTokens";
 import { YouTubeChannelInfo } from "@/types/youtube";
+import { createYouTubeAPIClient } from "@/lib/youtube/oauth-client";
 
 export async function GET(request: NextRequest): Promise<NextResponse<YouTubeChannelInfo>> {
   try {
@@ -38,23 +38,11 @@ export async function GET(request: NextRequest): Promise<NextResponse<YouTubeCha
       });
     }
 
-    // Set up OAuth2 client with stored tokens
-    const oauth2Client = new google.auth.OAuth2(
-      process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
-      process.env.GOOGLE_CLIENT_SECRET,
-      `${process.env.NEXT_PUBLIC_APP_URL}/api/auth/callback/google`
+    // Create YouTube API client with stored tokens
+    const youtube = createYouTubeAPIClient(
+      storedTokens.access_token,
+      storedTokens.refresh_token ?? undefined
     );
-
-    oauth2Client.setCredentials({
-      access_token: storedTokens.access_token,
-      refresh_token: storedTokens.refresh_token ?? undefined,
-    });
-
-    // Create YouTube API client
-    const youtube = google.youtube({
-      version: "v3",
-      auth: oauth2Client,
-    });
 
     // Fetch channel information
     const response = await youtube.channels.list({

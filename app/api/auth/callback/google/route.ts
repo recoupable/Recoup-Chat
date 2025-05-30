@@ -1,12 +1,8 @@
-import { google } from "googleapis";
 import { NextRequest, NextResponse } from "next/server";
 import insertYouTubeTokens from "@/lib/supabase/youtubeTokens/insertYouTubeTokens";
+import { createYouTubeOAuthClient } from "@/lib/youtube/oauth-client";
 
-const oauth2Client = new google.auth.OAuth2(
-  process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
-  process.env.GOOGLE_CLIENT_SECRET,
-  `${process.env.NEXT_PUBLIC_APP_URL}/api/auth/callback/google` // Must match Google Console
-);
+const oauth2Client = createYouTubeOAuthClient();
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
