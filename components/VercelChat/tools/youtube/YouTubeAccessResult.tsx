@@ -1,10 +1,10 @@
 /**
  * YouTube Access Result Component
- * 
+ *
  * Displays YouTube channel information or authentication status.
  * Handles the unified YouTube tool response that includes both
  * authentication checking and channel data fetching.
- * 
+ *
  * DISPLAYS:
  * - Channel information if authenticated
  * - Authentication instructions if not authenticated
@@ -13,9 +13,9 @@
 
 import React from "react";
 import { Youtube, Loader } from "lucide-react";
-import { 
+import {
   YouTubeAccessResult as YouTubeAccessResultType,
-  YouTubeChannelInfoResult
+  YouTubeChannelInfoResult,
 } from "@/types/youtube";
 import { useYouTubeAccess } from "@/hooks/useYouTubeAccess";
 import { YouTubeChannelDisplay } from "./YouTubeChannelDisplay";
@@ -34,7 +34,7 @@ export function YouTubeAccessResult({ result }: YouTubeAccessResultProps) {
     status,
     isCheckingStatus,
     isAuthenticated,
-    displayResult,
+    channelInfo,
     login,
   } = useYouTubeAccess(normalizedResult);
 
@@ -44,11 +44,15 @@ export function YouTubeAccessResult({ result }: YouTubeAccessResultProps) {
       <div className="flex flex-col space-y-3 p-4 rounded-lg bg-gray-50 border border-gray-200 my-2 max-w-md">
         <div className="flex items-center space-x-2">
           <Youtube className="h-5 w-5 text-gray-400" />
-          <span className="font-medium text-gray-800">Checking YouTube Access...</span>
+          <span className="font-medium text-gray-800">
+            Checking YouTube Access...
+          </span>
         </div>
         <div className="flex items-center space-x-2">
           <Loader className="h-4 w-4 animate-spin text-gray-600" />
-          <span className="text-sm text-gray-600">Verifying authentication status</span>
+          <span className="text-sm text-gray-600">
+            Verifying authentication status
+          </span>
         </div>
       </div>
     );
@@ -62,16 +66,18 @@ export function YouTubeAccessResult({ result }: YouTubeAccessResultProps) {
           <Youtube className="h-5 w-5 text-gray-600" />
           <span className="font-medium text-gray-800">Artist Required</span>
         </div>
-        <p className="text-sm text-gray-600">Please select an artist to check YouTube access.</p>
+        <p className="text-sm text-gray-600">
+          Please select an artist to check YouTube access.
+        </p>
       </div>
     );
   }
 
   // Success state - show channel information
-  if (isAuthenticated && displayResult?.channel) {
+  if (isAuthenticated && channelInfo?.channel) {
     return (
       <YouTubeChannelDisplay
-        channel={displayResult.channel}
+        channel={channelInfo.channel}
         artistName={selectedArtist.name || "Unknown Artist"}
         isLive={!!status}
       />
@@ -79,8 +85,11 @@ export function YouTubeAccessResult({ result }: YouTubeAccessResultProps) {
   }
 
   // Error state - show login button
-  const errorMessage = status?.message || normalizedResult.message || "Please connect your YouTube account to access channel information.";
-  
+  const errorMessage =
+    status?.message ||
+    normalizedResult.message ||
+    "Please connect your YouTube account to access channel information.";
+
   return (
     <YouTubeErrorDisplay
       artistName={selectedArtist.name || "Unknown Artist"}
@@ -91,4 +100,4 @@ export function YouTubeAccessResult({ result }: YouTubeAccessResultProps) {
   );
 }
 
-export default YouTubeAccessResult; 
+export default YouTubeAccessResult;

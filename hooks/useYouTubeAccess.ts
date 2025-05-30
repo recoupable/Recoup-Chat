@@ -32,7 +32,7 @@ interface UseYouTubeAccessResult {
   status: YouTubeStatusResponse | null;
   isCheckingStatus: boolean;
   isAuthenticated: boolean;
-  displayResult: YouTubeChannelInfo | { channel: YouTubeChannelData; } | null;
+  channelInfo: YouTubeChannelInfo | { channel: YouTubeChannelData; } | null;
   login: () => void;
 }
 
@@ -120,7 +120,7 @@ export function useYouTubeAccess(result: YouTubeAccessResultType): UseYouTubeAcc
     status,
     isCheckingStatus,
     isAuthenticated,
-    displayResult: channelInfo,
+    channelInfo,
     login,
   };
 } 
