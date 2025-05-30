@@ -1,5 +1,7 @@
 // YouTube API Response Types
 
+import type { Tables, TablesInsert, TablesUpdate } from "@/types/database.types";
+
 export interface YouTubeStatusResponse {
   authenticated: boolean;
   message: string;
@@ -194,21 +196,7 @@ export interface YouTubeErrorDisplayProps {
   isLive?: boolean;
 }
 
-// YouTube Database Token Types
-export interface YouTubeTokensRow {
-  id: string;
-  account_id: string;
-  access_token: string;
-  refresh_token: string | undefined;
-  expires_at: string;
-  created_at: string;
-  updated_at: string;
-}
-
-export type YouTubeTokensInsert = Omit<YouTubeTokensRow, 'id' | 'created_at' | 'updated_at'> & {
-  id?: string;
-  created_at?: string;
-  updated_at?: string;
-};
-
-export type YouTubeTokensUpdate = Partial<YouTubeTokensRow>; 
+// YouTube Database Token Types (using generated database types)
+export type YouTubeTokensRow = Tables<"youtube_tokens">;
+export type YouTubeTokensInsert = TablesInsert<"youtube_tokens">;
+export type YouTubeTokensUpdate = TablesUpdate<"youtube_tokens">; 
