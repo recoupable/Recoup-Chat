@@ -31,6 +31,15 @@ import CommentsResultSkeleton from "@/components/Chat/comments/CommentsResultSke
 import GetSegmentFansResult from "./tools/segment-fans/GetSegmentFansResult";
 import GetSegmentFansResultSkeleton from "./tools/segment-fans/GetSegmentFansResultSkeleton";
 import { SegmentFansResult } from "@/types/fans";
+import YouTubeAccessResult from "./tools/youtube/YouTubeAccessResult";
+import YouTubeAccessSkeleton from "./tools/youtube/YouTubeAccessSkeleton";
+import { 
+  YouTubeAccessResult as YouTubeAccessResultType,
+  YouTubeChannelInfoResult
+} from "@/types/youtube";
+
+// Union type for YouTube responses (handles both old and new formats)
+type YouTubeResponse = YouTubeAccessResultType | YouTubeChannelInfoResult;
 
 /**
  * Interface for tool call props
@@ -51,6 +60,7 @@ type ToolResult =
   | GetSpotifyPlayButtonClickedResult
   | CommentsResultData
   | SegmentFansResult
+  | YouTubeResponse
   | Record<string, unknown>;
 
 /**
@@ -99,6 +109,12 @@ export function getToolCallComponent({ toolName, toolCallId }: ToolInvocation) {
     return (
       <div key={toolCallId} className="w-full">
         <GetSegmentFansResultSkeleton />
+      </div>
+    );
+  } else if (toolName === "get_youtube_info") {
+    return (
+      <div key={toolCallId}>
+        <YouTubeAccessSkeleton />
       </div>
     );
   }
@@ -191,6 +207,12 @@ export function getToolResultComponent({
     return (
       <div key={toolCallId} className="w-full">
         <GetSegmentFansResult result={result as SegmentFansResult} />
+      </div>
+    );
+  } else if (toolName === "get_youtube_info") {
+    return (
+      <div key={toolCallId}>
+        <YouTubeAccessResult result={result as YouTubeResponse} />
       </div>
     );
   }
