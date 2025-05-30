@@ -1,8 +1,8 @@
 import { z } from "zod";
 import { tool } from "ai";
 import { YouTubeChannelInfoResult } from "@/types/youtube";
-import { createYouTubeAPIClient } from "@/lib/youtube/oauth-client";
 import { validateYouTubeTokens } from "@/lib/youtube/token-validator";
+import { fetchYouTubeChannelInfo } from "@/lib/youtube/channel-fetcher";
 
 // Zod schema for parameter validation
 const schema = z.object({
@@ -29,27 +29,17 @@ const getYouTubeChannelInfoTool = tool({
         };
       }
 
-      // Create YouTube API client with validated tokens
-      const youtube = createYouTubeAPIClient(
-        tokenValidation.tokens!.access_token,
-        tokenValidation.tokens!.refresh_token ?? undefined
-      );
-
-      // Fetch comprehensive channel information
-      const response = await youtube.channels.list({
-        part: ["snippet", "statistics", "brandingSettings", "status"],
-        mine: true,
-      });
-
-      if (!response.data.items || response.data.items.length === 0) {
+      // Fetch comprehensive channel information with branding
+      const channelResult = await fetchYouTubeChannelInfo(tokenValidation.tokens!, true);
+      if (!channelResult.success) {
         return {
           success: false,
           status: "error",
-          message: "No YouTube channels found for this authenticated account"
+          message: channelResult.error!.message
         };
       }
 
-      const channelData = response.data.items[0];
+      const channel = channelResult.channelData!;
       
       return {
         success: true,
@@ -57,38 +47,28 @@ const getYouTubeChannelInfoTool = tool({
         message: "YouTube channel information retrieved successfully for account",
         channelInfo: {
           // Basic channel information
-          id: channelData.id || "",
-          title: channelData.snippet?.title || "",
-          description: channelData.snippet?.description || "",
-          customUrl: channelData.snippet?.customUrl || null,
-          country: channelData.snippet?.country || null,
-          publishedAt: channelData.snippet?.publishedAt || "",
+          id: channel.id,
+          title: channel.title,
+          description: channel.description,
+          customUrl: channel.customUrl,
+          country: channel.country,
+          publishedAt: channel.publishedAt,
           
           // Channel thumbnails
-          thumbnails: {
-            default: {
-              url: channelData.snippet?.thumbnails?.default?.url || null,
-            },
-            medium: {
-              url: channelData.snippet?.thumbnails?.medium?.url || null,
-            },
-            high: {
-              url: channelData.snippet?.thumbnails?.high?.url || null,
-            },
-          },
+          thumbnails: channel.thumbnails,
           
           // Channel statistics
           statistics: {
-            subscriberCount: channelData.statistics?.subscriberCount || "0",
-            videoCount: channelData.statistics?.videoCount || "0",
-            viewCount: channelData.statistics?.viewCount || "0",
-            hiddenSubscriberCount: channelData.statistics?.hiddenSubscriberCount === true,
+            subscriberCount: channel.statistics.subscriberCount,
+            videoCount: channel.statistics.videoCount,
+            viewCount: channel.statistics.viewCount,
+            hiddenSubscriberCount: channel.statistics.hiddenSubscriberCount || false,
           },
           
           // Channel branding
           branding: {
-            keywords: channelData.brandingSettings?.channel?.keywords || null,
-            defaultLanguage: channelData.brandingSettings?.channel?.defaultLanguage || null,
+            keywords: channel.branding?.keywords || null,
+            defaultLanguage: channel.branding?.defaultLanguage || null,
           },
           
           // Authentication metadata

@@ -1,8 +1,8 @@
 import { z } from "zod";
 import { tool } from "ai";
 import { YouTubeAccessResult } from "@/types/youtube";
-import { createYouTubeAPIClient } from "@/lib/youtube/oauth-client";
 import { validateYouTubeTokens } from "@/lib/youtube/token-validator";
+import { fetchYouTubeChannelInfo } from "@/lib/youtube/channel-fetcher";
 
 // Zod schema for parameter validation
 const schema = z.object({
@@ -29,46 +29,36 @@ const checkYouTubeAccessTool = tool({
         };
       }
 
-      // Create YouTube API client with validated tokens
-      const youtube = createYouTubeAPIClient(
-        tokenValidation.tokens!.access_token,
-        tokenValidation.tokens!.refresh_token ?? undefined
-      );
-
-      // Fetch channel information
-      const response = await youtube.channels.list({
-        part: ["snippet", "statistics"],
-        mine: true,
-      });
-
-      if (!response.data.items || response.data.items.length === 0) {
+      // Fetch channel information using utility
+      const channelResult = await fetchYouTubeChannelInfo(tokenValidation.tokens!);
+      if (!channelResult.success) {
         return {
           success: false,
           status: "error",
-          message: "No YouTube channels found for this authenticated account"
+          message: channelResult.error!.message
         };
       }
 
-      const channelData = response.data.items[0];
+      const channel = channelResult.channelData!;
       
       return {
         success: true,
         status: "success",
         message: "YouTube access verified successfully for account",
         channelInfo: {
-          id: channelData.id || "",
-          name: channelData.snippet?.title || "",
+          id: channel.id,
+          name: channel.title,
           thumbnails: {
-            default: channelData.snippet?.thumbnails?.default?.url || null,
-            medium: channelData.snippet?.thumbnails?.medium?.url || null,
-            high: channelData.snippet?.thumbnails?.high?.url || null,
+            default: channel.thumbnails.default?.url || null,
+            medium: channel.thumbnails.medium?.url || null,
+            high: channel.thumbnails.high?.url || null,
           },
-          subscriberCount: channelData.statistics?.subscriberCount || "0",
-          videoCount: channelData.statistics?.videoCount || "0",
-          viewCount: channelData.statistics?.viewCount || "0",
-          customUrl: channelData.snippet?.customUrl || null,
-          country: channelData.snippet?.country || null,
-          publishedAt: channelData.snippet?.publishedAt || null,
+          subscriberCount: channel.statistics.subscriberCount,
+          videoCount: channel.statistics.videoCount,
+          viewCount: channel.statistics.viewCount,
+          customUrl: channel.customUrl,
+          country: channel.country,
+          publishedAt: channel.publishedAt,
         }
       };
     } catch (error: unknown) {
