@@ -18,7 +18,7 @@ const sendEmailTool = tool({
       .array(z.string().email())
       .optional()
       .describe(
-        "Optional array of CC email addresses. active_account_email will always be included unless already in 'to'."
+        "Optional array of CC email addresses. active_account_email should always be included unless already in 'to'."
       ),
     subject: z.string().min(1).describe("Email subject line"),
     text: z
@@ -59,7 +59,7 @@ const sendEmailTool = tool({
         if (response.ok) {
           return {
             success: true,
-            message: `Email sent successfully from ${safeFrom} to ${to}.`,
+            message: `Email sent successfully from ${safeFrom} to ${to}. ${cc && cc.length > 0 ? `CC: ${JSON.stringify(cc)}` : "none"}.`,
             data,
           };
         } else {
