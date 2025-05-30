@@ -7,22 +7,8 @@ import {
   YouTubeStatusResponse,
   YouTubeChannelInfo
 } from "@/types/youtube";
-
-// Utility functions for formatting
-function formatNumber(numStr: string): string {
-  const num = parseInt(numStr, 10);
-  if (num >= 1000000) return `${(num / 1000000).toFixed(1)}M`;
-  if (num >= 1000) return `${(num / 1000).toFixed(1)}K`;
-  return num.toString();
-}
-
-function formatDate(dateStr: string): string {
-  return new Date(dateStr).toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
-}
+import formatFollowerCount from "@/lib/utils/formatFollowerCount";
+import formatTimestamp from "@/lib/utils/formatTimestamp";
 
 interface YouTubeAccessResultProps {
   result: YouTubeAccessResultType;
@@ -211,7 +197,7 @@ export function YouTubeAccessResult({ result }: YouTubeAccessResultProps) {
             <div className="flex items-center justify-center space-x-1">
               <Users className="h-3 w-3 text-gray-600" />
               <span className="text-sm font-medium text-gray-900">
-                {formatNumber(channel.statistics.subscriberCount)}
+                {formatFollowerCount(parseInt(channel.statistics.subscriberCount, 10))}
               </span>
             </div>
             <p className="text-xs text-gray-500">Subscribers</p>
@@ -221,7 +207,7 @@ export function YouTubeAccessResult({ result }: YouTubeAccessResultProps) {
             <div className="flex items-center justify-center space-x-1">
               <Video className="h-3 w-3 text-gray-600" />
               <span className="text-sm font-medium text-gray-900">
-                {formatNumber(channel.statistics.videoCount)}
+                {formatFollowerCount(parseInt(channel.statistics.videoCount, 10))}
               </span>
             </div>
             <p className="text-xs text-gray-500">Videos</p>
@@ -231,7 +217,7 @@ export function YouTubeAccessResult({ result }: YouTubeAccessResultProps) {
             <div className="flex items-center justify-center space-x-1">
               <Eye className="h-3 w-3 text-gray-600" />
               <span className="text-sm font-medium text-gray-900">
-                {formatNumber(channel.statistics.viewCount)}
+                {formatFollowerCount(parseInt(channel.statistics.viewCount, 10))}
               </span>
             </div>
             <p className="text-xs text-gray-500">Views</p>
@@ -242,7 +228,7 @@ export function YouTubeAccessResult({ result }: YouTubeAccessResultProps) {
         {channel.publishedAt && (
           <div className="flex items-center space-x-1 text-xs text-gray-500 pt-1">
             <Calendar className="h-3 w-3" />
-            <span>Created {formatDate(channel.publishedAt)}</span>
+            <span>Created {formatTimestamp(channel.publishedAt)}</span>
           </div>
         )}
       </div>
