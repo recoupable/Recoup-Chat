@@ -12,7 +12,7 @@ const SideArtists = ({
   isVisible: boolean;
   toggleModal: () => void;
 }) => {
-  const { email, isPrepared } = useUserProvider();
+  const { address, isPrepared } = useUserProvider();
   const { toggleCreation, sorted } = useArtistProvider();
 
   const handleCreate = () => {
@@ -30,7 +30,7 @@ const SideArtists = ({
       className="w-[250px]"
     >
       <div className="no-scrollbar grow flex flex-col gap-1 overflow-y-auto overflow-x-hidden w-full">
-        {email &&
+        {address &&
           sorted.map((artist: ArtistRecord | null) => (
             <Artist
               artist={artist}

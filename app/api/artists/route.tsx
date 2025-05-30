@@ -1,16 +1,22 @@
-import getArtistsByEmail from "@/lib/supabase/getArtistsByEmail";
+import getAccountArtistIds from "@/lib/supabase/accountArtistIds/getAccountArtistIds";
 import { NextRequest } from "next/server";
 
 export async function GET(req: NextRequest) {
-  const email = req.nextUrl.searchParams.get("email");
+  const accountId = req.nextUrl.searchParams.get("accountId");
 
   try {
-    const artists = await getArtistsByEmail(email as string);
+    if (!accountId) {
+      return Response.json(
+        { message: "Missing accountId param" },
+        { status: 400 }
+      );
+    }
+    const result = await getAccountArtistIds({ accountIds: [accountId] });
     return Response.json(
       {
-        artists,
+        artists: result,
       },
-      { status: 200 },
+      { status: 200 }
     );
   } catch (error) {
     console.error(error);

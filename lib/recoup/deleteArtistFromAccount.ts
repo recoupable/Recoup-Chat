@@ -44,19 +44,12 @@ export async function deleteArtistFromAccount(
     }
 
     // Check if any other accounts still have this artist
-    const artistLinks = await getAccountArtistIds([artistAccountId]);
-
-    if (!artistLinks.success) {
-      return {
-        success: true,
-        message:
-          "Artist link removed, but could not verify if artist should be deleted",
-        artistName,
-      };
-    }
+    const artistLinks = await getAccountArtistIds({
+      artistIds: [artistAccountId],
+    });
 
     // If no other accounts have this artist, delete the artist account and related data
-    if (!artistLinks.hasLinks) {
+    if (artistLinks.length === 0) {
       // Delete the artist account using the generic account deletion utility
       const accountDeleteResult = await deleteAccountById(artistAccountId);
 
