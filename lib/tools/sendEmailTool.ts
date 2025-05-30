@@ -14,6 +14,12 @@ const sendEmailTool = tool({
     to: z
       .union([z.string().email(), z.array(z.string().email())])
       .describe("Recipient email address or array of addresses"),
+    cc: z
+      .array(z.string().email())
+      .optional()
+      .describe(
+        "Optional array of CC email addresses. active_account_email will always be included unless already in 'to'."
+      ),
     subject: z.string().min(1).describe("Email subject line"),
     text: z
       .string()
@@ -32,7 +38,7 @@ const sendEmailTool = tool({
       .optional()
       .describe("Optional custom headers for the email"),
   }),
-  execute: async ({ from, to, subject, text, html, headers }) => {
+  execute: async ({ from, to, cc = [], subject, text, html, headers }) => {
     // Enforce recoupable.com domain for 'from' address
     let safeFrom = from;
     if (!/^[^@]+@recoupable\\.com$/i.test(from)) {
@@ -42,6 +48,7 @@ const sendEmailTool = tool({
       const response = await sendEmail({
         from: safeFrom,
         to,
+        cc: cc.length > 0 ? cc : undefined,
         subject,
         text,
         html,
