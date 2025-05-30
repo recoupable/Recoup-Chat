@@ -7,6 +7,7 @@ export const IN_PROCESS_PROTOCOL_ADDRESS = IS_PROD
 export const PAYMASTER_URL = `https://api.developer.coinbase.com/rpc/v1/${
   IS_PROD ? "base" : "base-sepolia"
 }/${process.env.PAYMASTER_KEY}`;
+export const RECOUP_FROM_EMAIL = "Recoup <hi@recoupable.com>";
 
 // STACK EVENTS
 export const MESSAGE_SENT_EVENT = "message_sent";

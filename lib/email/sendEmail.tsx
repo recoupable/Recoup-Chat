@@ -1,6 +1,7 @@
 const sendEmail = async (data: {
   from: string;
   to: string | string[];
+  cc?: string[];
   subject: string;
   text?: string;
   html?: string;

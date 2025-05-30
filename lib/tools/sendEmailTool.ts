@@ -1,19 +1,26 @@
 import { z } from "zod";
 import { tool } from "ai";
 import sendEmail from "../email/sendEmail";
+import { RECOUP_FROM_EMAIL } from "../consts";
 
 const sendEmailTool = tool({
-  description: `Send an email using the Resend API. Requires 'from', 'to', and 'subject'. Optionally include 'text', 'html', and custom headers.\n\nNotes:\n- The 'from' address must use the recoupable.com domain.\n- If not, it will fallback to hi@recoupable.com.\n- Use context to make the email creative and engaging.\n- Use this tool to send transactional or notification emails to users or admins.`,
+  description: `Send an email using the Resend API. Requires 'from', 'to', and 'subject'. Optionally include 'text', 'html', and custom headers.\n\nNotes:\n- The 'from' address must use the recoupable.com domain.\n- If not, it will fallback to ${RECOUP_FROM_EMAIL}.\n- Use context to make the email creative and engaging.\n- Use this tool to send transactional or notification emails to users or admins.`,
   parameters: z.object({
     from: z
       .string()
       .email()
       .describe(
-        "Sender email address (must be @recoupable.com; will fallback to hi@recoupable.com if not)"
+        `Sender email address (must be @recoupable.com; will fallback to ${RECOUP_FROM_EMAIL} if not)`
       ),
     to: z
       .union([z.string().email(), z.array(z.string().email())])
       .describe("Recipient email address or array of addresses"),
+    cc: z
+      .array(z.string().email())
+      .optional()
+      .describe(
+        "Optional array of CC email addresses. active_account_email should always be included unless already in 'to'."
+      ),
     subject: z.string().min(1).describe("Email subject line"),
     text: z
       .string()
@@ -32,16 +39,17 @@ const sendEmailTool = tool({
       .optional()
       .describe("Optional custom headers for the email"),
   }),
-  execute: async ({ from, to, subject, text, html, headers }) => {
+  execute: async ({ from, to, cc = [], subject, text, html, headers }) => {
     // Enforce recoupable.com domain for 'from' address
     let safeFrom = from;
     if (!/^[^@]+@recoupable\\.com$/i.test(from)) {
-      safeFrom = "hi@recoupable.com";
+      safeFrom = RECOUP_FROM_EMAIL;
     }
     try {
       const response = await sendEmail({
         from: safeFrom,
         to,
+        cc: cc.length > 0 ? cc : undefined,
         subject,
         text,
         html,
@@ -52,7 +60,7 @@ const sendEmailTool = tool({
         if (response.ok) {
           return {
             success: true,
-            message: `Email sent successfully from ${safeFrom} to ${to}.`,
+            message: `Email sent successfully from ${safeFrom} to ${to}. ${cc && cc.length > 0 ? `CC: ${JSON.stringify(cc)}` : "none"}.`,
             data,
           };
         } else {
