@@ -72,10 +72,9 @@ export default async function handleApifyWebhook(
           const socialIds = [social.id];
           accountSocials = await getAccountSocials({ socialId: socialIds });
           console.log("accountSocials", accountSocials);
-          const { data } = await getAccountArtistIds(
-            accountSocials.map((a) => a.account_id as string)
-          );
-          accountArtistIds = data || [];
+          accountArtistIds = await getAccountArtistIds({
+            artistIds: accountSocials.map((a) => a.account_id as string),
+          });
           // Get emails for all unique account_ids
           const uniqueAccountIds = Array.from(
             new Set(accountArtistIds.map((a) => a.account_id).filter(Boolean))

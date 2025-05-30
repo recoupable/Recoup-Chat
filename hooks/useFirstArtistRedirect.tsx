@@ -3,18 +3,25 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { usePrivy } from "@privy-io/react-auth";
+import { useUserProvider } from "@/providers/UserProvder";
+import { useMiniAppContext } from "@/providers/MiniAppProvider";
 
 export function useFirstArtistRedirect() {
   const router = useRouter();
-  const { ready, authenticated, user } = usePrivy();
+  const { ready, authenticated } = usePrivy();
+  const { userData } = useUserProvider();
+  const { isMiniApp } = useMiniAppContext();
 
   useEffect(() => {
     async function checkAndRedirect() {
-      if (!ready || !authenticated || !user?.email?.address) return;
+      const isPrivyReady = ready && authenticated;
+      const isAuthenticated = isPrivyReady || isMiniApp;
+      const isUserReady = userData.id;
+      if (!isAuthenticated || !isUserReady) return;
 
       try {
         const response = await fetch(
-          `/api/artists?email=${encodeURIComponent(user.email.address)}`,
+          `/api/artists?accountId=${encodeURIComponent(userData.id)}`
         );
         const data = await response.json();
 
@@ -31,5 +38,5 @@ export function useFirstArtistRedirect() {
     }
 
     checkAndRedirect();
-  }, [ready, authenticated, user?.email?.address, router]);
+  }, [ready, authenticated, userData.id, router, isMiniApp]);
 }

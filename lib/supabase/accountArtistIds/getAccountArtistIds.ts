@@ -1,40 +1,49 @@
 import supabase from "@/lib/supabase/serverClient";
+import getFormattedArtist from "@/lib/getFormattedArtist";
+import type { ArtistRecord } from "@/types/Artist";
 
 /**
- * Get all account-artist relationships for an array of artist IDs
+ * Get all artists for an array of artist IDs or account IDs, with full info
  *
- * @param artistIds Array of artist IDs to check
- * @returns Object with account-artist IDs data and metadata
+ * @param params Object with artistIds or accountIds array
+ * @returns Array of formatted artist objects
  */
-export async function getAccountArtistIds(artistIds: string[]) {
+export async function getAccountArtistIds(params: {
+  artistIds?: string[];
+  accountIds?: string[];
+}) {
+  const { artistIds, accountIds } = params;
+  if (!artistIds && !accountIds) {
+    throw new Error("Must provide either artistIds or accountIds");
+  }
   try {
-    const { data, error } = await supabase
-      .from("account_artist_ids")
-      .select("*") // Select all columns to get more complete data
-      .in("artist_id", artistIds);
-
+    let query = supabase.from("account_artist_ids").select(`*,
+      artist_info:accounts!account_artist_ids_artist_id_fkey (
+        *,
+        account_socials (
+          *,
+          social:socials (*)
+        ),
+        account_info (*)
+      )
+    `);
+    if (artistIds) {
+      query = query.in("artist_id", artistIds);
+    } else if (accountIds) {
+      query = query.in("account_id", accountIds);
+    }
+    const { data, error } = await query;
     if (error) {
       console.error("Error getting account-artist IDs:", error);
-      return {
-        success: false,
-        error,
-        data: null,
-      };
+      return [];
     }
-
-    return {
-      success: true,
-      data,
-      count: data?.length || 0,
-      hasLinks: data && data.length > 0,
-    };
+    // Format each artist_info using getFormattedArtist
+    return (data || []).map((row: { artist_info: ArtistRecord }) =>
+      getFormattedArtist(row.artist_info)
+    );
   } catch (error) {
     console.error("Unexpected error in getAccountArtistIds:", error);
-    return {
-      success: false,
-      error,
-      data: null,
-    };
+    return [];
   }
 }
 
