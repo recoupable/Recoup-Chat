@@ -20,7 +20,7 @@ import {
 import { useYouTubeAccess } from "@/hooks/useYouTubeAccess";
 import { YouTubeChannelDisplay } from "./YouTubeChannelDisplay";
 import { YouTubeErrorDisplay } from "./YouTubeErrorDisplay";
-import { normalizeResult } from "@/lib/youtube/channel-mapper";
+import { normalizeResult } from "@/lib/youtube/mappers";
 
 interface YouTubeAccessResultProps {
   result: YouTubeAccessResultType | YouTubeChannelInfoResult;

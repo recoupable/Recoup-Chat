@@ -25,7 +25,7 @@ import {
   YouTubeChannelInfo,
   YouTubeChannelData
 } from "@/types/youtube";
-import { mapRawChannelInfoToChannelData } from "@/lib/youtube/channel-mapper";
+import { mapRawChannelInfoToChannelData } from "@/lib/youtube/mappers";
 
 interface UseYouTubeAccessResult {
   selectedArtist: ArtistRecord | null;
