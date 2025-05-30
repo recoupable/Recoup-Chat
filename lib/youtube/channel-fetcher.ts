@@ -1,5 +1,6 @@
 import { createYouTubeAPIClient } from "@/lib/youtube/oauth-client";
 import { YouTubeTokensRow } from "@/types/youtube";
+import { YouTubeErrorBuilder, YouTubeErrorMessages } from "@/lib/youtube/error-builder";
 
 export interface YouTubeChannelData {
   id: string;
@@ -64,13 +65,7 @@ export async function fetchYouTubeChannelInfo(
     });
 
     if (!response.data.items || response.data.items.length === 0) {
-      return {
-        success: false,
-        error: {
-          code: 'NO_CHANNELS',
-          message: 'No YouTube channels found for this authenticated account'
-        }
-      };
+      return YouTubeErrorBuilder.createUtilityError('NO_CHANNELS', YouTubeErrorMessages.NO_CHANNELS);
     }
 
     const channelData = response.data.items[0];
@@ -118,21 +113,11 @@ export async function fetchYouTubeChannelInfo(
     
     // If token is invalid/expired, return appropriate error
     if (error && typeof error === 'object' && 'code' in error && error.code === 401) {
-      return {
-        success: false,
-        error: {
-          code: 'API_ERROR',
-          message: 'YouTube authentication failed. Please sign in again.'
-        }
-      };
+      return YouTubeErrorBuilder.createUtilityError('API_ERROR', YouTubeErrorMessages.AUTH_FAILED);
     }
     
-    return {
-      success: false,
-      error: {
-        code: 'API_ERROR',
-        message: error instanceof Error ? error.message : 'Failed to fetch YouTube channel information'
-      }
-    };
+    return YouTubeErrorBuilder.createUtilityError('API_ERROR', 
+      error instanceof Error ? error.message : YouTubeErrorMessages.API_ERROR
+    );
   }
 } 

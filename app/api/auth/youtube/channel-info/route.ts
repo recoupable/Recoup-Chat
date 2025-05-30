@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { YouTubeChannelInfo } from "@/types/youtube";
 import { validateYouTubeTokens } from "@/lib/youtube/token-validator";
 import { fetchYouTubeChannelInfo } from "@/lib/youtube/channel-fetcher";
+import { YouTubeErrorBuilder, YouTubeErrorMessages } from "@/lib/youtube/error-builder";
 
 export async function GET(request: NextRequest): Promise<NextResponse<YouTubeChannelInfo>> {
   try {
@@ -9,39 +10,24 @@ export async function GET(request: NextRequest): Promise<NextResponse<YouTubeCha
     const account_id = searchParams.get("account_id");
 
     if (!account_id) {
-      return NextResponse.json({
-        success: false,
-        status: "error",
-        message: "Account ID is required to get YouTube channel information"
-      });
+      return YouTubeErrorBuilder.createAPIError(YouTubeErrorMessages.NO_ACCOUNT_ID + " to get YouTube channel information");
     }
 
     // Validate YouTube tokens
     const tokenValidation = await validateYouTubeTokens(account_id);
     if (!tokenValidation.success) {
-      return NextResponse.json({
-        success: false,
-        status: "error",
-        message: tokenValidation.error!.message
-      });
+      return YouTubeErrorBuilder.createAPIError(tokenValidation.error!.message);
     }
 
     // Fetch channel information using utility
     const channelResult = await fetchYouTubeChannelInfo(tokenValidation.tokens!);
     if (!channelResult.success) {
-      return NextResponse.json({
-        success: false,
-        status: "error",
-        message: channelResult.error!.message
-      });
+      return YouTubeErrorBuilder.createAPIError(channelResult.error!.message);
     }
 
     const channel = channelResult.channelData!;
     
-    return NextResponse.json({
-      success: true,
-      status: "success",
-      message: "YouTube channel access verified successfully for account",
+    return YouTubeErrorBuilder.createAPISuccess("YouTube channel access verified successfully for account", {
       channel: {
         id: channel.id,
         title: channel.title,
@@ -62,17 +48,11 @@ export async function GET(request: NextRequest): Promise<NextResponse<YouTubeCha
     
     // If token is invalid/expired, return appropriate error
     if (error && typeof error === 'object' && 'code' in error && error.code === 401) {
-      return NextResponse.json({
-        success: false,
-        status: "error",
-        message: "YouTube authentication failed for this account. Please sign in again."
-      });
+      return YouTubeErrorBuilder.createAPIError(YouTubeErrorMessages.AUTH_FAILED + " for this account. Please sign in again.");
     }
     
-    return NextResponse.json({
-      success: false,
-      status: "error",
-      message: error instanceof Error ? error.message : "Failed to fetch YouTube channel information for this account"
-    });
+    return YouTubeErrorBuilder.createAPIError(
+      error instanceof Error ? error.message : "Failed to fetch YouTube channel information for this account"
+    );
   }
 } 

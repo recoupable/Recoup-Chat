@@ -1,5 +1,6 @@
 import getYouTubeTokens from "@/lib/supabase/youtubeTokens/getYouTubeTokens";
 import { YouTubeTokensRow } from "@/types/youtube";
+import { YouTubeErrorBuilder, YouTubeErrorMessages } from "@/lib/youtube/error-builder";
 
 export interface YouTubeTokenValidationResult {
   success: boolean;
@@ -23,26 +24,14 @@ export async function validateYouTubeTokens(account_id: string): Promise<YouTube
     const storedTokens = await getYouTubeTokens(account_id);
     
     if (!storedTokens) {
-      return {
-        success: false,
-        error: {
-          code: 'NO_TOKENS',
-          message: 'No YouTube tokens found for this account. Please authenticate first.'
-        }
-      };
+      return YouTubeErrorBuilder.createUtilityError('NO_TOKENS', YouTubeErrorMessages.NO_TOKENS);
     }
 
     // Check if token has expired (with 1-minute safety buffer)
     const now = Date.now();
     const expiresAt = new Date(storedTokens.expires_at).getTime();
     if (now > (expiresAt - 60000)) {
-      return {
-        success: false,
-        error: {
-          code: 'EXPIRED',
-          message: 'YouTube access token has expired for this account. Please re-authenticate.'
-        }
-      };
+      return YouTubeErrorBuilder.createUtilityError('EXPIRED', YouTubeErrorMessages.EXPIRED_TOKENS);
     }
 
     return {
@@ -51,12 +40,6 @@ export async function validateYouTubeTokens(account_id: string): Promise<YouTube
     };
   } catch (error) {
     console.error('Error validating YouTube tokens:', error);
-    return {
-      success: false,
-      error: {
-        code: 'FETCH_ERROR',
-        message: 'Failed to validate YouTube tokens. Please try again.'
-      }
-    };
+    return YouTubeErrorBuilder.createUtilityError('FETCH_ERROR', YouTubeErrorMessages.FETCH_ERROR);
   }
 } 

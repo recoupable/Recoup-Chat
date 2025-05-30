@@ -3,6 +3,7 @@ import { tool } from "ai";
 import { YouTubeChannelInfoResult } from "@/types/youtube";
 import { validateYouTubeTokens } from "@/lib/youtube/token-validator";
 import { fetchYouTubeChannelInfo } from "@/lib/youtube/channel-fetcher";
+import { YouTubeErrorBuilder } from "@/lib/youtube/error-builder";
 
 // Zod schema for parameter validation
 const schema = z.object({
@@ -22,29 +23,18 @@ const getYouTubeChannelInfoTool = tool({
       // Validate YouTube tokens
       const tokenValidation = await validateYouTubeTokens(account_id);
       if (!tokenValidation.success) {
-        return {
-          success: false,
-          status: "error",
-          message: tokenValidation.error!.message
-        };
+        return YouTubeErrorBuilder.createToolError(tokenValidation.error!.message);
       }
 
       // Fetch comprehensive channel information with branding
       const channelResult = await fetchYouTubeChannelInfo(tokenValidation.tokens!, true);
       if (!channelResult.success) {
-        return {
-          success: false,
-          status: "error",
-          message: channelResult.error!.message
-        };
+        return YouTubeErrorBuilder.createToolError(channelResult.error!.message);
       }
 
       const channel = channelResult.channelData!;
       
-      return {
-        success: true,
-        status: "success",
-        message: "YouTube channel information retrieved successfully for account",
+      return YouTubeErrorBuilder.createToolSuccess("YouTube channel information retrieved successfully for account", {
         channelInfo: {
           // Basic channel information
           id: channel.id,
@@ -77,24 +67,20 @@ const getYouTubeChannelInfoTool = tool({
             tokenExpiresAt: tokenValidation.tokens!.expires_at,
           },
         }
-      };
+      });
     } catch (error: unknown) {
       console.error("Error getting YouTube channel info:", error);
       
       // If token is invalid/expired, return appropriate error
       if (error && typeof error === 'object' && 'code' in error && error.code === 401) {
-        return {
-          success: false,
-          status: "error",
-          message: "YouTube authentication is invalid or has expired for this account. Please re-authenticate by using the check_youtube_access tool and following the authentication instructions."
-        };
+        return YouTubeErrorBuilder.createToolError(
+          "YouTube authentication is invalid or has expired for this account. Please re-authenticate by using the check_youtube_access tool and following the authentication instructions."
+        );
       }
       
-      return {
-        success: false,
-        status: "error",
-        message: error instanceof Error ? error.message : "Failed to get YouTube channel information for this account. Please ensure the account is authenticated with YouTube."
-      };
+      return YouTubeErrorBuilder.createToolError(
+        error instanceof Error ? error.message : "Failed to get YouTube channel information for this account. Please ensure the account is authenticated with YouTube."
+      );
     }
   },
 });
