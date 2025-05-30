@@ -1,3 +1,21 @@
+/**
+ * YouTube Access Management Hook
+ * 
+ * Custom React hook that manages YouTube authentication state and OAuth flow.
+ * 
+ * PROVIDES:
+ * - Current authentication status and channel info
+ * - OAuth login function for YouTube authentication
+ * - Loading states during authentication checks
+ * - Combined display result from static/live data
+ * 
+ * FUNCTIONALITY:
+ * - Checks authentication status on mount for selected artist
+ * - Fetches live channel data if authenticated
+ * - Initiates OAuth flow with account context preservation
+ * - Handles state management for YouTube components
+ */
+
 import { useEffect, useState } from "react";
 import { useArtistProvider } from "@/providers/ArtistProvider";
 import { ArtistRecord } from "@/types/Artist";
