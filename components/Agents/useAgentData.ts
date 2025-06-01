@@ -44,9 +44,9 @@ export function useAgentData() {
       agent.title !== "Audience Segmentation" &&
       (selectedTag === "Recommended" ? true : agent.tags?.includes(selectedTag))
   );
-  // Only include the special card if the selected tag is "Research Analyst"
+  // Only include the special card if the selected tag is "Research Analyst" or "Research"
   const gridAgents =
-    selectedTag === "Research Analyst"
+    selectedTag === "Research Analyst" || selectedTag === "Research"
       ? [...filteredAgents, ...(funnelAgent ? [funnelAgent] : [])]
       : filteredAgents;
 
