@@ -63,36 +63,16 @@ const getYouTubeChannelInfoTool = tool({
       
       const returnResult = YouTubeErrorBuilder.createToolSuccess("YouTube channel information retrieved successfully", {
         channelInfo: {
-          // Basic channel information
-          id: channel.id,
-          title: channel.title,
-          description: channel.description,
-          customUrl: channel.customUrl,
-          country: channel.country,
-          publishedAt: channel.publishedAt,
-          
-          // Channel thumbnails
-          thumbnails: channel.thumbnails,
-          
-          // Channel statistics
+          ...channel,
           statistics: {
-            subscriberCount: channel.statistics.subscriberCount,
-            videoCount: channel.statistics.videoCount,
-            viewCount: channel.statistics.viewCount,
+            ...channel.statistics,
             hiddenSubscriberCount: channel.statistics.hiddenSubscriberCount || false,
           },
-          
-          // Channel branding
-          branding: {
-            keywords: channel.branding?.keywords || null,
-            defaultLanguage: channel.branding?.defaultLanguage || null,
-          },
-          
-          // Authentication metadata
           authentication: {
             tokenCreatedAt: tokenValidation.tokens!.created_at,
             tokenExpiresAt: tokenValidation.tokens!.expires_at,
           },
+          branding: channel.branding || { keywords: null, defaultLanguage: null },
         }
       });
       return returnResult;
