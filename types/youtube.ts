@@ -133,6 +133,25 @@ export interface YouTubeChannelFetchResult {
 }
 
 // YouTube Mapping Types (from channel-mapper.ts)
+// Union type for thumbnail formats used in channel data mapping
+export type ThumbnailSource = {
+  default?: string | { url?: string | null } | null;
+  medium?: string | { url?: string | null } | null;
+  high?: string | { url?: string | null } | null;
+} | undefined;
+
+// Union type for sources that might have statistics in different formats
+export type StatisticsSource = {
+  subscriberCount?: string;
+  videoCount?: string;
+  viewCount?: string;
+  statistics?: {
+    subscriberCount?: string;
+    videoCount?: string;
+    viewCount?: string;
+  };
+};
+
 // Type for raw channel info that can come from various sources
 export interface RawChannelInfo {
   id?: string;
@@ -200,3 +219,56 @@ export interface YouTubeErrorDisplayProps {
 export type YouTubeTokensRow = Tables<"youtube_tokens">;
 export type YouTubeTokensInsert = TablesInsert<"youtube_tokens">;
 export type YouTubeTokensUpdate = TablesUpdate<"youtube_tokens">; 
+
+// Error response types for different contexts
+export interface ToolErrorResponse {
+  success: false;
+  status: "error";
+  message: string;
+}
+
+export interface AuthStatusErrorResponse {
+  authenticated: false;
+  message: string;
+}
+
+export interface APIErrorResponse {
+  success: false;
+  status: "error";
+  message: string;
+}
+
+export interface UtilityErrorResponse {
+  success: false;
+  error: {
+    code: string;
+    message: string;
+  };
+}
+
+// Success response types
+export interface ToolSuccessResponse {
+  success: true;
+  status: "success";
+  message: string;
+  [key: string]: unknown;
+}
+
+export interface AuthStatusSuccessResponse {
+  authenticated: true;
+  message: string;
+  expiresAt?: string;
+  createdAt?: string;
+}
+
+export interface APISuccessResponse {
+  success: true;
+  status: "success";
+  message: string;
+  [key: string]: unknown;
+}
+
+export interface UtilitySuccessResponse {
+  success: true;
+  [key: string]: unknown;
+}
