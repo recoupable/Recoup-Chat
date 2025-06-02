@@ -21,7 +21,6 @@ import { useYouTubeAccess } from "@/hooks/useYouTubeAccess";
 import { YouTubeChannelDisplay } from "./YouTubeChannelDisplay";
 import { YouTubeErrorDisplay } from "./YouTubeErrorDisplay";
 import normalizeResult from "@/lib/youtube/mappers/normalizeResult";
-import { useArtistProvider } from "@/providers/ArtistProvider";
 
 interface YouTubeAccessResultProps {
   result: YouTubeAccessResultType | YouTubeChannelInfoResult;
@@ -29,7 +28,6 @@ interface YouTubeAccessResultProps {
 
 export function YouTubeAccessResult({ result }: YouTubeAccessResultProps) {
   const normalizedResult = normalizeResult(result);
-  const { selectedArtist } = useArtistProvider();
 
   const {
     status,
@@ -37,7 +35,8 @@ export function YouTubeAccessResult({ result }: YouTubeAccessResultProps) {
     isAuthenticated,
     channelInfo,
     login,
-  } = useYouTubeAccess(normalizedResult, selectedArtist);
+    selectedArtist,
+  } = useYouTubeAccess(normalizedResult);
 
   // Show loading state while checking current status
   if (isCheckingStatus) {

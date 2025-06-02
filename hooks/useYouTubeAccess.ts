@@ -25,8 +25,10 @@ import {
   YouTubeChannelData
 } from "@/types/youtube";
 import mapRawChannelInfoToChannelData  from "@/lib/youtube/mappers/mapRawChannelInfoToChannelData";
+import { useArtistProvider } from "@/providers/ArtistProvider";
 
 interface UseYouTubeAccessResult {
+  selectedArtist: ArtistRecord | null;
   status: YouTubeStatusResponse | null;
   isCheckingStatus: boolean;
   isAuthenticated: boolean;
@@ -34,9 +36,10 @@ interface UseYouTubeAccessResult {
   login: () => void;
 }
 
-export function useYouTubeAccess(result: YouTubeAccessResultType, selectedArtist: ArtistRecord | null): UseYouTubeAccessResult {
+export function useYouTubeAccess(result: YouTubeAccessResultType): UseYouTubeAccessResult {
   const [status, setStatus] = useState<YouTubeStatusResponse | null>(null);
   const [isCheckingStatus, setIsCheckingStatus] = useState(true);
+  const { selectedArtist } = useArtistProvider();
   
   // Single state for channel info - starts with static data, updates with live data
   const [channelInfo, setChannelInfo] = useState<YouTubeChannelInfo | { channel: YouTubeChannelData; } | null>(
@@ -118,5 +121,6 @@ export function useYouTubeAccess(result: YouTubeAccessResultType, selectedArtist
     isAuthenticated,
     channelInfo,
     login,
+    selectedArtist,
   };
 } 
