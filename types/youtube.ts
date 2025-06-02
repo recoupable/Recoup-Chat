@@ -200,3 +200,56 @@ export interface YouTubeErrorDisplayProps {
 export type YouTubeTokensRow = Tables<"youtube_tokens">;
 export type YouTubeTokensInsert = TablesInsert<"youtube_tokens">;
 export type YouTubeTokensUpdate = TablesUpdate<"youtube_tokens">; 
+
+// Error response types for different contexts
+export interface ToolErrorResponse {
+  success: false;
+  status: "error";
+  message: string;
+}
+
+export interface AuthStatusErrorResponse {
+  authenticated: false;
+  message: string;
+}
+
+export interface APIErrorResponse {
+  success: false;
+  status: "error";
+  message: string;
+}
+
+export interface UtilityErrorResponse {
+  success: false;
+  error: {
+    code: string;
+    message: string;
+  };
+}
+
+// Success response types
+export interface ToolSuccessResponse {
+  success: true;
+  status: "success";
+  message: string;
+  [key: string]: unknown;
+}
+
+export interface AuthStatusSuccessResponse {
+  authenticated: true;
+  message: string;
+  expiresAt?: string;
+  createdAt?: string;
+}
+
+export interface APISuccessResponse {
+  success: true;
+  status: "success";
+  message: string;
+  [key: string]: unknown;
+}
+
+export interface UtilitySuccessResponse {
+  success: true;
+  [key: string]: unknown;
+}
