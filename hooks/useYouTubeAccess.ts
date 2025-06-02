@@ -88,13 +88,13 @@ export function useYouTubeAccess(result: YouTubeAccessResultType): UseYouTubeAcc
       }
 
       try {
-        const response = await fetch(`/api/auth/youtube/status?account_id=${encodeURIComponent(selectedArtist.account_id)}`);
+        const response = await fetch(`/api/youtube/status?account_id=${encodeURIComponent(selectedArtist.account_id)}`);
         const statusData: YouTubeStatusResponse = await response.json();
         setStatus(statusData);
 
         // If authenticated, fetch current channel info and update our single state
         if (statusData.authenticated) {
-          const channelResponse = await fetch(`/api/auth/youtube/channel-info?account_id=${encodeURIComponent(selectedArtist.account_id)}`);
+          const channelResponse = await fetch(`/api/youtube/channel-info?account_id=${encodeURIComponent(selectedArtist.account_id)}`);
           if (channelResponse.ok) {
             const liveChannelData: YouTubeChannelInfo = await channelResponse.json();
             setChannelInfo(liveChannelData); // Update with live data
