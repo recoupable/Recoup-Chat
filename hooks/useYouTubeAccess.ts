@@ -17,7 +17,6 @@
  */
 
 import { useEffect, useState } from "react";
-import { ArtistRecord } from "@/types/Artist";
 import { 
   YouTubeAccessResult as YouTubeAccessResultType,
   YouTubeStatusResponse,
@@ -28,7 +27,6 @@ import mapRawChannelInfoToChannelData  from "@/lib/youtube/mappers/mapRawChannel
 import { useArtistProvider } from "@/providers/ArtistProvider";
 
 interface UseYouTubeAccessResult {
-  selectedArtist: ArtistRecord | null;
   status: YouTubeStatusResponse | null;
   isCheckingStatus: boolean;
   isAuthenticated: boolean;
@@ -121,6 +119,5 @@ export function useYouTubeAccess(result: YouTubeAccessResultType): UseYouTubeAcc
     isAuthenticated,
     channelInfo,
     login,
-    selectedArtist,
   };
 } 
