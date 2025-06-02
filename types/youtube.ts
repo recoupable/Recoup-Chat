@@ -133,6 +133,25 @@ export interface YouTubeChannelFetchResult {
 }
 
 // YouTube Mapping Types (from channel-mapper.ts)
+// Union type for thumbnail formats used in channel data mapping
+export type ThumbnailSource = {
+  default?: string | { url?: string | null } | null;
+  medium?: string | { url?: string | null } | null;
+  high?: string | { url?: string | null } | null;
+} | undefined;
+
+// Union type for sources that might have statistics in different formats
+export type StatisticsSource = {
+  subscriberCount?: string;
+  videoCount?: string;
+  viewCount?: string;
+  statistics?: {
+    subscriberCount?: string;
+    videoCount?: string;
+    viewCount?: string;
+  };
+};
+
 // Type for raw channel info that can come from various sources
 export interface RawChannelInfo {
   id?: string;
