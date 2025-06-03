@@ -145,7 +145,7 @@ const getYouTubeRevenueTool = tool({
       
       // Handle specific API errors
       if (error && typeof error === 'object' && 'code' in error) {
-        const apiError = error as { code: number; message?: string };
+        const apiError = error as { code: number; message?: string; errors?: unknown[] };
         
         if (apiError.code === 401) {
           const authExpiredError = YouTubeErrorBuilder.createToolError(
@@ -155,13 +155,16 @@ const getYouTubeRevenueTool = tool({
         }
         
         if (apiError.code === 403) {
-          const errorMessage = apiError.message || '';
-          if (errorMessage.includes('scope') || errorMessage.includes('permission')) {
-            const scopeError = YouTubeErrorBuilder.createToolError(
-              "Insufficient permissions to access YouTube Analytics revenue data. Please ensure you've granted Analytics scope permissions and your channel is monetized."
-            );
-            return scopeError;
-          }
+          console.error("403 Forbidden error details:", apiError);
+          
+          // More specific 403 error handling for revenue data
+          const scopeError = YouTubeErrorBuilder.createToolError(
+            "Access denied to YouTube revenue data. This typically means:\n\n" +
+            "1. **Channel Not Monetized**: Your channel may not be eligible for or have monetization enabled.\n" +
+            "2. **YouTube Partner Program**: You may not be part of the YouTube Partner Program.\n\n" +
+            "**Solution**: Please re-authenticate your YouTube account and ensure you grant ALL permissions, especially Analytics and Monetization permissions. Your channel must also be eligible for monetization."
+          );
+          return scopeError;
         }
       }
       
