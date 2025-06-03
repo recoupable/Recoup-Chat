@@ -162,39 +162,10 @@ const getYouTubeRevenueTool = tool({
       return returnResult;
 
     } catch (error: unknown) {
-      console.error("YouTube revenue tool unexpected error:", error);
-      
-      // Handle specific API errors
-      if (error && typeof error === 'object' && 'code' in error) {
-        const apiError = error as { code: number; message?: string; errors?: unknown[] };
-        
-        if (apiError.code === 401) {
-          const authExpiredError = YouTubeErrorBuilder.createToolError(
-            "YouTube authentication has expired for this account. Please re-authenticate by connecting your YouTube account to get revenue data."
-          );
-          return authExpiredError;
-        }
-        
-        if (apiError.code === 403) {
-          console.error("403 Forbidden error details:", apiError);
-          
-          // More specific 403 error handling for revenue data
-          const scopeError = YouTubeErrorBuilder.createToolError(
-            "Access denied to YouTube revenue data. This typically means:\n\n" +
-            "1. **Channel Not Monetized**: Your channel may not be eligible for or have monetization enabled.\n" +
-            "2. **YouTube Partner Program**: You may not be part of the YouTube Partner Program.\n\n" +
-            "**Solution**: Please re-authenticate your YouTube account and ensure you grant ALL permissions, especially Analytics and Monetization permissions. Your channel must also be eligible for monetization."
-          );
-          return scopeError;
-        }
-      }
-      
-      const generalError = YouTubeErrorBuilder.createToolError(
-        error instanceof Error ? 
-          `Failed to get YouTube revenue data: ${error.message}` : 
-          "Failed to get YouTube revenue data. Please ensure your account is authenticated with YouTube and has Analytics permissions."
+      console.error("YouTube revenue tool error:", error);
+      return YouTubeErrorBuilder.createToolError(
+        error instanceof Error ? error.message : "Failed to get YouTube revenue data. Please check your authentication and try again, or channel might not be monetized or have insufficient permissions."
       );
-      return generalError;
     }
   },
 });
