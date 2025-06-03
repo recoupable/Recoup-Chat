@@ -292,3 +292,23 @@ export interface MonetizationAnalyticsData {
   estimatedRevenue?: number;
   hasRevenueData: boolean;
 }
+
+// Result interface for revenue data
+export interface YouTubeRevenueResult {
+  success: boolean;
+  status: string;
+  message?: string;
+  revenueData?: {
+    totalRevenue: number;
+    dailyRevenue: Array<{
+      date: string;
+      revenue: number;
+    }>;
+    dateRange: {
+      startDate: string;
+      endDate: string;
+    };
+    channelId: string;
+    isMonetized: boolean;
+  };
+}
