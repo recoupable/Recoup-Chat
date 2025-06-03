@@ -77,6 +77,16 @@ const getYouTubeRevenueTool = tool({
       );
 
     } catch (error: unknown) {
+      // Handle 403 errors specifically for channel monetization
+      if (error && typeof error === 'object' && 'code' in error) {
+        const apiError = error as { code: number };
+        if (apiError.code === 403) {
+          return YouTubeErrorBuilder.createToolError(
+            "Access denied. Channel may not be monetized or lacks Analytics permissions."
+          );
+        }
+      }
+
       return YouTubeErrorBuilder.createToolError(
         error instanceof Error ? error.message : "Failed to get YouTube revenue data. Please check your authentication and try again, or channel might not be monetized or have insufficient permissions."
       );
