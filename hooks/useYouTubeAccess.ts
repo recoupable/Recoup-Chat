@@ -56,7 +56,13 @@ export function useYouTubeAccess(result: YouTubeAccessResultType): UseYouTubeAcc
 
     const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
     const redirectUri = `${process.env.NEXT_PUBLIC_URL}/api/auth/callback/google`;
-    const scope = "https://www.googleapis.com/auth/youtube.readonly";
+    
+    // Updated scopes to include YouTube Analytics and monetary data
+    const scopes = [
+      "https://www.googleapis.com/auth/youtube.readonly",          // Base YouTube access
+      "https://www.googleapis.com/auth/yt-analytics.readonly",     // Analytics data e.g. views, likes, comments etc.
+      "https://www.googleapis.com/auth/yt-analytics-monetary.readonly"  // Revenue/monetization data e.g. ad revenue, channel membership, etc.
+    ];
     
     // Get current path to redirect back after authentication
     const currentPath = window.location.pathname + window.location.search;
@@ -70,7 +76,7 @@ export function useYouTubeAccess(result: YouTubeAccessResultType): UseYouTubeAcc
     const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
       `client_id=${clientId}&` +
       `redirect_uri=${encodeURIComponent(redirectUri)}&` +
-      `scope=${encodeURIComponent(scope)}&` +
+      `scope=${encodeURIComponent(scopes.join(' '))}&` +
       `response_type=code&` +
       `access_type=offline&` +
       `prompt=consent&` +
