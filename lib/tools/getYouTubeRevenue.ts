@@ -21,8 +21,16 @@ import { validateDateRange } from "@/lib/utils/date-validator";
 // Zod schema for parameter validation
 const schema = z.object({
   artist_account_id: z.string().describe("Artist ID to get YouTube revenue data for. This tool handles authentication checking internally."),
-  startDate: z.string().optional().describe("Start date for revenue data in YYYY-MM-DD format. Example: '2024-01-01'. If not provided, defaults to 30 days ago."),
-  endDate: z.string().optional().describe("End date for revenue data in YYYY-MM-DD format. Example: '2024-01-31'. Should be after startDate. If not provided, defaults to yesterday.")
+  startDate: z.string().default(() => {
+    const date = new Date();
+    date.setDate(date.getDate() - 30); // 30 days ago
+    return date.toISOString().split("T")[0];
+  }).describe("Start date for revenue data in YYYY-MM-DD format. Example: '2024-01-01'. If not provided, defaults to 30 days ago."),
+  endDate: z.string().default(() => {
+    const date = new Date();
+    date.setDate(date.getDate() - 1); // Yesterday
+    return date.toISOString().split("T")[0];
+  }).describe("End date for revenue data in YYYY-MM-DD format. Example: '2024-01-31'. Should be after startDate. If not provided, defaults to yesterday.")
 });
 
 const getYouTubeRevenueTool = tool({
@@ -44,27 +52,8 @@ const getYouTubeRevenueTool = tool({
       return missingParamError;
     }
 
-    // Set default dates if not provided (last 30 days)
-    let finalStartDate = startDate;
-    let finalEndDate = endDate;
-    
-    if (!finalStartDate || !finalEndDate) {
-      const today = new Date();
-      
-      // Default end date: yesterday
-      const defaultEndDate = new Date(today);
-      defaultEndDate.setDate(defaultEndDate.getDate() - 1);
-      
-      // Default start date: 30 days ago
-      const defaultStartDate = new Date(today);
-      defaultStartDate.setDate(defaultStartDate.getDate() - 30);
-      
-      finalStartDate = finalStartDate || defaultStartDate.toISOString().split("T")[0];
-      finalEndDate = finalEndDate || defaultEndDate.toISOString().split("T")[0];
-    }
-
-    // Validate date range using utility function
-    const dateValidation = validateDateRange(finalStartDate, finalEndDate);
+    // Validate date range using utility function (startDate and endDate are now guaranteed to have values)
+    const dateValidation = validateDateRange(startDate, endDate);
     if (!dateValidation.isValid) {
       const dateValidationError = YouTubeErrorBuilder.createToolError(dateValidation.error!);
       return dateValidationError;
@@ -117,8 +106,8 @@ const getYouTubeRevenueTool = tool({
       // Query estimated revenue for the specified date range
       const response = await ytAnalytics.reports.query({
         ids: `channel==${channelId}`,
-        startDate: finalStartDate,
-        endDate: finalEndDate,
+        startDate: startDate,
+        endDate: endDate,
         metrics: "estimatedRevenue",
         dimensions: "day",
         sort: "day",
@@ -151,8 +140,8 @@ const getYouTubeRevenueTool = tool({
             totalRevenue: parseFloat(totalRevenue.toFixed(2)),
             dailyRevenue,
             dateRange: {
-              startDate: finalStartDate,
-              endDate: finalEndDate,
+              startDate: startDate,
+              endDate: endDate,
             },
             channelId,
             isMonetized: true,
