@@ -53,9 +53,9 @@ export async function queryAnalyticsReports(
   // Query analytics reports for the specified date range
   const response = await ytAnalytics.reports.query({
     ids: `channel==${channelId}`,
-    startDate: startDate,
-    endDate: endDate,
-    metrics: metrics,
+    startDate,
+    endDate,
+    metrics,
     dimensions: "day",
     sort: "day",
   });
