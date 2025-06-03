@@ -1,7 +1,7 @@
 import getYouTubeTokens from "@/lib/supabase/youtubeTokens/getYouTubeTokens";
 import { YouTubeTokenValidationResult } from "@/types/youtube";
 import { YouTubeErrorBuilder, YouTubeErrorMessages } from "@/lib/youtube/error-builder";
-import { refreshYouTubeToken } from "@/lib/youtube/token-refresher";
+import { refreshStoredYouTubeToken } from "@/lib/youtube/token-refresher";
 import { isTokenExpired } from "@/lib/youtube/is-token-expired";
 
 /**
@@ -26,7 +26,7 @@ export async function validateYouTubeTokens(account_id: string): Promise<YouTube
       // Token is expired or about to expire, try to refresh
       if (storedTokens.refresh_token) {
         // Attempt token refresh using dedicated refresh module
-        const refreshResult = await refreshYouTubeToken(
+        const refreshResult = await refreshStoredYouTubeToken(
           storedTokens,
           account_id
         );

@@ -26,7 +26,7 @@ export interface TokenRefreshResult {
  * @param account_id - Account ID for logging purposes
  * @returns Promise with refresh result containing new tokens or error details
  */
-export async function refreshYouTubeToken(
+export async function refreshStoredYouTubeToken(
   storedTokens: YouTubeTokensRow, 
   account_id: string
 ): Promise<TokenRefreshResult> {
