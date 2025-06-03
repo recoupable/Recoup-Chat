@@ -272,3 +272,23 @@ export interface UtilitySuccessResponse {
   success: true;
   [key: string]: unknown;
 }
+
+// Monetization Check Types
+export interface MonetizationCheckResult {
+  success: boolean;
+  isMonetized?: boolean;
+  error?: {
+    code: 'NO_TOKENS' | 'EXPIRED' | 'FETCH_ERROR' | 'INSUFFICIENT_SCOPE' | 'ANALYTICS_ERROR' | 'CHANNEL_NOT_FOUND' | 'API_ERROR';
+    message: string;
+  };
+}
+
+export interface MonetizationAnalyticsData {
+  channelId: string;
+  dateRange: {
+    startDate: string;
+    endDate: string;
+  };
+  estimatedRevenue?: number;
+  hasRevenueData: boolean;
+}

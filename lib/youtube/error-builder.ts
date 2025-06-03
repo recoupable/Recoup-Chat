@@ -129,6 +129,11 @@ export const YouTubeErrorMessages = {
   API_ERROR: "Failed to fetch YouTube channel information",
   AUTH_FAILED: "YouTube authentication failed. Please sign in again.",
   
+  // Monetization specific errors
+  INSUFFICIENT_SCOPE: "YouTube Analytics access required. Please re-authenticate with Analytics permissions.",
+  ANALYTICS_ERROR: "Failed to fetch YouTube Analytics data. Please try again.",
+  CHANNEL_NOT_FOUND: "Channel not found or not accessible for Analytics.",
+  
   // Generic errors
   GENERAL_ERROR: "An unexpected error occurred",
   STATUS_CHECK_FAILED: "Failed to check YouTube authentication status"
