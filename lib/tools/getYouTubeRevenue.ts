@@ -16,27 +16,38 @@ import { createYouTubeAnalyticsClient } from "@/lib/youtube/youtube-analytics-oa
 import { createYouTubeAPIClient } from "@/lib/youtube/oauth-client";
 import { YouTubeErrorBuilder } from "@/lib/youtube/error-builder";
 import { YouTubeRevenueResult } from "@/types/youtube";
+import { validateDateRange } from "@/lib/utils/date-validator";
 
 // Zod schema for parameter validation
 const schema = z.object({
-  artist_id: z.string().describe("Artist ID to get YouTube revenue data for. This tool handles authentication checking internally.")
+  artist_id: z.string().describe("Artist ID to get YouTube revenue data for. This tool handles authentication checking internally."),
+  startDate: z.string().describe("Start date for revenue data in YYYY-MM-DD format. Example: '2024-01-01'"),
+  endDate: z.string().describe("End date for revenue data in YYYY-MM-DD format. Example: '2024-01-31'. Should be after startDate.")
 });
 
 const getYouTubeRevenueTool = tool({
   description:
-    "Get YouTube estimated revenue data for the past month (30 days) for a specific account. " +
+    "Get YouTube estimated revenue data for a specific date range for a specific account. " +
     "This tool automatically checks authentication status and either returns revenue data or authentication instructions. " +
     "Requires a monetized YouTube channel with Analytics scope enabled. " +
-    "Returns daily revenue breakdown and total revenue for the past 30 days. " +
-    "IMPORTANT: This tool requires the artist_id parameter. If you don't know the artist_id, ask the user or use the current artist's artist_id.",
+    "Returns daily revenue breakdown and total revenue for the specified date range. " +
+    "IMPORTANT: This tool requires the artist_id, startDate, and endDate parameters. " +
+    "Dates should be in YYYY-MM-DD format. If you don't know the artist_id, ask the user or use the current artist's artist_id.",
   parameters: schema,
-  execute: async ({ artist_id }): Promise<YouTubeRevenueResult> => {
-    // Early validation of artist_id
+  execute: async ({ artist_id, startDate, endDate }): Promise<YouTubeRevenueResult> => {
+    // Early validation of parameters
     if (!artist_id || artist_id.trim() === '') {
       const missingParamError = YouTubeErrorBuilder.createToolError(
         "No artist_id provided to YouTube revenue tool. The LLM must pass the artist_id parameter. Please ensure you're passing the current artist's artist_id."
       );
       return missingParamError;
+    }
+
+    // Validate date range using utility function
+    const dateValidation = validateDateRange(startDate, endDate);
+    if (!dateValidation.isValid) {
+      const dateValidationError = YouTubeErrorBuilder.createToolError(dateValidation.error!);
+      return dateValidationError;
     }
     
     try {
@@ -83,21 +94,11 @@ const getYouTubeRevenueTool = tool({
         tokenValidation.tokens!.refresh_token ?? undefined
       );
 
-      // Calculate date range for past 30 days
-      const endDate = new Date();
-      endDate.setDate(endDate.getDate() - 1); // Yesterday
-      
-      const startDate = new Date();
-      startDate.setDate(startDate.getDate() - 30); // 30 days ago
-      
-      const startDateISO = startDate.toISOString().split("T")[0];
-      const endDateISO = endDate.toISOString().split("T")[0];
-
-      // Query estimated revenue for the past month
+      // Query estimated revenue for the specified date range
       const response = await ytAnalytics.reports.query({
         ids: `channel==${channelId}`,
-        startDate: startDateISO,
-        endDate: endDateISO,
+        startDate: startDate,
+        endDate: endDate,
         metrics: "estimatedRevenue",
         dimensions: "day",
         sort: "day",
@@ -130,8 +131,8 @@ const getYouTubeRevenueTool = tool({
             totalRevenue: parseFloat(totalRevenue.toFixed(2)),
             dailyRevenue,
             dateRange: {
-              startDate: startDateISO,
-              endDate: endDateISO,
+              startDate: startDate,
+              endDate: endDate,
             },
             channelId,
             isMonetized: true,
