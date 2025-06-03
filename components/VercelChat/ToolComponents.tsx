@@ -33,9 +33,12 @@ import GetSegmentFansResultSkeleton from "./tools/segment-fans/GetSegmentFansRes
 import { SegmentFansResult } from "@/types/fans";
 import YouTubeAccessResult from "./tools/youtube/YouTubeAccessResult";
 import YouTubeAccessSkeleton from "./tools/youtube/YouTubeAccessSkeleton";
+import YouTubeRevenueResult from "./tools/youtube/YouTubeRevenueResult";
+import YouTubeRevenueSkeleton from "./tools/youtube/YouTubeRevenueSkeleton";
 import { 
   YouTubeAccessResult as YouTubeAccessResultType,
-  YouTubeChannelInfoResult
+  YouTubeChannelInfoResult,
+  YouTubeRevenueResult as YouTubeRevenueResultType
 } from "@/types/youtube";
 
 // Union type for YouTube responses (handles both old and new formats)
@@ -61,6 +64,7 @@ type ToolResult =
   | CommentsResultData
   | SegmentFansResult
   | YouTubeResponse
+  | YouTubeRevenueResultType
   | Record<string, unknown>;
 
 /**
@@ -115,6 +119,12 @@ export function getToolCallComponent({ toolName, toolCallId }: ToolInvocation) {
     return (
       <div key={toolCallId}>
         <YouTubeAccessSkeleton />
+      </div>
+    );
+  } else if (toolName === "get_youtube_revenue") {
+    return (
+      <div key={toolCallId}>
+        <YouTubeRevenueSkeleton />
       </div>
     );
   }
@@ -213,6 +223,12 @@ export function getToolResultComponent({
     return (
       <div key={toolCallId}>
         <YouTubeAccessResult result={result as YouTubeResponse} />
+      </div>
+    );
+  } else if (toolName === "get_youtube_revenue") {
+    return (
+      <div key={toolCallId}>
+        <YouTubeRevenueResult result={result as YouTubeRevenueResultType} />
       </div>
     );
   }

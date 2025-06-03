@@ -22,6 +22,8 @@ export const getDisplayToolName = (name: string) => {
             return "Get Social Posts";
         case "get_post_comments":
             return "Get Post Comments";
+        case "get_youtube_revenue":
+            return "Get YouTube Revenue";
         case "perplexity_ask":
             return "Perplexity Ask";
         default:
