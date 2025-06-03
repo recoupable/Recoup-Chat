@@ -122,7 +122,14 @@ export const YouTubeErrorMessages = {
   NO_ACCOUNT_ID: "Account ID is required",
   NO_TOKENS: "No YouTube tokens found for this account. Please authenticate first.",
   EXPIRED_TOKENS: "YouTube access token has expired for this account. Please re-authenticate.",
+  EXPIRED_TOKENS_NO_REFRESH: "YouTube access token has expired, and no refresh token is available. Please re-authenticate.",
   FETCH_ERROR: "Failed to validate YouTube tokens. Please try again.",
+  DB_UPDATE_FAILED: "Failed to save refreshed YouTube token to the database.",
+  
+  // Token Refresh Specific Errors
+  REFRESH_INCOMPLETE_CREDENTIALS: "Failed to refresh token: incomplete credentials received from Google.",
+  REFRESH_GENERAL_FAILURE: "Failed to refresh YouTube token. Please try re-authenticating.",
+  REFRESH_INVALID_GRANT: "YouTube refresh token is invalid or has been revoked. Please re-authenticate your YouTube account.",
   
   // API specific errors
   NO_CHANNELS: "No YouTube channels found for this authenticated account",

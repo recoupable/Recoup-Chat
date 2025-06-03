@@ -196,7 +196,15 @@ export interface YouTubeTokenValidationResult {
   success: boolean;
   tokens?: YouTubeTokensRow;
   error?: {
-    code: 'NO_TOKENS' | 'EXPIRED' | 'FETCH_ERROR';
+    code: 
+      | 'NO_TOKENS' 
+      | 'EXPIRED' 
+      | 'FETCH_ERROR'
+      | 'REFRESH_INCOMPLETE_CREDENTIALS'
+      | 'REFRESH_GENERAL_FAILURE'
+      | 'DB_UPDATE_FAILED'
+      | 'REFRESH_INVALID_GRANT'
+      | 'EXPIRED_NO_REFRESH';
     message: string;
   };
 }
