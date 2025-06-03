@@ -20,7 +20,7 @@ import { validateDateRange } from "@/lib/utils/date-validator";
 
 // Zod schema for parameter validation
 const schema = z.object({
-  artist_id: z.string().describe("Artist ID to get YouTube revenue data for. This tool handles authentication checking internally."),
+  artist_account_id: z.string().describe("Artist ID to get YouTube revenue data for. This tool handles authentication checking internally."),
   startDate: z.string().optional().describe("Start date for revenue data in YYYY-MM-DD format. Example: '2024-01-01'. If not provided, defaults to 30 days ago."),
   endDate: z.string().optional().describe("End date for revenue data in YYYY-MM-DD format. Example: '2024-01-31'. Should be after startDate. If not provided, defaults to yesterday.")
 });
@@ -31,15 +31,15 @@ const getYouTubeRevenueTool = tool({
     "This tool automatically checks authentication status and either returns revenue data or authentication instructions. " +
     "Requires a monetized YouTube channel with Analytics scope enabled. " +
     "Returns daily revenue breakdown and total revenue for the specified date range. " +
-    "IMPORTANT: This tool requires the artist_id parameter. The startDate and endDate parameters are optional - " +
+    "IMPORTANT: This tool requires the artist_account_id parameter. The startDate and endDate parameters are optional - " +
     "if not provided, it will default to the last 30 days (1 month). " +
-    "When provided, dates should be in YYYY-MM-DD format. If you don't know the artist_id, ask the user or use the current artist's artist_id.",
+    "When provided, dates should be in YYYY-MM-DD format. If you don't know the artist_account_id, ask the user or use the current artist's artist_account_id.",
   parameters: schema,
-  execute: async ({ artist_id, startDate, endDate }): Promise<YouTubeRevenueResult> => {
+  execute: async ({ artist_account_id, startDate, endDate }): Promise<YouTubeRevenueResult> => {
     // Early validation of parameters
-    if (!artist_id || artist_id.trim() === '') {
+    if (!artist_account_id || artist_account_id.trim() === '') {
       const missingParamError = YouTubeErrorBuilder.createToolError(
-        "No artist_id provided to YouTube revenue tool. The LLM must pass the artist_id parameter. Please ensure you're passing the current artist's artist_id."
+        "No artist_account_id provided to YouTube revenue tool. The LLM must pass the artist_account_id parameter. Please ensure you're passing the current artist's artist_account_id."
       );
       return missingParamError;
     }
@@ -72,7 +72,7 @@ const getYouTubeRevenueTool = tool({
     
     try {
       // Validate YouTube tokens (internal authentication check)
-      const tokenValidation = await validateYouTubeTokens(artist_id);
+      const tokenValidation = await validateYouTubeTokens(artist_account_id);
       
       if (!tokenValidation.success) {
         // Return authentication error with clear instructions
