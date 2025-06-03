@@ -7,27 +7,8 @@
 
 import { createYouTubeAnalyticsClient } from "./youtube-analytics-oauth-client";
 import { createYouTubeAPIClient } from "./oauth-client";
-
-// Types
-export interface TokenValidation {
-  success: boolean;
-  tokens?: {
-    access_token: string;
-    account_id: string;
-    created_at: string;
-    expires_at: string;
-    id: string;
-    refresh_token: string | null;
-    updated_at: string;
-  };
-  error?: { message: string };
-}
-
-export interface AnalyticsReportsResult {
-  dailyRevenue: { date: string; revenue: number }[];
-  totalRevenue: number;
-  channelId: string;
-}
+import { AnalyticsReportsResult } from "@/types/youtube";
+import { TokenValidation } from "@/types/youtube";
 
 /**
  * Query YouTube Analytics reports for specified metrics and date range

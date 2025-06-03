@@ -320,3 +320,24 @@ export interface YouTubeRevenueResult {
     isMonetized: boolean;
   };
 }
+
+// Types
+export interface TokenValidation {
+  success: boolean;
+  tokens?: {
+    access_token: string;
+    account_id: string;
+    created_at: string;
+    expires_at: string;
+    id: string;
+    refresh_token: string | null;
+    updated_at: string;
+  };
+  error?: { message: string };
+}
+
+export interface AnalyticsReportsResult {
+  dailyRevenue: { date: string; revenue: number }[];
+  totalRevenue: number;
+  channelId: string;
+}
