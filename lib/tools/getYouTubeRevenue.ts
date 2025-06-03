@@ -12,10 +12,9 @@
 import { z } from "zod";
 import { tool } from "ai";
 import { validateYouTubeTokens } from "@/lib/youtube/token-validator";
-import { createYouTubeAnalyticsClient } from "@/lib/youtube/youtube-analytics-oauth-client";
-import { createYouTubeAPIClient } from "@/lib/youtube/oauth-client";
 import { YouTubeErrorBuilder } from "@/lib/youtube/error-builder";
 import { YouTubeRevenueResult } from "@/types/youtube";
+import { queryAnalyticsReports } from "@/lib/youtube/queryAnalyticsReports";
 
 // Zod schema for parameter validation
 const schema = z.object({
@@ -48,91 +47,34 @@ const getYouTubeRevenueTool = tool({
       const tokenValidation = await validateYouTubeTokens(artist_account_id);
       
       if (!tokenValidation.success) {
-        // Return authentication error with clear instructions
-        const authError = YouTubeErrorBuilder.createToolError(
+        return YouTubeErrorBuilder.createToolError(
           `YouTube authentication required for this account. ${tokenValidation.error!.message} Please authenticate by connecting your YouTube account.`
         );
-        return authError;
       }
 
-      // Get user's channel ID first
-      const youtube = createYouTubeAPIClient(
-        tokenValidation.tokens!.access_token, 
-        tokenValidation.tokens!.refresh_token ?? undefined
-      );
-      
-      const channelResponse = await youtube.channels.list({
-        part: ["id"],
-        mine: true,
-      });
-
-      if (!channelResponse.data.items || channelResponse.data.items.length === 0) {
-        const noChannelError = YouTubeErrorBuilder.createToolError(
-          "No YouTube channel found for this account. Please ensure you have a YouTube channel."
-        );
-        return noChannelError;
-      }
-
-      const channelId = channelResponse.data.items[0].id;
-      if (!channelId) {
-        const invalidChannelError = YouTubeErrorBuilder.createToolError(
-          "Unable to retrieve channel ID. Please ensure your YouTube account is properly set up."
-        );
-        return invalidChannelError;
-      }
-
-      // Create YouTube Analytics API client
-      const ytAnalytics = createYouTubeAnalyticsClient(
-        tokenValidation.tokens!.access_token,
-        tokenValidation.tokens!.refresh_token ?? undefined
+      // Query analytics reports using the extracted function
+      const analyticsResult = await queryAnalyticsReports(
+        tokenValidation,
+        startDate,
+        endDate,
+        "estimatedRevenue"
       );
 
-      // Query estimated revenue for the specified date range
-      const response = await ytAnalytics.reports.query({
-        ids: `channel==${channelId}`,
-        startDate: startDate,
-        endDate: endDate,
-        metrics: "estimatedRevenue",
-        dimensions: "day",
-        sort: "day",
-      });
-
-      // Process the response
-      const rows = response.data.rows || [];
-      
-      if (rows.length === 0) {
-        // No revenue data - channel might not be monetized
-        const noRevenueData = YouTubeErrorBuilder.createToolError(
-          "No revenue data found. This could mean your channel is not monetized or you don't have the required Analytics scope permissions. Please ensure your channel is eligible for monetization and you've granted Analytics permissions."
-        );
-        return noRevenueData;
-      }
-
-      // Parse daily revenue data
-      const dailyRevenue = rows.map((row: (string | number)[]) => ({
-        date: String(row[0]), // Day dimension (YYYY-MM-DD format)
-        revenue: parseFloat(String(row[1])) || 0 // Estimated revenue
-      }));
-
-      // Calculate total revenue
-      const totalRevenue = dailyRevenue.reduce((sum, day) => sum + day.revenue, 0);
-
-      const returnResult = YouTubeErrorBuilder.createToolSuccess(
-        `YouTube revenue data retrieved successfully for ${dailyRevenue.length} days. Total revenue: $${totalRevenue.toFixed(2)}`,
+      return YouTubeErrorBuilder.createToolSuccess(
+        `YouTube revenue data retrieved successfully for ${analyticsResult.dailyRevenue.length} days. Total revenue: $${analyticsResult.totalRevenue.toFixed(2)}`,
         {
           revenueData: {
-            totalRevenue: parseFloat(totalRevenue.toFixed(2)),
-            dailyRevenue,
+            totalRevenue: parseFloat(analyticsResult.totalRevenue.toFixed(2)),
+            dailyRevenue: analyticsResult.dailyRevenue,
             dateRange: {
               startDate: startDate,
               endDate: endDate,
             },
-            channelId,
+            channelId: analyticsResult.channelId,
             isMonetized: true,
           }
         }
       );
-      return returnResult;
 
     } catch (error: unknown) {
       return YouTubeErrorBuilder.createToolError(
