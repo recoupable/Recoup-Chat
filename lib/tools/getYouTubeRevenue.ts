@@ -16,7 +16,6 @@ import { createYouTubeAnalyticsClient } from "@/lib/youtube/youtube-analytics-oa
 import { createYouTubeAPIClient } from "@/lib/youtube/oauth-client";
 import { YouTubeErrorBuilder } from "@/lib/youtube/error-builder";
 import { YouTubeRevenueResult } from "@/types/youtube";
-import { validateDateRange } from "@/lib/utils/date-validator";
 
 // Zod schema for parameter validation
 const schema = z.object({
@@ -50,13 +49,6 @@ const getYouTubeRevenueTool = tool({
         "No artist_account_id provided to YouTube revenue tool. The LLM must pass the artist_account_id parameter. Please ensure you're passing the current artist's artist_account_id."
       );
       return missingParamError;
-    }
-
-    // Validate date range using utility function (startDate and endDate are now guaranteed to have values)
-    const dateValidation = validateDateRange(startDate, endDate);
-    if (!dateValidation.isValid) {
-      const dateValidationError = YouTubeErrorBuilder.createToolError(dateValidation.error!);
-      return dateValidationError;
     }
     
     try {
