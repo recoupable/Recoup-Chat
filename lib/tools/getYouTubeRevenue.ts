@@ -162,7 +162,6 @@ const getYouTubeRevenueTool = tool({
       return returnResult;
 
     } catch (error: unknown) {
-      console.error("YouTube revenue tool error:", error);
       return YouTubeErrorBuilder.createToolError(
         error instanceof Error ? error.message : "Failed to get YouTube revenue data. Please check your authentication and try again, or channel might not be monetized or have insufficient permissions."
       );
