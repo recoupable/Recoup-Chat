@@ -43,14 +43,6 @@ const getYouTubeRevenueTool = tool({
     "When provided, dates should be in YYYY-MM-DD format. If you don't know the artist_account_id, ask the user or use the current artist's artist_account_id.",
   parameters: schema,
   execute: async ({ artist_account_id, startDate, endDate }): Promise<YouTubeRevenueResult> => {
-    // Early validation of parameters
-    if (!artist_account_id || artist_account_id.trim() === '') {
-      const missingParamError = YouTubeErrorBuilder.createToolError(
-        "No artist_account_id provided to YouTube revenue tool. The LLM must pass the artist_account_id parameter. Please ensure you're passing the current artist's artist_account_id."
-      );
-      return missingParamError;
-    }
-    
     try {
       // Validate YouTube tokens (internal authentication check)
       const tokenValidation = await validateYouTubeTokens(artist_account_id);
