@@ -1,6 +1,7 @@
 import { YouTubeErrorBuilder } from "./error-builder";
 import { YouTubeRevenueResult } from "@/types/youtube";
 
+// One line functions start here
 const isApiError = (error: unknown): error is { code: number } =>
   error !== null && typeof error === "object" && "code" in error;
 
@@ -15,6 +16,9 @@ const getErrorMessage = (error: unknown): string =>
     ? error.message
     : "Failed to get YouTube revenue data. Please check your authentication and try again, or channel might not be monetized or have insufficient permissions.";
 
+// One line functions end here
+
+// Actual function definitions start here
 export const handleRevenueError = (error: unknown): YouTubeRevenueResult => {
   if (isForbiddenError(error)) {
     return YouTubeErrorBuilder.createToolError(
