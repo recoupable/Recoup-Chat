@@ -300,3 +300,44 @@ export interface MonetizationAnalyticsData {
   estimatedRevenue?: number;
   hasRevenueData: boolean;
 }
+
+// Result interface for revenue data
+export interface YouTubeRevenueResult {
+  success: boolean;
+  status: string;
+  message?: string;
+  revenueData?: {
+    totalRevenue: number;
+    dailyRevenue: Array<{
+      date: string;
+      revenue: number;
+    }>;
+    dateRange: {
+      startDate: string;
+      endDate: string;
+    };
+    channelId: string;
+    isMonetized: boolean;
+  };
+}
+
+// Types
+export interface TokenValidation {
+  success: boolean;
+  tokens?: {
+    access_token: string;
+    account_id: string;
+    created_at: string;
+    expires_at: string;
+    id: string;
+    refresh_token: string | null;
+    updated_at: string;
+  };
+  error?: { message: string };
+}
+
+export interface AnalyticsReportsResult {
+  dailyRevenue: { date: string; revenue: number }[];
+  totalRevenue: number;
+  channelId: string;
+}
