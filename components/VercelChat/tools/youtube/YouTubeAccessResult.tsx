@@ -1,5 +1,5 @@
 import React from "react";
-import { Users, Video, Eye, Calendar, MapPin, ExternalLink, Loader, CheckCircle, RefreshCcw } from "lucide-react";
+import { Users, Video, Eye, Calendar, MapPin, ExternalLink, Loader, CheckCircle, Power } from "lucide-react";
 import normalizeResult from "@/lib/youtube/mappers/normalizeResult";
 import { YouTubeAccessResult as YouTubeAccessResultType } from "@/types/youtube";
 import formatFollowerCount from "@/lib/utils/formatFollowerCount";
@@ -35,7 +35,7 @@ export default function YouTubeAccessResult({ result }: { result: YouTubeAccessR
         <div className="absolute top-0 right-0">
           <Button variant="ghost" size="icon" onClick={() => login()} disabled={isCheckingStatus || isAuthenticated}
           >
-            {isCheckingStatus ? (<Loader className="w-4 h-4 animate-spin" />) : isAuthenticated ? (<CheckCircle className="w-4 h-4 text-green-500" />) : (<RefreshCcw className="w-4 h-4" />)}
+            {isCheckingStatus ? (<Loader className="w-4 h-4 animate-spin" />) : isAuthenticated ? (<CheckCircle className="w-4 h-4 text-green-500" />) : (<Power className="w-4 h-4" />)}
           </Button>
         </div>
         <div className="space-y-1">
