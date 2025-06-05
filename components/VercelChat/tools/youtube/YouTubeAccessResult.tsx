@@ -1,104 +1,98 @@
-/**
- * YouTube Access Result Component
- *
- * Displays YouTube channel information or authentication status.
- * Handles the unified YouTube tool response that includes both
- * authentication checking and channel data fetching.
- *
- * DISPLAYS:
- * - Channel information if authenticated
- * - Authentication instructions if not authenticated
- * - Loading states during verification
- */
-
 import React from "react";
-import { Youtube, Loader } from "lucide-react";
-import {
-  YouTubeAccessResult as YouTubeAccessResultType,
-  YouTubeChannelInfoResult,
-} from "@/types/youtube";
-import { useYouTubeAccess } from "@/hooks/useYouTubeAccess";
-import { YouTubeChannelDisplay } from "./YouTubeChannelDisplay";
-import { YouTubeErrorDisplay } from "./YouTubeErrorDisplay";
+import { Users, Video, Eye, Calendar, MapPin, ExternalLink } from "lucide-react";
 import normalizeResult from "@/lib/youtube/mappers/normalizeResult";
-import { useArtistProvider } from "@/providers/ArtistProvider";
+import { YouTubeChannelInfoResult } from "@/types/youtube";
+import formatFollowerCount from "@/lib/utils/formatFollowerCount";
+import formatTimestamp from "@/lib/utils/formatTimestamp";
 
-interface YouTubeAccessResultProps {
-  result: YouTubeAccessResultType | YouTubeChannelInfoResult;
-}
-
-export function YouTubeAccessResult({ result }: YouTubeAccessResultProps) {
+export default function YouTubeAccessResult({ result }: { result: YouTubeChannelInfoResult }) {
   const normalizedResult = normalizeResult(result);
-  const { selectedArtist } = useArtistProvider();
-
-  const {
-    status,
-    isCheckingStatus,
-    isAuthenticated,
-    channelInfo,
-    login,
-  } = useYouTubeAccess(normalizedResult);
-
-  // Show loading state while checking current status
-  if (isCheckingStatus) {
+  const { channelInfo } = normalizedResult;
+  // Handle missing or invalid data
+  if (!normalizedResult || !channelInfo) {
     return (
-      <div className="flex flex-col space-y-3 p-4 rounded-lg bg-gray-50 border border-gray-200 my-2 max-w-md">
-        <div className="flex items-center space-x-2">
-          <Youtube className="h-5 w-5 text-gray-400" />
-          <span className="font-medium text-gray-800">
-            Checking YouTube Access...
-          </span>
-        </div>
-        <div className="flex items-center space-x-2">
-          <Loader className="h-4 w-4 animate-spin text-gray-600" />
-          <span className="text-sm text-gray-600">
-            Verifying authentication status
-          </span>
-        </div>
+      <div className="flex items-start space-x-4 p-4 rounded-lg bg-gray-50 border border-gray-200 my-2 text-gray-800 w-fit md:rounded-xl">
+        <p>No data available for YouTube Account</p>
       </div>
     );
   }
-
-  // Show error if no artist is selected
-  if (!selectedArtist) {
-    return (
-      <div className="flex flex-col space-y-3 p-4 rounded-lg bg-gray-50 border border-gray-200 my-2 max-w-md">
-        <div className="flex items-center space-x-2">
-          <Youtube className="h-5 w-5 text-gray-600" />
-          <span className="font-medium text-gray-800">Artist Required</span>
-        </div>
-        <p className="text-sm text-gray-600">
-          Please select an artist to check YouTube access.
-        </p>
-      </div>
-    );
-  }
-
-  // Success state - show channel information
-  if (isAuthenticated && channelInfo?.channel) {
-    return (
-      <YouTubeChannelDisplay
-        channel={channelInfo.channel}
-        artistName={selectedArtist.name || "Unknown Artist"}
-        isLive={!!status}
-      />
-    );
-  }
-
-  // Error state - show login button
-  const errorMessage =
-    status?.message ||
-    normalizedResult.message ||
-    "Please connect your YouTube account to access channel information.";
 
   return (
-    <YouTubeErrorDisplay
-      artistName={selectedArtist.name || "Unknown Artist"}
-      errorMessage={errorMessage}
-      onLogin={login}
-      isLive={!!status}
-    />
+    <div className="flex items-start space-x-4 p-4 rounded-lg bg-gray-50 border border-gray-200 my-2 text-gray-800 w-fit md:rounded-xl max-w-md">
+      <div className="h-12 w-12 rounded-full overflow-hidden shrink-0 bg-gray-200">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={ channelInfo.thumbnails?.medium || channelInfo.thumbnails?.default || "" }
+          alt={channelInfo.name || "Channel"}
+          className="h-full w-full object-cover"
+        />
+      </div>
+      <div className="flex-grow min-w-0 space-y-3">
+        <div className="space-y-1">
+          <h3 className="font-medium text-sm leading-tight truncate">
+            {channelInfo.name || "Unknown Channel"}
+          </h3>
+          <p className="text-xs text-gray-500">
+            {channelInfo.customUrl || "No custom URL"}
+          </p>
+        </div>
+        <div className="grid grid-cols-3 gap-3 text-center">
+          <div className="space-y-1">
+            <div className="flex items-center justify-center">
+              <Users className="w-3 h-3 text-gray-500" />
+            </div>
+            <div className="text-xs font-medium text-gray-800">
+              {formatFollowerCount(Number(channelInfo.subscriberCount) || 0)}
+            </div>
+            <div className="text-xs text-gray-500">Subscribers</div>
+          </div>
+          <div className="space-y-1">
+            <div className="flex items-center justify-center">
+              <Video className="w-3 h-3 text-gray-500" />
+            </div>
+            <div className="text-xs font-medium text-gray-800">
+              {formatFollowerCount(Number(channelInfo.videoCount) || 0)}
+            </div>
+            <div className="text-xs text-gray-500">Videos</div>
+          </div>
+          <div className="space-y-1">
+            <div className="flex items-center justify-center">
+              <Eye className="w-3 h-3 text-gray-500" />
+            </div>
+            <div className="text-xs font-medium text-gray-800">
+              {formatFollowerCount(Number(channelInfo.viewCount) || 0)}
+            </div>
+            <div className="text-xs text-gray-500">Views</div>
+          </div>
+        </div>
+        <div className="space-y-1.5 pt-1 border-t border-gray-200">
+          {channelInfo.country && (
+            <div className="flex items-center gap-2 text-xs text-gray-500">
+              <MapPin className="w-3 h-3" />
+              <span>{channelInfo.country}</span>
+            </div>
+          )}
+          {channelInfo.publishedAt && (
+            <div className="flex items-center gap-2 text-xs text-gray-500">
+              <Calendar className="w-3 h-3" />
+              <span>
+                Created {formatTimestamp(channelInfo.publishedAt, true)}
+              </span>
+            </div>
+          )}
+          {channelInfo.customUrl && (
+            <a
+              href={`https://youtube.com/${channelInfo.customUrl}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 text-xs text-blue-600 hover:text-blue-700 transition-colors"
+            >
+              <ExternalLink className="w-3 h-3" />
+              <span>View Channel</span>
+            </a>
+          )}
+        </div>
+      </div>
+    </div>
   );
 }
-
-export default YouTubeAccessResult;
