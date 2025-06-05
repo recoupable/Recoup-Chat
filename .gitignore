@@ -50,3 +50,7 @@ next-env.d.ts
 evals/**/__pycache__/
 evals/**/*.py[cod]
 evals/**/*$py.class
+
+**/temp/
+/temp/
+/**/temp/**
