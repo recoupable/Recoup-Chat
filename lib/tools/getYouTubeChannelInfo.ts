@@ -46,7 +46,7 @@ const getYouTubeChannelInfoTool = tool({
       if (!tokenValidation.success) {
         // Return authentication error with clear instructions
         const authError = YouTubeErrorBuilder.createToolError(
-          `YouTube authentication required for this account. ${tokenValidation.error!.message} Please authenticate by connecting your YouTube account.`
+          `YouTube authentication required for this account. Please authenticate by connecting your YouTube account.`
         );
         return authError;
       }
