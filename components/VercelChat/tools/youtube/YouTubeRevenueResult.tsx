@@ -5,7 +5,7 @@ import { DollarSign, Calendar } from "lucide-react";
 import type { YouTubeRevenueResult } from "@/types/youtube";
 import YouTubeRevenueError from "./YouTubeRevenueError";
 import YouTubeRevenueStats from "./YouTubeRevenueStats";
-import YouTubeRevenue from "./YouTubeRevenue";
+import YouTubeRevenueDaily from "./YouTubeRevenueDaily";
 import { formatDate } from "@/lib/utils/formatDate";
 
 interface YouTubeRevenueResultProps {
@@ -69,7 +69,7 @@ export default function YouTubeRevenueResult({ result }: YouTubeRevenueResultPro
         </div>
 
         {/* Recent Daily Revenue */}
-        <YouTubeRevenue dailyRevenue={revenueData.dailyRevenue} />
+        <YouTubeRevenueDaily dailyRevenue={revenueData.dailyRevenue} />
 
         {/* Footer Note */}
         <div className="text-xs text-muted-foreground bg-muted/50 p-3 rounded-lg">

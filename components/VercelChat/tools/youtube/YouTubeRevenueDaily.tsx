@@ -11,7 +11,7 @@ interface YouTubeDailyRevenueProps {
   dailyRevenue: DailyRevenueItem[];
 }
 
-export default function YouTubeDailyRevenue({ dailyRevenue }: YouTubeDailyRevenueProps) {
+export default function YouTubeRevenueDaily({ dailyRevenue }: YouTubeDailyRevenueProps) {
   return (
     <div>
       <h4 className="text-sm font-medium mb-3">Recent Daily Revenue (Last 7 Days)</h4>
