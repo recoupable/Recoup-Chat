@@ -16,7 +16,6 @@ const loginWithYouTube = tool({
     "This tool checks if we have access to the artist's YouTube account or not. If we don't have access, a sign in with youtube button will be displayed.",
   parameters: schema,
   execute: async ({ artist_account_id }) => {
-    console.log("Check Youtube Login Access", artist_account_id);
     // Validate YouTube tokens (internal authentication check)
     const tokenValidation = await validateYouTubeTokens(artist_account_id);
 
