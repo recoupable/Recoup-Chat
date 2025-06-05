@@ -39,7 +39,7 @@ const getYouTubeRevenueTool = tool({
     "Youtube: Get estimated revenue data for a specific date range for a specific Youtube channel. " +
     "Before calling this tool, make sure to call the login_with_youtube tool to check if the account is authenticated. (IMPORTANT)" +
     "IMPORTANT: This tool requires the artist_account_id parameter. The startDate and endDate parameters are optional - " +
-    "if not provided, it will default to the last 30 days (1 month). " +
+    "if not provided, it will be default to the last 30 days (1 month). " +
     "When provided, dates should be in YYYY-MM-DD format.",
   parameters: schema,
   execute: async ({ artist_account_id, startDate, endDate }): Promise<YouTubeRevenueResult> => {
