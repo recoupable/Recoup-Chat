@@ -1,11 +1,15 @@
 import React from "react";
-import { Users, Video, Eye, Calendar, MapPin, ExternalLink } from "lucide-react";
+import { Users, Video, Eye, Calendar, MapPin, ExternalLink, Loader, CheckCircle, RefreshCcw } from "lucide-react";
 import normalizeResult from "@/lib/youtube/mappers/normalizeResult";
-import { YouTubeChannelInfoResult } from "@/types/youtube";
+import { YouTubeAccessResult as YouTubeAccessResultType } from "@/types/youtube";
 import formatFollowerCount from "@/lib/utils/formatFollowerCount";
 import formatTimestamp from "@/lib/utils/formatTimestamp";
+import { useYouTubeAccess } from "@/hooks/useYouTubeAccess";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
-export default function YouTubeAccessResult({ result }: { result: YouTubeChannelInfoResult }) {
+export default function YouTubeAccessResult({ result }: { result: YouTubeAccessResultType }) {
+  const { isCheckingStatus, isAuthenticated, login } = useYouTubeAccess(result);
   const normalizedResult = normalizeResult(result);
   const { channelInfo } = normalizedResult;
   // Handle missing or invalid data
@@ -27,7 +31,13 @@ export default function YouTubeAccessResult({ result }: { result: YouTubeChannel
           className="h-full w-full object-cover"
         />
       </div>
-      <div className="flex-grow min-w-0 space-y-3">
+      <div className="flex-grow min-w-0 space-y-3 relative">
+        <div className="absolute top-0 right-0">
+          <Button variant="ghost" size="icon" onClick={() => login()} disabled={isCheckingStatus || isAuthenticated}
+          >
+            {isCheckingStatus ? (<Loader className="w-4 h-4 animate-spin" />) : isAuthenticated ? (<CheckCircle className="w-4 h-4 text-green-500" />) : (<RefreshCcw className="w-4 h-4" />)}
+          </Button>
+        </div>
         <div className="space-y-1">
           <h3 className="font-medium text-sm leading-tight truncate">
             {channelInfo.name || "Unknown Channel"}
@@ -81,7 +91,7 @@ export default function YouTubeAccessResult({ result }: { result: YouTubeChannel
             </div>
           )}
           {channelInfo.customUrl && (
-            <a
+            <Link
               href={`https://youtube.com/${channelInfo.customUrl}`}
               target="_blank"
               rel="noopener noreferrer"
@@ -89,7 +99,7 @@ export default function YouTubeAccessResult({ result }: { result: YouTubeChannel
             >
               <ExternalLink className="w-3 h-3" />
               <span>View Channel</span>
-            </a>
+            </Link>
           )}
         </div>
       </div>

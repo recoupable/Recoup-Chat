@@ -214,7 +214,7 @@ export function getToolResultComponent({
   } else if (toolName === "get_youtube_info") {
     return (
       <div key={toolCallId}>
-        <YouTubeAccessResult result={result as YouTubeChannelInfoResult} />
+        <YouTubeAccessResult result={result as YouTubeAccessResultType} />
       </div>
     );
   } else if (toolName === "login_with_youtube") {
