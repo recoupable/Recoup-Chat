@@ -19,7 +19,9 @@ import { handleRevenueError } from "@/lib/youtube/revenue-error-handler";
 
 // Zod schema for parameter validation
 const schema = z.object({
-  artist_account_id: z.string().describe("Artist ID to get YouTube revenue data for. This tool handles authentication checking internally."),
+  artist_account_id: z
+  .string()
+  .describe("artist_account_id from system prompt"),
   startDate: z.string().default(() => {
     const date = new Date();
     date.setDate(date.getDate() - 30); // 30 days ago
@@ -35,9 +37,10 @@ const schema = z.object({
 const getYouTubeRevenueTool = tool({
   description:
     "Youtube: Get estimated revenue data for a specific date range for a specific Youtube channel. " +
+    "Before calling this tool, make sure to call the login_with_youtube tool to check if the account is authenticated. (IMPORTANT)" +
     "IMPORTANT: This tool requires the artist_account_id parameter. The startDate and endDate parameters are optional - " +
     "if not provided, it will default to the last 30 days (1 month). " +
-    "When provided, dates should be in YYYY-MM-DD format. If you don't know the artist_account_id, ask the user or use the current artist's artist_account_id.",
+    "When provided, dates should be in YYYY-MM-DD format.",
   parameters: schema,
   execute: async ({ artist_account_id, startDate, endDate }): Promise<YouTubeRevenueResult> => {
     try {
