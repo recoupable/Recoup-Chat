@@ -13,7 +13,7 @@ const schema = z.object({
 
 const loginWithYouTube = tool({
   description:
-    "This tool checks if we have access to the artist's YouTube account or not. If we don't have access, we need to authenticate by connecting the artist's YouTube account.",
+    "This tool checks if we have access to the artist's YouTube account or not. If we don't have access, a sign in with youtube button will be displayed.",
   parameters: schema,
   execute: async ({ artist_account_id }) => {
     console.log("Check Youtube Login Access", artist_account_id);
