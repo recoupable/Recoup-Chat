@@ -28,7 +28,7 @@ import createKnowledgeBase from "./createKnowledgeBase";
 import sendEmailTool from "./sendEmailTool";
 import getYouTubeChannelInfo from "./getYouTubeChannelInfo";
 import getYouTubeRevenue from "./getYouTubeRevenue";
-import loginWithYouTube from "./login-w-youtube";
+import loginWithYouTube from "./login-with-youtube";
 
 export async function getMcpTools() {
   const tools = {
