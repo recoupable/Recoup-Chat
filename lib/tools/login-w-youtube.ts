@@ -7,7 +7,7 @@ const schema = z.object({
   artist_account_id: z
     .string()
     .describe(
-      "Artist ID to login with YouTube. This tool check if we have access to the artist's YouTube account or not."
+      "artist_account_id from system prompt"
     ),
 });
 
