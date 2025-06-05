@@ -34,9 +34,11 @@ import { SegmentFansResult } from "@/types/fans";
 import YouTubeAccessResult from "./tools/youtube/YouTubeAccessResult";
 import YouTubeAccessSkeleton from "./tools/youtube/YouTubeAccessSkeleton";
 import { 
+  ToolSuccessResponse,
   YouTubeAccessResult as YouTubeAccessResultType,
   YouTubeChannelInfoResult
 } from "@/types/youtube";
+import YoutubeLoginResult from "./tools/youtube/YoutubeLoginResult";
 
 // Union type for YouTube responses (handles both old and new formats)
 type YouTubeResponse = YouTubeAccessResultType | YouTubeChannelInfoResult;
@@ -212,7 +214,13 @@ export function getToolResultComponent({
   } else if (toolName === "get_youtube_info") {
     return (
       <div key={toolCallId}>
-        <YouTubeAccessResult result={result as YouTubeResponse} />
+        <YouTubeAccessResult result={result as YouTubeAccessResultType} />
+      </div>
+    );
+  } else if (toolName === "login_with_youtube") {
+    return (
+      <div key={toolCallId}>
+        <YoutubeLoginResult result={result as ToolSuccessResponse} />
       </div>
     );
   }
