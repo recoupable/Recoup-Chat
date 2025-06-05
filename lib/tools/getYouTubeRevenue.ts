@@ -34,10 +34,7 @@ const schema = z.object({
 
 const getYouTubeRevenueTool = tool({
   description:
-    "Get YouTube estimated revenue data for a specific date range for a specific account. " +
-    "This tool automatically checks authentication status and either returns revenue data or authentication instructions. " +
-    "Requires a monetized YouTube channel with Analytics scope enabled. " +
-    "Returns daily revenue breakdown and total revenue for the specified date range. " +
+    "Youtube: Get estimated revenue data for a specific date range for a specific Youtube channel. " +
     "IMPORTANT: This tool requires the artist_account_id parameter. The startDate and endDate parameters are optional - " +
     "if not provided, it will default to the last 30 days (1 month). " +
     "When provided, dates should be in YYYY-MM-DD format. If you don't know the artist_account_id, ask the user or use the current artist's artist_account_id.",
