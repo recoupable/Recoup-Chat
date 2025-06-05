@@ -20,16 +20,6 @@ export default function YouTubeRevenueError({ message }: YouTubeRevenueErrorProp
           <p className="text-sm text-muted-foreground whitespace-pre-wrap">
             {message}
           </p>
-          <div className="p-3 bg-muted/50 rounded-lg">
-            <p className="text-xs text-muted-foreground">
-              💡 <strong>Common Solutions:</strong>
-            </p>
-            <ul className="text-xs text-muted-foreground mt-1 space-y-1 ml-4">
-              <li>• Ensure your channel is monetized and part of YouTube Partner Program</li>
-              <li>• Re-authenticate with all YouTube Analytics permissions</li>
-              <li>• Check if your channel meets monetization requirements</li>
-            </ul>
-          </div>
         </div>
       </CardContent>
     </Card>
