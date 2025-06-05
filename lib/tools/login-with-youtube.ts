@@ -28,7 +28,8 @@ const loginWithYouTube = tool({
     return {
       success: true,
       message:
-        "YouTube access for the artist account is confirmed. You can now ask for YouTube revenue, channel info, or any other YouTube data.",
+        "YouTube access for the artist account is confirmed. You can now ask for YouTube revenue, channel info, or any other YouTube data." + 
+        "Important: This tool should be called before calling any other YouTube tools.",
     };
   },
 });
