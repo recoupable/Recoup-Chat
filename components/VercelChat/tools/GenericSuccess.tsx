@@ -28,7 +28,7 @@ const GenericSuccess = ({
 
       <div className="flex-grow min-w-0">
         <p className="font-medium text-sm truncate">{name}</p>
-        <p className="text-xs text-gray-500 truncate">{message}</p>
+        <p className="text-xs text-gray-500 truncate max-w-[200px] text-wrap rounded-xl pl-1">{message}</p>
         {children}
       </div>
     </div>
