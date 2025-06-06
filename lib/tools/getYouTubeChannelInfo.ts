@@ -18,7 +18,7 @@ import { YouTubeErrorBuilder } from "@/lib/youtube/error-builder";
 
 // Zod schema for parameter validation
 const schema = z.object({
-  artist_account_id: z
+  account_id: z
     .string()
     .describe("artist_account_id from system prompt"),
 });
@@ -30,10 +30,10 @@ const getYouTubeChannelInfoTool = tool({
     "Return channel information like name, description, subscriber count, video count, view count, etc. " +
     "IMPORTANT: This tool requires the artist_account_id parameter. If you don't know the artist_account_id, ask the user or use the current artist's artist_account_id.",
   parameters: schema,
-  execute: async ({ artist_account_id }): Promise<YouTubeChannelInfoResult> => {
+  execute: async ({ account_id }): Promise<YouTubeChannelInfoResult> => {
     try {
       // Validate YouTube tokens (internal authentication check)
-      const tokenValidation = await validateYouTubeTokens(artist_account_id);
+      const tokenValidation = await validateYouTubeTokens(account_id);
 
       // Fetch comprehensive channel information with branding
       const channelResult = await fetchYouTubeChannelInfo(
