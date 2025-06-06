@@ -4,9 +4,9 @@ import { z } from "zod";
 
 /**
  * Fetches and filters Perplexity tools, excluding the problematic perplexity_reason tool
- * @returns An object containing only the perplexity_ask tool
+ * @returns An object containing only the search_web tool
  */
-const perplexityAsk = tool({
+const searchWeb = tool({
   description:
     "Engages in a conversation using the Sonar API. " +
     "Accepts an array of messages (each with a role and content) " +
@@ -22,7 +22,7 @@ const perplexityAsk = tool({
   execute: async ({ messages }) => {
     if (!Array.isArray(messages)) {
       throw new Error(
-        "Invalid arguments for perplexity_ask: 'messages' must be an array"
+        "Invalid arguments for search_web: 'messages' must be an array"
       );
     }
     // Invoke the chat completion function with the provided messages
@@ -34,4 +34,4 @@ const perplexityAsk = tool({
   },
 });
 
-export default perplexityAsk;
+export default searchWeb;
