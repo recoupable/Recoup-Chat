@@ -32,7 +32,7 @@ function getToolInfo(toolName: string): { message: string } {
             message: "Team contacted"
         };
     }
-    // Search Internet
+    // Search Web
     else if (toolName === "search_web") {
         return {
             message: "Information retrieved"
