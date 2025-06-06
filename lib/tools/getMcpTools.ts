@@ -4,7 +4,7 @@ import getArtistSegments from "./getArtistSegments";
 import getArtistSocials from "./getArtistSocials";
 import getSocialPosts from "./getSocialPosts";
 import getPostComments from "./getPostComments";
-import perplexityAsk from "./perplexityAsk";
+import searchWeb from "./searchWeb";
 import generateImage from "./generateImage";
 import generateMermaidDiagram from "./generateMermaidDiagram";
 import createArtist from "./createArtist";
@@ -37,7 +37,7 @@ export async function getMcpTools() {
     get_artist_socials: getArtistSocials,
     get_social_posts: getSocialPosts,
     get_post_comments: getPostComments,
-    perplexity_ask: perplexityAsk,
+    search_web: searchWeb,
     generate_image: generateImage,
     generate_mermaid_diagram: generateMermaidDiagram,
     generate_txt_file: createTxtFile,

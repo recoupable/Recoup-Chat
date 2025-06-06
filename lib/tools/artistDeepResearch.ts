@@ -5,9 +5,9 @@ import { SPOTIFY_DEEP_RESEARCH_REQUIREMENTS } from "../consts";
 
 const TOOL_CHAIN_STEPS = [
   "spotify_deep_research - deep research the musician discography and popularity on spotify",
-  "perplexity_ask - search for any missing social handles (twitter, instagram, spotify, tiktok)",
+  "search_web - search for any missing social handles (twitter, instagram, spotify, tiktok)",
   "update_artist_socials - link the discovered socials to the artist",
-  "perplexity_ask - loop over this tool until you have all the info required below",
+  "search_web - loop over this tool until you have all the info required below",
   "create_knowledge_base - generate a research txt file and attach it to the artist",
 ];
 
