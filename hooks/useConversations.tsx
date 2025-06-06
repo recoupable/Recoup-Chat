@@ -36,6 +36,7 @@ const useConversations = () => {
   }, [selectedArtist, allConversations]);
 
   const fetchConversations = async () => {
+    console.log("onFinish triggered 2");
     const data = await getConversations(userData.id);
     setAllConversations([...data, ...agents]);
     setIsLoading(false);

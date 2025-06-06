@@ -73,6 +73,7 @@ export function useVercelChat({
       // So we trigger the fetchConversations to update the conversation list
 
       if (messagesLengthRef.current === 2) {
+        console.log("onFinish triggered 1");
         fetchConversations();
       }
     },
