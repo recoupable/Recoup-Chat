@@ -1,82 +1,48 @@
-name: Run new evals
+name: Run Braintrust Evaluations
 
 on:
-  workflow_dispatch:
   pull_request:
     branches:
       - main
+  push:
+    branches:
+      - main
+    # Optional: only run when eval files change
+    paths:
+      - "evals/**"
+  workflow_dispatch: # Allow manual triggering
+
+permissions:
+  pull-requests: write  # Required for PR comments
+  contents: read
 
 jobs:
-  run_evals:
+  eval:
+    name: Run evaluations
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          lfs: true
 
-      - name: Install Git LFS
-        run: |
-          sudo apt-get install git-lfs
-          git lfs install
-
-      - name: Set up Python
-        uses: actions/setup-python@v2
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          python-version: 3.9
+          node-version: 20
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install pyyaml
-          pip install supabase
-          pip install slack_sdk
-          pip install -e .
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 8
 
-      - name: Run generator files
-        env:
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
-        run: |
-          echo "Running all generator files"
-          for script in evals/scripts/*_generator.py; do
-            if [ -f "$script" ]; then
-              echo "Running $script"
-              python "$script"
-            else
-              echo "No generator files found."
-            fi
-          done
+      - name: Install Dependencies
+        run: pnpm install
 
-      - name: Get list of all YAML files in evals/registry/evals
-        id: get_files
-        run: |
-          all_files=$(find evals/registry/evals -name "*.yaml")
-
-          if [ -n "$all_files" ]; then
-            echo "all_files=${all_files//$'\n'/,}" >> $GITHUB_ENV
-          else
-            echo "all_files=" >> $GITHUB_ENV
-          fi
-
-      - name: Run oaieval command for each YAML file
-        env:
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          SLACK_BOT_TOKEN: ${{secrets.SLACK_BOT_TOKEN}}
-          SLACK_CHANNEL_ID: ${{secrets.SLACK_CHANNEL_ID}}
-        run: |
-          files="${{ env.all_files }}"
-
-          if [ -n "$files" ]; then
-            IFS=',' read -r -a file_array <<< "$files"
-            for file in "${file_array[@]}"; do
-              echo "Processing $file"
-              first_key=$(python .github/workflows/parse_yaml.py "$file")
-              echo "Eval Name: $first_key"
-              oaieval gpt-3.5-turbo "$first_key"
-            done
-          else
-            echo "No YAML files found in evals/registry/evals"
-          fi
+      - name: Run Braintrust Evaluations
+        uses: braintrustdata/eval-action@v1
+        with:
+          api_key: ${{ secrets.BRAINTRUST_API_KEY }}
+          runtime: node
+          root: evals
