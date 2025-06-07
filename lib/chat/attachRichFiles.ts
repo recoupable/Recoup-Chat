@@ -15,14 +15,29 @@ const attachRichFiles = async (
   })();
 
   const knowledges = await getArtistKnowledge(artistId);
-  const files = knowledges.filter((file) => file.type === "application/pdf");
+  console.log("knowledges", knowledges);
+  const files = knowledges.filter((file) => file.type === "application/pdf" || file.type.startsWith("image"));
   const fileStructure = files
-    .filter((file) => file.type === "application/pdf")
-    .map((file) => ({
-      type: "file" as const,
-      data: new URL(file.url),
-      mimeType: file.type,
-    }));
+    .filter(
+      (file) => file.type === "application/pdf" || file.type.startsWith("image")
+    )
+    .map((file) => {
+      if (file.type === "application/pdf") {
+        return {
+          type: "file" as const,
+          data: new URL(file.url),
+          mimeType: file.type,
+        };
+      } else if (file.type.includes("image")) {
+        return {
+          type: "image" as const,
+          image: file.url,
+        };
+      }
+    })
+    .filter((item): item is NonNullable<typeof item> => item !== undefined);
+
+  console.log("fileStructure", fileStructure);
 
   return messages.map((message, idx) => {
     if (idx === lastUserIndex && message.role === "user") {
