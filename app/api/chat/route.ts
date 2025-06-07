@@ -63,7 +63,7 @@ export async function POST(request: NextRequest) {
 
     const { lastMessage } = validateMessages(messages);
 
-    // Apply rich file attachments (PDF access) to messages
+    // Attach files like PDFs and images
     const messagesWithRichFiles = await attachRichFiles(messages, {
       artistId: artistId as string,
     });
