@@ -26,7 +26,8 @@ const attachRichFiles = async (
     .map(createMessageFileAttachment)
     .filter((attachment): attachment is MessageFileAttachment => attachment !== null);
 
-  // Transform messages, adding attachments to the last user message
+  // Transform messages, adding attachments to the user message
+  // Ref. https://ai-sdk.dev/providers/ai-sdk-providers/anthropic#pdf-support
   return messages.map((message, idx) => {
     if (idx === lastUserIndex && message.role === "user") {
       return {
