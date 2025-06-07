@@ -1,33 +1,7 @@
 import { Message, CoreMessage } from "ai";
 import getArtistKnowledge from "../supabase/getArtistKnowledge";
-
-type FileAttachment = {
-  type: "file";
-  data: URL;
-  mimeType: string;
-} | {
-  type: "image";
-  image: string;
-};
-
-const createFileAttachment = (file: { url: string; type: string }): FileAttachment | null => {
-  if (file.type === "application/pdf") {
-    return {
-      type: "file" as const,
-      data: new URL(file.url),
-      mimeType: file.type,
-    };
-  }
-  
-  if (file.type.startsWith("image")) {
-    return {
-      type: "image" as const,
-      image: file.url,
-    };
-  }
-  
-  return null;
-};
+import createMessageFileAttachment from "./createFileAttachment";
+import { MessageFileAttachment } from "@/types/Chat";
 
 const findLastUserMessageIndex = (messages: Message[]): number => {
   for (let i = messages.length - 1; i >= 0; i--) {
@@ -49,8 +23,8 @@ const attachRichFiles = async (
   );
   
   const fileAttachments = supportedFiles
-    .map(createFileAttachment)
-    .filter((attachment): attachment is FileAttachment => attachment !== null);
+    .map(createMessageFileAttachment)
+    .filter((attachment): attachment is MessageFileAttachment => attachment !== null);
 
   // Transform messages, adding attachments to the last user message
   return messages.map((message, idx) => {
