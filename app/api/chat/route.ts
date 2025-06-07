@@ -19,6 +19,7 @@ import { sendNewConversationNotification } from "@/lib/telegram/sendNewConversat
 import filterMessageContentForMemories from "@/lib/messages/filterMessageContentForMemories";
 import { serializeError } from "@/lib/errors/serializeError";
 import { sendErrorNotification } from "@/lib/telegram/sendErrorNotification";
+import attachRichFiles from "@/lib/chat/attachRichFiles";
 
 export async function POST(request: NextRequest) {
   const body = await request.json();
@@ -62,6 +63,11 @@ export async function POST(request: NextRequest) {
 
     const { lastMessage } = validateMessages(messages);
 
+    // Apply rich file attachments (PDF access) to messages
+    const messagesWithRichFiles = await attachRichFiles(messages, {
+      artistId: artistId as string,
+    });
+
     const [, system] = await Promise.all([
       createMemories({
         id: lastMessage.id,
@@ -82,7 +88,7 @@ export async function POST(request: NextRequest) {
         const result = streamText({
           model: myProvider.languageModel(selectedModelId),
           system,
-          messages,
+          messages: messagesWithRichFiles,
           maxSteps: 111,
           experimental_transform: smoothStream({ chunking: "word" }),
           experimental_generateMessageId: generateUUID,
