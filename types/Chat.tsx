@@ -14,3 +14,12 @@ export type Conversation = {
   }>;
   updated_at: string;
 };
+
+export type MessageFileAttachment = {
+  type: "file";
+  data: URL;
+  mimeType: string;
+} | {
+  type: "image";
+  image: string;
+};

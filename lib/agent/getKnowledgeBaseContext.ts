@@ -10,7 +10,7 @@ export async function getKnowledgeBaseContext(
     if (!knowledges.length) return "";
 
     const textFiles = knowledges.filter((file) =>
-      ["text/plain", "text/markdown", "application/json"].includes(file.type)
+      ["text/plain", "text/markdown", "application/json", "text/csv"].includes(file.type)
     );
 
     const contents = await Promise.all(
@@ -25,6 +25,7 @@ export async function getKnowledgeBaseContext(
         }
       })
     );
+
 
     return contents.filter((content) => content).join("\n\n");
   } catch (error) {
