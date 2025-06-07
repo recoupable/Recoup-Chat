@@ -1,2 +1,0 @@
-langchain/chains/llm_math:
-  class: evals.completion_fns.langchain_math:LangChainMathChainCompletionFn
