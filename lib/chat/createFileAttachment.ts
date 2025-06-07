@@ -14,7 +14,7 @@ const createMessageFileAttachment = (file: {
 
   if (file.type.startsWith("image")) {
     return {
-      type: "image" as const,
+      type: "image",
       image: file.url,
     };
   }
