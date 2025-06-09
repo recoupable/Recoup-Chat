@@ -1,6 +1,6 @@
 import supabase from "./serverClient";
-import getRoom from "./rooms/getRoom";
-import createNewRoom from "./rooms/createNewRoom";
+import getRoom from "./getRoom";
+import createNewRoom from "./createNewRoom";
 import copyRoomMessages from "./copyMessages";
 
 /**
