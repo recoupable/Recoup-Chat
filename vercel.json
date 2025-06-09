@@ -3,7 +3,7 @@
   "crons": [
     {
       "path": "/api/cron/recoupDailyStats",
-      "schedule": "*/5 * * * *"
+      "schedule": "0 14 * * *"
     }
   ]
 } 
