@@ -1,6 +1,7 @@
-import { sendMessage } from "./sendMessage";
 import { Message } from "ai";
-import { SerializedError } from "../errors/serializeError";
+import { sendMessage } from "@/lib/telegram/sendMessage";
+import { SerializedError } from "@/lib/errors/serializeError";
+import { escapeTelegramMarkdown } from "./escapeTelegramMarkdown";
 
 export interface ErrorContext {
   email?: string;
@@ -8,14 +9,6 @@ export interface ErrorContext {
   messages?: Message[];
   path: string;
   error: SerializedError;
-}
-
-// Utility to escape Telegram Markdown special characters
-function escapeTelegramMarkdown(text: string): string {
-  // Escape characters for MarkdownV2: _ * [ ] ( ) ~ ` > # + - = | { } . !
-  // For Markdown, only _, *, [, ], (, ), ~, `, >, #, +, -, =, |, {, }, ., ! need escaping
-  // But for our use, let's escape the most common troublemakers: _, *, [, ], (, ), ~, `, >, #, +, -, =, |, {, }, ., !
-  return text.replace(/[\_\*\[\]\(\)~`>#+\-=|{}.!]/g, (match) => `\\${match}`);
 }
 
 /**

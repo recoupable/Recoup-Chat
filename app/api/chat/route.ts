@@ -18,7 +18,7 @@ import { generateChatTitle } from "@/lib/chat/generateChatTitle";
 import { sendNewConversationNotification } from "@/lib/telegram/sendNewConversationNotification";
 import filterMessageContentForMemories from "@/lib/messages/filterMessageContentForMemories";
 import { serializeError } from "@/lib/errors/serializeError";
-import { sendErrorNotification } from "@/lib/telegram/sendErrorNotification";
+import { sendErrorNotification } from "@/lib/telegram/errors/sendErrorNotification";
 
 export async function POST(request: NextRequest) {
   const body = await request.json();
