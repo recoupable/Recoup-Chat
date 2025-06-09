@@ -10,6 +10,14 @@ export interface ErrorContext {
   error: SerializedError;
 }
 
+// Utility to escape Telegram Markdown special characters
+function escapeTelegramMarkdown(text: string): string {
+  // Escape characters for MarkdownV2: _ * [ ] ( ) ~ ` > # + - = | { } . !
+  // For Markdown, only _, *, [, ], (, ), ~, `, >, #, +, -, =, |, {, }, ., ! need escaping
+  // But for our use, let's escape the most common troublemakers: _, *, [, ], (, ), ~, `, >, #, +, -, =, |, {, }, ., !
+  return text.replace(/[\_\*\[\]\(\)~`>#+\-=|{}.!]/g, (match) => `\\${match}`);
+}
+
 /**
  * Formats error message for Telegram notification
  */
@@ -49,7 +57,8 @@ function formatErrorMessage({
     }
   }
 
-  return message;
+  // Escape for Telegram Markdown
+  return escapeTelegramMarkdown(message);
 }
 
 /**
