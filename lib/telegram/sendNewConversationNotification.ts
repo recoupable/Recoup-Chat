@@ -1,4 +1,5 @@
 import { sendMessage } from "./sendMessage";
+import { isTestEmail } from "@/lib/email/isTestEmail";
 
 interface NewConversationNotificationParams {
   email: string;
@@ -13,6 +14,9 @@ export const sendNewConversationNotification = async ({
   topic,
   firstMessage,
 }: NewConversationNotificationParams) => {
+  // Skip sending for test emails
+  if (isTestEmail(email)) return;
+
   try {
     const formattedMessage = `🗣️ New Conversation Started
 From: ${email}
