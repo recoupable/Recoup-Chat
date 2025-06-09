@@ -2,7 +2,7 @@ import { getRooms } from "@/lib/supabase/rooms/getRooms";
 import { getMemories } from "@/lib/supabase/memories/getMemories";
 import { sendDailyStatsMessage } from "@/lib/telegram/sendDailyStatsMessage";
 
-interface HandleDailyStatsResult {
+export interface DailyStats {
   newRoomsCount: number;
   prevRoomsCount: number;
   roomsDelta: number;
@@ -14,7 +14,7 @@ interface HandleDailyStatsResult {
 /**
  * Calculates daily stats and deltas for rooms and memories.
  */
-export async function handleDailyStats(): Promise<HandleDailyStatsResult> {
+export async function handleDailyStats(): Promise<DailyStats> {
   const now = Date.now();
   const startDate = new Date(now - 24 * 60 * 60 * 1000).toISOString();
   const prevStartDate = new Date(now - 2 * 24 * 60 * 60 * 1000).toISOString();

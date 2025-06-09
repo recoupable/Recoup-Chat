@@ -1,11 +1,5 @@
+import { DailyStats } from "../handleDailyStats";
 import { sendMessage } from "./sendMessage";
-
-interface DailyStats {
-  newRoomsCount: number;
-  roomsDelta: number;
-  newMemoriesCount: number;
-  memoriesDelta: number;
-}
 
 /**
  * Sends a formatted daily stats message to Telegram.
