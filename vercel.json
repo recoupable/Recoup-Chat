@@ -1,0 +1,8 @@
+{
+  "cron": [
+    {
+      "path": "/api/cron/recoupDailyStats",
+      "schedule": "*/5 * * * *"
+    }
+  ]
+} 
