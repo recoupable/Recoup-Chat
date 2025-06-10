@@ -18,6 +18,7 @@ import { generateChatTitle } from "@/lib/chat/generateChatTitle";
 import { sendNewConversationNotification } from "@/lib/telegram/sendNewConversationNotification";
 import filterMessageContentForMemories from "@/lib/messages/filterMessageContentForMemories";
 import { serializeError } from "@/lib/errors/serializeError";
+import attachRichFiles from "@/lib/chat/attachRichFiles";
 import { sendErrorNotification } from "@/lib/telegram/errors/sendErrorNotification";
 
 export async function POST(request: NextRequest) {
@@ -62,6 +63,11 @@ export async function POST(request: NextRequest) {
 
     const { lastMessage } = validateMessages(messages);
 
+    // Attach files like PDFs and images
+    const messagesWithRichFiles = await attachRichFiles(messages, {
+      artistId: artistId as string,
+    });
+
     const [, system] = await Promise.all([
       createMemories({
         id: lastMessage.id,
@@ -82,7 +88,7 @@ export async function POST(request: NextRequest) {
         const result = streamText({
           model: myProvider.languageModel(selectedModelId),
           system,
-          messages,
+          messages: messagesWithRichFiles,
           maxSteps: 111,
           experimental_transform: smoothStream({ chunking: "word" }),
           experimental_generateMessageId: generateUUID,
