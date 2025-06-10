@@ -20,11 +20,12 @@ import filterMessageContentForMemories from "@/lib/messages/filterMessageContent
 import { serializeError } from "@/lib/errors/serializeError";
 import attachRichFiles from "@/lib/chat/attachRichFiles";
 import { sendErrorNotification } from "@/lib/telegram/errors/sendErrorNotification";
+import { sanitizeEmptyMessages } from "@/lib/messages/filterEmptyMessages";
 
 export async function POST(request: NextRequest) {
   const body = await request.json();
   const {
-    messages,
+    messages: rawMessages,
     roomId,
     artistId,
     accountId,
@@ -41,6 +42,10 @@ export async function POST(request: NextRequest) {
 
     const [room, tools] = await Promise.all([getRoom(roomId), getMcpTools()]);
     let conversationName = room?.topic;
+
+    // Replace empty message content with invisible placeholder to prevent API errors
+    const messages = sanitizeEmptyMessages(rawMessages);
+    console.log("messages", messages);
 
     if (!room) {
       conversationName = await generateChatTitle(messages[0].content);
@@ -88,12 +93,14 @@ export async function POST(request: NextRequest) {
         const result = streamText({
           model: myProvider.languageModel(selectedModelId),
           system,
+          abortSignal: request.signal,
           messages: messagesWithRichFiles,
           maxSteps: 111,
           experimental_transform: smoothStream({ chunking: "word" }),
           experimental_generateMessageId: generateUUID,
           tools,
           onFinish: async ({ response }) => {
+            console.log("[[onFinish]]");
             try {
               const [, assistantMessage] = appendResponseMessages({
                 messages: [lastMessage],
