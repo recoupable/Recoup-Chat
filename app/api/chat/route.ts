@@ -93,7 +93,7 @@ export async function POST(request: NextRequest) {
         const result = streamText({
           model: myProvider.languageModel(selectedModelId),
           system,
-          abortSignal: request.signal,
+          // abortSignal: request.signal,
           messages: messagesWithRichFiles,
           maxSteps: 111,
           experimental_transform: smoothStream({ chunking: "word" }),
