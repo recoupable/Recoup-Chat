@@ -9,6 +9,7 @@ import { useVercelChatContext } from "@/providers/VercelChatProvider";
 import AttachmentsPreview from "./AttachmentsPreview";
 import PureAttachmentsButton from "./PureAttachmentsButton";
 import { motion } from "framer-motion";
+import { Button } from "../ui/button";
 
 interface ChatInputProps {
   onSendMessage: (event: React.FormEvent<HTMLFormElement>) => void;
@@ -27,24 +28,24 @@ export function ChatInput({
 }: ChatInputProps) {
   // Access the artist state to check if an artist is selected
   const { selectedArtist, sorted } = useArtistProvider();
-  const { hasPendingUploads } = useVercelChatContext();
+  const { hasPendingUploads, status } = useVercelChatContext();
   const isDisabled = !selectedArtist && sorted.length > 0;
 
   // Create a form ref to submit the form programmatically
   const formRef = useRef<HTMLFormElement>(null);
 
+  const isChatSubmitted = status === "submitted";
+  const isChatStreaming = status === "streaming";
   // Extracted the common disabled condition (for button)
-  const isButtonDisabled =
-    isGeneratingResponse || input === "" || isDisabled || hasPendingUploads;
+  const isButtonDisabled = isChatSubmitted || isDisabled || hasPendingUploads;
 
   const handleSend = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    if (input === "" || isDisabled || hasPendingUploads) return;
-
-    if (isGeneratingResponse) {
+    if (isChatStreaming) {
       onStop();
     } else {
+      if (input === "" || isDisabled || hasPendingUploads) return;
       onSendMessage(event);
     }
   };
@@ -74,19 +75,15 @@ export function ChatInput({
         />
 
         <div className="absolute bottom-2.5 right-2.5">
-          <button
+          <Button
             type="submit"
             className={cn(
-              "size-8 flex flex-row justify-center items-center dark:bg-zinc-100 bg-zinc-900 dark:text-zinc-900 text-zinc-100 p-1.5 rounded-full hover:bg-zinc-800 dark:hover:bg-zinc-300 hover:scale-105 active:scale-95 transition-all",
-              {
-                "dark:bg-zinc-200 dark:text-zinc-500 cursor-not-allowed opacity-50":
-                  isButtonDisabled,
-              }
+              "size-8 flex flex-row justify-center items-center p-1.5 rounded-full hover:scale-105 active:scale-95 transition-all"
             )}
             disabled={isButtonDisabled}
           >
-            {isGeneratingResponse ? <StopIcon /> : <ArrowUpIcon />}
-          </button>
+            {isChatStreaming ? <StopIcon /> : <ArrowUpIcon />}
+          </Button>
         </div>
       </motion.form>
     </div>
