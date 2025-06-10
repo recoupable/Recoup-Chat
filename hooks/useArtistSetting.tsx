@@ -1,6 +1,7 @@
 import { uploadFile } from "@/lib/arweave/uploadToArweave";
 import { useEffect, useRef, useState } from "react";
 import { ArtistRecord } from "@/types/Artist";
+import { getFileMimeType } from "@/utils/getFileMimeType";
 
 const useArtistSetting = () => {
   const imageRef = useRef<HTMLInputElement>(null);
@@ -63,7 +64,7 @@ const useArtistSetting = () => {
       if (files) {
         for (const file of files) {
           const name = file.name;
-          const type = file.type;
+          const type = getFileMimeType(file);
           const { uri } = await uploadFile(file);
           temp.push({
             name,
