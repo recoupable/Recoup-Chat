@@ -34,8 +34,8 @@ IMPORTANT: This tool requires the account_id parameter. Never ask the user for t
         "YouTube is connected for this account.",
         {
           authentication: {
-            tokenCreatedAt: tokens.created_at,
-            tokenExpiresAt: tokens.expires_at,
+            access_token: tokens.access_token,
+            refresh_token: tokens.refresh_token,
           },
         }
       );
