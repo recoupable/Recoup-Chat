@@ -11,7 +11,6 @@
 
 import { z } from "zod";
 import { tool } from "ai";
-import { validateYouTubeTokens } from "@/lib/youtube/token-validator";
 import { YouTubeErrorBuilder } from "@/lib/youtube/error-builder";
 import { YouTubeRevenueResult } from "@/types/youtube";
 import { queryAnalyticsReports } from "@/lib/youtube/queryAnalyticsReports";
@@ -19,10 +18,16 @@ import { handleRevenueError } from "@/lib/youtube/revenue-error-handler";
 
 // Zod schema for parameter validation
 const schema = z.object({
-  account_id: z
+  access_token: z
     .string()
     .describe(
-      "account_id from the system prompt of the human account signed in."
+      "OAuth access token for YouTube API. Must be obtained via prior authentication using the youtube_login tool."
+    ),
+  refresh_token: z
+    .string()
+    .optional()
+    .describe(
+      "OAuth refresh token for YouTube API. Optional, but recommended for token refresh. Must be obtained via prior authentication using the youtube_login tool."
     ),
   startDate: z
     .string()
@@ -47,28 +52,37 @@ const schema = z.object({
 });
 
 const getYouTubeRevenueTool = tool({
-  description:
-    "Youtube: Get estimated revenue data for a specific date range for a YouTube account. " +
-    "Before calling this tool. make sure to call the get_youtube_channels tool to check if account is authenticated and has the correct permissions. (IMPORTANT)" +
-    "IMPORTANT: This tool requires the account_id parameter from the system prompt of the human account signed in. The startDate and endDate parameters are optional - " +
-    "if not provided, it will default to the last 30 days (1 month). " +
-    "When provided, dates should be in YYYY-MM-DD format. If you don't know the account_id, ask the user or use the current human's account_id.",
+  description: `Youtube: Get estimated revenue data for a specific date range for a YouTube account.
+This tool requires a valid access_token (and optionally a refresh_token) obtained from a prior authentication step (e.g., youtube_login).
+The startDate and endDate parameters are optional - if not provided, it will default to the last 30 days (1 month).
+When provided, dates should be in YYYY-MM-DD format.
+IMPORTANT: Always call the youtube_login tool first to obtain the required tokens before calling this tool.`,
   parameters: schema,
   execute: async ({
-    account_id,
+    access_token,
+    refresh_token,
     startDate,
     endDate,
   }): Promise<YouTubeRevenueResult> => {
+    if (!access_token || access_token.trim() === "") {
+      return YouTubeErrorBuilder.createToolError(
+        "No access_token provided to YouTube revenue tool. Please ensure you pass a valid access_token from the authentication step."
+      );
+    }
     try {
-      // Validate YouTube tokens (internal authentication check)
-      const tokenValidation = await validateYouTubeTokens(account_id);
-
-      if (!tokenValidation.success) {
-        return YouTubeErrorBuilder.createToolError(
-          `YouTube authentication required for this account. ${tokenValidation.error!.message} Please authenticate by connecting your YouTube account.`
-        );
-      }
-
+      // Construct a minimal tokenValidation object for queryAnalyticsReports
+      const tokenValidation = {
+        success: true,
+        tokens: {
+          access_token,
+          refresh_token: refresh_token ?? null,
+          account_id: "",
+          created_at: "",
+          expires_at: "",
+          id: "",
+          updated_at: "",
+        },
+      };
       // Query analytics reports using the extracted function
       const analyticsResult = await queryAnalyticsReports(
         tokenValidation,
@@ -76,7 +90,6 @@ const getYouTubeRevenueTool = tool({
         endDate,
         "estimatedRevenue"
       );
-
       return YouTubeErrorBuilder.createToolSuccess(
         `YouTube revenue data retrieved successfully for ${analyticsResult.dailyRevenue.length} days. Total revenue: $${analyticsResult.totalRevenue.toFixed(2)}`,
         {
@@ -84,8 +97,8 @@ const getYouTubeRevenueTool = tool({
             totalRevenue: parseFloat(analyticsResult.totalRevenue.toFixed(2)),
             dailyRevenue: analyticsResult.dailyRevenue,
             dateRange: {
-              startDate: startDate,
-              endDate: endDate,
+              startDate,
+              endDate,
             },
             channelId: analyticsResult.channelId,
             isMonetized: true,
