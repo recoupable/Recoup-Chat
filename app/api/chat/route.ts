@@ -43,7 +43,6 @@ export async function POST(request: NextRequest) {
 
     // Replace empty message content with invisible placeholder to prevent API errors
     const messages = sanitizeEmptyMessages(rawMessages);
-    console.log("messages", messages);
 
     validateMessages(messages);
 
@@ -68,12 +67,15 @@ export async function POST(request: NextRequest) {
         const result = streamText({
           model: myProvider.languageModel(selectedModelId),
           system,
-          // abortSignal: request.signal,
+          abortSignal: request.signal,
           messages: messagesWithRichFiles,
           maxSteps: 111,
           experimental_transform: smoothStream({ chunking: "word" }),
           experimental_generateMessageId: generateUUID,
           tools,
+          onChunk: (chunk) => {
+            console.log("[[onChunk]]", chunk);
+          },
           onFinish: async ({ response }) => {
             console.log("[[onFinish]]");
             try {
