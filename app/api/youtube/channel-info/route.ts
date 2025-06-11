@@ -45,7 +45,7 @@ export async function GET(
     // Fetch channel information using utility
     const channelResult = await fetchYouTubeChannelInfo({
       accessToken: tokenValidation.tokens!.access_token,
-      refreshToken: tokenValidation.tokens!.refresh_token,
+      refreshToken: tokenValidation.tokens!.refresh_token ?? undefined,
     });
     if (!channelResult.success) {
       return YouTubeErrorBuilder.createAPIError(channelResult.error!.message);
