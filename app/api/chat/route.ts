@@ -77,13 +77,17 @@ export async function POST(request: NextRequest) {
           onFinish: async ({ response }) => {
             console.log("[[onFinish]]");
             try {
-              // Check if room exists and handle room/conversation creation
               const room = await getRoom(roomId);
-              let conversationName = room?.topic;
 
               if (!room) {
-                conversationName = await generateChatTitle(messages[0].content);
+                // --- NEW CHAT LOGIC ---
+                // This block runs only on the first successful message of a new chat.
+                // It creates the room and saves the entire conversation history from the client.
 
+                // 1. Create the room and send notifications
+                const conversationName = await generateChatTitle(
+                  messages[0].content
+                );
                 await Promise.all([
                   createRoomWithReport({
                     account_id: accountId,
@@ -98,25 +102,42 @@ export async function POST(request: NextRequest) {
                     firstMessage: messages[0].content,
                   }),
                 ]);
-              }
 
-              // Construct the full, correct conversation history from the client's state
-              const completeConversation = appendResponseMessages({
-                messages, // The full, ordered array from the client
-                responseMessages: response.messages,
-              });
-
-              // Atomically replace the entire chat history to guarantee order
-              // 1. Delete all existing messages for this room
-              await deleteMemoriesByRoomId(roomId);
-
-              // 2. Sequentially insert the new, complete conversation history
-              for (const message of completeConversation) {
-                await createMemories({
-                  id: message.id,
-                  room_id: roomId,
-                  content: filterMessageContentForMemories(message),
+                // 2. Save the ENTIRE conversation history to the new room
+                const completeConversation = appendResponseMessages({
+                  messages, // The full, ordered array from the client
+                  responseMessages: response.messages,
                 });
+
+                for (const message of completeConversation) {
+                  await createMemories({
+                    id: message.id,
+                    room_id: roomId,
+                    content: filterMessageContentForMemories(message),
+                  });
+                }
+              } else {
+                // --- EXISTING CHAT LOGIC (DELETE AND REPLACE) ---
+                // This block runs for all subsequent messages in an existing chat.
+                // It replaces the entire history to ensure perfect state synchronization.
+
+                // 1. Construct the full, correct conversation history
+                const completeConversation = appendResponseMessages({
+                  messages, // The full, ordered array from the client
+                  responseMessages: response.messages,
+                });
+
+                // 2. Delete all existing messages for this room
+                await deleteMemoriesByRoomId(roomId);
+
+                // 3. Sequentially insert the new, complete conversation history
+                for (const message of completeConversation) {
+                  await createMemories({
+                    id: message.id,
+                    room_id: roomId,
+                    content: filterMessageContentForMemories(message),
+                  });
+                }
               }
             } catch (_) {
               sendErrorNotification({
