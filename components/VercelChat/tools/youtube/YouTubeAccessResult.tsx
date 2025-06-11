@@ -21,7 +21,6 @@ import { useYouTubeAccess } from "@/hooks/useYouTubeAccess";
 import { YouTubeChannelDisplay } from "./YouTubeChannelDisplay";
 import { YouTubeErrorDisplay } from "./YouTubeErrorDisplay";
 import normalizeResult from "@/lib/youtube/mappers/normalizeResult";
-import { useArtistProvider } from "@/providers/ArtistProvider";
 
 interface YouTubeAccessResultProps {
   result: YouTubeAccessResultType | YouTubeChannelInfoResult;
@@ -29,15 +28,9 @@ interface YouTubeAccessResultProps {
 
 export function YouTubeAccessResult({ result }: YouTubeAccessResultProps) {
   const normalizedResult = normalizeResult(result);
-  const { selectedArtist } = useArtistProvider();
 
-  const {
-    status,
-    isCheckingStatus,
-    isAuthenticated,
-    channelInfo,
-    login,
-  } = useYouTubeAccess(normalizedResult);
+  const { status, isCheckingStatus, isAuthenticated, channelInfo, login } =
+    useYouTubeAccess(normalizedResult);
 
   // Show loading state while checking current status
   if (isCheckingStatus) {
@@ -59,29 +52,10 @@ export function YouTubeAccessResult({ result }: YouTubeAccessResultProps) {
     );
   }
 
-  // Show error if no artist is selected
-  if (!selectedArtist) {
-    return (
-      <div className="flex flex-col space-y-3 p-4 rounded-lg bg-gray-50 border border-gray-200 my-2 max-w-md">
-        <div className="flex items-center space-x-2">
-          <Youtube className="h-5 w-5 text-gray-600" />
-          <span className="font-medium text-gray-800">Artist Required</span>
-        </div>
-        <p className="text-sm text-gray-600">
-          Please select an artist to check YouTube access.
-        </p>
-      </div>
-    );
-  }
-
   // Success state - show channel information
   if (isAuthenticated && channelInfo?.channel) {
     return (
-      <YouTubeChannelDisplay
-        channel={channelInfo.channel}
-        artistName={selectedArtist.name || "Unknown Artist"}
-        isLive={!!status}
-      />
+      <YouTubeChannelDisplay channel={channelInfo.channel} isLive={!!status} />
     );
   }
 
@@ -93,7 +67,6 @@ export function YouTubeAccessResult({ result }: YouTubeAccessResultProps) {
 
   return (
     <YouTubeErrorDisplay
-      artistName={selectedArtist.name || "Unknown Artist"}
       errorMessage={errorMessage}
       onLogin={login}
       isLive={!!status}
