@@ -21,6 +21,7 @@ import { serializeError } from "@/lib/errors/serializeError";
 import attachRichFiles from "@/lib/chat/attachRichFiles";
 import { sendErrorNotification } from "@/lib/telegram/errors/sendErrorNotification";
 import { sanitizeEmptyMessages } from "@/lib/messages/filterEmptyMessages";
+import { deleteMemoriesByRoomId } from "@/lib/supabase/deleteMemoriesByRoomId";
 
 export async function POST(request: NextRequest) {
   const body = await request.json();
@@ -40,51 +41,25 @@ export async function POST(request: NextRequest) {
   try {
     const selectedModelId = "sonnet-3.7";
 
-    const [room, tools] = await Promise.all([getRoom(roomId), getMcpTools()]);
-    let conversationName = room?.topic;
-
     // Replace empty message content with invisible placeholder to prevent API errors
     const messages = sanitizeEmptyMessages(rawMessages);
     console.log("messages", messages);
 
-    if (!room) {
-      conversationName = await generateChatTitle(messages[0].content);
-
-      await Promise.all([
-        createRoomWithReport({
-          account_id: accountId,
-          topic: conversationName,
-          artist_id: artistId || undefined,
-          chat_id: roomId || undefined,
-        }),
-        sendNewConversationNotification({
-          email,
-          conversationId: roomId,
-          topic: conversationName,
-          firstMessage: messages[0].content,
-        }),
-      ]);
-    }
-
-    const { lastMessage } = validateMessages(messages);
+    validateMessages(messages);
 
     // Attach files like PDFs and images
     const messagesWithRichFiles = await attachRichFiles(messages, {
       artistId: artistId as string,
     });
 
-    const [, system] = await Promise.all([
-      createMemories({
-        id: lastMessage.id,
-        room_id: roomId,
-        content: filterMessageContentForMemories(lastMessage),
-      }),
+    const [tools, system] = await Promise.all([
+      getMcpTools(),
       getSystemPrompt({
         roomId,
         artistId,
         accountId,
         email,
-        conversationName,
+        conversationName: undefined, // Will be set in onFinish
       }),
     ]);
 
@@ -102,15 +77,47 @@ export async function POST(request: NextRequest) {
           onFinish: async ({ response }) => {
             console.log("[[onFinish]]");
             try {
-              const [, assistantMessage] = appendResponseMessages({
-                messages: [lastMessage],
+              // Check if room exists and handle room/conversation creation
+              const room = await getRoom(roomId);
+              let conversationName = room?.topic;
+
+              if (!room) {
+                conversationName = await generateChatTitle(messages[0].content);
+
+                await Promise.all([
+                  createRoomWithReport({
+                    account_id: accountId,
+                    topic: conversationName,
+                    artist_id: artistId || undefined,
+                    chat_id: roomId || undefined,
+                  }),
+                  sendNewConversationNotification({
+                    email,
+                    conversationId: roomId,
+                    topic: conversationName,
+                    firstMessage: messages[0].content,
+                  }),
+                ]);
+              }
+
+              // Construct the full, correct conversation history from the client's state
+              const completeConversation = appendResponseMessages({
+                messages, // The full, ordered array from the client
                 responseMessages: response.messages,
               });
-              await createMemories({
-                id: assistantMessage.id,
-                room_id: roomId,
-                content: filterMessageContentForMemories(assistantMessage),
-              });
+
+              // Atomically replace the entire chat history to guarantee order
+              // 1. Delete all existing messages for this room
+              await deleteMemoriesByRoomId(roomId);
+
+              // 2. Sequentially insert the new, complete conversation history
+              for (const message of completeConversation) {
+                await createMemories({
+                  id: message.id,
+                  room_id: roomId,
+                  content: filterMessageContentForMemories(message),
+                });
+              }
             } catch (_) {
               sendErrorNotification({
                 ...body,
