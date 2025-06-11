@@ -2,13 +2,15 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { Youtube } from "lucide-react";
 import { YouTubeErrorDisplayProps } from "@/types/youtube";
+import { useUserProvider } from "@/providers/UserProvder";
 
 export function YouTubeErrorDisplay({
-  name,
   errorMessage,
   onLogin,
   isLive,
 }: YouTubeErrorDisplayProps) {
+  const { userData } = useUserProvider();
+
   return (
     <div className="flex flex-col space-y-3 p-4 rounded-lg bg-gray-50 border border-gray-200 my-2 max-w-md">
       {/* Header */}
@@ -26,7 +28,7 @@ export function YouTubeErrorDisplay({
 
       {/* Artist Context */}
       <div className="text-xs text-gray-600">
-        Artist: <span className="font-medium">{name}</span>
+        Account: <span className="font-medium">{userData?.account_id}</span>
       </div>
 
       {/* Message */}

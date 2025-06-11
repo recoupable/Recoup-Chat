@@ -218,12 +218,10 @@ export interface YouTubeTokenValidationResult {
 // Component Props Types
 export interface YouTubeChannelDisplayProps {
   channel: YouTubeChannelData;
-  name: string;
   isLive?: boolean;
 }
 
 export interface YouTubeErrorDisplayProps {
-  name: string;
   errorMessage: string;
   onLogin: () => void;
   isLive?: boolean;

@@ -21,7 +21,6 @@ import { useYouTubeAccess } from "@/hooks/useYouTubeAccess";
 import { YouTubeChannelDisplay } from "./YouTubeChannelDisplay";
 import { YouTubeErrorDisplay } from "./YouTubeErrorDisplay";
 import normalizeResult from "@/lib/youtube/mappers/normalizeResult";
-import { useUserProvider } from "@/providers/UserProvder";
 
 interface YouTubeAccessResultProps {
   result: YouTubeAccessResultType | YouTubeChannelInfoResult;
@@ -29,7 +28,6 @@ interface YouTubeAccessResultProps {
 
 export function YouTubeAccessResult({ result }: YouTubeAccessResultProps) {
   const normalizedResult = normalizeResult(result);
-  const { userData } = useUserProvider();
 
   const { status, isCheckingStatus, isAuthenticated, channelInfo, login } =
     useYouTubeAccess(normalizedResult);
@@ -57,11 +55,7 @@ export function YouTubeAccessResult({ result }: YouTubeAccessResultProps) {
   // Success state - show channel information
   if (isAuthenticated && channelInfo?.channel) {
     return (
-      <YouTubeChannelDisplay
-        channel={channelInfo.channel}
-        name={userData?.name || "Unknown Account"}
-        isLive={!!status}
-      />
+      <YouTubeChannelDisplay channel={channelInfo.channel} isLive={!!status} />
     );
   }
 
@@ -73,7 +67,6 @@ export function YouTubeAccessResult({ result }: YouTubeAccessResultProps) {
 
   return (
     <YouTubeErrorDisplay
-      name={userData?.name || "Unknown Account"}
       errorMessage={errorMessage}
       onLogin={login}
       isLive={!!status}

@@ -3,12 +3,13 @@ import { Youtube, Users, Video, Eye, Calendar } from "lucide-react";
 import { YouTubeChannelDisplayProps } from "@/types/youtube";
 import formatFollowerCount from "@/lib/utils/formatFollowerCount";
 import formatTimestamp from "@/lib/utils/formatTimestamp";
+import { useUserProvider } from "@/providers/UserProvder";
 
 export function YouTubeChannelDisplay({
   channel,
-  name,
   isLive,
 }: YouTubeChannelDisplayProps) {
+  const { userData } = useUserProvider();
   const thumbnailUrl =
     channel.thumbnails.high?.url ||
     channel.thumbnails.medium?.url ||
@@ -31,7 +32,7 @@ export function YouTubeChannelDisplay({
 
       {/* Artist Context */}
       <div className="text-xs text-gray-600">
-        Account: <span className="font-medium">{name}</span>
+        Account: <span className="font-medium">{userData?.account_id}</span>
       </div>
 
       {/* Channel Info */}
