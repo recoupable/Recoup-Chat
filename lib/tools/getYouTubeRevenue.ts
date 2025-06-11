@@ -1,11 +1,11 @@
 /**
  * YouTube Revenue Tool
- * 
+ *
  * Fetches estimated revenue data for the past month from YouTube Analytics API.
  * Automatically handles authentication checking and returns either:
  * - Revenue data for the past 30 days if authenticated
  * - Authentication error/instructions if not authenticated
- * 
+ *
  * Requires monetization-enabled YouTube channel with Analytics scope.
  */
 
@@ -19,32 +19,50 @@ import { handleRevenueError } from "@/lib/youtube/revenue-error-handler";
 
 // Zod schema for parameter validation
 const schema = z.object({
-  artist_account_id: z.string().describe("Artist ID to get YouTube revenue data for. This tool handles authentication checking internally."),
-  startDate: z.string().default(() => {
-    const date = new Date();
-    date.setDate(date.getDate() - 30); // 30 days ago
-    return date.toISOString().split("T")[0];
-  }).describe("Start date for revenue data in YYYY-MM-DD format. Example: '2024-01-01'. If not provided, defaults to 30 days ago."),
-  endDate: z.string().default(() => {
-    const date = new Date();
-    date.setDate(date.getDate() - 1); // Yesterday
-    return date.toISOString().split("T")[0];
-  }).describe("End date for revenue data in YYYY-MM-DD format. Example: '2024-01-31'. Should be after startDate. If not provided, defaults to yesterday.")
+  account_id: z
+    .string()
+    .describe(
+      "account_id from the system prompt of the human account signed in."
+    ),
+  startDate: z
+    .string()
+    .default(() => {
+      const date = new Date();
+      date.setDate(date.getDate() - 30); // 30 days ago
+      return date.toISOString().split("T")[0];
+    })
+    .describe(
+      "Start date for revenue data in YYYY-MM-DD format. Example: '2024-01-01'. If not provided, defaults to 30 days ago."
+    ),
+  endDate: z
+    .string()
+    .default(() => {
+      const date = new Date();
+      date.setDate(date.getDate() - 1); // Yesterday
+      return date.toISOString().split("T")[0];
+    })
+    .describe(
+      "End date for revenue data in YYYY-MM-DD format. Example: '2024-01-31'. Should be after startDate. If not provided, defaults to yesterday."
+    ),
 });
 
 const getYouTubeRevenueTool = tool({
   description:
     "Youtube: Get estimated revenue data for a specific date range for a YouTube account. " +
     "Before calling this tool. make sure to call the get_youtube_info tool to check if account is authenticated and has the correct permissions. (IMPORTANT)" +
-    "IMPORTANT: This tool requires the artist_account_id parameter. The startDate and endDate parameters are optional - " +
+    "IMPORTANT: This tool requires the account_id parameter from the system prompt of the human account signed in. The startDate and endDate parameters are optional - " +
     "if not provided, it will default to the last 30 days (1 month). " +
-    "When provided, dates should be in YYYY-MM-DD format. If you don't know the artist_account_id, ask the user or use the current artist's artist_account_id.",
+    "When provided, dates should be in YYYY-MM-DD format. If you don't know the account_id, ask the user or use the current human's account_id.",
   parameters: schema,
-  execute: async ({ artist_account_id, startDate, endDate }): Promise<YouTubeRevenueResult> => {
+  execute: async ({
+    account_id,
+    startDate,
+    endDate,
+  }): Promise<YouTubeRevenueResult> => {
     try {
       // Validate YouTube tokens (internal authentication check)
-      const tokenValidation = await validateYouTubeTokens(artist_account_id);
-      
+      const tokenValidation = await validateYouTubeTokens(account_id);
+
       if (!tokenValidation.success) {
         return YouTubeErrorBuilder.createToolError(
           `YouTube authentication required for this account. ${tokenValidation.error!.message} Please authenticate by connecting your YouTube account.`
@@ -71,14 +89,13 @@ const getYouTubeRevenueTool = tool({
             },
             channelId: analyticsResult.channelId,
             isMonetized: true,
-          }
+          },
         }
       );
-
     } catch (error: unknown) {
       return handleRevenueError(error);
     }
   },
 });
 
-export default getYouTubeRevenueTool; 
+export default getYouTubeRevenueTool;
