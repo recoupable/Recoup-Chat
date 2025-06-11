@@ -93,12 +93,6 @@ export interface YouTubeChannelInfoResult {
       keywords?: string | null;
       defaultLanguage?: string | null;
     };
-
-    // Authentication metadata
-    authentication: {
-      tokenCreatedAt: string;
-      tokenExpiresAt: string;
-    };
   };
 }
 

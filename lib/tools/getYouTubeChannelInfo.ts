@@ -12,65 +12,52 @@
 import { z } from "zod";
 import { tool } from "ai";
 import { YouTubeChannelInfoResult } from "@/types/youtube";
-import { validateYouTubeTokens } from "@/lib/youtube/token-validator";
 import { fetchYouTubeChannelInfo } from "@/lib/youtube/channel-fetcher";
 import { YouTubeErrorBuilder } from "@/lib/youtube/error-builder";
 
 // Zod schema for parameter validation
 const schema = z.object({
-  account_id: z
+  access_token: z
     .string()
     .describe(
-      "account_id from the system prompt of the human account signed in."
+      "OAuth access token for YouTube API. Must be obtained via prior authentication using the youtube_login tool."
+    ),
+  refresh_token: z
+    .string()
+    .optional()
+    .describe(
+      "OAuth refresh token for YouTube API. Optional, but recommended for token refresh. Must be obtained via prior authentication using the youtube_login tool."
     ),
 });
 
 const getYouTubeChannelInfoTool = tool({
-  description:
-    "Get YouTube channel information for a specific account. " +
-    "This tool automatically checks authentication status and either returns channel data or authentication instructions. " +
-    "No need to check authentication separately - this tool handles everything internally. " +
-    "Returns comprehensive channel data including statistics, thumbnails, and branding if authenticated, " +
-    "or clear authentication instructions if tokens are missing/expired. " +
-    "IMPORTANT: This tool requires the account_id parameter. Never ask the user for this parameter. It is always passed in the system prompt.",
+  description: `Get YouTube channel information for a specific account.
+This tool requires a valid access_token (and optionally a refresh_token) obtained from a prior authentication step (e.g., youtube_login).
+Returns comprehensive channel data including statistics, thumbnails, and branding if the tokens are valid.
+IMPORTANT: Always call the youtube_login tool first to obtain the required tokens before calling this tool.`,
   parameters: schema,
-  execute: async ({ account_id }): Promise<YouTubeChannelInfoResult> => {
-    console.log("account_id", account_id);
-    // Early validation of account_id
-    if (!account_id || account_id.trim() === "") {
-      const missingParamError = YouTubeErrorBuilder.createToolError(
-        "No account_id provided to YouTube tool. The LLM must pass the account_id parameter. Please ensure you're passing the current humans's account_id."
+  execute: async ({
+    access_token,
+    refresh_token,
+  }): Promise<YouTubeChannelInfoResult> => {
+    if (!access_token || access_token.trim() === "") {
+      return YouTubeErrorBuilder.createToolError(
+        "No access_token provided to YouTube channel info tool. Please ensure you pass a valid access_token from the authentication step."
       );
-      return missingParamError;
     }
-
     try {
-      // Validate YouTube tokens (internal authentication check)
-      const tokenValidation = await validateYouTubeTokens(account_id);
-
-      if (!tokenValidation.success) {
-        // Return authentication error with clear instructions
-        const authError = YouTubeErrorBuilder.createToolError(
-          `YouTube authentication required for this account. ${tokenValidation.error!.message} Please authenticate by connecting your YouTube account.`
-        );
-        return authError;
-      }
-
-      // Fetch comprehensive channel information with branding
-      const channelResult = await fetchYouTubeChannelInfo(
-        tokenValidation.tokens!,
-        true
-      );
-
+      const channelResult = await fetchYouTubeChannelInfo({
+        accessToken: access_token,
+        refreshToken: refresh_token ?? undefined,
+        includeBranding: true,
+      });
       if (!channelResult.success) {
         const fetchError = YouTubeErrorBuilder.createToolError(
           channelResult.error!.message
         );
         return fetchError;
       }
-
       const channel = channelResult.channelData!;
-
       const returnResult = YouTubeErrorBuilder.createToolSuccess(
         "YouTube channel information retrieved successfully",
         {
@@ -80,10 +67,6 @@ const getYouTubeChannelInfoTool = tool({
               ...channel.statistics,
               hiddenSubscriberCount:
                 channel.statistics.hiddenSubscriberCount || false,
-            },
-            authentication: {
-              tokenCreatedAt: tokenValidation.tokens!.created_at,
-              tokenExpiresAt: tokenValidation.tokens!.expires_at,
             },
             branding: channel.branding || {
               keywords: null,
@@ -95,24 +78,10 @@ const getYouTubeChannelInfoTool = tool({
       return returnResult;
     } catch (error: unknown) {
       console.error("YouTube tool unexpected error:", error);
-
-      // If token is invalid/expired, return authentication instructions
-      if (
-        error &&
-        typeof error === "object" &&
-        "code" in error &&
-        error.code === 401
-      ) {
-        const authExpiredError = YouTubeErrorBuilder.createToolError(
-          "YouTube authentication has expired for this account. Please re-authenticate by connecting your YouTube account to get channel information."
-        );
-        return authExpiredError;
-      }
-
       const generalError = YouTubeErrorBuilder.createToolError(
         error instanceof Error
           ? error.message
-          : "Failed to get YouTube channel information. Please ensure the account is authenticated with YouTube."
+          : "Failed to get YouTube channel information. Please call youtube_login tool first."
       );
       return generalError;
     }
