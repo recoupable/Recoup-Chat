@@ -46,19 +46,11 @@ IMPORTANT: Always call the youtube_login tool first to obtain the required token
       );
     }
     try {
-      // Construct a minimal tokens object for fetchYouTubeChannelInfo
-      const tokens = {
-        access_token,
-        refresh_token: refresh_token ?? null,
-        // The following fields are not used by fetchYouTubeChannelInfo, but are required by type
-        account_id: "",
-        created_at: "",
-        expires_at: "",
-        id: "",
-        updated_at: "",
-      };
-      // Fetch comprehensive channel information with branding
-      const channelResult = await fetchYouTubeChannelInfo(tokens, true);
+      const channelResult = await fetchYouTubeChannelInfo({
+        accessToken: access_token,
+        refreshToken: refresh_token ?? undefined,
+        includeBranding: true,
+      });
       if (!channelResult.success) {
         const fetchError = YouTubeErrorBuilder.createToolError(
           channelResult.error!.message
