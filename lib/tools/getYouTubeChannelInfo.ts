@@ -35,6 +35,7 @@ const getYouTubeChannelInfoTool = tool({
     "IMPORTANT: This tool requires the account_id parameter. Never ask the user for this parameter. It is always passed in the system prompt.",
   parameters: schema,
   execute: async ({ account_id }): Promise<YouTubeChannelInfoResult> => {
+    console.log("account_id", account_id);
     // Early validation of account_id
     if (!account_id || account_id.trim() === "") {
       const missingParamError = YouTubeErrorBuilder.createToolError(

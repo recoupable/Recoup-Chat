@@ -1,6 +1,10 @@
 // YouTube API Response Types
 
-import type { Tables, TablesInsert, TablesUpdate } from "@/types/database.types";
+import type {
+  Tables,
+  TablesInsert,
+  TablesUpdate,
+} from "@/types/database.types";
 
 export interface YouTubeStatusResponse {
   authenticated: boolean;
@@ -68,14 +72,14 @@ export interface YouTubeChannelInfoResult {
     customUrl?: string | null;
     country?: string | null;
     publishedAt: string;
-    
+
     // Channel thumbnails
     thumbnails: {
       default?: { url?: string | null };
       medium?: { url?: string | null };
       high?: { url?: string | null };
     };
-    
+
     // Channel statistics
     statistics: {
       subscriberCount: string;
@@ -83,13 +87,13 @@ export interface YouTubeChannelInfoResult {
       viewCount: string;
       hiddenSubscriberCount: boolean;
     };
-    
+
     // Channel branding
     branding: {
       keywords?: string | null;
       defaultLanguage?: string | null;
     };
-    
+
     // Authentication metadata
     authentication: {
       tokenCreatedAt: string;
@@ -127,18 +131,20 @@ export interface YouTubeChannelFetchResult {
   success: boolean;
   channelData?: YouTubeChannelData;
   error?: {
-    code: 'NO_CHANNELS' | 'API_ERROR';
+    code: "NO_CHANNELS" | "API_ERROR";
     message: string;
   };
 }
 
 // YouTube Mapping Types (from channel-mapper.ts)
 // Union type for thumbnail formats used in channel data mapping
-export type ThumbnailSource = {
-  default?: string | { url?: string | null } | null;
-  medium?: string | { url?: string | null } | null;
-  high?: string | { url?: string | null } | null;
-} | undefined;
+export type ThumbnailSource =
+  | {
+      default?: string | { url?: string | null } | null;
+      medium?: string | { url?: string | null } | null;
+      high?: string | { url?: string | null } | null;
+    }
+  | undefined;
 
 // Union type for sources that might have statistics in different formats
 export type StatisticsSource = {
@@ -196,15 +202,15 @@ export interface YouTubeTokenValidationResult {
   success: boolean;
   tokens?: YouTubeTokensRow;
   error?: {
-    code: 
-      | 'NO_TOKENS' 
-      | 'EXPIRED' 
-      | 'FETCH_ERROR'
-      | 'REFRESH_INCOMPLETE_CREDENTIALS'
-      | 'REFRESH_GENERAL_FAILURE'
-      | 'DB_UPDATE_FAILED'
-      | 'REFRESH_INVALID_GRANT'
-      | 'EXPIRED_NO_REFRESH';
+    code:
+      | "NO_TOKENS"
+      | "EXPIRED"
+      | "FETCH_ERROR"
+      | "REFRESH_INCOMPLETE_CREDENTIALS"
+      | "REFRESH_GENERAL_FAILURE"
+      | "DB_UPDATE_FAILED"
+      | "REFRESH_INVALID_GRANT"
+      | "EXPIRED_NO_REFRESH";
     message: string;
   };
 }
@@ -212,12 +218,12 @@ export interface YouTubeTokenValidationResult {
 // Component Props Types
 export interface YouTubeChannelDisplayProps {
   channel: YouTubeChannelData;
-  artistName: string;
+  name: string;
   isLive?: boolean;
 }
 
 export interface YouTubeErrorDisplayProps {
-  artistName: string;
+  name: string;
   errorMessage: string;
   onLogin: () => void;
   isLive?: boolean;
@@ -226,7 +232,7 @@ export interface YouTubeErrorDisplayProps {
 // YouTube Database Token Types (using generated database types)
 export type YouTubeTokensRow = Tables<"youtube_tokens">;
 export type YouTubeTokensInsert = TablesInsert<"youtube_tokens">;
-export type YouTubeTokensUpdate = TablesUpdate<"youtube_tokens">; 
+export type YouTubeTokensUpdate = TablesUpdate<"youtube_tokens">;
 
 // Error response types for different contexts
 export interface ToolErrorResponse {
@@ -286,7 +292,14 @@ export interface MonetizationCheckResult {
   success: boolean;
   isMonetized?: boolean;
   error?: {
-    code: 'NO_TOKENS' | 'EXPIRED' | 'FETCH_ERROR' | 'INSUFFICIENT_SCOPE' | 'ANALYTICS_ERROR' | 'CHANNEL_NOT_FOUND' | 'API_ERROR';
+    code:
+      | "NO_TOKENS"
+      | "EXPIRED"
+      | "FETCH_ERROR"
+      | "INSUFFICIENT_SCOPE"
+      | "ANALYTICS_ERROR"
+      | "CHANNEL_NOT_FOUND"
+      | "API_ERROR";
     message: string;
   };
 }

@@ -4,25 +4,34 @@ import { YouTubeChannelDisplayProps } from "@/types/youtube";
 import formatFollowerCount from "@/lib/utils/formatFollowerCount";
 import formatTimestamp from "@/lib/utils/formatTimestamp";
 
-export function YouTubeChannelDisplay({ channel, artistName, isLive }: YouTubeChannelDisplayProps) {
-  const thumbnailUrl = channel.thumbnails.high?.url || 
-                      channel.thumbnails.medium?.url || 
-                      channel.thumbnails.default?.url;
+export function YouTubeChannelDisplay({
+  channel,
+  name,
+  isLive,
+}: YouTubeChannelDisplayProps) {
+  const thumbnailUrl =
+    channel.thumbnails.high?.url ||
+    channel.thumbnails.medium?.url ||
+    channel.thumbnails.default?.url;
 
   return (
     <div className="flex flex-col space-y-3 p-4 rounded-lg bg-red-50 border border-red-200 my-2 max-w-md">
       {/* Header */}
       <div className="flex items-center space-x-2">
         <Youtube className="h-5 w-5 text-red-600" />
-        <span className="font-medium text-red-800">YouTube Channel Connected</span>
+        <span className="font-medium text-red-800">
+          YouTube Channel Connected
+        </span>
         {isLive && (
-          <span className="text-xs text-green-600 bg-green-100 px-2 py-1 rounded">Live</span>
+          <span className="text-xs text-green-600 bg-green-100 px-2 py-1 rounded">
+            Live
+          </span>
         )}
       </div>
 
       {/* Artist Context */}
       <div className="text-xs text-gray-600">
-        Artist: <span className="font-medium">{artistName}</span>
+        Account: <span className="font-medium">{name}</span>
       </div>
 
       {/* Channel Info */}
@@ -43,9 +52,15 @@ export function YouTubeChannelDisplay({ channel, artistName, isLive }: YouTubeCh
         </div>
 
         <div className="flex-grow min-w-0">
-          <h3 className="font-semibold text-gray-900 truncate">{channel.title}</h3>
-          {channel.customUrl && <p className="text-sm text-gray-600">{channel.customUrl}</p>}
-          {channel.country && <p className="text-xs text-gray-500">{channel.country}</p>}
+          <h3 className="font-semibold text-gray-900 truncate">
+            {channel.title}
+          </h3>
+          {channel.customUrl && (
+            <p className="text-sm text-gray-600">{channel.customUrl}</p>
+          )}
+          {channel.country && (
+            <p className="text-xs text-gray-500">{channel.country}</p>
+          )}
         </div>
       </div>
 
@@ -55,7 +70,9 @@ export function YouTubeChannelDisplay({ channel, artistName, isLive }: YouTubeCh
           <div className="flex items-center justify-center space-x-1">
             <Users className="h-3 w-3 text-gray-600" />
             <span className="text-sm font-medium text-gray-900">
-              {formatFollowerCount(parseInt(channel.statistics.subscriberCount, 10))}
+              {formatFollowerCount(
+                parseInt(channel.statistics.subscriberCount, 10)
+              )}
             </span>
           </div>
           <p className="text-xs text-gray-500">Subscribers</p>
@@ -91,4 +108,4 @@ export function YouTubeChannelDisplay({ channel, artistName, isLive }: YouTubeCh
       )}
     </div>
   );
-} 
+}
