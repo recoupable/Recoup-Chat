@@ -27,13 +27,9 @@ const useArtistSetting = () => {
   );
 
   const handleDeleteKnowledge = (index: number) => {
-    let temp = [...bases];
-    if (temp.length === 1) {
-      setBases([]);
-      return;
-    }
-    temp = temp.splice(index, 1);
-    setBases([...temp]);
+    const temp = [...bases];
+    temp.splice(index, 1);
+    setBases(temp);
   };
 
   const handleImageSelected = async (
