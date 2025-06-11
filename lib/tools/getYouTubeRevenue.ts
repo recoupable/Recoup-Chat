@@ -70,26 +70,13 @@ IMPORTANT: Always call the youtube_login tool first to obtain the required token
       );
     }
     try {
-      // Construct a minimal tokenValidation object for queryAnalyticsReports
-      const tokenValidation = {
-        success: true,
-        tokens: {
-          access_token,
-          refresh_token: refresh_token ?? null,
-          account_id: "",
-          created_at: "",
-          expires_at: "",
-          id: "",
-          updated_at: "",
-        },
-      };
-      // Query analytics reports using the extracted function
-      const analyticsResult = await queryAnalyticsReports(
-        tokenValidation,
-        startDate,
-        endDate,
-        "estimatedRevenue"
-      );
+      const analyticsResult = await queryAnalyticsReports({
+        accessToken: access_token,
+        refreshToken: refresh_token ?? undefined,
+        startDate: startDate ?? "",
+        endDate: endDate ?? "",
+        metrics: "estimatedRevenue",
+      });
       return YouTubeErrorBuilder.createToolSuccess(
         `YouTube revenue data retrieved successfully for ${analyticsResult.dailyRevenue.length} days. Total revenue: $${analyticsResult.totalRevenue.toFixed(2)}`,
         {
