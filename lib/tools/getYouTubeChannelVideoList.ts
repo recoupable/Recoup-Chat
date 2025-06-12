@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { tool } from "ai";
 import { YouTubeErrorBuilder } from "@/lib/youtube/error-builder";
-import { google } from "googleapis";
+import { createYouTubeAPIClient } from "@/lib/youtube/oauth-client";
 
 const schema = z.object({
   access_token: z
@@ -15,9 +15,11 @@ const schema = z.object({
     .describe(
       "OAuth refresh token for YouTube API. Optional, but recommended for token refresh. Must be obtained via prior authentication using the youtube_login tool."
     ),
-  channel_id: z
+  uploadsPlaylistId: z
     .string()
-    .describe("The YouTube channel ID to fetch videos for."),
+    .describe(
+      "The YouTube channel uploads playlist ID to fetch videos for. Must be obtained via prior call to get_youtube_channels tool."
+    ),
   max_results: z
     .number()
     .min(1)
@@ -38,40 +40,19 @@ This tool follows YouTube API best practices by retrieving videos from the chann
   execute: async ({
     access_token,
     refresh_token,
-    channel_id,
+    uploadsPlaylistId,
     max_results = 25,
   }) => {
-    if (!access_token || !channel_id) {
+    if (!access_token || !uploadsPlaylistId) {
       return YouTubeErrorBuilder.createToolError(
-        "Missing access_token or channel_id."
+        "Missing access_token or uploadsPlaylistId."
       );
     }
 
     try {
-      // Set up OAuth client
-      const oauth2Client = new google.auth.OAuth2();
-      oauth2Client.setCredentials({ access_token, refresh_token });
-      const youtube = google.youtube({ version: "v3", auth: oauth2Client });
+      const youtube = createYouTubeAPIClient(access_token, refresh_token);
 
-      // Step 1: Get the channel's uploads playlist ID
-      const channelResponse = await youtube.channels.list({
-        mine: true,
-        part: ["contentDetails"],
-      });
-
-      if (
-        !channelResponse.data.items ||
-        channelResponse.data.items.length === 0
-      ) {
-        return YouTubeErrorBuilder.createToolError(
-          `Channel with ID ${channel_id} not found.`
-        );
-      }
-
-      const uploadsPlaylistId =
-        channelResponse.data.items[0].contentDetails?.relatedPlaylists?.uploads;
-
-      // Step 2: Get videos from the uploads playlist
+      // Step 1: Get videos from the uploads playlist
       const playlistResponse = await youtube.playlistItems.list({
         playlistId: uploadsPlaylistId,
         part: ["snippet", "contentDetails", "status"],

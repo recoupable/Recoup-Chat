@@ -61,9 +61,9 @@ export async function getMcpTools() {
     create_knowledge_base: createKnowledgeBase,
     get_video_game_campaign_plays: getVideoGameCampaignPlays,
     send_email: sendEmailTool,
+    youtube_login: youtubeLoginTool,
     get_youtube_channels: getYouTubeChannels,
     get_youtube_revenue: getYouTubeRevenue,
-    youtube_login: youtubeLoginTool,
     get_youtube_channel_video_list: getYouTubeChannelVideoList,
   };
 
