@@ -20,7 +20,7 @@ interface YouTubeAccessResultProps {
   result: YouTubeChannelInfoResult;
 }
 
-export function YouTubeAccessResult({ result }: YouTubeAccessResultProps) {
+export function YouTubeChannelsResult({ result }: YouTubeAccessResultProps) {
   console.log("YouTubeAccessResult result", result);
 
   // Success state - show channel information
@@ -35,13 +35,7 @@ export function YouTubeAccessResult({ result }: YouTubeAccessResultProps) {
     result.message ||
     "Please connect your YouTube account to access channel information.";
 
-  return (
-    <YouTubeErrorDisplay
-      errorMessage={errorMessage}
-      onLogin={() => {}} // {login}
-      isLive={!!status}
-    />
-  );
+  return <YouTubeErrorDisplay errorMessage={errorMessage} />;
 }
 
-export default YouTubeAccessResult;
+export default YouTubeChannelsResult;

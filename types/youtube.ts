@@ -164,12 +164,6 @@ export interface YouTubeChannelDisplayProps {
   isLive?: boolean;
 }
 
-export interface YouTubeErrorDisplayProps {
-  errorMessage: string;
-  onLogin: () => void;
-  isLive?: boolean;
-}
-
 // YouTube Database Token Types (using generated database types)
 export type YouTubeTokensRow = Tables<"youtube_tokens">;
 export type YouTubeTokensInsert = TablesInsert<"youtube_tokens">;

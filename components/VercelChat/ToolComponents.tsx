@@ -31,7 +31,6 @@ import CommentsResultSkeleton from "@/components/Chat/comments/CommentsResultSke
 import GetSegmentFansResult from "./tools/segment-fans/GetSegmentFansResult";
 import GetSegmentFansResultSkeleton from "./tools/segment-fans/GetSegmentFansResultSkeleton";
 import { SegmentFansResult } from "@/types/fans";
-import YouTubeAccessResult from "./tools/youtube/YouTubeAccessResult";
 import YouTubeAccessSkeleton from "./tools/youtube/YouTubeAccessSkeleton";
 import YouTubeRevenueResult from "./tools/youtube/YouTubeRevenueResult";
 import YouTubeRevenueSkeleton from "./tools/youtube/YouTubeRevenueSkeleton";
@@ -39,6 +38,9 @@ import {
   YouTubeChannelInfoResult,
   YouTubeRevenueResult as YouTubeRevenueResultType,
 } from "@/types/youtube";
+import YouTubeChannelsResult from "./tools/youtube/YouTubeChannelsResult";
+import YouTubeLoginResult from "./tools/youtube/YouTubeLoginResult";
+import { YouTubeLoginResultType } from "@/lib/tools/youtubeLogin";
 
 /**
  * Interface for tool call props
@@ -61,6 +63,7 @@ type ToolResult =
   | SegmentFansResult
   | YouTubeChannelInfoResult
   | YouTubeRevenueResultType
+  | YouTubeLoginResultType
   | Record<string, unknown>;
 
 /**
@@ -215,10 +218,16 @@ export function getToolResultComponent({
         <GetSegmentFansResult result={result as SegmentFansResult} />
       </div>
     );
+  } else if (toolName === "youtube_login") {
+    return (
+      <div key={toolCallId}>
+        <YouTubeLoginResult result={result as YouTubeLoginResultType} />
+      </div>
+    );
   } else if (toolName === "get_youtube_channels") {
     return (
       <div key={toolCallId}>
-        <YouTubeAccessResult result={result as YouTubeChannelInfoResult} />
+        <YouTubeChannelsResult result={result as YouTubeChannelInfoResult} />
       </div>
     );
   } else if (toolName === "get_youtube_revenue") {

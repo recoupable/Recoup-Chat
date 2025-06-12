@@ -1,13 +1,15 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Youtube } from "lucide-react";
-import { YouTubeErrorDisplayProps } from "@/types/youtube";
 import { useUserProvider } from "@/providers/UserProvder";
+import { youtubeLogin } from "@/lib/youtube/youtubeLogin";
+
+export interface YouTubeErrorDisplayProps {
+  errorMessage: string;
+}
 
 export function YouTubeErrorDisplay({
   errorMessage,
-  onLogin,
-  isLive,
 }: YouTubeErrorDisplayProps) {
   const { userData } = useUserProvider();
 
@@ -19,11 +21,10 @@ export function YouTubeErrorDisplay({
         <span className="font-medium text-gray-800">
           YouTube Access Required
         </span>
-        {isLive && (
-          <span className="text-xs text-orange-600 bg-orange-100 px-2 py-1 rounded">
-            Live
-          </span>
-        )}
+
+        <span className="text-xs text-orange-600 bg-orange-100 px-2 py-1 rounded">
+          Live
+        </span>
       </div>
 
       {/* Artist Context */}
@@ -36,7 +37,7 @@ export function YouTubeErrorDisplay({
 
       {/* Login Button */}
       <Button
-        onClick={onLogin}
+        onClick={() => youtubeLogin(userData?.account_id)}
         className="w-full bg-red-600 hover:bg-red-700 text-white"
         size="sm"
       >
