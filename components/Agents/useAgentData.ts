@@ -34,10 +34,6 @@ export function useAgentData() {
       });
   }, []);
 
-  // Find the special "Audience Segmentation" agent
-  const funnelAgent = agents.find(
-    (agent) => agent.title === "Audience Segmentation"
-  );
   // Get all agents except the special card, filtered by the selected tag
   const filteredAgents = agents.filter(
     (agent) =>
