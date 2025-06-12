@@ -61,18 +61,7 @@ IMPORTANT: Always call the youtube_login tool first to obtain the required token
       const returnResult = YouTubeErrorBuilder.createToolSuccess(
         "YouTube channel information retrieved successfully",
         {
-          channelInfo: channels.map((channel) => ({
-            ...channel,
-            statistics: {
-              ...channel.statistics,
-              hiddenSubscriberCount:
-                channel.statistics.hiddenSubscriberCount || false,
-            },
-            branding: channel.branding || {
-              keywords: null,
-              defaultLanguage: null,
-            },
-          })),
+          channelInfo: { channels },
         }
       );
       return returnResult;
