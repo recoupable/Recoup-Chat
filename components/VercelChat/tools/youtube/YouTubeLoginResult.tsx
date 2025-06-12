@@ -16,11 +16,11 @@ import { YouTubeErrorDisplay } from "./YouTubeErrorDisplay";
 import { YouTubeLoginResultType } from "@/lib/tools/youtubeLogin";
 import GenericSuccess from "@/components/VercelChat/tools/GenericSuccess";
 
-interface YouTubeAccessResultProps {
+interface YouTubeLoginResultProps {
   result: YouTubeLoginResultType;
 }
 
-export function YouTubeLoginResult({ result }: YouTubeAccessResultProps) {
+export function YouTubeLoginResult({ result }: YouTubeLoginResultProps) {
   console.log("YouTubeLoginResult result", result);
 
   // Success state - show generic success

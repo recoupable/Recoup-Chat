@@ -16,13 +16,11 @@ import { YouTubeChannelInfoResult } from "@/types/youtube";
 import { YouTubeChannelDisplay } from "./YouTubeChannelDisplay";
 import { YouTubeErrorDisplay } from "./YouTubeErrorDisplay";
 
-interface YouTubeAccessResultProps {
+interface YouTubeChannelResultProps {
   result: YouTubeChannelInfoResult;
 }
 
-export function YouTubeChannelsResult({ result }: YouTubeAccessResultProps) {
-  console.log("YouTubeAccessResult result", result);
-
+export function YouTubeChannelsResult({ result }: YouTubeChannelResultProps) {
   // Success state - show channel information
   if (result.channelInfo) {
     return (
