@@ -75,7 +75,7 @@ This tool follows YouTube API best practices by retrieving videos from the chann
       return {
         success: true,
         status: "success",
-        message: `Fetched ${videos.length} videos for channel ${channel_id}`,
+        message: `Fetched ${videos.length} videos for channel playlist ${uploadsPlaylistId}`,
         videos,
         nextPageToken: playlistResponse.data.nextPageToken,
         totalResults: playlistResponse.data.pageInfo?.totalResults,
