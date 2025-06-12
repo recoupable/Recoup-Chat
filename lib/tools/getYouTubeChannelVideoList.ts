@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { tool } from "ai";
 import { YouTubeErrorBuilder } from "@/lib/youtube/error-builder";
-import { createYouTubeAPIClient } from "@/lib/youtube/oauth-client";
+import { getYoutubePlaylistItems } from "@/lib/youtube/getYoutubePlaylistItems";
 
 const schema = z.object({
   access_token: z
@@ -50,36 +50,18 @@ This tool follows YouTube API best practices by retrieving videos from the chann
     }
 
     try {
-      const youtube = createYouTubeAPIClient(access_token, refresh_token);
-
-      // Step 1: Get videos from the uploads playlist
-      const playlistResponse = await youtube.playlistItems.list({
-        playlistId: uploadsPlaylistId,
-        part: ["snippet", "contentDetails", "status"],
-        maxResults: max_results,
+      const playlistItems = await getYoutubePlaylistItems({
+        access_token,
+        refresh_token,
+        uploadsPlaylistId,
+        max_results,
       });
-
-      const videos = (playlistResponse.data.items || []).map((item) => ({
-        id: item.contentDetails?.videoId,
-        title: item.snippet?.title,
-        publishedAt: item.snippet?.publishedAt,
-        description: item.snippet?.description,
-        thumbnails: item.snippet?.thumbnails,
-        position: item.snippet?.position,
-        channelTitle: item.snippet?.channelTitle,
-        playlistId: item.snippet?.playlistId,
-        resourceId: item.snippet?.resourceId,
-        status: item.status,
-      }));
 
       return {
         success: true,
         status: "success",
-        message: `Fetched ${videos.length} videos for channel playlist ${uploadsPlaylistId}`,
-        videos,
-        nextPageToken: playlistResponse.data.nextPageToken,
-        totalResults: playlistResponse.data.pageInfo?.totalResults,
-        resultsPerPage: playlistResponse.data.pageInfo?.resultsPerPage,
+        message: `Fetched ${playlistItems.videos.length} videos for channel playlist ${uploadsPlaylistId}`,
+        ...playlistItems,
       };
     } catch (error) {
       return YouTubeErrorBuilder.createToolError(
