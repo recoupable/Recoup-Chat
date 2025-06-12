@@ -1,5 +1,5 @@
 import { createYouTubeAPIClient } from "@/lib/youtube/oauth-client";
-import { YouTubeChannelData } from "@/types/youtube";
+import { YouTubeChannelData, YouTubeChannelFetchResult } from "@/types/youtube";
 import {
   YouTubeErrorBuilder,
   YouTubeErrorMessages,
@@ -8,7 +8,7 @@ import {
 /**
  * Fetches YouTube channel information using authenticated tokens
  * @param params - { accessToken, refreshToken, includeBranding }
- * @returns Promise with array of channel data or error details
+ * @returns Promise with channel data or error details
  */
 export async function fetchYouTubeChannelInfo({
   accessToken,
@@ -18,10 +18,7 @@ export async function fetchYouTubeChannelInfo({
   accessToken: string;
   refreshToken?: string;
   includeBranding?: boolean;
-}): Promise<
-  | { success: true; channelData: YouTubeChannelData[] }
-  | { success: false; error: { code: string; message: string } }
-> {
+}): Promise<YouTubeChannelFetchResult> {
   try {
     // Create YouTube API client with tokens
     const youtube = createYouTubeAPIClient(accessToken, refreshToken);
@@ -45,9 +42,9 @@ export async function fetchYouTubeChannelInfo({
       );
     }
 
-    // Map all channels
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const channelData = response.data.items.map((channelData: any) => ({
+    const channelData = response.data.items[0];
+
+    const result: YouTubeChannelData = {
       id: channelData.id || "",
       title: channelData.snippet?.title || "",
       description: channelData.snippet?.description || "",
@@ -72,18 +69,20 @@ export async function fetchYouTubeChannelInfo({
       customUrl: channelData.snippet?.customUrl || null,
       country: channelData.snippet?.country || null,
       publishedAt: channelData.snippet?.publishedAt || "",
-      ...(includeBranding && {
-        branding: {
-          keywords: channelData.brandingSettings?.channel?.keywords || null,
-          defaultLanguage:
-            channelData.brandingSettings?.channel?.defaultLanguage || null,
-        },
-      }),
-    }));
+    };
+
+    // Add branding info if requested
+    if (includeBranding) {
+      result.branding = {
+        keywords: channelData.brandingSettings?.channel?.keywords || null,
+        defaultLanguage:
+          channelData.brandingSettings?.channel?.defaultLanguage || null,
+      };
+    }
 
     return {
       success: true,
-      channelData,
+      channelData: result,
     };
   } catch (error: unknown) {
     console.error("Error fetching YouTube channel info:", error);
