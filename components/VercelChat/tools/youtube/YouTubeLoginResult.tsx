@@ -21,8 +21,6 @@ interface YouTubeLoginResultProps {
 }
 
 export function YouTubeLoginResult({ result }: YouTubeLoginResultProps) {
-  console.log("YouTubeLoginResult result", result);
-
   // Success state - show generic success
   if (result.authentication) {
     return (
