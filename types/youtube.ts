@@ -6,37 +6,6 @@ import type {
   TablesUpdate,
 } from "@/types/database.types";
 
-export interface YouTubeStatusResponse {
-  authenticated: boolean;
-  message: string;
-  expiresAt?: string;
-  createdAt?: string;
-}
-
-export interface YouTubeChannelInfo {
-  success: boolean;
-  status: string;
-  message?: string;
-  channel?: {
-    id: string;
-    title: string;
-    description: string;
-    thumbnails: {
-      default?: { url?: string | null };
-      medium?: { url?: string | null };
-      high?: { url?: string | null };
-    };
-    statistics: {
-      subscriberCount: string;
-      videoCount: string;
-      viewCount: string;
-    };
-    customUrl?: string | null;
-    country?: string | null;
-    publishedAt: string;
-  };
-}
-
 // Interface for detailed channel information from getYouTubeChannelInfo tool
 export interface YouTubeChannelInfoResult {
   success: boolean;
@@ -77,47 +46,6 @@ export interface YouTubeChannelFetchResult {
     code: "NO_CHANNELS" | "API_ERROR";
     message: string;
   };
-}
-
-// YouTube Mapping Types (from channel-mapper.ts)
-// Union type for thumbnail formats used in channel data mapping
-export type ThumbnailSource =
-  | {
-      default?: string | { url?: string | null } | null;
-      medium?: string | { url?: string | null } | null;
-      high?: string | { url?: string | null } | null;
-    }
-  | undefined;
-
-// Union type for sources that might have statistics in different formats
-export type StatisticsSource = {
-  subscriberCount?: string;
-  videoCount?: string;
-  viewCount?: string;
-  statistics?: {
-    subscriberCount?: string;
-    videoCount?: string;
-    viewCount?: string;
-  };
-};
-
-// Type for raw channel info that can come from various sources
-export interface RawChannelInfo {
-  id: string;
-  name: string;
-  title: string;
-  description: string;
-  thumbnails: {
-    default: string | null;
-    medium: string | null;
-    high: string | null;
-  };
-  subscriberCount: string;
-  videoCount: string;
-  viewCount: string;
-  customUrl: string | null;
-  country: string | null;
-  publishedAt: string;
 }
 
 // Type for channel info from YouTubeChannelInfoResult
@@ -267,21 +195,6 @@ export interface YouTubeRevenueResult {
     channelId: string;
     isMonetized: boolean;
   };
-}
-
-// Types
-export interface TokenValidation {
-  success: boolean;
-  tokens?: {
-    access_token: string;
-    account_id: string;
-    created_at: string;
-    expires_at: string;
-    id: string;
-    refresh_token: string | null;
-    updated_at: string;
-  };
-  error?: { message: string };
 }
 
 export interface AnalyticsReportsResult {
