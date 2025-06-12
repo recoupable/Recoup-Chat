@@ -1,12 +1,14 @@
 import { createYouTubeAPIClient } from "./oauth-client";
+import { youtube_v3 } from "googleapis";
 
 /**
- * Fetches videos from a YouTube playlist using the YouTube API client.
- * @param youtube - An authenticated YouTube API client
- * @param playlistId - The uploads playlist ID
- * @param maxResults - Maximum number of results to return (default 25)
- * @param pageToken - (Optional) Page token for pagination
- * @returns The playlistItems.list API response
+ * Fetches videos from a YouTube playlist using the YouTube API client,
+ * then fetches full video details using the videos.list endpoint.
+ * @param access_token - OAuth access token
+ * @param refresh_token - OAuth refresh token (optional)
+ * @param uploads_playlist_id - The uploads playlist ID
+ * @param max_results - Maximum number of results to return (default 25)
+ * @returns An object with videos (full details), nextPageToken, totalResults, resultsPerPage
  */
 export async function getYoutubePlaylistItems({
   access_token,
@@ -28,18 +30,30 @@ export async function getYoutubePlaylistItems({
     maxResults: max_results,
   });
 
-  const videos = (playlistResponse.data.items || []).map((item) => ({
-    id: item.contentDetails?.videoId,
-    title: item.snippet?.title,
-    publishedAt: item.snippet?.publishedAt,
-    description: item.snippet?.description,
-    thumbnails: item.snippet?.thumbnails,
-    position: item.snippet?.position,
-    channelTitle: item.snippet?.channelTitle,
-    playlistId: item.snippet?.playlistId,
-    resourceId: item.snippet?.resourceId,
-    status: item.status,
-  }));
+  const items = playlistResponse.data.items || [];
+  const videoIds = items
+    .map((item) => item.contentDetails?.videoId)
+    .filter((id): id is string => Boolean(id));
+
+  let videos: youtube_v3.Schema$Video[] = [];
+  if (videoIds.length > 0) {
+    // Step 2: Fetch full video details using videos.list
+    const videosResponse = await youtube.videos.list({
+      id: videoIds,
+      part: [
+        "id",
+        "snippet",
+        "contentDetails",
+        "status",
+        "statistics",
+        "player",
+        "liveStreamingDetails",
+        "localizations",
+      ],
+      maxResults: videoIds.length,
+    });
+    videos = videosResponse.data.items || [];
+  }
 
   return {
     videos,
