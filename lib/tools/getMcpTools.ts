@@ -29,6 +29,7 @@ import sendEmailTool from "./sendEmailTool";
 import getYouTubeChannels from "./getYouTubeChannels";
 import getYouTubeRevenue from "./getYouTubeRevenue";
 import youtubeLoginTool from "./youtubeLogin";
+import getYouTubeChannelVideoList from "./getYouTubeChannelVideoList";
 
 export async function getMcpTools() {
   const tools = {
@@ -63,6 +64,7 @@ export async function getMcpTools() {
     get_youtube_channels: getYouTubeChannels,
     get_youtube_revenue: getYouTubeRevenue,
     youtube_login: youtubeLoginTool,
+    get_youtube_channel_video_list: getYouTubeChannelVideoList,
   };
 
   return tools;
