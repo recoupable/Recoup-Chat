@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { tool } from "ai";
 import { YouTubeErrorBuilder } from "@/lib/youtube/error-builder";
-import { getYoutubePlaylistItems } from "@/lib/youtube/getYoutubePlaylistItems";
+import { getYoutubePlaylistVideos } from "@/lib/youtube/getYoutubePlaylistVideos";
 
 const schema = z.object({
   access_token: z
@@ -50,10 +50,10 @@ This tool follows YouTube API best practices by retrieving videos from the chann
     }
 
     try {
-      const playlistItems = await getYoutubePlaylistItems({
+      const playlistItems = await getYoutubePlaylistVideos({
         access_token,
         refresh_token,
-        uploads_playlist_id,
+        playlist_id: uploads_playlist_id,
         max_results,
       });
 

@@ -6,26 +6,26 @@ import { youtube_v3 } from "googleapis";
  * then fetches full video details using the videos.list endpoint.
  * @param access_token - OAuth access token
  * @param refresh_token - OAuth refresh token (optional)
- * @param uploads_playlist_id - The uploads playlist ID
+ * @param playlist_id - The playlist ID
  * @param max_results - Maximum number of results to return (default 25)
  * @returns An object with videos (full details), nextPageToken, totalResults, resultsPerPage
  */
-export async function getYoutubePlaylistItems({
+export async function getYoutubePlaylistVideos({
   access_token,
   refresh_token,
-  uploads_playlist_id,
+  playlist_id,
   max_results = 50,
 }: {
   access_token: string;
   refresh_token?: string;
-  uploads_playlist_id: string;
+  playlist_id: string;
   max_results?: number;
 }) {
   const youtube = createYouTubeAPIClient(access_token, refresh_token);
 
-  // Step 1: Get videos from the uploads playlist
+  // Step 1: Get videos from the playlist
   const playlistResponse = await youtube.playlistItems.list({
-    playlistId: uploads_playlist_id,
+    playlistId: playlist_id,
     part: ["snippet", "contentDetails", "status"],
     maxResults: max_results,
   });
