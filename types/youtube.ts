@@ -11,7 +11,7 @@ export interface YouTubeChannelInfoResult {
   success: boolean;
   status: string;
   message?: string;
-  channelInfo?: { channels: YouTubeChannelData[] };
+  channels?: YouTubeChannelData[];
 }
 
 // YouTube Channel Data Types (from channel-fetcher.ts)

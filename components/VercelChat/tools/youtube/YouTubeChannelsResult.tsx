@@ -22,10 +22,10 @@ interface YouTubeChannelResultProps {
 
 export function YouTubeChannelsResult({ result }: YouTubeChannelResultProps) {
   // Success state - show channel information
-  if (result.channelInfo) {
+  if (result.channels) {
     return (
       <div>
-        {result.channelInfo.channels.map((channel) => (
+        {result.channels.map((channel) => (
           <YouTubeChannelDisplay
             key={channel.id}
             channel={channel}

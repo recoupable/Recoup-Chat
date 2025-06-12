@@ -61,7 +61,7 @@ IMPORTANT: Always call the youtube_login tool first to obtain the required token
       const returnResult = YouTubeErrorBuilder.createToolSuccess(
         "YouTube channel information retrieved successfully",
         {
-          channelInfo: { channels },
+          channels,
         }
       );
       return returnResult;
