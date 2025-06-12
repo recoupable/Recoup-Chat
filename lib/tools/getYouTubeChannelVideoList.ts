@@ -33,8 +33,8 @@ const schema = z.object({
 
 const getYouTubeChannelVideoList = tool({
   description: `Get a list of videos for a specific YouTube channel. 
-Requires a valid access_token and channel_id. 
-Returns an array of video metadata including id, title, publishedAt, thumbnails, and more.
+Requires a valid access_token and uploads_playlist_id. 
+Returns an array of video metadata including id, title, publishedAt, thumbnails, likes, views, and more.
 This tool follows YouTube API best practices by retrieving videos from the channel's uploads playlist.`,
   parameters: schema,
   execute: async ({
