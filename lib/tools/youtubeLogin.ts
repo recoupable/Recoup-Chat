@@ -11,12 +11,22 @@ const schema = z.object({
     ),
 });
 
+export interface YouTubeLoginResultType {
+  success: boolean;
+  message: string;
+  status: string;
+  authentication?: {
+    access_token: string | null;
+    refresh_token: string | null;
+  };
+}
+
 const youtubeLoginTool = tool({
   description: `Check YouTube authentication status for a specific account. 
 Returns authentication status and token expiry if authenticated, or clear instructions if not. 
 IMPORTANT: This tool requires the account_id parameter. Never ask the user for this parameter. It is always passed in the system prompt.`,
   parameters: schema,
-  execute: async ({ account_id }) => {
+  execute: async ({ account_id }): Promise<YouTubeLoginResultType> => {
     if (!account_id || account_id.trim() === "") {
       return YouTubeErrorBuilder.createToolError(
         "No account_id provided to YouTube login tool. The LLM must pass the account_id parameter. Please ensure you're passing the current human's account_id."
@@ -26,7 +36,7 @@ IMPORTANT: This tool requires the account_id parameter. Never ask the user for t
       const tokenValidation = await validateYouTubeTokens(account_id);
       if (!tokenValidation.success) {
         return YouTubeErrorBuilder.createToolError(
-          `YouTube authentication required for this account. ${tokenValidation.error?.message} Please authenticate by connecting your YouTube account.`
+          `YouTube authentication required for this account. Please authenticate by connecting your YouTube account.`
         );
       }
       const tokens = tokenValidation.tokens!;

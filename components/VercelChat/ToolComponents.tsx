@@ -31,18 +31,16 @@ import CommentsResultSkeleton from "@/components/Chat/comments/CommentsResultSke
 import GetSegmentFansResult from "./tools/segment-fans/GetSegmentFansResult";
 import GetSegmentFansResultSkeleton from "./tools/segment-fans/GetSegmentFansResultSkeleton";
 import { SegmentFansResult } from "@/types/fans";
-import YouTubeAccessResult from "./tools/youtube/YouTubeAccessResult";
 import YouTubeAccessSkeleton from "./tools/youtube/YouTubeAccessSkeleton";
 import YouTubeRevenueResult from "./tools/youtube/YouTubeRevenueResult";
 import YouTubeRevenueSkeleton from "./tools/youtube/YouTubeRevenueSkeleton";
 import {
-  YouTubeAccessResult as YouTubeAccessResultType,
   YouTubeChannelInfoResult,
   YouTubeRevenueResult as YouTubeRevenueResultType,
 } from "@/types/youtube";
-
-// Union type for YouTube responses (handles both old and new formats)
-type YouTubeResponse = YouTubeAccessResultType | YouTubeChannelInfoResult;
+import YouTubeChannelsResult from "./tools/youtube/YouTubeChannelsResult";
+import YouTubeLoginResult from "./tools/youtube/YouTubeLoginResult";
+import { YouTubeLoginResultType } from "@/lib/tools/youtubeLogin";
 
 /**
  * Interface for tool call props
@@ -63,8 +61,9 @@ type ToolResult =
   | GetSpotifyPlayButtonClickedResult
   | CommentsResultData
   | SegmentFansResult
-  | YouTubeResponse
+  | YouTubeChannelInfoResult
   | YouTubeRevenueResultType
+  | YouTubeLoginResultType
   | Record<string, unknown>;
 
 /**
@@ -115,10 +114,7 @@ export function getToolCallComponent({ toolName, toolCallId }: ToolInvocation) {
         <GetSegmentFansResultSkeleton />
       </div>
     );
-  } else if (
-    toolName === "get_youtube_channels" ||
-    toolName === "youtube_login"
-  ) {
+  } else if (toolName === "get_youtube_channels") {
     return (
       <div key={toolCallId}>
         <YouTubeAccessSkeleton />
@@ -222,13 +218,16 @@ export function getToolResultComponent({
         <GetSegmentFansResult result={result as SegmentFansResult} />
       </div>
     );
-  } else if (
-    toolName === "get_youtube_channels" ||
-    toolName === "youtube_login"
-  ) {
+  } else if (toolName === "youtube_login") {
     return (
       <div key={toolCallId}>
-        <YouTubeAccessResult result={result as YouTubeResponse} />
+        <YouTubeLoginResult result={result as YouTubeLoginResultType} />
+      </div>
+    );
+  } else if (toolName === "get_youtube_channels") {
+    return (
+      <div key={toolCallId}>
+        <YouTubeChannelsResult result={result as YouTubeChannelInfoResult} />
       </div>
     );
   } else if (toolName === "get_youtube_revenue") {
