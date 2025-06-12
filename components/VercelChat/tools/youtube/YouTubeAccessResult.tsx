@@ -32,7 +32,7 @@ export function YouTubeAccessResult({ result }: YouTubeAccessResultProps) {
 
   // Error state - show login button
   const errorMessage =
-    normalizedResult.message ||
+    result.message ||
     "Please connect your YouTube account to access channel information.";
 
   return (

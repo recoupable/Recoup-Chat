@@ -36,13 +36,9 @@ import YouTubeAccessSkeleton from "./tools/youtube/YouTubeAccessSkeleton";
 import YouTubeRevenueResult from "./tools/youtube/YouTubeRevenueResult";
 import YouTubeRevenueSkeleton from "./tools/youtube/YouTubeRevenueSkeleton";
 import {
-  YouTubeAccessResult as YouTubeAccessResultType,
   YouTubeChannelInfoResult,
   YouTubeRevenueResult as YouTubeRevenueResultType,
 } from "@/types/youtube";
-
-// Union type for YouTube responses (handles both old and new formats)
-type YouTubeResponse = YouTubeAccessResultType | YouTubeChannelInfoResult;
 
 /**
  * Interface for tool call props
@@ -63,7 +59,7 @@ type ToolResult =
   | GetSpotifyPlayButtonClickedResult
   | CommentsResultData
   | SegmentFansResult
-  | YouTubeResponse
+  | YouTubeChannelInfoResult
   | YouTubeRevenueResultType
   | Record<string, unknown>;
 
@@ -222,7 +218,7 @@ export function getToolResultComponent({
   } else if (toolName === "get_youtube_channels") {
     return (
       <div key={toolCallId}>
-        <YouTubeAccessResult result={result as YouTubeResponse} />
+        <YouTubeAccessResult result={result as YouTubeChannelInfoResult} />
       </div>
     );
   } else if (toolName === "get_youtube_revenue") {

@@ -37,28 +37,6 @@ export interface YouTubeChannelInfo {
   };
 }
 
-// Interface for tool result from checkYouTubeAccess
-export interface YouTubeAccessResult {
-  success: boolean;
-  status: string;
-  message?: string;
-  channelInfo?: {
-    id: string;
-    name: string;
-    thumbnails?: {
-      default?: string | null;
-      medium?: string | null;
-      high?: string | null;
-    };
-    subscriberCount?: string;
-    videoCount?: string;
-    viewCount?: string;
-    customUrl?: string | null;
-    country?: string | null;
-    publishedAt?: string | null;
-  };
-}
-
 // Interface for detailed channel information from getYouTubeChannelInfo tool
 export interface YouTubeChannelInfoResult {
   success: boolean;

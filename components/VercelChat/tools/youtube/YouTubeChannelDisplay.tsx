@@ -71,7 +71,9 @@ export function YouTubeChannelDisplay({
           <div className="flex items-center justify-center space-x-1">
             <Users className="h-3 w-3 text-gray-600" />
             <span className="text-sm font-medium text-gray-900">
-              {formatFollowerCount(parseInt(channel.subscriberCount, 10))}
+              {formatFollowerCount(
+                parseInt(channel.statistics.subscriberCount, 10)
+              )}
             </span>
           </div>
           <p className="text-xs text-gray-500">Subscribers</p>
@@ -81,7 +83,7 @@ export function YouTubeChannelDisplay({
           <div className="flex items-center justify-center space-x-1">
             <Video className="h-3 w-3 text-gray-600" />
             <span className="text-sm font-medium text-gray-900">
-              {formatFollowerCount(parseInt(channel.videoCount, 10))}
+              {formatFollowerCount(parseInt(channel.statistics.videoCount, 10))}
             </span>
           </div>
           <p className="text-xs text-gray-500">Videos</p>
@@ -91,7 +93,7 @@ export function YouTubeChannelDisplay({
           <div className="flex items-center justify-center space-x-1">
             <Eye className="h-3 w-3 text-gray-600" />
             <span className="text-sm font-medium text-gray-900">
-              {formatFollowerCount(parseInt(channel.viewCount, 10))}
+              {formatFollowerCount(parseInt(channel.statistics.viewCount, 10))}
             </span>
           </div>
           <p className="text-xs text-gray-500">Views</p>
