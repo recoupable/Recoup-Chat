@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-const SiteDownPage = () => {
+const OfflinePage = () => {
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-white text-center px-4 z-50">
       <div className="w-full max-w-lg flex flex-col items-center">
@@ -27,4 +27,4 @@ const SiteDownPage = () => {
   );
 };
 
-export default SiteDownPage;
+export default OfflinePage;
