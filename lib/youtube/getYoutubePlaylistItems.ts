@@ -1,4 +1,3 @@
-import { youtube_v3 } from "googleapis";
 import { createYouTubeAPIClient } from "./oauth-client";
 
 /**
