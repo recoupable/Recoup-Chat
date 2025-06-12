@@ -34,21 +34,14 @@ export function useAgentData() {
       });
   }, []);
 
-  // Find the special "Audience Segmentation" agent
-  const funnelAgent = agents.find(
-    (agent) => agent.title === "Audience Segmentation"
-  );
   // Get all agents except the special card, filtered by the selected tag
   const filteredAgents = agents.filter(
     (agent) =>
       agent.title !== "Audience Segmentation" &&
       (selectedTag === "Recommended" ? true : agent.tags?.includes(selectedTag))
   );
-  // Only include the special card if the selected tag is "Research Analyst" or "Research"
-  const gridAgents =
-    selectedTag === "Research Analyst" || selectedTag === "Research"
-      ? [...filteredAgents, ...(funnelAgent ? [funnelAgent] : [])]
-      : filteredAgents;
+  // Hide the "Audience Segmentation" card from UI - keep all other logic intact
+  const gridAgents = filteredAgents;
 
   return {
     tags,
