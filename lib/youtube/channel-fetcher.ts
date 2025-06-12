@@ -51,6 +51,7 @@ export async function fetchYouTubeChannelInfo({
       id: channelData.id || "",
       title: channelData.snippet?.title || "",
       description: channelData.snippet?.description || "",
+      uploadsPlaylistId: channelData.contentDetails?.relatedPlaylists?.uploads,
       thumbnails: {
         default: {
           url: channelData.snippet?.thumbnails?.default?.url || null,

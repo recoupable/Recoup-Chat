@@ -37,6 +37,7 @@ export interface YouTubeChannelData {
     keywords?: string | null;
     defaultLanguage?: string | null;
   };
+  uploadsPlaylistId?: string;
 }
 
 export interface YouTubeChannelFetchResult {
