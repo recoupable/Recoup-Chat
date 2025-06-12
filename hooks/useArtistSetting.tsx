@@ -73,7 +73,7 @@ const useArtistSetting = () => {
           });
         }
       }
-      setBases(temp);
+      setBases([...bases, ...temp]);
     } catch (error) {
       console.error("Failed to upload knowledge files:", error);
     }
