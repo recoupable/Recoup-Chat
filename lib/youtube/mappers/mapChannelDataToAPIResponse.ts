@@ -1,6 +1,12 @@
 import { YouTubeChannelData } from "@/types/youtube";
 
-function mapChannelDataToAPIResponse(channel: YouTubeChannelData) {
+export function mapChannelDataArrayToAPIResponse(
+  channels: YouTubeChannelData[]
+) {
+  return channels.map(mapChannelDataToAPIResponse);
+}
+
+export function mapChannelDataToAPIResponse(channel: YouTubeChannelData) {
   const { statistics, ...baseChannel } = channel;
 
   return {

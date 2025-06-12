@@ -64,36 +64,7 @@ export interface YouTubeChannelInfoResult {
   success: boolean;
   status: string;
   message?: string;
-  channelInfo?: {
-    // Basic channel information
-    id: string;
-    title: string;
-    description: string;
-    customUrl?: string | null;
-    country?: string | null;
-    publishedAt: string;
-
-    // Channel thumbnails
-    thumbnails: {
-      default?: { url?: string | null };
-      medium?: { url?: string | null };
-      high?: { url?: string | null };
-    };
-
-    // Channel statistics
-    statistics: {
-      subscriberCount: string;
-      videoCount: string;
-      viewCount: string;
-      hiddenSubscriberCount: boolean;
-    };
-
-    // Channel branding
-    branding: {
-      keywords?: string | null;
-      defaultLanguage?: string | null;
-    };
-  };
+  channelInfo?: YouTubeChannelData[];
 }
 
 // YouTube Channel Data Types (from channel-fetcher.ts)
@@ -118,15 +89,6 @@ export interface YouTubeChannelData {
   branding?: {
     keywords?: string | null;
     defaultLanguage?: string | null;
-  };
-}
-
-export interface YouTubeChannelFetchResult {
-  success: boolean;
-  channelData?: YouTubeChannelData;
-  error?: {
-    code: "NO_CHANNELS" | "API_ERROR";
-    message: string;
   };
 }
 
@@ -169,26 +131,6 @@ export interface RawChannelInfo {
   customUrl?: string | null;
   country?: string | null;
   publishedAt?: string | null;
-}
-
-// Type for channel info from YouTubeChannelInfoResult
-export interface ChannelInfoResult {
-  id: string;
-  title: string;
-  description?: string;
-  thumbnails?: {
-    default?: { url?: string | null };
-    medium?: { url?: string | null };
-    high?: { url?: string | null };
-  };
-  statistics?: {
-    subscriberCount?: string;
-    videoCount?: string;
-    viewCount?: string;
-  };
-  customUrl?: string | null;
-  country?: string | null;
-  publishedAt?: string;
 }
 
 // Token Validation Types (from token-validator.ts)

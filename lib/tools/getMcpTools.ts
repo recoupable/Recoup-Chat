@@ -26,7 +26,7 @@ import getVideoGameCampaignPlays from "./getVideoGameCampaignPlays";
 import getSpotifyDeepResearch from "./getSpotifyDeepResearch";
 import createKnowledgeBase from "./createKnowledgeBase";
 import sendEmailTool from "./sendEmailTool";
-import getYouTubeChannelInfo from "./getYouTubeChannelInfo";
+import getYouTubeChannels from "./getYouTubeChannels";
 import getYouTubeRevenue from "./getYouTubeRevenue";
 import youtubeLoginTool from "./youtubeLogin";
 
@@ -60,7 +60,7 @@ export async function getMcpTools() {
     create_knowledge_base: createKnowledgeBase,
     get_video_game_campaign_plays: getVideoGameCampaignPlays,
     send_email: sendEmailTool,
-    get_youtube_channels: getYouTubeChannelInfo,
+    get_youtube_channels: getYouTubeChannels,
     get_youtube_revenue: getYouTubeRevenue,
     youtube_login: youtubeLoginTool,
   };

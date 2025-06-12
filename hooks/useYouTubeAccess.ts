@@ -20,17 +20,15 @@ import { useEffect, useState } from "react";
 import {
   YouTubeAccessResult as YouTubeAccessResultType,
   YouTubeStatusResponse,
-  YouTubeChannelInfo,
   YouTubeChannelData,
 } from "@/types/youtube";
-import mapRawChannelInfoToChannelData from "@/lib/youtube/mappers/mapRawChannelInfoToChannelData";
 import { useUserProvider } from "@/providers/UserProvder";
 
 interface UseYouTubeAccessResult {
   status: YouTubeStatusResponse | null;
   isCheckingStatus: boolean;
   isAuthenticated: boolean;
-  channelInfo: YouTubeChannelInfo | { channel: YouTubeChannelData } | null;
+  channelInfo: YouTubeChannelData[] | null;
   login: () => void;
 }
 
@@ -42,17 +40,8 @@ export function useYouTubeAccess(
   const { userData } = useUserProvider();
   const account_id = userData?.account_id;
 
-  // Single state for channel info - starts with static data, updates with live data
-  const [channelInfo, setChannelInfo] = useState<
-    YouTubeChannelInfo | { channel: YouTubeChannelData } | null
-  >(
-    result.channelInfo
-      ? {
-          ...result,
-          channel: mapRawChannelInfoToChannelData(result.channelInfo),
-        }
-      : null
-  );
+  // State for array of channel info
+  const [channelInfo, setChannelInfo] = useState<YouTubeChannelData[] | null>();
 
   // Helper function to initiate YouTube OAuth flow with artist context
   const login = () => {
@@ -97,21 +86,27 @@ export function useYouTubeAccess(
       }
 
       try {
+        console.log("account_id", account_id);
         const response = await fetch(
           `/api/youtube/status?account_id=${encodeURIComponent(account_id)}`
         );
         const statusData: YouTubeStatusResponse = await response.json();
         setStatus(statusData);
+        console.log("statusData", statusData);
 
-        // If authenticated, fetch current channel info and update our single state
+        // If authenticated, fetch current channel info and update our state
         if (statusData.authenticated) {
           const channelResponse = await fetch(
             `/api/youtube/channel-info?account_id=${encodeURIComponent(account_id)}`
           );
           if (channelResponse.ok) {
-            const liveChannelData: YouTubeChannelInfo =
+            const liveChannelData: { channels: YouTubeChannelData[] } =
               await channelResponse.json();
-            setChannelInfo(liveChannelData); // Update with live data
+            setChannelInfo(
+              Array.isArray(liveChannelData.channels)
+                ? liveChannelData.channels
+                : null
+            );
           }
         }
       } catch (error) {

@@ -20,7 +20,7 @@ import {
   YouTubeErrorBuilder,
   YouTubeErrorMessages,
 } from "@/lib/youtube/error-builder";
-import mapChannelDataToAPIResponse from "@/lib/youtube/mappers/mapChannelDataToAPIResponse";
+import { mapChannelDataArrayToAPIResponse } from "@/lib/youtube/mappers/mapChannelDataToAPIResponse";
 
 export async function GET(
   request: NextRequest
@@ -51,12 +51,12 @@ export async function GET(
       return YouTubeErrorBuilder.createAPIError(channelResult.error!.message);
     }
 
-    const channel = channelResult.channelData!;
+    const channels = channelResult.channelData;
 
     return YouTubeErrorBuilder.createAPISuccess(
       "YouTube channel access verified successfully for account",
       {
-        channel: mapChannelDataToAPIResponse(channel),
+        channels: mapChannelDataArrayToAPIResponse(channels),
       }
     );
   } catch (error: unknown) {

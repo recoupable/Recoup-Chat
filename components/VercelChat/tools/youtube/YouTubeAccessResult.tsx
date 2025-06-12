@@ -52,10 +52,20 @@ export function YouTubeAccessResult({ result }: YouTubeAccessResultProps) {
     );
   }
 
+  console.log("channelInfo", channelInfo);
+
   // Success state - show channel information
-  if (isAuthenticated && channelInfo?.channel) {
+  if (isAuthenticated && Array.isArray(channelInfo) && channelInfo.length > 0) {
     return (
-      <YouTubeChannelDisplay channel={channelInfo.channel} isLive={!!status} />
+      <div className="flex flex-col gap-4">
+        {channelInfo.map((channel, idx) => (
+          <YouTubeChannelDisplay
+            key={channel.id || idx}
+            channel={channel}
+            isLive={!!status}
+          />
+        ))}
+      </div>
     );
   }
 

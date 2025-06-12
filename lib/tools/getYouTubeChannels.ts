@@ -30,10 +30,10 @@ const schema = z.object({
     ),
 });
 
-const getYouTubeChannelInfoTool = tool({
+const getYouTubeChannels = tool({
   description: `Get YouTube channel information for a specific account.
 This tool requires a valid access_token (and optionally a refresh_token) obtained from a prior authentication step (e.g., youtube_login).
-Returns comprehensive channel data including statistics, thumbnails, and branding if the tokens are valid.
+Returns an array of comprehensive channel data including statistics, thumbnails, and branding if the tokens are valid.
 IMPORTANT: Always call the youtube_login tool first to obtain the required tokens before calling this tool.`,
   parameters: schema,
   execute: async ({
@@ -57,11 +57,11 @@ IMPORTANT: Always call the youtube_login tool first to obtain the required token
         );
         return fetchError;
       }
-      const channel = channelResult.channelData!;
+      const channels = channelResult.channelData;
       const returnResult = YouTubeErrorBuilder.createToolSuccess(
         "YouTube channel information retrieved successfully",
         {
-          channelInfo: {
+          channelInfo: channels.map((channel) => ({
             ...channel,
             statistics: {
               ...channel.statistics,
@@ -72,7 +72,7 @@ IMPORTANT: Always call the youtube_login tool first to obtain the required token
               keywords: null,
               defaultLanguage: null,
             },
-          },
+          })),
         }
       );
       return returnResult;
@@ -88,4 +88,4 @@ IMPORTANT: Always call the youtube_login tool first to obtain the required token
   },
 });
 
-export default getYouTubeChannelInfoTool;
+export default getYouTubeChannels;
