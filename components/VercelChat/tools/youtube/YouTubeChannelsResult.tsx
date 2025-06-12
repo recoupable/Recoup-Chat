@@ -24,7 +24,15 @@ export function YouTubeChannelsResult({ result }: YouTubeChannelResultProps) {
   // Success state - show channel information
   if (result.channelInfo) {
     return (
-      <YouTubeChannelDisplay channel={result.channelInfo} isLive={!!status} />
+      <div>
+        {result.channelInfo.channels.map((channel) => (
+          <YouTubeChannelDisplay
+            key={channel.id}
+            channel={channel}
+            isLive={!!status}
+          />
+        ))}
+      </div>
     );
   }
 
