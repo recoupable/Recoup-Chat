@@ -15,7 +15,7 @@ const schema = z.object({
     .describe(
       "OAuth refresh token for YouTube API. Optional, but recommended for token refresh. Must be obtained via prior authentication using the youtube_login tool."
     ),
-  uploadsPlaylistId: z
+  uploads_playlist_id: z
     .string()
     .describe(
       "The YouTube channel uploads playlist ID to fetch videos for. Must be obtained via prior call to get_youtube_channels tool."
@@ -40,10 +40,10 @@ This tool follows YouTube API best practices by retrieving videos from the chann
   execute: async ({
     access_token,
     refresh_token,
-    uploadsPlaylistId,
+    uploads_playlist_id,
     max_results = 25,
   }) => {
-    if (!access_token || !uploadsPlaylistId) {
+    if (!access_token || !uploads_playlist_id) {
       return YouTubeErrorBuilder.createToolError(
         "Missing access_token or uploadsPlaylistId."
       );
@@ -53,14 +53,14 @@ This tool follows YouTube API best practices by retrieving videos from the chann
       const playlistItems = await getYoutubePlaylistItems({
         access_token,
         refresh_token,
-        uploadsPlaylistId,
+        uploads_playlist_id,
         max_results,
       });
 
       return {
         success: true,
         status: "success",
-        message: `Fetched ${playlistItems.videos.length} videos for channel playlist ${uploadsPlaylistId}`,
+        message: `Fetched ${playlistItems.videos.length} videos for channel playlist ${uploads_playlist_id}`,
         ...playlistItems,
       };
     } catch (error) {

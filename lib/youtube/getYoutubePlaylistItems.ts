@@ -11,19 +11,19 @@ import { createYouTubeAPIClient } from "./oauth-client";
 export async function getYoutubePlaylistItems({
   access_token,
   refresh_token,
-  uploadsPlaylistId,
+  uploads_playlist_id,
   max_results = 50,
 }: {
   access_token: string;
   refresh_token?: string;
-  uploadsPlaylistId: string;
+  uploads_playlist_id: string;
   max_results?: number;
 }) {
   const youtube = createYouTubeAPIClient(access_token, refresh_token);
 
   // Step 1: Get videos from the uploads playlist
   const playlistResponse = await youtube.playlistItems.list({
-    playlistId: uploadsPlaylistId,
+    playlistId: uploads_playlist_id,
     part: ["snippet", "contentDetails", "status"],
     maxResults: max_results,
   });
