@@ -64,36 +64,7 @@ export interface YouTubeChannelInfoResult {
   success: boolean;
   status: string;
   message?: string;
-  channelInfo?: {
-    // Basic channel information
-    id: string;
-    title: string;
-    description: string;
-    customUrl?: string | null;
-    country?: string | null;
-    publishedAt: string;
-
-    // Channel thumbnails
-    thumbnails: {
-      default?: { url?: string | null };
-      medium?: { url?: string | null };
-      high?: { url?: string | null };
-    };
-
-    // Channel statistics
-    statistics: {
-      subscriberCount: string;
-      videoCount: string;
-      viewCount: string;
-      hiddenSubscriberCount: boolean;
-    };
-
-    // Channel branding
-    branding: {
-      keywords?: string | null;
-      defaultLanguage?: string | null;
-    };
-  };
+  channelInfo?: YouTubeChannelData;
 }
 
 // YouTube Channel Data Types (from channel-fetcher.ts)
@@ -154,21 +125,21 @@ export type StatisticsSource = {
 
 // Type for raw channel info that can come from various sources
 export interface RawChannelInfo {
-  id?: string;
-  name?: string;
-  title?: string;
-  description?: string;
-  thumbnails?: {
-    default?: string | null;
-    medium?: string | null;
-    high?: string | null;
+  id: string;
+  name: string;
+  title: string;
+  description: string;
+  thumbnails: {
+    default: string | null;
+    medium: string | null;
+    high: string | null;
   };
-  subscriberCount?: string;
-  videoCount?: string;
-  viewCount?: string;
-  customUrl?: string | null;
-  country?: string | null;
-  publishedAt?: string | null;
+  subscriberCount: string;
+  videoCount: string;
+  viewCount: string;
+  customUrl: string | null;
+  country: string | null;
+  publishedAt: string;
 }
 
 // Type for channel info from YouTubeChannelInfoResult

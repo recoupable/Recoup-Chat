@@ -115,10 +115,7 @@ export function getToolCallComponent({ toolName, toolCallId }: ToolInvocation) {
         <GetSegmentFansResultSkeleton />
       </div>
     );
-  } else if (
-    toolName === "get_youtube_channels" ||
-    toolName === "youtube_login"
-  ) {
+  } else if (toolName === "get_youtube_channels") {
     return (
       <div key={toolCallId}>
         <YouTubeAccessSkeleton />
@@ -222,10 +219,7 @@ export function getToolResultComponent({
         <GetSegmentFansResult result={result as SegmentFansResult} />
       </div>
     );
-  } else if (
-    toolName === "get_youtube_channels" ||
-    toolName === "youtube_login"
-  ) {
+  } else if (toolName === "get_youtube_channels") {
     return (
       <div key={toolCallId}>
         <YouTubeAccessResult result={result as YouTubeResponse} />
