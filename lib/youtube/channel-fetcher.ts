@@ -45,8 +45,6 @@ export async function fetchYouTubeChannelInfo({
       );
     }
 
-    console.log("response.data.items", response.data.items);
-
     // Map all channels
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const channelData = response.data.items.map((channelData: any) => ({
