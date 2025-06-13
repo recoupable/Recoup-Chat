@@ -45,7 +45,7 @@ const SideModal = ({
       
       {/* Modal */}
       <div
-        className={`fixed right-0 top-0 z-[200] flex h-screen w-screen overflow-hidden ${
+        className={`fixed right-0 top-0 bottom-0 left-0 z-[200] flex h-auto w-auto overflow-hidden ${
           isVisible ? "block" : "hidden"
         } ${containerClasses}`}
         onClick={(e: MouseEvent<HTMLDivElement>) => {
