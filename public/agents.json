@@ -136,5 +136,11 @@
     "description": "Find overlooked communities that align with your audience, then pitch tailored collaborations to build cultural relevance.",
     "prompt": "Identify 5 hyper-niche communities (e.g., glitch art Discords, solarpunk Reddit threads, biohacking forums, VR modding groups) that share values with my brand. For each: find the moderator/admin contact email. If none, skip and find another. Draft a non corporate outreach email offering to guest-speak, co-host an AMA, or co-create content for their community. Then send the email and cc me. Repeat until 5 emails have been sent.",
     "tags": ["Community", "Outreach"]
+  },
+  {
+    "title": "Ghibli YouTube Thumbnail Swaper",
+    "description": "Analyze your YouTube channel to identify a video with strong content but low click-through rate that needs thumbnail improvements. Create an eye-catching, brand-aligned thumbnail (ghiblified style) with clear focal points, minimal text, and high contrast colors. Upload the new thumbnail to YouTube.",
+    "prompt": "Analyze my YouTube channel to identify a video with strong content but low click-through rate that needs thumbnail improvements. Create an eye-catching, brand-aligned thumbnail (ghiblified style) with clear focal points, minimal text, and high contrast colors. Upload the new thumbnail to YouTube.",
+    "tags": ["YouTube", "Content", "Social", "Assistant"] 
   }
 ] 
