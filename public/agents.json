@@ -138,8 +138,8 @@
     "tags": ["Community", "Outreach"]
   },
   {
-    "title": "Ghibli YouTube Thumbnail Swaper",
-    "description": "Analyze your YouTube channel to identify a video with strong content but low click-through rate that needs thumbnail improvements. Create an eye-catching, brand-aligned thumbnail (ghiblified style) with clear focal points, minimal text, and high contrast colors. Upload the new thumbnail to YouTube.",
+    "title": "Ghibli YouTube Thumbnail Generation",
+    "description": "Find a strong video with low CTR, create a Ghibli-style thumbnail, and upload it.",
     "prompt": "Analyze my YouTube channel to identify a video with strong content but low click-through rate that needs thumbnail improvements. Create an eye-catching, brand-aligned thumbnail (ghiblified style) with clear focal points, minimal text, and high contrast colors. Upload the new thumbnail to YouTube.",
     "tags": ["YouTube", "Content", "Social", "Assistant"] 
   }
