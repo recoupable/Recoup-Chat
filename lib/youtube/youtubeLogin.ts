@@ -7,6 +7,7 @@ export function youtubeLogin(account_id?: string) {
     "https://www.googleapis.com/auth/youtube.readonly", // Base YouTube access
     "https://www.googleapis.com/auth/yt-analytics.readonly", // Analytics data e.g. views, likes, comments etc.
     "https://www.googleapis.com/auth/yt-analytics-monetary.readonly", // Revenue/monetization data e.g. ad revenue, channel membership, etc.
+    "https://www.googleapis.com/auth/youtube", // For youtube.thumbnails.set
   ];
 
   // Get current path to redirect back after authentication
