@@ -28,14 +28,24 @@ const attachRichFiles = async (
 
   // Transform messages, adding attachments to the user message
   // Ref. https://ai-sdk.dev/providers/ai-sdk-providers/anthropic#pdf-support
-  return messages.map((message, idx) => {
+  const transformedMessages = messages.map((message, idx) => {
     if (idx === lastUserIndex && message.role === "user") {
+      // Process user-uploaded attachments from experimental_attachments
+      const userAttachments = message.experimental_attachments
+        ?.map(attachment => attachment.url && attachment.contentType 
+          ? createMessageFileAttachment({ url: attachment.url, type: attachment.contentType })
+          : null)
+        .filter((attachment): attachment is MessageFileAttachment => attachment !== null) || [];
+
+      const content = [
+        { type: "text" as const, text: message.content },
+        ...fileAttachments,
+        ...userAttachments,
+      ];
+      
       return {
         role: "user" as const,
-        content: [
-          { type: "text" as const, text: message.content },
-          ...fileAttachments,
-        ],
+        content,
       };
     }
     
@@ -44,6 +54,8 @@ const attachRichFiles = async (
       content: message.content,
     } as CoreMessage;
   });
+
+  return transformedMessages;
 };
 
 export default attachRichFiles;
