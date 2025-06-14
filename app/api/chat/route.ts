@@ -36,6 +36,7 @@ export async function POST(request: NextRequest) {
     accountId: string;
     email: string;
   } = body;
+
   try {
     const selectedModelId = "sonnet-3.7";
 

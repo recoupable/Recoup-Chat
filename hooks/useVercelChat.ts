@@ -8,7 +8,6 @@ import { useEffect, useState, useRef } from "react";
 import getEarliestFailedUserMessageId from "@/lib/messages/getEarliestFailedUserMessageId";
 import { clientDeleteTrailingMessages } from "@/lib/messages/clientDeleteTrailingMessages";
 import { generateUUID } from "@/lib/generateUUID";
-import { usePrivy } from "@privy-io/react-auth";
 import { useConversationsProvider } from "@/providers/ConversationsProvider";
 import { Attachment } from "@ai-sdk/ui-utils";
 
@@ -28,7 +27,6 @@ export function useVercelChat({
   initialMessages,
   uploadedAttachments = [], // Default to empty array
 }: UseVercelChatProps) {
-  const { authenticated } = usePrivy();
   const { userData } = useUserProvider();
   const { selectedArtist } = useArtistProvider();
   const { roomId } = useParams();
