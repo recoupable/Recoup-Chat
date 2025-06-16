@@ -41,6 +41,9 @@ import {
 import YouTubeChannelsResult from "./tools/youtube/YouTubeChannelsResult";
 import YouTubeLoginResult from "./tools/youtube/YouTubeLoginResult";
 import { YouTubeLoginResultType } from "@/lib/tools/youtubeLogin";
+import YouTubeSetThumbnailResult from "./tools/youtube/YouTubeSetThumbnailResult";
+import YouTubeSetThumbnailSkeleton from "./tools/youtube/YouTubeSetThumbnailSkeleton";
+import type { YouTubeSetThumbnailResult as YouTubeSetThumbnailResultType } from "@/types/youtube";
 
 /**
  * Interface for tool call props
@@ -124,6 +127,12 @@ export function getToolCallComponent({ toolName, toolCallId }: ToolInvocation) {
     return (
       <div key={toolCallId}>
         <YouTubeRevenueSkeleton />
+      </div>
+    );
+  } else if (toolName === "set_youtube_thumbnail") {
+    return (
+      <div key={toolCallId}>
+        <YouTubeSetThumbnailSkeleton />
       </div>
     );
   }
@@ -234,6 +243,13 @@ export function getToolResultComponent({
     return (
       <div key={toolCallId}>
         <YouTubeRevenueResult result={result as YouTubeRevenueResultType} />
+      </div>
+    );
+  } else if (toolName === "set_youtube_thumbnail") {
+    return (
+      <div key={toolCallId}>
+        <YouTubeSetThumbnailResult result={result as YouTubeSetThumbnailResultType} />
+        {/* {JSON.stringify(result, null, 2)} */}
       </div>
     );
   }
