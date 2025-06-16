@@ -3,6 +3,7 @@ import { tool } from "ai";
 import { YouTubeErrorBuilder } from "@/lib/youtube/error-builder";
 import { createYouTubeAPIClient } from "@/lib/youtube/oauth-client";
 import { getResizedImageBuffer } from "@/lib/youtube/getResizedImageBuffer";
+import { YouTubeSetThumbnailResult } from "@/types/youtube";
 
 const schema = z.object({
   access_token: z
@@ -30,7 +31,12 @@ const schema = z.object({
 const setYouTubeThumbnail = tool({
   description: `Set a custom thumbnail for a YouTube video. Requires a valid access_token, video_id, and a thumbnail_url. Downloads the image, resizes/compresses if needed, and uploads it to YouTube using the Data API thumbnails.set endpoint.`,
   parameters: schema,
-  execute: async ({ access_token, refresh_token, video_id, thumbnail_url }) => {
+  execute: async ({
+    access_token,
+    refresh_token,
+    video_id,
+    thumbnail_url,
+  }): Promise<YouTubeSetThumbnailResult> => {
     if (!access_token || !video_id || !thumbnail_url) {
       return YouTubeErrorBuilder.createToolError(
         "Missing access_token, video_id, or thumbnail_url."
@@ -54,7 +60,7 @@ const setYouTubeThumbnail = tool({
         success: true,
         status: "success",
         message: `Thumbnail set for video ${video_id}`,
-        thumbnails: response.data.items || response.data,
+        thumbnails: response.data.items as YouTubeSetThumbnailResult["thumbnails"],
       };
     } catch (error) {
       return YouTubeErrorBuilder.createToolError(
