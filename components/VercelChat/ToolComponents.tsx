@@ -47,6 +47,7 @@ import YouTubeChannelVideosListSkeleton from "./tools/youtube/YouTubeChannelVide
 import YouTubeSetThumbnailResult from "./tools/youtube/YouTubeSetThumbnailResult";
 import YouTubeSetThumbnailSkeleton from "./tools/youtube/YouTubeSetThumbnailSkeleton";
 import type { YouTubeSetThumbnailResult as YouTubeSetThumbnailResultType } from "@/types/youtube";
+import SearchWebSkeleton from "./tools/SearchWebSkeleton";
 
 /**
  * Interface for tool call props
@@ -142,6 +143,12 @@ export function getToolCallComponent({ toolName, toolCallId }: ToolInvocation) {
     return (
       <div key={toolCallId}>
         <YouTubeSetThumbnailSkeleton />
+      </div>
+    );
+  } else if (toolName === "search_web") {
+    return (
+      <div key={toolCallId}>
+        <SearchWebSkeleton />
       </div>
     );
   }
