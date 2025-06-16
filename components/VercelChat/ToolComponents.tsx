@@ -36,11 +36,14 @@ import YouTubeRevenueResult from "./tools/youtube/YouTubeRevenueResult";
 import YouTubeRevenueSkeleton from "./tools/youtube/YouTubeRevenueSkeleton";
 import {
   YouTubeChannelInfoResult,
+  YouTubeChannelVideoListResult,
   YouTubeRevenueResult as YouTubeRevenueResultType,
 } from "@/types/youtube";
 import YouTubeChannelsResult from "./tools/youtube/YouTubeChannelsResult";
 import YouTubeLoginResult from "./tools/youtube/YouTubeLoginResult";
 import { YouTubeLoginResultType } from "@/lib/tools/youtubeLogin";
+import YoutubeChannelVideosListResult from "./tools/youtube/YoutubeChannelVideosListResult";
+import YouTubeChannelVideosListSkeleton from "./tools/youtube/YouTubeChannelVideosListSkeleton";
 import YouTubeSetThumbnailResult from "./tools/youtube/YouTubeSetThumbnailResult";
 import YouTubeSetThumbnailSkeleton from "./tools/youtube/YouTubeSetThumbnailSkeleton";
 import type { YouTubeSetThumbnailResult as YouTubeSetThumbnailResultType } from "@/types/youtube";
@@ -127,6 +130,12 @@ export function getToolCallComponent({ toolName, toolCallId }: ToolInvocation) {
     return (
       <div key={toolCallId}>
         <YouTubeRevenueSkeleton />
+      </div>
+    );
+  } else if (toolName === "get_youtube_channel_video_list") {
+    return (
+      <div key={toolCallId}>
+        <YouTubeChannelVideosListSkeleton />
       </div>
     );
   } else if (toolName === "set_youtube_thumbnail") {
@@ -243,6 +252,12 @@ export function getToolResultComponent({
     return (
       <div key={toolCallId}>
         <YouTubeRevenueResult result={result as YouTubeRevenueResultType} />
+      </div>
+    );
+  } else if (toolName === "get_youtube_channel_video_list") {
+    return (
+      <div key={toolCallId}>
+        <YoutubeChannelVideosListResult result={result as YouTubeChannelVideoListResult} />
       </div>
     );
   } else if (toolName === "set_youtube_thumbnail") {
