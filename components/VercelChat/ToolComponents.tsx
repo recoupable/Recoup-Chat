@@ -43,6 +43,7 @@ import YouTubeChannelsResult from "./tools/youtube/YouTubeChannelsResult";
 import YouTubeLoginResult from "./tools/youtube/YouTubeLoginResult";
 import { YouTubeLoginResultType } from "@/lib/tools/youtubeLogin";
 import YoutubeChannelVideosListResult from "./tools/youtube/YoutubeChannelVideosListResult";
+import YouTubeChannelVideoListSkeleton from "./tools/youtube/YouTubeChannelVideoListSkeleton";
 
 /**
  * Interface for tool call props
@@ -131,8 +132,7 @@ export function getToolCallComponent({ toolName, toolCallId }: ToolInvocation) {
   } else if (toolName === "get_youtube_channel_video_list") {
     return (
       <div key={toolCallId}>
-        {/* <YouTubeChannelVideoListSkeleton /> */}
-        get_youtube_channel_video_list loading...
+        <YouTubeChannelVideoListSkeleton />
       </div>
     );
   }
