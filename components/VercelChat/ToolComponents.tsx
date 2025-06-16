@@ -249,7 +249,6 @@ export function getToolResultComponent({
     return (
       <div key={toolCallId}>
         <YouTubeSetThumbnailResult result={result as YouTubeSetThumbnailResultType} />
-        {/* {JSON.stringify(result, null, 2)} */}
       </div>
     );
   }
