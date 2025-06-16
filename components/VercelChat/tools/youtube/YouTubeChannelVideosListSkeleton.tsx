@@ -1,6 +1,6 @@
 import React from "react";
 
-const YouTubeChannelVideoListSkeleton = () => {
+const YouTubeChannelVideosListSkeleton = () => {
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 gap-2 sm:gap-3 md:gap-4">
       {[...Array(6)].map((_, index) => (
@@ -29,4 +29,4 @@ const YouTubeChannelVideoListSkeleton = () => {
   );
 };
 
-export default YouTubeChannelVideoListSkeleton; 
+export default YouTubeChannelVideosListSkeleton; 
