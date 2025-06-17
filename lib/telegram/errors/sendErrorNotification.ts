@@ -1,16 +1,7 @@
-import { Message } from "ai";
 import { sendMessage } from "@/lib/telegram/sendMessage";
-import { SerializedError } from "@/lib/errors/serializeError";
 import { formatErrorMessage } from "./formatErrorMessage";
-import { logErrorToSupabase } from "@/lib/supabase/errorLogger";
-
-export interface ErrorContext {
-  email?: string;
-  roomId?: string;
-  messages?: Message[];
-  path: string;
-  error: SerializedError;
-}
+import { logErrorToSupabase } from "@/lib/supabase/errorLogs/insertErrorLogs";
+import { ErrorContext } from "@/lib/utils/extractToolName";
 
 /**
  * Sends error notification to Telegram and logs to Supabase
@@ -28,9 +19,7 @@ export async function sendErrorNotification(
     });
     
     // Log to Supabase (non-blocking)
-    logErrorToSupabase(params).catch(() => {
-      // Silently fail - don't break the error flow
-    });
+    logErrorToSupabase(params);
     
   } catch (err) {
     console.error("Error in sendErrorNotification:", err);
