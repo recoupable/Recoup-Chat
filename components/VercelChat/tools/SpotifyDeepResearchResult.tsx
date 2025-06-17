@@ -50,7 +50,7 @@ export default function SpotifyDeepResearchResultComponent({
                   </span>
                   {social.username && social.username.length > 0 ? (
                     <span className="text-xs text-gray-600 dark:text-gray-400 truncate max-w-full">
-                      @{social.username}
+                      {social.username.startsWith('@') ? social.username : `@${social.username}`}
                     </span>
                   ) : (
                     <span className="text-xs text-gray-500 truncate max-w-full">
