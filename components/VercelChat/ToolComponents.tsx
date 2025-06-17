@@ -280,7 +280,7 @@ export function getToolResultComponent({
         <YouTubeSetThumbnailResult result={result as YouTubeSetThumbnailResultType} />
       </div>
     );
-  } 
+  }
 
   // Default generic result for other tools
   return (
