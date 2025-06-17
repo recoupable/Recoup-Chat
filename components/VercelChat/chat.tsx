@@ -16,6 +16,8 @@ import {
   useVercelChatContext,
 } from "@/providers/VercelChatProvider";
 import { Message } from "ai";
+import { useDropzone } from "@/hooks/useDropzone";
+import FileDragOverlay from "./FileDragOverlay";
 
 interface ChatProps {
   id: string;
@@ -49,6 +51,7 @@ function ChatContent({ reportId, id }: { reportId?: string; id: string }) {
   const { roomId } = useParams();
   useAutoLogin();
   useArtistFromRoom(id);
+  const { getRootProps, isDragActive } = useDropzone();
 
   const { isVisible } = useVisibilityDelay({
     shouldBeVisible: messages.length === 0 && !reportId && status === "ready",
@@ -78,7 +81,9 @@ function ChatContent({ reportId, id }: { reportId?: string; id: string }) {
           "justify-center gap-4": messages.length === 0,
         }
       )}
+      {...getRootProps()}
     >
+      {isDragActive && <FileDragOverlay />}
       <div className="absolute w-full h-6 bg-gradient-to-t from-transparent via-white/80 to-white z-10 top-0"></div>
       {isVisible ? (
         <div className="w-full">
