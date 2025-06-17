@@ -48,7 +48,7 @@ export default function SpotifyDeepResearchResultComponent({
                   <span className="text-sm font-medium capitalize mb-1">
                     {displayName}
                   </span>
-                  {social.username && social.username.length > 0 ? (
+                  {social.username && social.username.length > 0 && platform !== "youtube" ? (
                     <span className="text-xs text-gray-600 dark:text-gray-400 truncate max-w-full">
                       {social.username.startsWith('@') ? social.username : `@${social.username}`}
                     </span>
