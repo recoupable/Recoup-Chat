@@ -48,6 +48,7 @@ import YouTubeSetThumbnailResult from "./tools/youtube/YouTubeSetThumbnailResult
 import YouTubeSetThumbnailSkeleton from "./tools/youtube/YouTubeSetThumbnailSkeleton";
 import type { YouTubeSetThumbnailResult as YouTubeSetThumbnailResultType } from "@/types/youtube";
 import SearchWebSkeleton from "./tools/SearchWebSkeleton";
+import SpotifyDeepResearchSkeleton from "./tools/SpotifyDeepResearchSkeleton";
 
 /**
  * Interface for tool call props
@@ -149,6 +150,12 @@ export function getToolCallComponent({ toolName, toolCallId }: ToolInvocation) {
     return (
       <div key={toolCallId}>
         <SearchWebSkeleton />
+      </div>
+    );
+  } else if (toolName === "spotify_deep_research") {
+    return (
+      <div key={toolCallId}>
+        <SpotifyDeepResearchSkeleton />
       </div>
     );
   }
@@ -273,7 +280,7 @@ export function getToolResultComponent({
         <YouTubeSetThumbnailResult result={result as YouTubeSetThumbnailResultType} />
       </div>
     );
-  }
+  } 
 
   // Default generic result for other tools
   return (
