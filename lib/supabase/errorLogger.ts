@@ -1,6 +1,6 @@
-import { createClient } from '@supabase/supabase-js'
 import { Message } from "ai";
 import { SerializedError } from "@/lib/errors/serializeError";
+import supabase from "@/lib/supabase/serverClient";
 
 export interface ErrorContext {
   email?: string;
@@ -8,6 +8,7 @@ export interface ErrorContext {
   messages?: Message[];
   path: string;
   error: SerializedError;
+  accountId?: string; // Added for account_id mapping
 }
 
 /**
@@ -16,15 +17,6 @@ export interface ErrorContext {
  */
 export async function logErrorToSupabase(context: ErrorContext): Promise<boolean> {
   try {
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-    const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
-    
-    if (!supabaseUrl || !supabaseKey) {
-      return false
-    }
-
-    const supabase = createClient(supabaseUrl, supabaseKey)
-
     const lastMessage = context.messages?.findLast(m => m.role === 'user')?.content || null
     const toolName = extractToolName(context)
 
@@ -33,7 +25,7 @@ export async function logErrorToSupabase(context: ErrorContext): Promise<boolean
       .insert({
         raw_message: context.error.message,
         telegram_message_id: Date.now(),
-        user_email: context.email || null,
+        account_id: context.accountId || null,
         room_id: context.roomId || null,
         error_timestamp: new Date().toISOString(),
         error_message: context.error.message,

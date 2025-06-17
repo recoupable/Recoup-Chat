@@ -5,9 +5,9 @@ create table if not exists "public"."error_logs" (
     "created_at" timestamp with time zone not null default now(),
     "raw_message" text,
     "telegram_message_id" bigint,
-    "user_email" text,
+    "account_id" uuid,
     "room_id" uuid,
-    "error_timestamp" timestamp with time zone,
+    "error_timestamp" timestamptz,
     "error_message" text not null,
     "error_type" text,
     "tool_name" text,
@@ -45,9 +45,13 @@ grant update on table "public"."error_logs" to "service_role";
 -- Grant read permissions to authenticated users (for dashboards)
 grant select on table "public"."error_logs" to "authenticated";
 
+-- Add foreign key constraints
+ALTER TABLE "public"."error_logs" ADD CONSTRAINT "error_logs_account_id_fkey" FOREIGN KEY (account_id) REFERENCES accounts(id) ON DELETE CASCADE;
+ALTER TABLE "public"."error_logs" ADD CONSTRAINT "error_logs_room_id_fkey" FOREIGN KEY (room_id) REFERENCES rooms(id) ON DELETE CASCADE;
+
 -- Create indexes for efficient querying
 CREATE INDEX IF NOT EXISTS error_logs_created_at_idx ON public.error_logs USING btree (created_at);
-CREATE INDEX IF NOT EXISTS error_logs_user_email_idx ON public.error_logs USING btree (user_email);
+CREATE INDEX IF NOT EXISTS error_logs_account_id_idx ON public.error_logs USING btree (account_id);
 CREATE INDEX IF NOT EXISTS error_logs_error_type_idx ON public.error_logs USING btree (error_type);
 CREATE INDEX IF NOT EXISTS error_logs_tool_name_idx ON public.error_logs USING btree (tool_name);
 
@@ -55,8 +59,8 @@ CREATE INDEX IF NOT EXISTS error_logs_tool_name_idx ON public.error_logs USING b
 COMMENT ON TABLE "public"."error_logs" IS 'Stores structured error logs from chat API for monitoring and analysis';
 COMMENT ON COLUMN "public"."error_logs"."raw_message" IS 'Original error message text';
 COMMENT ON COLUMN "public"."error_logs"."telegram_message_id" IS 'Unique ID for deduplication, typically timestamp';
-COMMENT ON COLUMN "public"."error_logs"."user_email" IS 'Email of user who triggered the error';
-COMMENT ON COLUMN "public"."error_logs"."room_id" IS 'Chat room/conversation ID where error occurred';
+COMMENT ON COLUMN "public"."error_logs"."account_id" IS 'Account ID of user who triggered the error (foreign key to accounts table)';
+COMMENT ON COLUMN "public"."error_logs"."room_id" IS 'Chat room/conversation ID where error occurred (foreign key to rooms table)';
 COMMENT ON COLUMN "public"."error_logs"."error_timestamp" IS 'When the error occurred (may differ from created_at)';
 COMMENT ON COLUMN "public"."error_logs"."error_message" IS 'Structured error message';
 COMMENT ON COLUMN "public"."error_logs"."error_type" IS 'Type of error (AI_RetryError, ValidationError, etc.)';
