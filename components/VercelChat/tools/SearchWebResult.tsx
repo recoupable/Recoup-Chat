@@ -1,9 +1,16 @@
 import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { SearchWebResultData } from "@/types/webSearch";
 import ChatMarkdown from "@/components/Chat/ChatMarkdown";
 
-const SearchWebResult= ({ result }: { result: SearchWebResultData }) => {
+export interface SearchWebResultType {
+  content: {
+    text: string;
+    type: string;
+  }[];
+  isError: boolean;
+}
+
+const SearchWebResult= ({ result }: { result: SearchWebResultType }) => {
   if (result.isError) {
     return (
       <Card className="w-full bg-destructive/10 border-destructive/30">
