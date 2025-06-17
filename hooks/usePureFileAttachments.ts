@@ -95,6 +95,7 @@ export function usePureFileAttachments() {
   return {
     fileInputRef,
     handleFileChange,
-    MAX_FILES
+    MAX_FILES,
+    uploadFile
   };
 } 
