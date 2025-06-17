@@ -2,6 +2,7 @@ import { ArtistSocialsResultType } from "@/types/spotify";
 import Image from "next/image";
 import Link from "next/link";
 import spotifyLogo from "@/public/brand-logos/spotify.png";
+import { getYoutubeChannelNameFromURL } from "@/utils/getYoutubeChannelNameFromURL";
 
 export default function SpotifyDeepResearchResultComponent({
   result,
@@ -38,6 +39,8 @@ export default function SpotifyDeepResearchResultComponent({
               const displayName = platform === "open" ? "spotify" : platform;
               const hasUsername = social.username && social.username.length > 0 && platform !== "youtube";
               const username = social.username.startsWith('@') ? social.username : `@${social.username}`
+              const isYoutube = platform === "youtube" || social.profile_url.includes("youtube.com");
+              const youtubeChannelName = getYoutubeChannelNameFromURL(social.profile_url);
 
               return (
                 <Link
@@ -50,9 +53,13 @@ export default function SpotifyDeepResearchResultComponent({
                   <span className="text-sm font-medium capitalize mb-1">
                     {displayName}
                   </span>
-                  {hasUsername? (
+                  {hasUsername ? (
                     <span className="text-xs text-gray-600 dark:text-gray-400 truncate max-w-full">
                       {username}
+                    </span>
+                  ) : (isYoutube && youtubeChannelName) ? (
+                    <span className="text-xs text-gray-600 dark:text-gray-400 truncate max-w-full">
+                      {youtubeChannelName}
                     </span>
                   ) : (
                     <span className="text-xs text-gray-500 truncate max-w-full">
