@@ -107,3 +107,31 @@ export interface SpotifySearchResponse {
   audiobooks?: { items: SpotifyAudiobookSearchResult[]; total: number };
   [key: string]: unknown;
 }
+
+export interface SpotifyDeepResearchResult {
+  success: boolean;
+  nextSteps: string[];
+  artistSocials?: {
+    status: string;
+    socials: Array<{
+      id: string;
+      bio: string | null;
+      avatar: string | null;
+      region: string | null;
+      username: string;
+      social_id: string;
+      updated_at: string;
+      profile_url: string;
+      follower_count: number;
+      following_count: number;
+    }>;
+    success: boolean;
+    pagination: {
+      page: number;
+      limit: number;
+      total_count: number;
+      total_pages: number;
+    };
+  };
+  artist_account_id: string;
+}

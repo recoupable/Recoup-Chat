@@ -11,7 +11,10 @@ import DeleteArtistToolCall from "./tools/DeleteArtistToolCall";
 import DeleteArtistToolResult from "./tools/DeleteArtistToolResult";
 import { DeleteArtistResult } from "@/lib/tools/deleteArtist";
 import GetSpotifySearchToolResult from "./tools/GetSpotifySearchToolResult";
-import { SpotifySearchResponse } from "@/types/spotify";
+import {
+  SpotifySearchResponse,
+  SpotifyDeepResearchResult as SpotifyDeepResearchResultType,
+} from "@/types/spotify";
 import { ToolInvocation } from "ai";
 import UpdateArtistInfoSuccess from "./tools/UpdateArtistInfoSuccess";
 import { UpdateAccountInfoResult } from "@/lib/tools/updateAccountInfo";
@@ -49,6 +52,7 @@ import YouTubeSetThumbnailSkeleton from "./tools/youtube/YouTubeSetThumbnailSkel
 import type { YouTubeSetThumbnailResult as YouTubeSetThumbnailResultType } from "@/types/youtube";
 import SearchWebSkeleton from "./tools/SearchWebSkeleton";
 import SpotifyDeepResearchSkeleton from "./tools/SpotifyDeepResearchSkeleton";
+import SpotifyDeepResearchResult from "./tools/SpotifyDeepResearchResult";
 
 /**
  * Interface for tool call props
@@ -72,6 +76,7 @@ type ToolResult =
   | YouTubeChannelInfoResult
   | YouTubeRevenueResultType
   | YouTubeLoginResultType
+  | SpotifyDeepResearchResultType
   | Record<string, unknown>;
 
 /**
@@ -278,6 +283,12 @@ export function getToolResultComponent({
     return (
       <div key={toolCallId}>
         <YouTubeSetThumbnailResult result={result as YouTubeSetThumbnailResultType} />
+      </div>
+    );
+  } else if (toolName === "spotify_deep_research") {
+    return (
+      <div key={toolCallId}>
+        <SpotifyDeepResearchResult result={result as SpotifyDeepResearchResultType} />
       </div>
     );
   }
