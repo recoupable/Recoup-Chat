@@ -36,7 +36,7 @@ const getSocialDisplayText = ({
   }
 };
 
-export const Social = ({ social }: { social: SocialType }) => {
+export const ArtistSocial = ({ social }: { social: SocialType }) => {
   const platform = social.profile_url.split("/")[0].split(".")[0];
   const displayName = platform === "open" ? "spotify" : platform;
   const hasUsername = Boolean(social.username && social.username.length > 0 && platform !== "youtube");
