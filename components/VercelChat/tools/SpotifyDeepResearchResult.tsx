@@ -1,7 +1,7 @@
 import { ArtistSocialsResultType } from "@/types/spotify";
 import Image from "next/image";
 import spotifyLogo from "@/public/brand-logos/spotify.png";
-import { Social } from "./ArtistSocial";
+import { ArtistSocial } from "./ArtistSocial";
 
 export default function SpotifyDeepResearchResultComponent({
   result,
@@ -44,7 +44,7 @@ export default function SpotifyDeepResearchResultComponent({
 
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
             {result.artistSocials.socials.map((social) => (
-              <Social key={social.id} social={social} />
+              <ArtistSocial key={social.id} social={social} />
             ))}
           </div>
         </div>
