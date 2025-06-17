@@ -1,0 +1,51 @@
+-- Insert agent templates data from agents.json
+-- MYC-2246 P1 - Data migration
+
+INSERT INTO agent_templates (title, description, prompt, tags) VALUES
+  ('Audience Segmentation', 'Identify and analyze key audience segments for targeted marketing and growth.', '', '{"Research"}'),
+  
+  ('Superfan Insights', 'Surface your most engaged listeners for premium engagement and monetization opportunities.', 'Analyze my artist''s fan segments and tell me who our most valuable listeners are. What demographics do they represent, how do they engage with us, and how should we target them in our next campaign? Please provide a downloadable report with actionable recommendations.', '{"Social"}'),
+  
+  ('Social Performance Audit', 'Comprehensive analysis of your social channels to inform digital strategy.', 'Give me a complete health check of my artist''s social media presence. Which posts are performing best, what are fans saying in the comments, and how does engagement vary across platforms? Could you create a diagram showing our social ecosystem with specific areas to improve?', '{"Social"}'),
+  
+  ('Collaboration Scouting', 'Identify high-potential artist collaborations to expand your roster and reach new audiences.', 'Find compatible artists we could collaborate with for mutual audience growth. Identify where our fanbases overlap and differ, then suggest creative cross-promotion campaigns that would benefit both parties and feel authentic to our respective brands.', '{"A&R"}'),
+  
+  ('Tour Strategy', 'Optimize tour routing, venues, and VIP offerings to maximize revenue and fan engagement.', 'We''re planning a tour for next quarter. Based on our streaming data, social engagement, and fan locations, where should we perform to maximize attendance and revenue? What VIP experiences could we offer, and how should we price tickets across different markets?', '{"Tour"}'),
+  
+  ('Brand Positioning', 'Strategic recommendations to refine and elevate your artist''s brand in the market.', 'My artist is ready for a brand refresh. Analyze our current perception across platforms, identify opportunities to evolve while staying authentic, and create visual mockups of what our refreshed identity could look like with implementation steps.', '{"Marketing"}'),
+  
+  ('Release Optimization', 'Leverage data to maximize the impact and reach of your next release.', 'We''re planning our next release. Analyze how our previous releases performed, what fans said about them, and current trends in our genre. Give me recommendations for the ideal release timing, messaging approach, and platform focus to maximize impact.', '{"Assistant"}'),
+  
+  ('Sentiment Analysis', 'Leverage sentiment analysis to shape PR and marketing communications.', 'Analyze the comments on my artist''s recent posts across all platforms. What are fans feeling about our latest release? Are there recurring themes or questions? Create a visual breakdown of the sentiment trends so we can adjust our messaging accordingly.', '{"PR"}'),
+  
+  ('Merchandising Strategy', 'Maximize merch revenue through data-driven product and pricing strategies.', 'Analyze what merchandise is selling best for artists in our genre and with our audience demographics. What price points, designs, and limited-edition strategies are working? Create a data-driven merchandise plan that maximizes profit while delighting fans.', '{"Merchandise"}'),
+  
+  ('Trend Analysis', 'Spot emerging trends relevant to your brand and audience.', 'What topics are trending right now that my artist could naturally join the conversation about? Look at what''s happening on Twitter, analyze if our fans are already discussing these trends, and suggest content ideas that would feel authentic for us to post. Can you create a document with the best opportunities?', '{"Research"}'),
+  
+  ('Instagram Growth Analysis', 'Evaluate follower demographics and engagement to inform content strategy.', 'Dive deep into my artist''s Instagram audience. Who are they, what other content do they engage with, and what potential brand partnerships make sense? Could you create some visual content themes that would resonate with them based on your findings?', '{"Social"}'),
+  
+  ('Competitive Benchmarking', 'Compare performance metrics against industry peers and leaders.', 'Research our top 3 competitor artists across Spotify, Twitter, and Instagram. What strategies are working for them? Where do our audiences overlap? Create a detailed report with tactics we can adapt and opportunities to differentiate ourselves.', '{"Research"}'),
+  
+  ('Content Calendar Planning', 'Develop a coordinated release and content schedule for maximum engagement.', 'Help me develop a strategic content calendar across all our platforms. Analyze what''s worked best for us in the past, when our audience is most active, and incorporate relevant trending topics. Provide a comprehensive plan we can implement over the next month.', '{"Assistant"}'),
+  
+  ('Fan Engagement Strategy', 'Best practices for high-value fan interactions and community management.', 'Review all the comments on our recent Instagram posts and help me develop a response strategy. What questions keep coming up? Which fans should we prioritize engaging with? Create a playbook we can follow for authentic and effective fan interactions.', '{"Social"}'),
+  
+  ('Market Expansion', 'Pinpoint high-potential markets for targeted expansion and investment.', 'Identify untapped audience segments that should be fans of our music but aren''t yet. Where are these potential fans having conversations online, what artists do they currently follow, and how can we reach them? Create a visual strategy map for acquiring these new listeners.', '{"Global"}'),
+  
+  ('Viral Content Innovation', 'Generate creative concepts with high viral potential based on current trends.', 'Based on my artist''s style and what''s currently going viral in our genre, suggest 5 authentic content ideas that have high viral potential. Analyze trending formats across TikTok, Instagram, and Twitter, but make sure the ideas stay true to our artistic identity. Include a strategy for each concept.', '{"Social"}'),
+  
+  ('Brand Partnership Scouting', 'Identify and evaluate potential brand partners for strategic collaborations.', 'Find the perfect brand partnership opportunities for my artist. Analyze our audience demographics, their purchasing habits, and identify brands that share our values. Rank potential partners by fit and revenue potential, with specific collaboration ideas for each.', '{"Marketing"}'),
+  
+  ('Spotify Profile Audit', 'Assess and optimize your Spotify presence for maximum discoverability.', 'Help me build a complete and consistent artist profile starting with our Spotify information. Make sure our bio, image, and socials are synchronized across platforms, and suggest playlist strategies based on what''s working for similar artists in our genre.', '{"Marketing"}'),
+  
+  ('Merchandising Optimization', 'Refine merchandising approach to maximize sales and fan satisfaction.', 'Analyze what merchandise is selling best for artists in our genre and with our audience demographics. What price points, designs, and limited-edition strategies are working? Create a data-driven merchandise plan that maximizes profit while delighting fans.', '{"Merchandise"}'),
+  
+  ('Commerce Funnel Analysis', 'Analyze and optimize the path from content to commerce for increased conversions.', 'Create a strategy that turns our social content into direct sales. Analyze which types of posts drive the most traffic to our shop, identify friction points in our current funnel, and design a seamless path from casual follower to paying customer.', '{"Merchandise"}'),
+  
+  ('Trend Participation', 'Strategic guidance for authentic and effective trend participation.', 'What current trends or challenges could my artist authentically participate in that would increase visibility? Don''t just list trends—explain how we could put our unique spin on them, which platforms we should focus on, and how to time our participation for maximum impact.', '{"PR"}'),
+  
+  ('Podcast Guest Acquisition', 'Find the right creators to feature on your podcast, build relationships, and send outreach emails that spark collaborations.', 'Find 10 creators in unexpected niches (e.g., glitch fashion, gaming modders, TikTok historians, sports crossovers) who share audience overlap with my brand. For each creator: find their email. If no contact is found, skip them and find a different creator. Draft a personalized email inviting them to be a guest on my podcast. Reference their work, explain why the collaboration makes sense, and suggest a creative topic idea for the episode. Show me all the drafted emails and get my approval before sending any outreach emails.', '{"Podcasts", "Outreach"}'),
+  
+  ('Niche Community Infiltration', 'Find overlooked communities that align with your audience, then pitch tailored collaborations to build cultural relevance.', 'Identify 5 hyper-niche communities (e.g., glitch art Discords, solarpunk Reddit threads, biohacking forums, VR modding groups) that share values with my brand. For each: find the moderator/admin contact email. If none, skip and find another. Draft a non corporate outreach email offering to guest-speak, co-host an AMA, or co-create content for their community. Show me all the drafted emails and get my approval before sending any outreach emails.', '{"Community", "Outreach"}'),
+  
+  ('Ghibli YouTube Thumbnail Generation', 'Find a strong video with low CTR, create a Ghibli-style thumbnail, and upload it.', 'Analyze my YouTube channel to identify a video with strong content but low click-through rate that needs thumbnail improvements. Create an eye-catching, brand-aligned thumbnail (ghiblified style) with clear focal points, minimal text, and high contrast colors. Show me the thumbail emage and get approval before uploading to YouTube.', '{"YouTube", "Content", "Social", "Assistant"}'); 
