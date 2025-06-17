@@ -40,7 +40,7 @@ export default function SpotifyDeepResearchResultComponent({
               const hasUsername = social.username && social.username.length > 0 && platform !== "youtube";
               const username = social.username.startsWith('@') ? social.username : `@${social.username}`
               const isYoutube = platform === "youtube" || social.profile_url.includes("youtube.com");
-              const youtubeChannelName = getYoutubeChannelNameFromURL(social.profile_url);
+              const youtubeChannelName = isYoutube ? getYoutubeChannelNameFromURL(social.profile_url) : "";
 
               return (
                 <Link
