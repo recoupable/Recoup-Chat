@@ -1,7 +1,7 @@
 import { ArtistSocialsResultType } from "@/types/spotify";
 import Image from "next/image";
 import spotifyLogo from "@/public/brand-logos/spotify.png";
-import { Social } from "./Social";
+import { Social } from "./ArtistSocial";
 
 export default function SpotifyDeepResearchResultComponent({
   result,
