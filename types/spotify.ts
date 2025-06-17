@@ -108,23 +108,25 @@ export interface SpotifySearchResponse {
   [key: string]: unknown;
 }
 
+export interface Social {
+  id: string;
+  bio: string | null;
+  avatar: string | null;
+  region: string | null;
+  username: string;
+  social_id: string;
+  updated_at: string;
+  profile_url: string;
+  follower_count: number;
+  following_count: number;
+}
+
 export interface ArtistSocialsResultType {
   success: boolean;
   nextSteps: string[];
   artistSocials?: {
     status: string;
-    socials: Array<{
-      id: string;
-      bio: string | null;
-      avatar: string | null;
-      region: string | null;
-      username: string;
-      social_id: string;
-      updated_at: string;
-      profile_url: string;
-      follower_count: number;
-      following_count: number;
-    }>;
+    socials: Array<Social>;
     success: boolean;
     pagination: {
       page: number;
