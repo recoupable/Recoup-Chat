@@ -25,18 +25,16 @@ export const useDropzone = () => {
     [uploadFile, MAX_FILES]
   );
 
-  return {
-    ...useReactDropzone({
-      onDrop,
-      noClick: true, // Only trigger on drag, not on click
-      accept: {
-        "image/jpeg": [".jpg", ".jpeg"],
-        "image/png": [".png"],
-        "image/gif": [".gif"],
-        "image/webp": [".webp"],
-      },
-      multiple: true,
-      maxFiles: MAX_FILES,
-    }),
-  };
+  return useReactDropzone({
+    onDrop,
+    noClick: true, // Only trigger on drag, not on click
+    accept: {
+      "image/jpeg": [".jpg", ".jpeg"],
+      "image/png": [".png"],
+      "image/gif": [".gif"],
+      "image/webp": [".webp"],
+    },
+    multiple: true,
+    maxFiles: MAX_FILES,
+  });
 };
