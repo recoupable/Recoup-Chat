@@ -108,7 +108,7 @@ export interface SpotifySearchResponse {
   [key: string]: unknown;
 }
 
-export interface SpotifyDeepResearchResult {
+export interface ArtistSocialsResultType {
   success: boolean;
   nextSteps: string[];
   artistSocials?: {

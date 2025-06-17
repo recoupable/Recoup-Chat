@@ -13,7 +13,7 @@ import { DeleteArtistResult } from "@/lib/tools/deleteArtist";
 import GetSpotifySearchToolResult from "./tools/GetSpotifySearchToolResult";
 import {
   SpotifySearchResponse,
-  SpotifyDeepResearchResult as SpotifyDeepResearchResultType,
+  ArtistSocialsResultType,
 } from "@/types/spotify";
 import { ToolInvocation } from "ai";
 import UpdateArtistInfoSuccess from "./tools/UpdateArtistInfoSuccess";
@@ -78,7 +78,7 @@ type ToolResult =
   | YouTubeRevenueResultType
   | YouTubeLoginResultType
   | SearchWebResultType
-  | SpotifyDeepResearchResultType
+  | ArtistSocialsResultType
   | Record<string, unknown>;
 
 /**
@@ -296,7 +296,7 @@ export function getToolResultComponent({
   } else if (toolName === "spotify_deep_research") {
     return (
       <div key={toolCallId}>
-        <SpotifyDeepResearchResult result={result as SpotifyDeepResearchResultType} />
+        <SpotifyDeepResearchResult result={result as ArtistSocialsResultType} />
       </div>
     );
   }

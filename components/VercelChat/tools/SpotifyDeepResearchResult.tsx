@@ -1,4 +1,4 @@
-import { SpotifyDeepResearchResult as SpotifyDeepResearchResultType } from "@/types/spotify";
+import { ArtistSocialsResultType } from "@/types/spotify";
 import Image from "next/image";
 import Link from "next/link";
 import spotifyLogo from "@/public/brand-logos/spotify.png";
@@ -6,7 +6,7 @@ import spotifyLogo from "@/public/brand-logos/spotify.png";
 export default function SpotifyDeepResearchResultComponent({
   result,
 }: {
-  result: SpotifyDeepResearchResultType;
+  result: ArtistSocialsResultType;
 }) {
   if (!result.success) {
     return (
