@@ -53,7 +53,9 @@ export default function SpotifyDeepResearchResultComponent({
                       @{social.username}
                     </span>
                   ) : (
-                    <span className="text-xs text-gray-500 italic">No username</span>
+                    <span className="text-xs text-gray-500 truncate max-w-full">
+                      {social.profile_url}
+                    </span>
                   )}
                 </Link>
               );
