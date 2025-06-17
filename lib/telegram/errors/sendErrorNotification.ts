@@ -1,7 +1,7 @@
 import { sendMessage } from "@/lib/telegram/sendMessage";
 import { formatErrorMessage } from "./formatErrorMessage";
 import { logErrorToSupabase } from "@/lib/supabase/errorLogs/insertErrorLogs";
-import { ErrorContext } from "@/lib/utils/extractToolName";
+import { ErrorContext } from "@/types/ErrorContext";
 
 /**
  * Sends error notification to Telegram and logs to Supabase
