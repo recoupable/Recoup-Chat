@@ -1,5 +1,5 @@
 import { escapeTelegramMarkdown } from "./escapeTelegramMarkdown";
-import { ErrorContext } from "./sendErrorNotification";
+import { ErrorContext } from "@/types/ErrorContext";
 
 /**
  * Formats error message for Telegram notification and escapes for Telegram Markdown.
