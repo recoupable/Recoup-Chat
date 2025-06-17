@@ -36,6 +36,8 @@ export default function SpotifyDeepResearchResultComponent({
             {result.artistSocials.socials.map((social) => {
               const platform = social.profile_url.split("/")[0].split(".")[0];
               const displayName = platform === "open" ? "spotify" : platform;
+              const hasUsername = social.username && social.username.length > 0 && platform !== "youtube";
+              const username = social.username.startsWith('@') ? social.username : `@${social.username}`
 
               return (
                 <Link
@@ -48,9 +50,9 @@ export default function SpotifyDeepResearchResultComponent({
                   <span className="text-sm font-medium capitalize mb-1">
                     {displayName}
                   </span>
-                  {social.username && social.username.length > 0 && platform !== "youtube" ? (
+                  {hasUsername? (
                     <span className="text-xs text-gray-600 dark:text-gray-400 truncate max-w-full">
-                      {social.username.startsWith('@') ? social.username : `@${social.username}`}
+                      {username}
                     </span>
                   ) : (
                     <span className="text-xs text-gray-500 truncate max-w-full">
