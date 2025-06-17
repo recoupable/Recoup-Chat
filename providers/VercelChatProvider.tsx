@@ -3,7 +3,6 @@ import React, {
   useContext,
   ReactNode,
   useEffect,
-  useRef,
 } from "react";
 import { useVercelChat } from "@/hooks/useVercelChat";
 import { Message, UseChatHelpers } from "@ai-sdk/react";
