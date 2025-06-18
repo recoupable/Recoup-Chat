@@ -11,10 +11,8 @@ import DeleteArtistToolCall from "./tools/DeleteArtistToolCall";
 import DeleteArtistToolResult from "./tools/DeleteArtistToolResult";
 import { DeleteArtistResult } from "@/lib/tools/deleteArtist";
 import GetSpotifySearchToolResult from "./tools/GetSpotifySearchToolResult";
-import {
-  SpotifySearchResponse,
-  ArtistSocialsResultType,
-} from "@/types/spotify";
+import { SpotifySearchResponse } from "@/types/spotify";
+import { ArtistSocialsResultType } from "@/types/ArtistSocials";
 import { ToolInvocation } from "ai";
 import UpdateArtistInfoSuccess from "./tools/UpdateArtistInfoSuccess";
 import { UpdateAccountInfoResult } from "@/lib/tools/updateAccountInfo";

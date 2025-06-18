@@ -1,4 +1,4 @@
-import { ArtistSocialsResultType } from "@/types/spotify";
+import { ArtistSocialsResultType } from "@/types/ArtistSocials";
 import Image from "next/image";
 import spotifyLogo from "@/public/brand-logos/spotify.png";
 import { ArtistSocial } from "./ArtistSocial";

@@ -2,7 +2,7 @@ import { z } from "zod";
 import { tool } from "ai";
 import { getArtistSocials } from "../api/artist/getArtistSocials";
 import { SPOTIFY_DEEP_RESEARCH_REQUIREMENTS } from "../consts";
-import { ArtistSocialsResultType } from "@/types/spotify";
+import { ArtistSocialsResultType } from "@/types/ArtistSocials";
 
 const TOOL_CHAIN_STEPS = [
   "get_artist_socials - get spotify account",
