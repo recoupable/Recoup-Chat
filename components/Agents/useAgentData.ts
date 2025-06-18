@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-// Define Agent type for agent metadata loaded from agents.json
+// Define Agent type for agent metadata loaded from database
 export interface Agent {
   title: string;
   description: string;
@@ -16,7 +16,7 @@ export function useAgentData() {
   const [showAllTags, setShowAllTags] = useState(false);
 
   useEffect(() => {
-    fetch("/agents.json")
+    fetch("/api/agent-templates")
       .then((res) => res.json())
       .then((data: Agent[]) => {
         setAgents(data);
