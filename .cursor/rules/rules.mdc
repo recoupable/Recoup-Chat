@@ -1,0 +1,42 @@
+---
+description: Documenting your thinking process, research and implementation plans
+globs: 
+alwaysApply: true
+---
+During your interaction with the user, if you find anything reusable in this project (e.g. version of a library, model name), especially about a fix to a mistake you made or a correction you received, you should take note in the `Lessons` section in the [scratchpad.mdc](mdc:.cursor/rules/scratchpad.mdc) file so you will not make the same mistake again.
+
+# Lessons
+
+## User Specified Lessons
+
+- You have an env in ./.env Use it.
+- Read the file before you try to edit it.
+- Keep all files under 100 lines of code to maintain readability and follow single responsibility principle
+- Split hooks/components when they grow too large or handle multiple concerns
+    
+## Cursor learned
+
+- For search results, ensure proper handling of different character encodings (UTF-8) for international queries
+- When implementing file uploads:
+
+  - Always validate response types and add proper error handling
+  - Add progress tracking, size validation, and retry logic
+  - Use shared utilities for common operations to maintain consistency
+  - Consider adding progress tracking and retry logic
+  - When using Node.js SDKs in Next.js:
+    - Check for Node.js specific dependencies
+    - Use separate client/server implementations
+    - Watch for logger and file system dependencies
+    - Properly type ReadableStreams for web environment
+    - Keep authenticated clients at module level for efficiency
+    - Remove duplicate code and types when possible
+    - Maintain consistent error handling patterns
+
+You should use the [scratchpad.md](mdc:scratchpad.md) file as a Scratchpad to organize your thoughts. Especially when you receive a new task, you should first review the content of the Scratchpad, clear old different task if necessary, first explain the task, and plan the steps you need to take to complete the task. You can use todo markers to indicate the progress, e.g.
+[X] Task 1
+[ ] Task 2
+
+Also update the progress of the task in the Scratchpad when you finish a subtask.
+Especially when you finished a milestone, it will help to improve your depth of task accomplishment to use the Scratchpad to reflect and plan.
+The goal is to help you maintain a big picture as well as the progress of the task. Always refer to the Scratchpad when you plan the next step.
+
