@@ -210,7 +210,7 @@
 .markdown pre {
   @apply bg-gray-100;
   color: #abb2bf;
-  border-radius: 6px;
+  @apply rounded-xl;
   overflow-x: auto;
   margin: 1.2em 0;
   max-width: 100%;
