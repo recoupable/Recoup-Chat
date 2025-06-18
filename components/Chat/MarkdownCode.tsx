@@ -23,7 +23,7 @@ const MarkdownCode: Components['code'] = (props: CodeBlockProps) => {
           style={oneLight}
           customStyle={{ 
             margin: 0,
-            borderRadius: "0.375rem",
+            borderRadius: "0.75rem",
             fontSize: "0.9em",
             lineHeight: 1.6,
           }}
