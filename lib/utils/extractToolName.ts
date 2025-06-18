@@ -32,6 +32,6 @@ export function extractToolName(context: ErrorContext): string | null {
     return 'contact_team';
   }
   
-  // Fall back to path-based extraction
-  return context.path?.split('/').pop() || null;
+  // Fall back to hardcoded tool name for chat API
+  return 'chat';
 } 

@@ -11,7 +11,6 @@ export function formatErrorMessage(params: ErrorContext): string {
     error,
     email = "unknown",
     roomId = "new chat",
-    path,
     messages,
   } = params;
   const timestamp = new Date().toISOString();
@@ -27,9 +26,7 @@ export function formatErrorMessage(params: ErrorContext): string {
     message += `Error Type: ${error.name}\n\n`;
   }
 
-  if (path) {
-    message += `API Path: ${path}\n\n`;
-  }
+  message += `API Path: /api/chat\n\n`;
 
   if (error.stack) {
     const stackLines = error.stack.split("\n").slice(0, 8);

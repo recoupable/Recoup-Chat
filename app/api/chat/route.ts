@@ -108,7 +108,6 @@ export async function POST(request: NextRequest) {
             } catch (_) {
               sendErrorNotification({
                 ...body,
-                path: '/api/chat',
                 error: serializeError(_),
               });
               console.error("Failed to save chat", _);
@@ -129,7 +128,6 @@ export async function POST(request: NextRequest) {
       onError: (e) => {
         sendErrorNotification({
           ...body,
-          path: '/api/chat',
           error: serializeError(e),
         });
         console.error("Error in chat API:", e);
@@ -139,7 +137,6 @@ export async function POST(request: NextRequest) {
   } catch (e) {
     sendErrorNotification({
       ...body,
-      path: '/api/chat',
       error: serializeError(e),
     });
     console.error("Global error in chat API:", e);
