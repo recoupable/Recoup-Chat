@@ -12,6 +12,7 @@ import DeleteArtistToolResult from "./tools/DeleteArtistToolResult";
 import { DeleteArtistResult } from "@/lib/tools/deleteArtist";
 import GetSpotifySearchToolResult from "./tools/GetSpotifySearchToolResult";
 import { SpotifySearchResponse } from "@/types/spotify";
+import { ArtistSocialsResultType } from "@/types/ArtistSocials";
 import { ToolInvocation } from "ai";
 import UpdateArtistInfoSuccess from "./tools/UpdateArtistInfoSuccess";
 import { UpdateAccountInfoResult } from "@/lib/tools/updateAccountInfo";
@@ -50,6 +51,7 @@ import type { YouTubeSetThumbnailResult as YouTubeSetThumbnailResultType } from 
 import SearchWebSkeleton from "./tools/SearchWebSkeleton";
 import SpotifyDeepResearchSkeleton from "./tools/SpotifyDeepResearchSkeleton";
 import SearchWebResult, { SearchWebResultType } from "./tools/SearchWebResult";
+import SpotifyDeepResearchResult from "./tools/SpotifyDeepResearchResult";
 
 /**
  * Interface for tool call props
@@ -74,6 +76,7 @@ type ToolResult =
   | YouTubeRevenueResultType
   | YouTubeLoginResultType
   | SearchWebResultType
+  | ArtistSocialsResultType
   | Record<string, unknown>;
 
 /**
@@ -286,6 +289,12 @@ export function getToolResultComponent({
     return (
       <div key={toolCallId}>
         <SearchWebResult result={result as SearchWebResultType} />
+      </div>
+    );
+  } else if (toolName === "spotify_deep_research") {
+    return (
+      <div key={toolCallId}>
+        <SpotifyDeepResearchResult result={result as ArtistSocialsResultType} />
       </div>
     );
   }
