@@ -9,7 +9,7 @@ export function usePureFileAttachments() {
 
   const uploadFile = async (file: File) => {
     // Only allow image files for now
-    const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'application/pdf'];
     if (!allowedTypes.includes(file.type)) {
       console.error('File type not supported:', file.type);
       return;

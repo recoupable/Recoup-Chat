@@ -14,7 +14,7 @@ function PureAttachmentsButton() {
                 multiple
                 onChange={handleFileChange}
                 tabIndex={-1}
-                accept="image/jpeg,image/png,image/gif,image/webp"
+                accept="image/jpeg,image/png,image/gif,image/webp, application/pdf"
             />
             <Button
                 data-testid="attachments-button"
