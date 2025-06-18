@@ -26,10 +26,15 @@ export async function logErrorToSupabase(context: ErrorContext): Promise<boolean
         stack_trace: context.error.stack || null
       })
 
-    return !error
+    if (error) {
+      console.error("Failed to log error to Supabase:", error);
+      return false;
+    }
+    
+    return true;
 
-  } catch {
-    // Silently fail - don't break the error flow
+  } catch (err) {
+    console.error("Exception in logErrorToSupabase:", err);
     return false
   }
 } 
