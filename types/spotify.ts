@@ -1,3 +1,4 @@
+import { Database } from "./database.types";
 // Spotify Artist Search Result Type
 export interface SpotifyArtistSearchResult {
   id: string;
@@ -108,18 +109,13 @@ export interface SpotifySearchResponse {
   [key: string]: unknown;
 }
 
-export interface Social {
-  id: string;
-  bio: string | null;
-  avatar: string | null;
-  region: string | null;
-  username: string;
+type SocialBase = Omit<Database["public"]["Tables"]["socials"]["Row"], "followerCount" | "followingCount">;
+
+export type Social = SocialBase & {
   social_id: string;
-  updated_at: string;
-  profile_url: string;
   follower_count: number;
-  following_count: number;
-}
+  following_count: number; 
+};
 
 export interface ArtistSocialsResultType {
   success: boolean;
