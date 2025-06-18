@@ -3,17 +3,10 @@ import { Social as SocialType } from "@/types/spotify";
 
 const ArtistSocialDisplayText = ({ social }: { social: SocialType }) => {
   const platform = social.profile_url.split("/")[0].split(".")[0];
-  const hasUsername = Boolean(
-    social.username && social.username.length > 0 && platform !== "youtube"
-  );
-  const username = social.username.startsWith("@")
-    ? social.username
-    : `@${social.username}`;
-  const isYoutube =
-    platform === "youtube" || social.profile_url.includes("youtube.com");
-  const youtubeChannelName = isYoutube
-    ? getYoutubeChannelNameFromURL(social.profile_url)
-    : "";
+  const hasUsername = Boolean(social.username && social.username.length > 0 && platform !== "youtube");
+  const username = social.username.startsWith("@") ? social.username : `@${social.username}`;
+  const isYoutube = platform === "youtube" || social.profile_url.includes("youtube.com");
+  const youtubeChannelName = isYoutube ? getYoutubeChannelNameFromURL(social.profile_url) : "";
 
   if (hasUsername) {
     return (
