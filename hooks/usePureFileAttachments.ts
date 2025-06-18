@@ -6,7 +6,7 @@ export function usePureFileAttachments() {
   const { setAttachments } = useVercelChatContext();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const MAX_FILES = 10;
-  const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+  const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', "application/pdf"];
 
   const uploadFile = async (file: File) => {
     // Only allow image files for now
