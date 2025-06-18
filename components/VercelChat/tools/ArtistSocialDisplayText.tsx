@@ -1,5 +1,5 @@
 import { getYoutubeChannelNameFromURL } from "@/lib/youtube/getYoutubeChannelNameFromURL";
-import { Social as SocialType } from "@/types/spotify";
+import { Social as SocialType } from "@/types/ArtistSocials";
 
 const ArtistSocialDisplayText = ({ social }: { social: SocialType }) => {
   const platform = social.profile_url.split("/")[0].split(".")[0];
