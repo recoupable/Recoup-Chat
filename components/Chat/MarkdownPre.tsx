@@ -9,7 +9,7 @@ const MarkdownPre: React.FC<MarkdownPreProps & React.HTMLAttributes<HTMLPreEleme
   ...props 
 }) => {
   return (
-    <pre className="max-w-full overflow-x-auto p-4 bg-gray-100 rounded-md my-2" {...props}>
+    <pre {...props}>
       {children}
     </pre>
   );
