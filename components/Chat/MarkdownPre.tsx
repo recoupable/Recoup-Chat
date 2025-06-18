@@ -9,7 +9,7 @@ const MarkdownPre: React.FC<MarkdownPreProps & React.HTMLAttributes<HTMLPreEleme
   ...props 
 }) => {
   return (
-    <pre className="!max-w-xs md:!max-w-2xl !mx-auto" {...props}>
+    <pre {...props}>
       {children}
     </pre>
   );

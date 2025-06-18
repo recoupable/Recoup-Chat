@@ -216,6 +216,7 @@
   max-width: 100%;
   box-sizing: border-box;
   word-break: break-word;
+  @apply max-w-xs md:max-w-2xl mx-auto;
 }
 
 /* Pre with code blocks inside */
