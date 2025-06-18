@@ -404,7 +404,6 @@
 
   /* Prevent code blocks from causing horizontal scroll */
   .markdown pre {
-    max-width: 100%;
     overflow-x: auto;
     white-space: pre-wrap;
   }
