@@ -27,7 +27,6 @@ const MarkdownCode: Components['code'] = (props: CodeBlockProps) => {
             fontSize: "0.9em",
             lineHeight: 1.6,
           }}
-          showLineNumbers
           wrapLines
           wrapLongLines
         >

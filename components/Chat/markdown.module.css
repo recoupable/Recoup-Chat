@@ -208,7 +208,7 @@
 }
 
 .markdown pre {
-  background-color: rgb(40, 44, 52);
+  @apply bg-gray-100;
   color: #abb2bf;
   border-radius: 6px;
   overflow-x: auto;
