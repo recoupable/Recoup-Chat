@@ -1,4 +1,4 @@
-import { Social as SocialType } from "@/types/spotify";
+import { Social as SocialType } from "@/types/ArtistSocials";
 import Link from "next/link";
 import ArtistSocialDisplayText from "./ArtistSocialDisplayText";
 
