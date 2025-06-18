@@ -211,14 +211,12 @@
   background-color: rgb(40, 44, 52);
   color: #abb2bf;
   border-radius: 6px;
-  padding: 1em;
   overflow-x: auto;
   margin: 1.2em 0;
   max-width: 100%;
   box-sizing: border-box;
   word-break: break-word;
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  @apply !rounded-xl;
 }
 
 /* Pre with code blocks inside */
