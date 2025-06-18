@@ -6,10 +6,10 @@ export function usePureFileAttachments() {
   const { setAttachments } = useVercelChatContext();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const MAX_FILES = 10;
+  const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'application/pdf'];
 
   const uploadFile = async (file: File) => {
     // Only allow image files for now
-    const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'application/pdf'];
     if (!allowedTypes.includes(file.type)) {
       console.error('File type not supported:', file.type);
       return;
@@ -96,6 +96,7 @@ export function usePureFileAttachments() {
     fileInputRef,
     handleFileChange,
     MAX_FILES,
-    uploadFile
+    uploadFile,
+    allowedTypes
   };
 } 

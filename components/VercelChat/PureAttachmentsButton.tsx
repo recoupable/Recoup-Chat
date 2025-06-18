@@ -3,7 +3,7 @@ import { Button } from "../ui/button";
 import { usePureFileAttachments } from "@/hooks/usePureFileAttachments";
 
 function PureAttachmentsButton() {
-    const { fileInputRef, handleFileChange } = usePureFileAttachments();
+    const { fileInputRef, handleFileChange, allowedTypes } = usePureFileAttachments();
 
     return (
         <>
@@ -14,7 +14,7 @@ function PureAttachmentsButton() {
                 multiple
                 onChange={handleFileChange}
                 tabIndex={-1}
-                accept="image/jpeg,image/png,image/gif,image/webp, application/pdf"
+                accept={allowedTypes.join(",")}
             />
             <Button
                 data-testid="attachments-button"
