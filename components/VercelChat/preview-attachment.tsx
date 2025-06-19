@@ -1,5 +1,6 @@
 import type { Attachment } from 'ai';
 import { Loader2, FileIcon } from 'lucide-react';
+import { PDFIcon } from "./icons";
 
 export const PreviewAttachment = ({
   attachment,
@@ -12,23 +13,25 @@ export const PreviewAttachment = ({
 
   return (
     <div data-testid="input-attachment-preview" className="flex flex-col gap-2">
-      <div className="w-20 h-16 aspect-video bg-muted rounded-md relative flex flex-col items-center justify-center overflow-hidden">
+      <div className="w-16 h-16 aspect-square bg-transparent rounded-xl relative flex flex-col items-center justify-center overflow-hidden">
         {contentType ? (
-          contentType.startsWith('image') ? (
-            <img
-              key={url}
-              src={url}
-              alt={name ?? 'An image attachment'}
-              className="rounded-md size-full object-cover"
-            />
-          ): (
-            // Generic file icon
-            <div className="flex items-center justify-center text-zinc-500">
-              <FileIcon size={24} />
-            </div>
-          )
+          <>
+            {contentType.startsWith('image') && (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                key={url}
+                src={url}
+                alt={name ?? 'An image attachment'}
+                className="rounded-md size-full object-cover"
+              />
+            )}
+            {contentType === 'application/pdf' && (
+              <div className="flex items-center justify-center bg-transparent">
+                <PDFIcon />
+              </div>
+            )}
+          </>
         ) : (
-          // Fallback for unknown type
           <div className="flex items-center justify-center text-zinc-500">
             <FileIcon size={24} />
           </div>
