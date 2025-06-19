@@ -15,7 +15,7 @@ export default function GetArtistSocialsResult({
   } as ArtistSocialsResultType;
   return (
     <>
-      <SpotifyDeepResearchResult title="Artist Socials Found" icon={<Music />} result={processedResult} />
+      <SpotifyDeepResearchResult title="Artist Socials Found" errorText="Artist Socials Not Found" icon={<Music />} result={processedResult} />
     </>
   );
 }

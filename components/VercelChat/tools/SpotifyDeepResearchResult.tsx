@@ -8,15 +8,17 @@ export default function SpotifyDeepResearchResultComponent({
   result,
   title,
   icon,
+  errorText,
 }: {
   result: ArtistSocialsResultType;
   title?: string;
   icon?: ReactNode;
+  errorText?: string;
 }) {
   if (!result.success) {
     return (
       <div className="flex items-center gap-2 p-3 bg-destructive/10 text-destructive rounded-md">
-        <span>Spotify deep research failed</span>
+        <span>{errorText ?? "Spotify deep research failed"}</span>
       </div>
     );
   }
