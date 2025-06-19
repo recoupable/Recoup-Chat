@@ -67,6 +67,7 @@ const useArtists = () => {
       setArtists(data.artists);
       if (data.artists.length === 0) {
         setSelectedArtist(null);
+        artistMode.toggleCreation();
         setIsLoading(false);
         return;
       }
