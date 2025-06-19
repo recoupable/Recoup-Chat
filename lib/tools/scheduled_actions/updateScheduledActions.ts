@@ -6,14 +6,16 @@ import { Tables } from "@/types/database.types";
 type ScheduledAction = Tables<"scheduled_actions">;
 
 export interface UpdateScheduledActionResult {
-  action: ScheduledAction;
+  actions: ScheduledAction[];
   message: string;
   error?: string;
 }
 
 const updateScheduledAction = tool({
   description: `
-  Update an existing scheduled action in the system. Requires the action ID and the fields to update.
+  Update multiple existing scheduled actions in the system. Requires an array of action IDs and the fields to update.
+  The same updates will be applied to all specified actions.
+
   Updatable fields include:
   - title: A descriptive name for the scheduled action
   - prompt: The instruction or prompt to be executed
@@ -24,15 +26,21 @@ const updateScheduledAction = tool({
   
   The schedule parameter must be a valid cron expression (e.g. "0 0 * * *" for daily at midnight).
   You cannot update the id, created_at, or updated_at fields.
+
+  All specified actions will receive the same updates. If you need different updates for different actions,
+  make multiple calls to this tool.
   `,
   parameters: z.object({
-    id: z.string().describe("The ID of the scheduled action to update"),
+    ids: z
+      .array(z.string())
+      .min(1)
+      .describe("Array of IDs of the scheduled actions to update"),
     updates: z
       .object({
         title: z
           .string()
           .optional()
-          .describe("The new title for the scheduled action"),
+          .describe("The new title for the scheduled actions"),
         prompt: z
           .string()
           .optional()
@@ -40,39 +48,47 @@ const updateScheduledAction = tool({
         schedule: z
           .string()
           .optional()
-          .describe("New cron expression for when the action should run"),
+          .describe("New cron expression for when the actions should run"),
         enabled: z
           .boolean()
           .optional()
-          .describe("Whether the action should be enabled or disabled"),
+          .describe("Whether the actions should be enabled or disabled"),
         account_id: z
           .string()
           .optional()
-          .describe("The new account ID of the user who owns the action"),
+          .describe("The new account ID of the user who owns the actions"),
         artist_account_id: z
           .string()
           .optional()
-          .describe("The new artist account ID this action is for"),
+          .describe("The new artist account ID these actions are for"),
       })
-      .describe("The fields to update on the scheduled action"),
+      .describe("The fields to update on the scheduled actions"),
   }),
-  execute: async ({ id, updates }): Promise<UpdateScheduledActionResult> => {
+  execute: async ({ ids, updates }): Promise<UpdateScheduledActionResult> => {
     try {
-      const action = await updateScheduledActions({ id, updates });
+      const actions = await updateScheduledActions({ ids, updates });
+      const updatedCount = actions.length;
+      const totalCount = ids.length;
+      const partialUpdate = updatedCount !== totalCount;
+
+      let message = `Successfully updated ${updatedCount} scheduled action(s)`;
+      if (partialUpdate) {
+        message += ` (${totalCount - updatedCount} actions were not found or could not be updated)`;
+      }
 
       return {
-        action,
-        message: `Successfully updated scheduled action "${action.title}"`,
+        actions,
+        message,
       };
     } catch (error) {
       const errorMessage =
         error instanceof Error
           ? error.message
-          : "Failed to update scheduled action for unknown reason";
+          : "Failed to update scheduled actions for unknown reason";
       return {
-        action: {} as ScheduledAction,
+        actions: [],
         error: errorMessage,
-        message: `Failed to update scheduled action: ${errorMessage}`,
+        message: `Failed to update scheduled actions: ${errorMessage}`,
       };
     }
   },
