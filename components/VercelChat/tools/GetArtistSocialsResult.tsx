@@ -23,7 +23,7 @@ export default function GetArtistSocialsResult({
   }
 
   const hasSocials = result.socials.length > 0;
-  const socials = result.socials;
+  const socials = hasSocials ? result.socials : [];
 
   return (
     <div className="flex flex-col gap-4 p-5 border rounded-xl bg-gradient-to-b from-white to-gray-50 dark:from-gray-900 dark:to-gray-950 shadow-sm">
