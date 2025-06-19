@@ -13,13 +13,14 @@ export interface GetScheduledActionsResult {
 
 const getScheduledActions = tool({
   description: `
-  Retrieve scheduled actions from the system. Can filter by account_id, artist_account_id, and enabled status.
+  Retrieve scheduled actions from the system. Can filter by account_id, artist_account_ids, and enabled status.
   All filter parameters are optional:
   - account_id: Filter actions by the user who created them
-  - artist_account_id: Filter actions by the artist they are for
+  - artist_account_ids: Filter actions by an array of artist IDs they are for
   - enabled: Filter actions by their enabled status (true/false)
   
   If no filters are provided, returns all scheduled actions the user has access to.
+  If artist_account_ids is provided, returns actions for any of the specified artists.
   `,
   parameters: z.object({
     account_id: z
@@ -28,11 +29,11 @@ const getScheduledActions = tool({
       .describe(
         "Optional: Filter actions by the account ID of the user who created them. Get this from the system prompt. Do not ask for this."
       ),
-    artist_account_id: z
-      .string()
+    artist_account_ids: z
+      .array(z.string())
       .optional()
       .describe(
-        "Optional: Filter actions by the artist account ID. If not provided, get this from the system prompt as the active artist id."
+        "Optional: Filter actions by an array of artist account IDs. If not provided, get the active artist id from the system prompt."
       ),
     enabled: z
       .boolean()
@@ -41,19 +42,23 @@ const getScheduledActions = tool({
   }),
   execute: async ({
     account_id,
-    artist_account_id,
+    artist_account_ids,
     enabled,
   }): Promise<GetScheduledActionsResult> => {
     try {
       const actions = await selectScheduledActions({
         account_id,
-        artist_account_id,
+        artist_account_ids,
         enabled,
       });
 
+      const artistCount = artist_account_ids?.length ?? 0;
+      const artistMessage =
+        artistCount > 0 ? ` across ${artistCount} artist(s)` : "";
+
       return {
         actions,
-        message: `Successfully retrieved ${actions.length} scheduled action(s)`,
+        message: `Successfully retrieved ${actions.length} scheduled action(s)${artistMessage}`,
       };
     } catch (error) {
       const errorMessage =
