@@ -13,7 +13,7 @@ export const PreviewAttachment = ({
 
   return (
     <div data-testid="input-attachment-preview" className="flex flex-col gap-2">
-      <div className="w-16 h-16 aspect-square bg-transparent rounded-xl relative flex flex-col items-center justify-center overflow-hidden">
+      <div className="w-16 h-16 bg-transparent rounded-xl relative flex flex-col items-center justify-center overflow-hidden">
         {contentType ? (
           <>
             {contentType.startsWith('image') && (
