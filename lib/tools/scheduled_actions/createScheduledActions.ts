@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { tool } from "ai";
-import { insertScheduledActions } from "../supabase/scheduled_actions/insertScheduledActions";
+import { insertScheduledActions } from "@/lib/supabase/scheduled_actions/insertScheduledActions";
 import { Tables } from "@/types/database.types";
 
 type ScheduledAction = Tables<"scheduled_actions">;
