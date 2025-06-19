@@ -33,6 +33,7 @@ export const useDropzone = () => {
       "image/png": [".png"],
       "image/gif": [".gif"],
       "image/webp": [".webp"],
+      "application/pdf": [".pdf"],
     },
     multiple: true,
     maxFiles: MAX_FILES,
