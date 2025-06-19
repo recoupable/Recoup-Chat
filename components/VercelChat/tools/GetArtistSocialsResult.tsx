@@ -5,14 +5,14 @@ import { Music } from "lucide-react";
 export default function GetArtistSocialsResult({
   result,
 }: {
-  result: ArtistSocialsResultType["artistSocials"];
+  result: ArtistSocialsResultType;
 }) {
   const processedResult = {
     success: result?.status === "success",
     artistSocials: {
       socials: result?.socials,
-    },
-  } as ArtistSocialsResultType;
+    } as ArtistSocialsResultType,
+  };
   return (
     <>
       <SpotifyDeepResearchResult title="Artist Socials Found" errorText="Artist Socials Not Found" icon={<Music />} result={processedResult} />

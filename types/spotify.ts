@@ -1,3 +1,4 @@
+import { Social } from "./ArtistSocials";
 // Spotify Artist Search Result Type
 export interface SpotifyArtistSearchResult {
   id: string;
@@ -106,4 +107,11 @@ export interface SpotifySearchResponse {
   episodes?: { items: SpotifyEpisodeSearchResult[]; total: number };
   audiobooks?: { items: SpotifyAudiobookSearchResult[]; total: number };
   [key: string]: unknown;
+}
+
+export interface SpotifyDeepResearchResultUIType {
+  success: boolean;
+  artistSocials: {
+    socials: Array<Social>;
+  };
 }

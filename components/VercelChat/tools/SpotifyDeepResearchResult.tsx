@@ -1,8 +1,8 @@
-import { ArtistSocialsResultType } from "@/types/ArtistSocials";
 import Image from "next/image";
 import spotifyLogo from "@/public/brand-logos/spotify.png";
 import { ArtistSocial } from "./ArtistSocial";
 import { ReactNode } from "react";
+import { SpotifyDeepResearchResultUIType } from "@/types/spotify";
 
 export default function SpotifyDeepResearchResultComponent({
   result,
@@ -10,7 +10,7 @@ export default function SpotifyDeepResearchResultComponent({
   icon,
   errorText,
 }: {
-  result: ArtistSocialsResultType;
+  result: SpotifyDeepResearchResultUIType;
   title?: string;
   icon?: ReactNode;
   errorText?: string;

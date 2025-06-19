@@ -11,7 +11,7 @@ import DeleteArtistToolCall from "./tools/DeleteArtistToolCall";
 import DeleteArtistToolResult from "./tools/DeleteArtistToolResult";
 import { DeleteArtistResult } from "@/lib/tools/deleteArtist";
 import GetSpotifySearchToolResult from "./tools/GetSpotifySearchToolResult";
-import { SpotifySearchResponse } from "@/types/spotify";
+import { SpotifyDeepResearchResultUIType, SpotifySearchResponse } from "@/types/spotify";
 import { ArtistSocialsResultType } from "@/types/ArtistSocials";
 import { ToolInvocation } from "ai";
 import UpdateArtistInfoSuccess from "./tools/UpdateArtistInfoSuccess";
@@ -79,6 +79,7 @@ type ToolResult =
   | YouTubeLoginResultType
   | SearchWebResultType
   | ArtistSocialsResultType
+  | SpotifyDeepResearchResultUIType
   | Record<string, unknown>;
 
 /**
@@ -302,13 +303,13 @@ export function getToolResultComponent({
   } else if (toolName === "spotify_deep_research") {
     return (
       <div key={toolCallId}>
-        <SpotifyDeepResearchResult result={result as ArtistSocialsResultType} />
+        <SpotifyDeepResearchResult result={result as SpotifyDeepResearchResultUIType} />
       </div>
     );
   } else if (toolName === "get_artist_socials") {
     return (
       <div key={toolCallId}>
-        <GetArtistSocialsResult result={result as ArtistSocialsResultType["artistSocials"]} />
+        <GetArtistSocialsResult result={result as ArtistSocialsResultType} />
       </div>
     );
   }
