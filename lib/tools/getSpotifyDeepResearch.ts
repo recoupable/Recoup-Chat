@@ -2,7 +2,7 @@ import { z } from "zod";
 import { tool } from "ai";
 import { getArtistSocials } from "../api/artist/getArtistSocials";
 import { SPOTIFY_DEEP_RESEARCH_REQUIREMENTS } from "../consts";
-import { ArtistSocialsResultType } from "@/types/ArtistSocials";
+import { SpotifyDeepResearchResultUIType } from "@/types/spotify";
 
 const TOOL_CHAIN_STEPS = [
   "get_artist_socials - get spotify account",
@@ -32,14 +32,14 @@ const getSpotifyDeepResearch = tool({
     artist_account_id: z.string().describe("Artist account ID to research"),
   }),
   // It returns Artist's social media accounts, that's why we need to use ArtistSocialsResultType
-  execute: async ({ artist_account_id }): Promise<ArtistSocialsResultType> => {
+  execute: async ({ artist_account_id }): Promise<SpotifyDeepResearchResultUIType> => {
     const data = await getArtistSocials(artist_account_id);
     return {
       artistSocials: data,
       artist_account_id,
       success: true,
       nextSteps: TOOL_CHAIN_STEPS,
-    } as ArtistSocialsResultType; // It returns Artist's social media accounts, that's why we need to use ArtistSocialsResultType
+    } as SpotifyDeepResearchResultUIType; // It returns Artist's social media accounts, that's why we need to use ArtistSocialsResultType
   },
 });
 
