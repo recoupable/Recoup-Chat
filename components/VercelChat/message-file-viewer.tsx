@@ -9,7 +9,6 @@ const MessageFileViewer = ({
 }) => {
   if (!experimentalAttachment || experimentalAttachment.length === 0)
     return null;
-  console.log("experimentalAttachment", experimentalAttachment);
   return (
     <div className="max-w-[17rem] flex gap-2 flex-wrap justify-end ml-auto">
       {experimentalAttachment?.map((attachment) => {
