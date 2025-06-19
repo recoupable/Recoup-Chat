@@ -1,11 +1,11 @@
 import { Loader } from "lucide-react";
 
-export default function SpotifyDeepResearchSkeleton() {
+export default function SpotifyDeepResearchSkeleton({ title }: { title?: string }) {
   return (
     <div className="flex flex-col gap-4 p-4 border rounded-lg animate-pulse">
       <div className="flex items-center gap-2">
         <Loader className="h-5 w-5 animate-spin text-primary" />
-        <h3 className="font-medium text-sm md:text-base">Deep Researching Spotify Artist...</h3>
+        <h3 className="font-medium text-sm md:text-base">{title ?? "Deep Researching Spotify Artist..."}</h3>
       </div>
 
       <div className="flex flex-col gap-3">

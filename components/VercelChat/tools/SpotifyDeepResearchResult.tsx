@@ -2,11 +2,16 @@ import { ArtistSocialsResultType } from "@/types/ArtistSocials";
 import Image from "next/image";
 import spotifyLogo from "@/public/brand-logos/spotify.png";
 import { ArtistSocial } from "./ArtistSocial";
+import { ReactNode } from "react";
 
 export default function SpotifyDeepResearchResultComponent({
   result,
+  title,
+  icon,
 }: {
   result: ArtistSocialsResultType;
+  title?: string;
+  icon?: ReactNode;
 }) {
   if (!result.success) {
     return (
@@ -22,13 +27,15 @@ export default function SpotifyDeepResearchResultComponent({
   return (
     <div className="flex flex-col gap-4 p-5 border rounded-xl bg-gradient-to-b from-white to-gray-50 dark:from-gray-900 dark:to-gray-950 shadow-sm">
       <div className="flex items-center gap-2 text-primary border-b pb-3">
-        <Image
-          src={spotifyLogo.src}
-          alt="Spotify Logo"
-          width={20}
-          height={20}
-        />
-        <h3 className="font-semibold">Spotify Deep Research Complete</h3>
+        {icon ?? (
+          <Image
+            src={spotifyLogo.src}
+            alt="Spotify Logo"
+            width={20}
+            height={20}
+          />
+        )}
+        <h3 className="font-semibold">{title ?? "Spotify Deep Research Complete"}</h3>
       </div>
 
       {hasSocials && (

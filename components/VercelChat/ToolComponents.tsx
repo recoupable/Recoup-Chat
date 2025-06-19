@@ -52,6 +52,8 @@ import SearchWebSkeleton from "./tools/SearchWebSkeleton";
 import SpotifyDeepResearchSkeleton from "./tools/SpotifyDeepResearchSkeleton";
 import SearchWebResult, { SearchWebResultType } from "./tools/SearchWebResult";
 import SpotifyDeepResearchResult from "./tools/SpotifyDeepResearchResult";
+import GetArtistSocialsResult from "./tools/GetArtistSocialsResult";
+import GetArtistSocialsSkeleton from "./tools/GetArtistSocialsSkeleton";
 
 /**
  * Interface for tool call props
@@ -161,6 +163,12 @@ export function getToolCallComponent({ toolName, toolCallId }: ToolInvocation) {
     return (
       <div key={toolCallId}>
         <SpotifyDeepResearchSkeleton />
+      </div>
+    );
+  } else if (toolName === "get_artist_socials") {
+    return (
+      <div key={toolCallId}>
+        <GetArtistSocialsSkeleton />
       </div>
     );
   }
@@ -295,6 +303,12 @@ export function getToolResultComponent({
     return (
       <div key={toolCallId}>
         <SpotifyDeepResearchResult result={result as ArtistSocialsResultType} />
+      </div>
+    );
+  } else if (toolName === "get_artist_socials") {
+    return (
+      <div key={toolCallId}>
+        <GetArtistSocialsResult result={result as ArtistSocialsResultType["artistSocials"]} />
       </div>
     );
   }
