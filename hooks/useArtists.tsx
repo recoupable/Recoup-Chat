@@ -56,7 +56,9 @@ const useArtists = () => {
 
   const getArtists = useCallback(
     async (artistId?: string) => {
+      console.log("userData", userData);
       if (!userData?.id) {
+        console.log("No user data");
         setArtists([]);
         return;
       }
@@ -67,8 +69,8 @@ const useArtists = () => {
       setArtists(data.artists);
       if (data.artists.length === 0) {
         setSelectedArtist(null);
-        artistMode.toggleCreation();
         setIsLoading(false);
+        artistMode.toggleCreation();
         return;
       }
       if (artistId) {
@@ -79,8 +81,9 @@ const useArtists = () => {
       }
       setIsLoading(false);
     },
-    [userData?.id]
+    [userData]
   );
+
   const saveSetting = async () => {
     setUpdating(true);
     const saveMode = artistMode.settingMode;
@@ -120,7 +123,7 @@ const useArtists = () => {
 
   useEffect(() => {
     getArtists();
-  }, [getArtists]);
+  }, [getArtists, userData]);
 
   return {
     sorted,
