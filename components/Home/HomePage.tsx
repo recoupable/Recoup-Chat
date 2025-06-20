@@ -13,6 +13,7 @@ const HomePage = ({
   initialMessages?: Message[];
 }) => {
   const { setFrameReady, isFrameReady } = useMiniKit();
+
   useEffect(() => {
     if (!isFrameReady) {
       setFrameReady();
