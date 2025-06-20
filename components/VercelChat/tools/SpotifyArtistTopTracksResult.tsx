@@ -13,7 +13,7 @@ const SpotifyArtistTopTracksResult = ({ result }: { result: SpotifyArtistTopTrac
   const tracks = result.tracks;
 
   return (
-    <div className="w-full">
+    <div className="w-full my-4">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <Image 
