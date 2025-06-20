@@ -33,6 +33,7 @@ import getYouTubeChannelVideoList from "./getYouTubeChannelVideoList";
 import setYouTubeThumbnail from "./setYouTubeThumbnail";
 import createScheduledActions from "./scheduled_actions/createScheduledActions";
 import getScheduledActions from "./scheduled_actions/getScheduledActions";
+import updateScheduledAction from "./scheduled_actions/updateScheduledActions";
 
 export async function getMcpTools() {
   const tools = {
@@ -71,6 +72,7 @@ export async function getMcpTools() {
     set_youtube_thumbnail: setYouTubeThumbnail,
     create_scheduled_actions: createScheduledActions,
     get_scheduled_actions: getScheduledActions,
+    update_scheduled_action: updateScheduledAction,
   };
 
   return tools;
