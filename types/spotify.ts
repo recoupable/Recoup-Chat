@@ -107,3 +107,8 @@ export interface SpotifySearchResponse {
   audiobooks?: { items: SpotifyAudiobookSearchResult[]; total: number };
   [key: string]: unknown;
 }
+
+export interface SpotifyArtistTopTracksResultType {
+  status: string;
+  tracks: SpotifyTrackSearchResult[];
+}
