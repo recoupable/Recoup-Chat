@@ -54,6 +54,7 @@ import SearchWebResult, { SearchWebResultType } from "./tools/SearchWebResult";
 import SpotifyDeepResearchResult from "./tools/SpotifyDeepResearchResult";
 import GetSpotifyArtistAlbumsResult from "./tools/GetSpotifyArtistAlbumsResult";
 import { SpotifyArtistAlbumsResultUIType } from "@/types/spotify";
+import GetSpotifyArtistAlbumsSkeleton from "./tools/GetSpotifyArtistAlbumsSkeleton";
 
 /**
  * Interface for tool call props
@@ -164,6 +165,12 @@ export function getToolCallComponent({ toolName, toolCallId }: ToolInvocation) {
     return (
       <div key={toolCallId}>
         <SpotifyDeepResearchSkeleton />
+      </div>
+    );
+  } else if (toolName === "get_spotify_artist_albums") {
+    return (
+      <div key={toolCallId}>
+        <GetSpotifyArtistAlbumsSkeleton />
       </div>
     );
   }
