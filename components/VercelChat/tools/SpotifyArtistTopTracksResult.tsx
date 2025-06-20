@@ -1,7 +1,7 @@
 import { SpotifyArtistTopTracksResultType } from "@/types/spotify";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
-import SpotifyTrackCard from "./spotify/SpotifyTrackCard";
+import SpotifyTrackCard from "./SpotifyTrackCard";
 
 const SpotifyArtistTopTracksResult = ({ result }: { result: SpotifyArtistTopTracksResultType }) => {
   if (result.status !== "success") {
