@@ -31,7 +31,6 @@ const getSpotifyDeepResearch = tool({
   parameters: z.object({
     artist_account_id: z.string().describe("Artist account ID to research"),
   }),
-  // It returns Artist's social media accounts, that's why we need to use ArtistSocialsResultType
   execute: async ({ artist_account_id }): Promise<SpotifyDeepResearchResultUIType> => {
     const data = await getArtistSocials(artist_account_id);
     return {
@@ -39,7 +38,7 @@ const getSpotifyDeepResearch = tool({
       artist_account_id,
       success: true,
       nextSteps: TOOL_CHAIN_STEPS,
-    } as SpotifyDeepResearchResultUIType; // It returns Artist's social media accounts, that's why we need to use ArtistSocialsResultType
+    } as SpotifyDeepResearchResultUIType;
   },
 });
 
