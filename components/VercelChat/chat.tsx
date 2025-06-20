@@ -18,6 +18,7 @@ import {
 import { Message } from "ai";
 import { useDropzone } from "@/hooks/useDropzone";
 import FileDragOverlay from "./FileDragOverlay";
+import { Loader } from "lucide-react";
 
 interface ChatProps {
   id: string;
@@ -58,8 +59,14 @@ function ChatContent({ reportId, id }: { reportId?: string; id: string }) {
     deps: [messages.length, reportId, status],
   });
 
-  if (isLoading && roomId) {
-    return <ChatSkeleton />;
+  if (isLoading) {
+    return roomId ? (
+      <ChatSkeleton />
+    ) : (
+      <div className="flex size-full items-center justify-center">
+        <Loader className="block size-5 text-grey-dark-1 animate-spin" />
+      </div>
+    );
   }
 
   if (hasError) {
