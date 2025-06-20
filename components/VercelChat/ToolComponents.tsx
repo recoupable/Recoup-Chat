@@ -52,6 +52,8 @@ import SearchWebSkeleton from "./tools/SearchWebSkeleton";
 import SpotifyDeepResearchSkeleton from "./tools/SpotifyDeepResearchSkeleton";
 import SearchWebResult, { SearchWebResultType } from "./tools/SearchWebResult";
 import SpotifyDeepResearchResult from "./tools/SpotifyDeepResearchResult";
+import GetSpotifyArtistAlbumsResult from "./tools/GetSpotifyArtistAlbumsResult";
+import { SpotifyArtistAlbumsResultUIType } from "@/types/spotify";
 
 /**
  * Interface for tool call props
@@ -77,6 +79,7 @@ type ToolResult =
   | YouTubeLoginResultType
   | SearchWebResultType
   | ArtistSocialsResultType
+  | SpotifyArtistAlbumsResultUIType
   | Record<string, unknown>;
 
 /**
@@ -295,6 +298,12 @@ export function getToolResultComponent({
     return (
       <div key={toolCallId}>
         <SpotifyDeepResearchResult result={result as ArtistSocialsResultType} />
+      </div>
+    );
+  } else if (toolName === "get_spotify_artist_albums") {
+    return (
+      <div key={toolCallId}>
+        <GetSpotifyArtistAlbumsResult result={result as SpotifyArtistAlbumsResultUIType} />
       </div>
     );
   }
