@@ -11,7 +11,7 @@ import DeleteArtistToolCall from "./tools/DeleteArtistToolCall";
 import DeleteArtistToolResult from "./tools/DeleteArtistToolResult";
 import { DeleteArtistResult } from "@/lib/tools/deleteArtist";
 import GetSpotifySearchToolResult from "./tools/GetSpotifySearchToolResult";
-import { SpotifySearchResponse } from "@/types/spotify";
+import { SpotifyArtistTopTracksResultType, SpotifySearchResponse } from "@/types/spotify";
 import { ArtistSocialsResultType } from "@/types/ArtistSocials";
 import { ToolInvocation } from "ai";
 import UpdateArtistInfoSuccess from "./tools/UpdateArtistInfoSuccess";
@@ -52,6 +52,7 @@ import SearchWebSkeleton from "./tools/SearchWebSkeleton";
 import SpotifyDeepResearchSkeleton from "./tools/SpotifyDeepResearchSkeleton";
 import SearchWebResult, { SearchWebResultType } from "./tools/SearchWebResult";
 import SpotifyDeepResearchResult from "./tools/SpotifyDeepResearchResult";
+import SpotifyArtistTopTracksResult from "./tools/SpotifyArtistTopTracksResult";
 
 /**
  * Interface for tool call props
@@ -77,6 +78,7 @@ type ToolResult =
   | YouTubeLoginResultType
   | SearchWebResultType
   | ArtistSocialsResultType
+  | SpotifyArtistTopTracksResultType
   | Record<string, unknown>;
 
 /**
@@ -295,6 +297,12 @@ export function getToolResultComponent({
     return (
       <div key={toolCallId}>
         <SpotifyDeepResearchResult result={result as ArtistSocialsResultType} />
+      </div>
+    );
+  } else if (toolName === "get_spotify_artist_top_tracks") {
+    return (
+      <div key={toolCallId}>
+        <SpotifyArtistTopTracksResult result={result as SpotifyArtistTopTracksResultType} />
       </div>
     );
   }
