@@ -17,7 +17,7 @@ export default function GetArtistSocialsResult({
   if (!result.success) {
     return (
       <div className="flex items-center gap-2 p-3 bg-destructive/10 text-destructive rounded-md">
-        <span>{errorText ?? "Spotify deep research failed"}</span>
+        <span>{errorText ?? "Artist socials failed"}</span>
       </div>
     );
   }
