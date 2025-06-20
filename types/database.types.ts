@@ -1,4 +1,3 @@
-
 export type Json =
   | string
   | number
@@ -263,6 +262,57 @@ export type Database = {
           },
         ]
       }
+      admin_user_profiles: {
+        Row: {
+          company: string | null
+          context_notes: string | null
+          created_at: string | null
+          email: string
+          id: string
+          job_title: string | null
+          last_contact_date: string | null
+          meeting_notes: string | null
+          observations: string | null
+          opportunities: string | null
+          pain_points: string | null
+          sentiment: string | null
+          tags: string[] | null
+          updated_at: string | null
+        }
+        Insert: {
+          company?: string | null
+          context_notes?: string | null
+          created_at?: string | null
+          email: string
+          id?: string
+          job_title?: string | null
+          last_contact_date?: string | null
+          meeting_notes?: string | null
+          observations?: string | null
+          opportunities?: string | null
+          pain_points?: string | null
+          sentiment?: string | null
+          tags?: string[] | null
+          updated_at?: string | null
+        }
+        Update: {
+          company?: string | null
+          context_notes?: string | null
+          created_at?: string | null
+          email?: string
+          id?: string
+          job_title?: string | null
+          last_contact_date?: string | null
+          meeting_notes?: string | null
+          observations?: string | null
+          opportunities?: string | null
+          pain_points?: string | null
+          sentiment?: string | null
+          tags?: string[] | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       agent_status: {
         Row: {
           agent_id: string
@@ -304,6 +354,33 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      agent_templates: {
+        Row: {
+          description: string
+          id: string
+          prompt: string
+          tags: string[]
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          description: string
+          id?: string
+          prompt: string
+          tags?: string[]
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          description?: string
+          id?: string
+          prompt?: string
+          tags?: string[]
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: []
       }
       agents: {
         Row: {
@@ -655,6 +732,51 @@ export type Database = {
           id?: number
           timestamp?: string | null
           url?: string | null
+        }
+        Relationships: []
+      }
+      error_logs: {
+        Row: {
+          account_id: string | null
+          created_at: string | null
+          error_message: string | null
+          error_timestamp: string | null
+          error_type: string | null
+          id: string
+          last_message: string | null
+          raw_message: string
+          room_id: string | null
+          stack_trace: string | null
+          telegram_message_id: number | null
+          tool_name: string | null
+        }
+        Insert: {
+          account_id?: string | null
+          created_at?: string | null
+          error_message?: string | null
+          error_timestamp?: string | null
+          error_type?: string | null
+          id?: string
+          last_message?: string | null
+          raw_message: string
+          room_id?: string | null
+          stack_trace?: string | null
+          telegram_message_id?: number | null
+          tool_name?: string | null
+        }
+        Update: {
+          account_id?: string | null
+          created_at?: string | null
+          error_message?: string | null
+          error_timestamp?: string | null
+          error_type?: string | null
+          id?: string
+          last_message?: string | null
+          raw_message?: string
+          room_id?: string | null
+          stack_trace?: string | null
+          telegram_message_id?: number | null
+          tool_name?: string | null
         }
         Relationships: []
       }
@@ -1725,6 +1847,7 @@ export type Database = {
           current_mrr: number
           custom_fields: Json | null
           days_in_stage: number | null
+          domain: string | null
           email: string | null
           engagement_health: string | null
           expected_close_date: string | null
@@ -1779,6 +1902,7 @@ export type Database = {
           current_mrr?: number
           custom_fields?: Json | null
           days_in_stage?: number | null
+          domain?: string | null
           email?: string | null
           engagement_health?: string | null
           expected_close_date?: string | null
@@ -1833,6 +1957,7 @@ export type Database = {
           current_mrr?: number
           custom_fields?: Json | null
           days_in_stage?: number | null
+          domain?: string | null
           email?: string | null
           engagement_health?: string | null
           expected_close_date?: string | null
@@ -1890,6 +2015,63 @@ export type Database = {
           timestamp?: string | null
         }
         Relationships: []
+      }
+      scheduled_actions: {
+        Row: {
+          account_id: string
+          artist_account_id: string
+          created_at: string | null
+          enabled: boolean | null
+          id: string
+          last_run: string | null
+          next_run: string | null
+          prompt: string
+          schedule: string
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          account_id: string
+          artist_account_id: string
+          created_at?: string | null
+          enabled?: boolean | null
+          id?: string
+          last_run?: string | null
+          next_run?: string | null
+          prompt: string
+          schedule: string
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          account_id?: string
+          artist_account_id?: string
+          created_at?: string | null
+          enabled?: boolean | null
+          id?: string
+          last_run?: string | null
+          next_run?: string | null
+          prompt?: string
+          schedule?: string
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "scheduled_actions_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "scheduled_actions_artist_account_id_fkey"
+            columns: ["artist_account_id"]
+            isOneToOne: false
+            referencedRelation: "accounts"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       segment_reports: {
         Row: {
@@ -2743,6 +2925,10 @@ export type Database = {
       deduct_credits: {
         Args: { account_id: string; amount: number }
         Returns: undefined
+      }
+      extract_domain: {
+        Args: { email: string }
+        Returns: string
       }
       get_account_invitations: {
         Args: { account_slug: string }

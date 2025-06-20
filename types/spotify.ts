@@ -21,6 +21,7 @@ export interface SpotifyAlbumSearchResult {
   external_urls: { spotify: string };
   images: { url: string; height: number; width: number }[];
   artists: SpotifyArtistSearchResult[];
+  release_date?: string;
 }
 
 // Spotify Track Search Result Type
@@ -109,6 +110,16 @@ export interface SpotifySearchResponse {
   [key: string]: unknown;
 }
 
+export interface SpotifyArtistAlbumsResultUIType {
+  status: string;
+  href: string;
+  next: string;
+  previous: string;
+  items: SpotifyAlbumSearchResult[];
+  limit: number;
+  total: number;
+  offset: number;
+}
 export interface SpotifyDeepResearchResultUIType {
   success: boolean;
   artistSocials: {
