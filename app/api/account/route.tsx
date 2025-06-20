@@ -102,7 +102,7 @@ export async function POST(req: NextRequest) {
     return Response.json(
       {
         data: {
-          id: newAccount?.id,
+          id: newAccount.id,
           account_id: newAccount.id,
           email: email || "",
           wallet: wallet || "",

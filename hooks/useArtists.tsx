@@ -56,9 +56,7 @@ const useArtists = () => {
 
   const getArtists = useCallback(
     async (artistId?: string) => {
-      console.log("userData", userData);
       if (!userData?.id) {
-        console.log("No user data");
         setArtists([]);
         return;
       }
