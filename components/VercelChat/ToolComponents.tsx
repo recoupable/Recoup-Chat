@@ -11,7 +11,7 @@ import DeleteArtistToolCall from "./tools/DeleteArtistToolCall";
 import DeleteArtistToolResult from "./tools/DeleteArtistToolResult";
 import { DeleteArtistResult } from "@/lib/tools/deleteArtist";
 import GetSpotifySearchToolResult from "./tools/GetSpotifySearchToolResult";
-import { SpotifySearchResponse } from "@/types/spotify";
+import { SpotifyDeepResearchResultUIType, SpotifySearchResponse } from "@/types/spotify";
 import { ArtistSocialsResultType } from "@/types/ArtistSocials";
 import { ToolInvocation } from "ai";
 import UpdateArtistInfoSuccess from "./tools/UpdateArtistInfoSuccess";
@@ -52,6 +52,8 @@ import SearchWebSkeleton from "./tools/SearchWebSkeleton";
 import SpotifyDeepResearchSkeleton from "./tools/SpotifyDeepResearchSkeleton";
 import SearchWebResult, { SearchWebResultType } from "./tools/SearchWebResult";
 import SpotifyDeepResearchResult from "./tools/SpotifyDeepResearchResult";
+import GetArtistSocialsResult from "./tools/GetArtistSocialsResult";
+import GetArtistSocialsSkeleton from "./tools/GetArtistSocialsSkeleton";
 import GetSpotifyArtistAlbumsResult from "./tools/GetSpotifyArtistAlbumsResult";
 import { SpotifyArtistAlbumsResultUIType } from "@/types/spotify";
 import GetSpotifyArtistAlbumsSkeleton from "./tools/GetSpotifyArtistAlbumsSkeleton";
@@ -80,6 +82,7 @@ type ToolResult =
   | YouTubeLoginResultType
   | SearchWebResultType
   | ArtistSocialsResultType
+  | SpotifyDeepResearchResultUIType
   | SpotifyArtistAlbumsResultUIType
   | Record<string, unknown>;
 
@@ -171,6 +174,12 @@ export function getToolCallComponent({ toolName, toolCallId }: ToolInvocation) {
     return (
       <div key={toolCallId}>
         <GetSpotifyArtistAlbumsSkeleton />
+      </div>
+    );
+  } else if (toolName === "get_artist_socials") {
+    return (
+      <div key={toolCallId}>
+        <GetArtistSocialsSkeleton />
       </div>
     );
   }
@@ -304,7 +313,13 @@ export function getToolResultComponent({
   } else if (toolName === "spotify_deep_research") {
     return (
       <div key={toolCallId}>
-        <SpotifyDeepResearchResult result={result as ArtistSocialsResultType} />
+        <SpotifyDeepResearchResult result={result as SpotifyDeepResearchResultUIType} />
+      </div>
+    );
+  } else if (toolName === "get_artist_socials") {
+    return (
+      <div key={toolCallId}>
+        <GetArtistSocialsResult result={result as ArtistSocialsResultType} />
       </div>
     );
   } else if (toolName === "get_spotify_artist_albums") {

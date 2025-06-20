@@ -9,18 +9,13 @@ export type Social = SocialBase & {
 };
 
 export interface ArtistSocialsResultType {
+  status: string;
+  socials: Array<Social>;
   success: boolean;
-  nextSteps: string[];
-  artistSocials?: {
-    status: string;
-    socials: Array<Social>;
-    success: boolean;
-    pagination: {
-      page: number;
-      limit: number;
-      total_count: number;
-      total_pages: number;
-    };
+  pagination: {
+  page: number;
+  limit: number;
+  total_count: number;
+  total_pages: number;
   };
-  artist_account_id: string;
 }
