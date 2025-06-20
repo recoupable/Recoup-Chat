@@ -1,12 +1,13 @@
 import { useRef } from 'react';
 import { Attachment } from '@ai-sdk/ui-utils';
 import { useVercelChatContext } from '@/providers/VercelChatProvider';
+import { CHAT_INPUT_SUPPORTED_FILE } from '@/lib/chat/config';
 
 export function usePureFileAttachments() {
   const { setAttachments } = useVercelChatContext();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const MAX_FILES = 10;
-  const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', "application/pdf"];
+  const allowedTypes = Object.keys(CHAT_INPUT_SUPPORTED_FILE);
 
   const uploadFile = async (file: File) => {
     // Only allow image files for now
