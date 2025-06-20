@@ -53,6 +53,7 @@ import SpotifyDeepResearchSkeleton from "./tools/SpotifyDeepResearchSkeleton";
 import SearchWebResult, { SearchWebResultType } from "./tools/SearchWebResult";
 import SpotifyDeepResearchResult from "./tools/SpotifyDeepResearchResult";
 import SpotifyArtistTopTracksResult from "./tools/SpotifyArtistTopTracksResult";
+import SpotifyArtistTopTracksSkeleton from "./tools/SpotifyArtistTopTracksSkeleton";
 
 /**
  * Interface for tool call props
@@ -163,6 +164,12 @@ export function getToolCallComponent({ toolName, toolCallId }: ToolInvocation) {
     return (
       <div key={toolCallId}>
         <SpotifyDeepResearchSkeleton />
+      </div>
+    );
+  } else if (toolName === "get_spotify_artist_top_tracks") {
+    return (
+      <div key={toolCallId}>
+        <SpotifyArtistTopTracksSkeleton />
       </div>
     );
   }
