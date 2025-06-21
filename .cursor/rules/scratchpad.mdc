@@ -45,34 +45,55 @@ Also update the progress of the task in the Scratchpad when you finish a subtask
 Especially when you finished a milestone, it will help to improve your depth of task accomplishment to use the Scratchpad to reflect and plan.
 The goal is to help you maintain a big picture as well as the progress of the task. Always refer to the Scratchpad when you plan the next step.
 
-# Current Task: Refactor /api/chat to lookup email by accountId
+# Current Task: Add Starter Agents section to initial chat page
 
 ## Task Explanation
-Refactor the /api/chat endpoint to:
-1. Remove the email param from the request body (but keep it optional for backwards compatibility)
-2. Use the accountId to lookup the email from the account_emails table
-3. Check if there's already a utility function in /lib/supabase for email lookup
-4. Update useVercelChat to remove the unused email param
+Add a "Starter Agents" section to the initial chat page that displays 3 agent cards from the agents tab underneath the text input box. Requirements:
+1. Don't move the text input box or welcome message
+2. Add section underneath the text input 
+3. Display 3 carefully selected agent cards from the agents list
+4. Use existing AgentCard component and styling
+5. Section should be called "Starter Agents"
 
 ## Task Progress
-[X] Explore repository structure and locate chat API
-[X] Check existing supabase utilities for email lookup
-[X] Create new getAccountEmail utility function for single email lookup
-[X] Update /api/chat to use accountId lookup instead of direct email parameter
-[X] Keep email parameter as optional for backwards compatibility
-[X] Update useVercelChat hook to remove email from request body
-[X] Ensure proper error handling and fallbacks
+[X] Explore repository structure and understand current chat page layout
+[X] Understand how agents are structured and displayed
+[X] Identify where to add the starter agents section
+[X] Check available agents via API to select 3 good starter agents
+[X] Create StarterAgents component
+[X] Integrate StarterAgents component into Chat component
+[X] Test the implementation
 
 ## Findings:
-- Found existing `getAccountEmails` function that takes array of accountIds
-- Created new `getAccountEmail` function for single email lookup by accountId
-- Chat API now lookups email using accountId with fallback to passed email
-- useVercelChat hook simplified by removing email parameter
-- Maintained backwards compatibility by keeping email as optional parameter
+- Initial chat page is in app/chat/page.tsx which renders <Chat> component
+- Chat component is in components/VercelChat/chat.tsx
+- Current layout shows ChatGreeting → ChatPrompt → ChatInput when no messages
+- Agents are fetched from /api/agent-templates
+- AgentCard component is reusable and takes agent object and onClick handler
+- Agent cards navigate to /chat?q={agent.prompt} when clicked
+- Selected 3 starter agents: Social Performance Audit, Release Optimization, Fan Engagement Strategy
+
+## Components involved:
+- components/VercelChat/chat.tsx - main chat component
+- components/Agents/AgentCard.tsx - reusable agent card component
+- components/Agents/useAgentData.ts - hook for fetching agents
+- components/Chat/StarterAgents.tsx - new component
 
 ## Completed:
-- Created: `lib/supabase/accountEmails/getAccountEmail.ts` - utility to get single email by accountId
-- Updated: `app/api/chat/route.ts` - now uses accountId lookup with email fallback 
-- Updated: `hooks/useVercelChat.ts` - removed email parameter from request body
-- All changes maintain backwards compatibility and proper error handling
-- Ready for testing and deployment
+- Created StarterAgents component with 3 handpicked agents
+- Added proper fade-in animations matching existing components
+- Integrated into Chat component after ChatInput when no messages
+- Used responsive grid layout (1 col mobile, 3 cols desktop)
+- Reused existing AgentCard component and styling patterns
+- Component only shows on initial chat page (when isVisible=true)
+- Clicking agent cards navigates to /chat?q={agent.prompt}
+
+## Implementation Details:
+- StarterAgents appears underneath text input only on initial chat page
+- Uses same fade animation timing as other chat components (200ms delay)
+- Responsive: single column on mobile, 3 columns on desktop
+- Title: "Starter Agents" centered above the cards
+- Selected diverse agents covering social media, releases, and fan engagement
+
+## Summary:
+Successfully added a "Starter Agents" section to the initial chat page with 3 carefully selected agent cards displayed underneath the text input box. The implementation maintains all existing functionality while providing users with quick access to popular agents without needing to navigate to the agents tab.
