@@ -1,48 +1,22 @@
 import supabase from "@/lib/supabase/serverClient";
 import type { TablesInsert } from "@/types/database.types";
-import { SerializedError } from "@/lib/errors/serializeError";
-import { Message } from "ai";
-
-export interface ErrorLogData {
-  account_id?: string | null;
-  room_id?: string | null;
-  error_message?: string | null;
-  error_timestamp?: string | null;
-  error_type?: string | null;
-  last_message?: string | null;
-  raw_message: string;
-  stack_trace?: string | null;
-  telegram_message_id?: number | null;
-  tool_name?: string | null;
-}
-
-export interface ErrorLogContext {
-  email?: string;
-  roomId?: string;
-  accountId?: string;
-  messages?: Message[];
-  path?: string;
-  error: SerializedError;
-  toolName?: string;
-}
+import type { ErrorContext } from "@/lib/errors/handleError";
 
 /**
- * Inserts an error log into the Supabase error_logs table
- * @param context - Error context information
+ * Simplified error log insertion using unified ErrorContext
+ * @param context - Unified error context
  * @param telegramMessageId - Optional Telegram message ID for linking
  * @returns The inserted error log record or null if failed
  */
 export async function insertErrorLog(
-  context: ErrorLogContext,
+  context: ErrorContext & { error: NonNullable<ErrorContext['error']> },
   telegramMessageId?: number
 ): Promise<{ id: string } | null> {
   try {
     const timestamp = new Date().toISOString();
-    const lastMessage = context.messages && context.messages.length > 0 
-      ? context.messages[context.messages.length - 1]?.content 
-      : null;
+    const lastMessage = context.messages?.[context.messages.length - 1]?.content;
 
-    // Create the raw message that includes all context for debugging
+    // Create comprehensive raw message for debugging
     const rawMessage = JSON.stringify({
       error: context.error,
       path: context.path,

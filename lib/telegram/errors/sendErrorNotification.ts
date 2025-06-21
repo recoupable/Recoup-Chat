@@ -2,8 +2,14 @@ import { Message } from "ai";
 import { sendMessage } from "@/lib/telegram/sendMessage";
 import { SerializedError } from "@/lib/errors/serializeError";
 import { formatErrorMessage } from "./formatErrorMessage";
-import { insertErrorLog, ErrorLogContext } from "@/lib/supabase/error_logs/insertErrorLog";
+import { insertErrorLog } from "@/lib/supabase/error_logs/insertErrorLog";
 
+/**
+ * @deprecated Use `handleError` or `handleChatError` from '@/lib/errors/handleError' instead.
+ * This function is kept for backward compatibility but will be removed in a future version.
+ * 
+ * The new unified error handlers follow DRY principles and provide better error context.
+ */
 export interface ErrorContext {
   email?: string;
   roomId?: string;
@@ -15,8 +21,22 @@ export interface ErrorContext {
 }
 
 /**
- * Sends error notification to Telegram and logs to Supabase error_logs table
- * Non-blocking to avoid impacting API operations
+ * @deprecated Use `handleError` or `handleChatError` from '@/lib/errors/handleError' instead.
+ * 
+ * Legacy error notification function. New code should use the unified error handlers which:
+ * - Follow DRY principles
+ * - Auto-generate paths from stack traces  
+ * - Provide better error context
+ * - Are more maintainable
+ * 
+ * @example
+ * // Old way (deprecated):
+ * sendErrorNotification({ error: serializeError(e), ...context });
+ * 
+ * // New way (recommended):
+ * handleError(e, context);
+ * // or for chat-specific errors:
+ * handleChatError(e, context, 'streaming');
  */
 export async function sendErrorNotification(
   params: ErrorContext
@@ -34,8 +54,8 @@ export async function sendErrorNotification(
       console.error("Failed to send error notification to Telegram:", err);
     }
 
-    // Insert into Supabase error_logs table
-    const errorLogContext: ErrorLogContext = {
+    // Insert into Supabase error_logs table (using legacy approach)
+    const errorLogContext = {
       email: params.email,
       roomId: params.roomId,
       accountId: params.accountId,

@@ -1,34 +1,34 @@
 import { escapeTelegramMarkdown } from "./escapeTelegramMarkdown";
-import { ErrorContext } from "./sendErrorNotification";
+import type { ErrorContext } from "@/lib/errors/handleError";
 
 /**
- * Formats error message for Telegram notification and escapes for Telegram Markdown.
- * @param params - Error context object
+ * Formats error message for Telegram notification using unified ErrorContext.
+ * @param context - Unified error context object  
  * @returns Escaped, formatted error message string
  */
-export function formatErrorMessage(params: ErrorContext): string {
+export function formatErrorMessage(
+  context: ErrorContext & { error: NonNullable<ErrorContext['error']> }
+): string {
   const {
     error,
     email = "unknown",
-    roomId = "new chat",
-    path,
+    roomId = "new chat", 
+    path = "unknown",
     messages,
-  } = params;
+  } = context;
+  
   const timestamp = new Date().toISOString();
 
   let message = `❌ Error Alert\n`;
   message += `From: ${email}\n`;
   message += `Room ID: ${roomId}\n`;
+  message += `Path: ${path}\n`;
   message += `Time: ${timestamp}\n\n`;
 
   message += `Error Message:\n${error.message}\n\n`;
 
   if (error.name) {
     message += `Error Type: ${error.name}\n\n`;
-  }
-
-  if (path) {
-    message += `API Path: ${path}\n\n`;
   }
 
   if (error.stack) {

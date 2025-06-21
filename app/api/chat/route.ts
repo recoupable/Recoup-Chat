@@ -17,9 +17,8 @@ import generateUUID from "@/lib/generateUUID";
 import { generateChatTitle } from "@/lib/chat/generateChatTitle";
 import { sendNewConversationNotification } from "@/lib/telegram/sendNewConversationNotification";
 import filterMessageContentForMemories from "@/lib/messages/filterMessageContentForMemories";
-import { serializeError } from "@/lib/errors/serializeError";
 import attachRichFiles from "@/lib/chat/attachRichFiles";
-import { sendErrorNotification } from "@/lib/telegram/errors/sendErrorNotification";
+import { handleChatError } from "@/lib/errors/handleError";
 import { getAccountEmails } from "@/lib/supabase/account_emails/getAccountEmails";
 
 export async function POST(request: NextRequest) {
@@ -38,11 +37,20 @@ export async function POST(request: NextRequest) {
   } = body;
   let email = body.email;
 
+  // Build error context once (DRY principle)
+  const errorContext = {
+    email,
+    roomId,
+    accountId,
+    messages,
+  };
+
   try {
     if (!email && accountId) {
       const emails = await getAccountEmails(accountId);
       if (emails.length > 0 && emails[0].email) {
         email = emails[0].email;
+        errorContext.email = email; // Update context with resolved email
       }
     }
 
@@ -114,13 +122,10 @@ export async function POST(request: NextRequest) {
                 room_id: roomId,
                 content: filterMessageContentForMemories(assistantMessage),
               });
-            } catch (_) {
-              sendErrorNotification({
-                ...body,
-                path: "/api/chat - onFinish",
-                error: serializeError(_),
-              });
-              console.error("Failed to save chat", _);
+            } catch (error) {
+              // Simplified error handling - DRY principle
+              handleChatError(error, errorContext, 'completion');
+              console.error("Failed to save chat", error);
             }
           },
           experimental_telemetry: {
@@ -135,24 +140,18 @@ export async function POST(request: NextRequest) {
           sendReasoning: true,
         });
       },
-      onError: (e) => {
-        sendErrorNotification({
-          ...body,
-          path: "/api/chat - onError",
-          error: serializeError(e),
-        });
-        console.error("Error in chat API:", e);
-        return JSON.stringify(serializeError(e));
+      onError: (error: unknown) => {
+        // Simplified error handling - DRY principle
+        handleChatError(error, errorContext, 'streaming');
+        console.error("Error in chat API:", error);
+        return JSON.stringify({ error: "Chat stream error" });
       },
     });
-  } catch (e) {
-    sendErrorNotification({
-      ...body,
-      path: "/api/chat - global catch",
-      error: serializeError(e),
-    });
-    console.error("Global error in chat API:", e);
-    return new Response(JSON.stringify(serializeError(e)), {
+  } catch (error) {
+    // Simplified error handling - DRY principle
+    handleChatError(error, errorContext, 'global');
+    console.error("Global error in chat API:", error);
+    return new Response(JSON.stringify({ error: "Chat processing error" }), {
       status: 500,
       headers: {
         "Content-Type": "application/json",
