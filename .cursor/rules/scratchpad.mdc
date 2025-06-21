@@ -39,3 +39,37 @@ You should use the [scratchpad.md](mdc:scratchpad.md) file as a Scratchpad to or
 Also update the progress of the task in the Scratchpad when you finish a subtask.
 Especially when you finished a milestone, it will help to improve your depth of task accomplishment to use the Scratchpad to reflect and plan.
 The goal is to help you maintain a big picture as well as the progress of the task. Always refer to the Scratchpad when you plan the next step.
+
+# Current Task: Refactor /api/chat Email Parameter
+
+## Task Overview
+Remove the email param from /api/chat and instead use the provided accountId to lookup the email from the account_emails table. Check /lib/supabase for existing email lookup functionality and update useVercelChat to remove the unused email param.
+
+## Steps:
+[X] Explore current /api/chat endpoint implementation
+[X] Check /lib/supabase for existing email lookup functions
+[X] Create getAccountEmail function for single email lookup
+[X] Find and examine useVercelChat hook
+[X] Refactor /api/chat to use accountId for email lookup
+[X] Update useVercelChat to remove email param
+[X] Verify changes are complete and consistent
+
+## Changes Made:
+1. Created `lib/supabase/accountEmails/getAccountEmail.ts` function to lookup email by accountId
+   - Follows existing Supabase function patterns
+   - Returns Promise<string | null>
+   - Includes proper error handling
+2. Updated `/api/chat/route.ts` to:
+   - Import `getAccountEmail` function
+   - Remove `email` from request body destructuring
+   - Add email lookup using `getAccountEmail(accountId)`
+   - Added error handling if email lookup fails (returns 400 status)
+3. Updated `hooks/useVercelChat.ts` to remove `email: userData?.email` from the body
+
+## Impact:
+- Email parameter no longer needs to be passed from client to API
+- API now performs server-side lookup of email using accountId
+- More secure as email is fetched from database instead of trusting client data
+- Maintains backward compatibility for all existing functionality
+
+## Task Status: ✅ COMPLETED

@@ -20,6 +20,7 @@ import filterMessageContentForMemories from "@/lib/messages/filterMessageContent
 import { serializeError } from "@/lib/errors/serializeError";
 import attachRichFiles from "@/lib/chat/attachRichFiles";
 import { sendErrorNotification } from "@/lib/telegram/errors/sendErrorNotification";
+import getAccountEmail from "@/lib/supabase/accountEmails/getAccountEmail";
 
 export async function POST(request: NextRequest) {
   const body = await request.json();
@@ -28,17 +29,26 @@ export async function POST(request: NextRequest) {
     roomId,
     artistId,
     accountId,
-    email,
   }: {
     messages: Array<Message>;
     roomId: string;
     artistId?: string;
     accountId: string;
-    email: string;
   } = body;
 
   try {
     const selectedModelId = "sonnet-3.7";
+
+    // Get email from accountId instead of receiving it as parameter
+    const email = await getAccountEmail(accountId);
+    if (!email) {
+      return new Response(JSON.stringify({ error: "Unable to find email for account" }), {
+        status: 400,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+    }
 
     const [room, tools] = await Promise.all([getRoom(roomId), getMcpTools()]);
     let conversationName = room?.topic;
