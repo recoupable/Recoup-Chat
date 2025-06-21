@@ -2,7 +2,7 @@ import { sendMessage } from "./sendMessage";
 import { isTestEmail } from "@/lib/email/isTestEmail";
 
 interface NewConversationNotificationParams {
-  email: string;
+  email?: string;
   conversationId: string;
   topic: string;
   firstMessage?: string;
@@ -14,8 +14,8 @@ export const sendNewConversationNotification = async ({
   topic,
   firstMessage,
 }: NewConversationNotificationParams) => {
-  // Skip sending for test emails
-  if (isTestEmail(email)) return;
+  // Skip sending for test emails or if email is undefined
+  if (!email || isTestEmail(email)) return;
 
   try {
     const formattedMessage = `🗣️ New Conversation Started
