@@ -2,8 +2,14 @@
 
 import type React from "react";
 import { useRouter } from "next/navigation";
+import { Plus_Jakarta_Sans } from "next/font/google";
 import AgentCard from "../Agents/AgentCard";
 import type { Agent } from "../Agents/useAgentData";
+
+const plusJakartaSans = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  weight: ["500"],
+});
 
 // Selected starter agents - handpicked for broad appeal and utility
 const STARTER_AGENTS: Agent[] = [
@@ -42,9 +48,22 @@ export function StarterAgents({ isVisible }: StarterAgentsProps) {
   const fadeStart = "opacity-0";
   const fadeEnd = "opacity-100";
 
+  const headerStyle = `
+    ${plusJakartaSans.className} 
+    text-[19px]
+    sm:text-[22px]
+    lg:text-[28px] 
+    leading-[1.3]
+    sm:leading-[1.2]
+    lg:leading-[1.3] 
+    tracking-[-0.25px]
+    lg:tracking-[-0.3px] 
+    font-medium 
+  `;
+
   return (
     <div className={`w-full mt-8 ${fadeBase} ${isVisible ? fadeEnd : fadeStart} transition-delay-[200ms]`}>
-      <h3 className="text-lg font-medium mb-4 text-center text-gray-700">
+      <h3 className={`${headerStyle} mb-4 text-gray-700`}>
         Starter Agents
       </h3>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
