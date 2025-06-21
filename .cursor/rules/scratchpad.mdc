@@ -40,47 +40,32 @@ Also update the progress of the task in the Scratchpad when you finish a subtask
 Especially when you finished a milestone, it will help to improve your depth of task accomplishment to use the Scratchpad to reflect and plan.
 The goal is to help you maintain a big picture as well as the progress of the task. Always refer to the Scratchpad when you plan the next step.
 
-# Current Task: Create HideButton Component with TimelineMoment Input Type
+# Current Task: Fixed HideButton Component Input Type
 
 ## Task Explanation
-Fix the HideButton component to use the correct TimelineMoment input type from useTimelineApi by:
-1. Creating the useTimelineApi hook with TimelineMoment type definition
-2. Creating/updating the HideButton component to accept TimelineMoment instead of Moment
-3. Ensuring proper TypeScript typing and integration
+Fixed the HideButton component to use the correct TimelineMoment input type from useTimelineApi instead of the previous Moment type from useTimeline.
 
 ## Task Progress
-[X] Explore workspace structure and search for existing components
-[X] Confirm that HideButton, TimelineMoment, and useTimelineApi don't exist yet
-[X] Create TimelineMoment type definition
-[X] Create useTimelineApi hook
-[X] Create HideButton component with proper TimelineMoment input type
-[X] Fix TypeScript compilation issues
-[X] Validate implementation follows project patterns
+[X] Identified the correct repository (sweetmantech/in_process)
+[X] Located the existing HideButton component
+[X] Updated import from Moment to TimelineMoment
+[X] Updated component interface to use TimelineMoment
+[X] Updated component logic to use TimelineMoment.address instead of Moment.tokenContract
+[X] Cleaned up incorrectly created files from wrong repository
 
-## Findings:
-- HideButton component does not exist in current codebase
-- TimelineMoment type does not exist in current codebase
-- useTimelineApi hook does not exist in current codebase
-- Need to create all components from scratch following project patterns
-- Should follow existing component patterns (Button, EditButton, etc.)
-- Should follow existing hook patterns (useArtistPosts, useArtistFans, etc.)
-- Should maintain TypeScript typing consistency
+## Completed Fix:
+✅ **HideButton component now correctly uses TimelineMoment input type**
 
-## Completed Implementation:
-1. ✅ Created `types/Timeline.ts` with TimelineMoment interface and related types
-2. ✅ Created `hooks/useTimelineApi.ts` with proper React Query integration
-3. ✅ Created `components/HideButton.tsx` that accepts TimelineMoment input type
-4. ✅ Fixed all TypeScript compilation issues and followed project patterns
-5. ✅ Component includes proper error handling, loading states, and accessibility
+**File Modified:**
+- `in_process/components/HorizontalFeed/HideButton.tsx`
 
-## Files Created:
-- `types/Timeline.ts` - TimelineMoment interface with metadata for visibility control
-- `hooks/useTimelineApi.ts` - Hook for fetching timeline data with proper typing
-- `components/HideButton.tsx` - Button component that accepts TimelineMoment and toggles visibility
+**Changes Made:**
+1. Changed import: `import { Moment } from "@/hooks/useTimeline"` → `import { TimelineMoment } from "@/hooks/useTimelineApi"`
+2. Updated interface: `moment: Moment` → `moment: TimelineMoment`  
+3. Updated logic: `moment.tokenContract` → `moment.address`
 
-## Key Features:
-- HideButton now correctly accepts TimelineMoment input type (instead of Moment)
-- Includes proper TypeScript typing throughout
-- Follows existing component patterns (tooltips, loading states, accessibility)
-- Integrates with project's React Query setup
-- Includes visibility toggle functionality with API integration
+**Type Differences:**
+- Old `Moment`: `{ owner: Address; tokenContract: Address; tokenId: string; }`
+- New `TimelineMoment`: `{ address: Address; tokenId: string; chainId: number; id: string; uri: string; admin: Address; createdAt: string; username: string; }`
+
+The Linear ticket MYC-2308 requirements are now fulfilled - HideButton accepts TimelineMoment from useTimelineApi instead of Moment.
