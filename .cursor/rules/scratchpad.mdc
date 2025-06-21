@@ -55,6 +55,7 @@ Remove the email param from /api/chat and instead use the provided accountId to 
 [X] Verify changes are complete and consistent
 [X] Open pull request
 [X] Remove 400 error handling since email is not required
+[X] Update pull request with latest changes
 
 ## Changes Made:
 1. Created `lib/supabase/accountEmails/getAccountEmail.ts` function to lookup email by accountId
@@ -77,8 +78,8 @@ Remove the email param from /api/chat and instead use the provided accountId to 
 - More secure as email is fetched from database instead of trusting client data
 - Maintains backward compatibility for all existing functionality
 
-## Pull Request Created: ✅ 
+## Pull Request: ✅ 
 **URL**: https://github.com/Recoupable-com/Recoup-Chat/pull/766
-**Status**: Needs update with latest changes
+**Status**: ✅ Updated with latest changes
 
-## Task Status: ✅ COMPLETED & PR NEEDS UPDATE
+## Task Status: ✅ FULLY COMPLETED & PR UPDATED
