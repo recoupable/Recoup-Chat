@@ -1,6 +1,7 @@
 "use client";
 
 import type React from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import AgentCard from "../Agents/AgentCard";
@@ -11,34 +12,39 @@ const plusJakartaSans = Plus_Jakarta_Sans({
   weight: ["500"],
 });
 
-// Selected starter agents - handpicked for broad appeal and utility
-const STARTER_AGENTS: Agent[] = [
-  {
-    title: "Social Performance Audit",
-    description: "Comprehensive analysis of your social channels to inform digital strategy.",
-    prompt: "Give me a complete health check of my artist's social media presence. Which posts are performing best, what are fans saying in the comments, and how does engagement vary across platforms? Could you create a diagram showing our social ecosystem with specific areas to improve?",
-    tags: ["Social"]
-  },
-  {
-    title: "Release Optimization", 
-    description: "Leverage data to maximize the impact and reach of your next release.",
-    prompt: "We're planning our next release. Analyze how our previous releases performed, what fans said about them, and current trends in our genre. Give me recommendations for the ideal release timing, messaging approach, and platform focus to maximize impact.",
-    tags: ["Assistant"]
-  },
-  {
-    title: "Fan Engagement Strategy",
-    description: "Best practices for high-value fan interactions and community management.",
-    prompt: "Review all the comments on our recent Instagram posts and help me develop a response strategy. What questions keep coming up? Which fans should we prioritize engaging with? Create a playbook we can follow for authentic and effective fan interactions.",
-    tags: ["Social"]
-  }
-];
-
 interface StarterAgentsProps {
   isVisible: boolean;
 }
 
 export function StarterAgents({ isVisible }: StarterAgentsProps) {
+  const [agents, setAgents] = useState<Agent[]>([]);
+  const [loading, setLoading] = useState(true);
   const { push } = useRouter();
+
+  useEffect(() => {
+    fetch("/api/agent-templates")
+      .then((res) => res.json())
+      .then((data: Agent[]) => {
+        // Filter for agents with "Social", "Assistant", or "Marketing" tags for starter agents
+        // or take first 3 agents as fallback
+        const starterAgents = data
+          .filter(agent => 
+            agent.tags?.some(tag => 
+              ["Social", "Assistant", "Marketing", "Recommended"].includes(tag)
+            )
+          )
+          .slice(0, 3);
+        
+        // If we don't have 3 agents with preferred tags, just take the first 3
+        const finalAgents = starterAgents.length >= 3 ? starterAgents : data.slice(0, 3);
+        
+        setAgents(finalAgents);
+        setLoading(false);
+      })
+      .catch(() => {
+        setLoading(false);
+      });
+  }, []);
 
   const handleAgentClick = (agent: Agent) => {
     push(`/chat?q=${encodeURIComponent(agent.prompt)}`);
@@ -61,13 +67,35 @@ export function StarterAgents({ isVisible }: StarterAgentsProps) {
     font-medium 
   `;
 
+  if (loading) {
+    return (
+      <div className={`w-full mt-8 ${fadeBase} ${isVisible ? fadeEnd : fadeStart} transition-delay-[200ms]`}>
+        <h3 className={`${headerStyle} mb-4 text-gray-700`}>
+          Starter Agents
+        </h3>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="bg-gray-100 border border-gray-200 rounded-lg p-4 animate-pulse">
+              <div className="h-5 bg-gray-200 rounded mb-2"></div>
+              <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  if (agents.length === 0) {
+    return null;
+  }
+
   return (
     <div className={`w-full mt-8 ${fadeBase} ${isVisible ? fadeEnd : fadeStart} transition-delay-[200ms]`}>
       <h3 className={`${headerStyle} mb-4 text-gray-700`}>
         Starter Agents
       </h3>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {STARTER_AGENTS.map((agent) => (
+        {agents.map((agent) => (
           <AgentCard
             key={agent.title}
             agent={agent}

@@ -91,6 +91,7 @@ Add a "Starter Agents" section to the initial chat page that displays 3 agent ca
 - ✅ Component only shows on initial chat page (when isVisible=true)
 - ✅ Clicking agent cards navigates to /chat?q={agent.prompt}
 - ✅ **Updated header styling to match welcome message font and left-align**
+- ✅ **IMPORTANT: Replaced hardcoded agents with dynamic database fetching**
 
 ## Implementation Details:
 - StarterAgents appears underneath text input only on initial chat page
@@ -98,7 +99,11 @@ Add a "Starter Agents" section to the initial chat page that displays 3 agent ca
 - Responsive: single column on mobile, 3 columns on desktop
 - ✅ **Header now left-aligned and uses Plus Jakarta Sans font matching welcome message**
 - ✅ **Font sizing: 19px → 22px → 28px with proper line-height and tracking**
+- ✅ **Dynamically fetches agents from /api/agent-templates (same as main agents page)**
+- ✅ **Smart filtering: prioritizes agents with Social/Assistant/Marketing/Recommended tags**
+- ✅ **Includes loading states with skeleton placeholders**
+- ✅ **Falls back to first 3 agents if filtering yields insufficient results**
 - Selected diverse agents covering social media, releases, and fan engagement
 
 ## Summary:
-Successfully added a "Starter Agents" section to the initial chat page with 3 carefully selected agent cards displayed underneath the text input box. The header is now left-aligned and styled to match the welcome message font. The implementation maintains all existing functionality while providing users with quick access to popular agents without needing to navigate to the agents tab.
+Successfully added a "Starter Agents" section to the initial chat page with 3 dynamically selected agent cards from the Supabase database. The header is left-aligned and styled to match the welcome message font. Most importantly, the component now fetches live data from the database instead of using hardcoded agents, ensuring consistency and maintainability. The implementation provides proper loading states and follows the same data patterns as the main agents page.
