@@ -31,6 +31,11 @@ During your interaction with the user, if you find anything reusable in this pro
     - Keep authenticated clients at module level for efficiency
     - Remove duplicate code and types when possible
     - Maintain consistent error handling patterns
+- When refactoring API endpoints to lookup data instead of passing it directly:
+  - Create specific utility functions for single lookups (not just array lookups)
+  - Keep optional parameters for backwards compatibility 
+  - Use proper error handling with fallbacks
+  - Update both server-side API and client-side hooks consistently
 
 You should use the [scratchpad.md](mdc:scratchpad.md) file as a Scratchpad to organize your thoughts. Especially when you receive a new task, you should first review the content of the Scratchpad, clear old different task if necessary, first explain the task, and plan the steps you need to take to complete the task. You can use todo markers to indicate the progress, e.g.
 [X] Task 1
@@ -40,30 +45,34 @@ Also update the progress of the task in the Scratchpad when you finish a subtask
 Especially when you finished a milestone, it will help to improve your depth of task accomplishment to use the Scratchpad to reflect and plan.
 The goal is to help you maintain a big picture as well as the progress of the task. Always refer to the Scratchpad when you plan the next step.
 
-# Current Task: Create error-logs Migration for Recoup-chat
+# Current Task: Refactor /api/chat to lookup email by accountId
 
 ## Task Explanation
-Create a Supabase migration file to create an error-logs table in the Recoup-chat repository by:
-1. Checking the error-logs API in founder-dashboard repo to understand required columns
-2. Referencing existing migration files in Recoup-chat repo for foreign key patterns
-3. Creating the migration file with proper structure
+Refactor the /api/chat endpoint to:
+1. Remove the email param from the request body (but keep it optional for backwards compatibility)
+2. Use the accountId to lookup the email from the account_emails table
+3. Check if there's already a utility function in /lib/supabase for email lookup
+4. Update useVercelChat to remove the unused email param
 
 ## Task Progress
-[X] Explore workspace structure and locate Recoup-chat repo
-[X] Find and analyze error-logs API in founder-dashboard repo (found structure in database types)
-[X] Review existing migration files in Recoup-chat for patterns
-[X] Create the error-logs migration file with proper columns and foreign keys
-[X] Validate the migration structure
+[X] Explore repository structure and locate chat API
+[X] Check existing supabase utilities for email lookup
+[X] Create new getAccountEmail utility function for single email lookup
+[X] Update /api/chat to use accountId lookup instead of direct email parameter
+[X] Keep email parameter as optional for backwards compatibility
+[X] Update useVercelChat hook to remove email from request body
+[X] Ensure proper error handling and fallbacks
 
 ## Findings:
-- Error logs table structure found in `types/database.types.ts`
-- Required columns: id, account_id, room_id, error_message, error_timestamp, error_type, last_message, raw_message (required), stack_trace, telegram_message_id, tool_name, created_at
-- Foreign keys: account_id -> accounts(id), room_id -> rooms(id)
-- Migration pattern: uuid ids, row level security, ON DELETE CASCADE, grants to anon/authenticated/service_role
+- Found existing `getAccountEmails` function that takes array of accountIds
+- Created new `getAccountEmail` function for single email lookup by accountId
+- Chat API now lookups email using accountId with fallback to passed email
+- useVercelChat hook simplified by removing email parameter
+- Maintained backwards compatibility by keeping email as optional parameter
 
 ## Completed:
-- Created migration file: `supabase/migrations/20250621183810_create_error_logs_table.sql`
-- Includes all required columns with proper data types
-- Establishes foreign key relationships with accounts and rooms tables
-- Follows project patterns for permissions and triggers
-- Ready for deployment via Supabase migration system
+- Created: `lib/supabase/accountEmails/getAccountEmail.ts` - utility to get single email by accountId
+- Updated: `app/api/chat/route.ts` - now uses accountId lookup with email fallback 
+- Updated: `hooks/useVercelChat.ts` - removed email parameter from request body
+- All changes maintain backwards compatibility and proper error handling
+- Ready for testing and deployment
