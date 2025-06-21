@@ -53,6 +53,7 @@ Remove the email param from /api/chat and instead use the provided accountId to 
 [X] Refactor /api/chat to use accountId for email lookup
 [X] Update useVercelChat to remove email param
 [X] Verify changes are complete and consistent
+[X] Open pull request
 
 ## Changes Made:
 1. Created `lib/supabase/accountEmails/getAccountEmail.ts` function to lookup email by accountId
@@ -72,4 +73,7 @@ Remove the email param from /api/chat and instead use the provided accountId to 
 - More secure as email is fetched from database instead of trusting client data
 - Maintains backward compatibility for all existing functionality
 
-## Task Status: ✅ COMPLETED
+## Pull Request Created: ✅ 
+**URL**: https://github.com/Recoupable-com/Recoup-Chat/pull/766
+
+## Task Status: ✅ COMPLETED & PR OPENED
