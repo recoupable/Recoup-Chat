@@ -20,7 +20,6 @@ import filterMessageContentForMemories from "@/lib/messages/filterMessageContent
 import { serializeError } from "@/lib/errors/serializeError";
 import attachRichFiles from "@/lib/chat/attachRichFiles";
 import { sendErrorNotification } from "@/lib/telegram/errors/sendErrorNotification";
-import getAccountEmail from "@/lib/supabase/accountEmails/getAccountEmail";
 
 export async function POST(request: NextRequest) {
   const body = await request.json();
@@ -40,9 +39,6 @@ export async function POST(request: NextRequest) {
 
   try {
     const selectedModelId = "sonnet-3.7";
-
-    const accountEmail = await getAccountEmail(accountId);
-    const userEmail = accountEmail || email;
 
     const [room, tools] = await Promise.all([getRoom(roomId), getMcpTools()]);
     let conversationName = room?.topic;
