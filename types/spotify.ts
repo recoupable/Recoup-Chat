@@ -126,3 +126,7 @@ export interface SpotifyDeepResearchResultUIType {
     socials: Array<Social>;
   };
 }
+export interface SpotifyArtistTopTracksResultType {
+  status: string;
+  tracks: SpotifyTrackSearchResult[];
+}
