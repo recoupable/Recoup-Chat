@@ -20,6 +20,7 @@ import filterMessageContentForMemories from "@/lib/messages/filterMessageContent
 import { serializeError } from "@/lib/errors/serializeError";
 import attachRichFiles from "@/lib/chat/attachRichFiles";
 import { sendErrorNotification } from "@/lib/telegram/errors/sendErrorNotification";
+import getAccountEmail from "@/lib/supabase/accountEmails/getAccountEmail";
 
 export async function POST(request: NextRequest) {
   const body = await request.json();
@@ -34,11 +35,14 @@ export async function POST(request: NextRequest) {
     roomId: string;
     artistId?: string;
     accountId: string;
-    email: string;
+    email?: string;
   } = body;
 
   try {
     const selectedModelId = "sonnet-3.7";
+
+    const accountEmail = await getAccountEmail(accountId);
+    const userEmail = accountEmail || email;
 
     const [room, tools] = await Promise.all([getRoom(roomId), getMcpTools()]);
     let conversationName = room?.topic;
@@ -53,8 +57,8 @@ export async function POST(request: NextRequest) {
           artist_id: artistId || undefined,
           chat_id: roomId || undefined,
         }),
-        sendNewConversationNotification({
-          email,
+        userEmail && sendNewConversationNotification({
+          email: userEmail,
           conversationId: roomId,
           topic: conversationName,
           firstMessage: messages[0].content,
@@ -79,7 +83,7 @@ export async function POST(request: NextRequest) {
         roomId,
         artistId,
         accountId,
-        email,
+        email: userEmail,
         conversationName,
       }),
     ]);
