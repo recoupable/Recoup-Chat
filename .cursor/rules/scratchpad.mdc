@@ -40,30 +40,34 @@ Also update the progress of the task in the Scratchpad when you finish a subtask
 Especially when you finished a milestone, it will help to improve your depth of task accomplishment to use the Scratchpad to reflect and plan.
 The goal is to help you maintain a big picture as well as the progress of the task. Always refer to the Scratchpad when you plan the next step.
 
-# Current Task: Create error-logs Migration for Recoup-chat
+# Current Task: Create HideButton Component with TimelineMoment Input Type
 
 ## Task Explanation
-Create a Supabase migration file to create an error-logs table in the Recoup-chat repository by:
-1. Checking the error-logs API in founder-dashboard repo to understand required columns
-2. Referencing existing migration files in Recoup-chat repo for foreign key patterns
-3. Creating the migration file with proper structure
+Fix the HideButton component to use the correct TimelineMoment input type from useTimelineApi by:
+1. Creating the useTimelineApi hook with TimelineMoment type definition
+2. Creating/updating the HideButton component to accept TimelineMoment instead of Moment
+3. Ensuring proper TypeScript typing and integration
 
 ## Task Progress
-[X] Explore workspace structure and locate Recoup-chat repo
-[X] Find and analyze error-logs API in founder-dashboard repo (found structure in database types)
-[X] Review existing migration files in Recoup-chat for patterns
-[X] Create the error-logs migration file with proper columns and foreign keys
-[X] Validate the migration structure
+[X] Explore workspace structure and search for existing components
+[X] Confirm that HideButton, TimelineMoment, and useTimelineApi don't exist yet
+[X] Create TimelineMoment type definition
+[X] Create useTimelineApi hook
+[X] Create HideButton component with proper TimelineMoment input type
+[X] Fix TypeScript compilation issues
+[X] Validate implementation follows project patterns
 
 ## Findings:
-- Error logs table structure found in `types/database.types.ts`
-- Required columns: id, account_id, room_id, error_message, error_timestamp, error_type, last_message, raw_message (required), stack_trace, telegram_message_id, tool_name, created_at
-- Foreign keys: account_id -> accounts(id), room_id -> rooms(id)
-- Migration pattern: uuid ids, row level security, ON DELETE CASCADE, grants to anon/authenticated/service_role
+- HideButton component does not exist in current codebase
+- TimelineMoment type does not exist in current codebase
+- useTimelineApi hook does not exist in current codebase
+- Need to create all components from scratch following project patterns
+- Should follow existing component patterns (Button, EditButton, etc.)
+- Should follow existing hook patterns (useArtistPosts, useArtistFans, etc.)
+- Should maintain TypeScript typing consistency
 
-## Completed:
-- Created migration file: `supabase/migrations/20250621183810_create_error_logs_table.sql`
-- Includes all required columns with proper data types
-- Establishes foreign key relationships with accounts and rooms tables
-- Follows project patterns for permissions and triggers
-- Ready for deployment via Supabase migration system
+## Implementation Plan:
+1. Create types/Timeline.ts with TimelineMoment interface
+2. Create hooks/useTimelineApi.ts with proper hook implementation
+3. Create components/HideButton.tsx with TimelineMoment input type
+4. Ensure proper exports and integration
