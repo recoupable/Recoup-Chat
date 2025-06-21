@@ -39,3 +39,18 @@ You should use the [scratchpad.md](mdc:scratchpad.md) file as a Scratchpad to or
 Also update the progress of the task in the Scratchpad when you finish a subtask.
 Especially when you finished a milestone, it will help to improve your depth of task accomplishment to use the Scratchpad to reflect and plan.
 The goal is to help you maintain a big picture as well as the progress of the task. Always refer to the Scratchpad when you plan the next step.
+
+# Current Task: Create error-logs Migration for Recoup-chat
+
+## Task Explanation
+Create a Supabase migration file to create an error-logs table in the Recoup-chat repository by:
+1. Checking the error-logs API in founder-dashboard repo to understand required columns
+2. Referencing existing migration files in Recoup-chat repo for foreign key patterns
+3. Creating the migration file with proper structure
+
+## Task Progress
+[ ] Explore workspace structure and locate Recoup-chat repo
+[ ] Find and analyze error-logs API in founder-dashboard repo
+[ ] Review existing migration files in Recoup-chat for patterns
+[ ] Create the error-logs migration file with proper columns and foreign keys
+[ ] Validate the migration structure
