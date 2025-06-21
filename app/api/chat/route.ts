@@ -62,6 +62,7 @@ export async function POST(request: NextRequest) {
           chat_id: roomId || undefined,
         }),
         sendNewConversationNotification({
+          accountId,
           email,
           conversationId: roomId,
           topic: conversationName,
