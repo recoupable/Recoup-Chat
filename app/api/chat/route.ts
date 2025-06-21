@@ -57,8 +57,8 @@ export async function POST(request: NextRequest) {
           artist_id: artistId || undefined,
           chat_id: roomId || undefined,
         }),
-        userEmail && sendNewConversationNotification({
-          email: userEmail,
+        sendNewConversationNotification({
+          email,
           conversationId: roomId,
           topic: conversationName,
           firstMessage: messages[0].content,
@@ -83,7 +83,7 @@ export async function POST(request: NextRequest) {
         roomId,
         artistId,
         accountId,
-        email: userEmail,
+        email,
         conversationName,
       }),
     ]);
