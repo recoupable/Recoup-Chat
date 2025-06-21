@@ -41,14 +41,6 @@ export async function POST(request: NextRequest) {
 
     // Get email from accountId instead of receiving it as parameter
     const email = await getAccountEmail(accountId);
-    if (!email) {
-      return new Response(JSON.stringify({ error: "Unable to find email for account" }), {
-        status: 400,
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-    }
 
     const [room, tools] = await Promise.all([getRoom(roomId), getMcpTools()]);
     let conversationName = room?.topic;
@@ -56,20 +48,23 @@ export async function POST(request: NextRequest) {
     if (!room) {
       conversationName = await generateChatTitle(messages[0].content);
 
-      await Promise.all([
-        createRoomWithReport({
-          account_id: accountId,
-          topic: conversationName,
-          artist_id: artistId || undefined,
-          chat_id: roomId || undefined,
-        }),
-        sendNewConversationNotification({
+      // Create room first
+      await createRoomWithReport({
+        account_id: accountId,
+        topic: conversationName,
+        artist_id: artistId || undefined,
+        chat_id: roomId || undefined,
+      });
+
+      // Send notification if email is available
+      if (email) {
+        await sendNewConversationNotification({
           email,
           conversationId: roomId,
           topic: conversationName,
           firstMessage: messages[0].content,
-        }),
-      ]);
+        });
+      }
     }
 
     const { lastMessage } = validateMessages(messages);
@@ -89,7 +84,7 @@ export async function POST(request: NextRequest) {
         roomId,
         artistId,
         accountId,
-        email,
+        email: email || undefined,
         conversationName,
       }),
     ]);

@@ -43,7 +43,7 @@ The goal is to help you maintain a big picture as well as the progress of the ta
 # Current Task: Refactor /api/chat Email Parameter
 
 ## Task Overview
-Remove the email param from /api/chat and instead use the provided accountId to lookup the email from the account_emails table. Check /lib/supabase for existing email lookup functionality and update useVercelChat to remove the unused email param.
+Remove the email param from /api/chat and instead use the provided accountId to lookup the email from the account_emails table. Check /lib/supabase for existing email lookup functionality and update useVercelChat to remove the unused email param. **Update**: Email is not required, so remove 400 error handling.
 
 ## Steps:
 [X] Explore current /api/chat endpoint implementation
@@ -54,6 +54,7 @@ Remove the email param from /api/chat and instead use the provided accountId to 
 [X] Update useVercelChat to remove email param
 [X] Verify changes are complete and consistent
 [X] Open pull request
+[X] Remove 400 error handling since email is not required
 
 ## Changes Made:
 1. Created `lib/supabase/accountEmails/getAccountEmail.ts` function to lookup email by accountId
@@ -64,16 +65,20 @@ Remove the email param from /api/chat and instead use the provided accountId to 
    - Import `getAccountEmail` function
    - Remove `email` from request body destructuring
    - Add email lookup using `getAccountEmail(accountId)`
-   - Added error handling if email lookup fails (returns 400 status)
+   - ~~Added error handling if email lookup fails (returns 400 status)~~ **REMOVED** - Email is not required
+   - Only call `sendNewConversationNotification` when email is available
+   - Convert null email to undefined for `getSystemPrompt` compatibility
 3. Updated `hooks/useVercelChat.ts` to remove `email: userData?.email` from the body
 
 ## Impact:
 - Email parameter no longer needs to be passed from client to API
 - API now performs server-side lookup of email using accountId
+- **Email is optional** - API continues to work even if no email is found
 - More secure as email is fetched from database instead of trusting client data
 - Maintains backward compatibility for all existing functionality
 
 ## Pull Request Created: ✅ 
 **URL**: https://github.com/Recoupable-com/Recoup-Chat/pull/766
+**Status**: Needs update with latest changes
 
-## Task Status: ✅ COMPLETED & PR OPENED
+## Task Status: ✅ COMPLETED & PR NEEDS UPDATE
