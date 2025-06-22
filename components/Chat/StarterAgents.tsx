@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useAgentData, type Agent } from "../Agents/useAgentData";
 import AgentCard from "../Agents/AgentCard";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface StarterAgentsProps {
   isVisible: boolean;
@@ -34,33 +35,47 @@ export function StarterAgents({ isVisible }: StarterAgentsProps) {
   if (loading || gridAgents.length === 0) return null;
 
   return (
-    <div 
-      className={`w-full mt-8 transition-opacity duration-500 ease-out ${
-        isVisible ? "opacity-100" : "opacity-0"
-      }`}
-    >
-      <div className="flex items-center gap-3 mb-4">
-        <h3 className="text-lg leading-[1.3] tracking-[-0.25px] font-semibold text-black font-plus_jakarta_sans">
-          Scheduled Actions
-        </h3>
-        <span className="text-xs bg-black text-white px-2 py-1 rounded-full font-medium">
-          NEW
-        </span>
+    <TooltipProvider>
+      <div 
+        className={`w-full mt-8 transition-opacity duration-500 ease-out ${
+          isVisible ? "opacity-100" : "opacity-0"
+        }`}
+      >
+        <div className="flex items-center gap-3 mb-4">
+          <span className="text-xs bg-black text-white px-2 py-1 rounded-full font-medium">
+            NEW
+          </span>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <h3 className="text-lg leading-[1.3] tracking-[-0.25px] font-semibold text-black font-plus_jakarta_sans cursor-help">
+                Scheduled Actions
+              </h3>
+            </TooltipTrigger>
+            <TooltipContent side="top" className="max-w-sm text-xs p-2">
+              <div className="space-y-1">
+                <p className="font-medium">Examples:</p>
+                <p>• &ldquo;Send weekly emails every Monday&rdquo;</p>
+                <p>• &ldquo;Check trending sounds daily at 9am&rdquo;</p>
+                <p>• Type &ldquo;show my scheduled actions&rdquo; to manage</p>
+              </div>
+            </TooltipContent>
+          </Tooltip>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {agents.map((agent: Agent, index: number) => (
+            <div
+              key={agent.title}
+              className="transition-all duration-300 ease-out"
+              style={{
+                transitionDelay: `${index * 100}ms`
+              }}
+            >
+              <AgentCard agent={agent} onClick={() => handleAgentClick(agent)} />
+            </div>
+          ))}
+        </div>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {agents.map((agent: Agent, index: number) => (
-          <div
-            key={agent.title}
-            className="transition-all duration-300 ease-out"
-            style={{
-              transitionDelay: `${index * 100}ms`
-            }}
-          >
-            <AgentCard agent={agent} onClick={() => handleAgentClick(agent)} />
-          </div>
-        ))}
-      </div>
-    </div>
+    </TooltipProvider>
   );
 }
 
