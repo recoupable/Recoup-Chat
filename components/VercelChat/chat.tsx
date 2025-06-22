@@ -86,7 +86,6 @@ function ChatContent({ reportId, id }: { reportId?: string; id: string }) {
         "px-4 md:px-0 pb-4 flex flex-col h-full items-center w-full max-w-3xl relative",
         {
           "justify-between": messages.length > 0,
-          "justify-center gap-4": messages.length === 0,
         }
       )}
       {...getRootProps()}
@@ -94,31 +93,51 @@ function ChatContent({ reportId, id }: { reportId?: string; id: string }) {
       {isDragActive && <FileDragOverlay />}
       <div className="absolute w-full h-6 bg-gradient-to-t from-transparent via-white/80 to-white z-10 top-0"></div>
       {isVisible ? (
-        <div className="w-full">
-          <ChatGreeting isVisible={isVisible} />
-          <ChatPrompt isVisible={isVisible} />
-        </div>
+        <>
+          {/* Spacer to push content to center */}
+          <div className="flex-1"></div>
+          
+          {/* Centered greeting and chat input */}
+          <div className="w-full">
+            <ChatGreeting isVisible={isVisible} />
+            <ChatPrompt isVisible={isVisible} />
+            <div className="mt-6">
+              <ChatInput
+                input={input}
+                setInput={setInput}
+                onSendMessage={handleSendMessage}
+                isGeneratingResponse={isGeneratingResponse}
+                onStop={stop}
+              />
+            </div>
+          </div>
+          
+          {/* Spacer to balance and bottom section */}
+          <div className="flex-1">
+            <StarterAgents isVisible={isVisible} />
+          </div>
+        </>
       ) : (
-        <Messages
-          messages={messages}
-          status={status}
-          setMessages={setMessages}
-          reload={reload}
-        >
-          {reportId && <ChatReport reportId={reportId} />}
-        </Messages>
+        <>
+          <Messages
+            messages={messages}
+            status={status}
+            setMessages={setMessages}
+            reload={reload}
+          >
+            {reportId && <ChatReport reportId={reportId} />}
+          </Messages>
+          <div className="w-full">
+            <ChatInput
+              input={input}
+              setInput={setInput}
+              onSendMessage={handleSendMessage}
+              isGeneratingResponse={isGeneratingResponse}
+              onStop={stop}
+            />
+          </div>
+        </>
       )}
-
-      <div className="flex flex-col gap-4 w-full">
-        <ChatInput
-          input={input}
-          setInput={setInput}
-          onSendMessage={handleSendMessage}
-          isGeneratingResponse={isGeneratingResponse}
-          onStop={stop}
-        />
-        {isVisible && <StarterAgents isVisible={isVisible} />}
-      </div>
     </div>
   );
 }

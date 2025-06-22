@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 
 // Define Agent type for agent metadata loaded from database
 export interface Agent {
+  id: string;
   title: string;
   description: string;
   prompt: string;
