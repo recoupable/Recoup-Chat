@@ -1,8 +1,7 @@
 import React from "react";
 import { SpotifyArtistAlbumsResultUIType } from "@/types/spotify";
-import { getSpotifyImage } from "@/lib/spotify/getSpotifyImage";
-import Link from "next/link";
 import Image from "next/image";
+import SpotifyCard from "@/components/common/SpotifyCard";
 
 const GetSpotifyArtistAlbumsResult: React.FC<{
   result: SpotifyArtistAlbumsResultUIType;
@@ -33,34 +32,15 @@ const GetSpotifyArtistAlbumsResult: React.FC<{
           const albumUrl = album.external_urls?.spotify;
           
           return (
-            <Link
+            <SpotifyCard
               key={album.id}
-              href={albumUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex flex-col cursor-pointer transition-all duration-200 hover:scale-105"
-            >
-              <div className="relative pb-[100%] w-full overflow-hidden rounded-xl bg-gray-100 mb-2">
-                {getSpotifyImage(album) ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={getSpotifyImage(album)}
-                    alt={album.name}
-                    className="absolute inset-0 w-full h-full object-cover"
-                  />
-                ) : (
-                  <div className="absolute inset-0 flex items-center justify-center bg-gray-200 text-gray-400">
-                    No Image
-                  </div>
-                )}
-              </div>
-              <div className="text-sm font-medium line-clamp-1" title={album.name}>
-                {album.name}
-              </div>
-              {releaseYear && (
-                <div className="text-xs text-gray-500">{releaseYear}</div>
-              )}
-            </Link>
+              id={album.id}
+              name={album.name}
+              subtitle={releaseYear?.toString()}
+              item={album}
+              externalUrl={albumUrl}
+              variant="grid"
+            />
           );
         })}
       </div>
