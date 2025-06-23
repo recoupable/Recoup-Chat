@@ -1,6 +1,8 @@
 import React from "react";
 import { Calendar, Clock, Play, Pause, ListTodo, CheckCircle2 } from "lucide-react";
 import { GetScheduledActionsResult } from "@/lib/tools/scheduled_actions/getScheduledActions";
+import { formatScheduledActionDate } from "@/lib/utils/formatDate";
+import { parseCronToHuman } from "@/lib/utils/cronUtils";
 
 export interface GetScheduledActionsSuccessProps {
   result: GetScheduledActionsResult;
@@ -10,92 +12,6 @@ const GetScheduledActionsSuccess: React.FC<GetScheduledActionsSuccessProps> = ({
   result,
 }) => {
   const { actions, message } = result;
-
-  const formatDate = (dateString: string | null) => {
-    if (!dateString) return "Never";
-    return new Date(dateString).toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  };
-
-  const parseCronToHuman = (cronExpression: string): string => {
-    try {
-      // Basic CRON parsing - format: minute hour day month dayOfWeek
-      const parts = cronExpression.trim().split(/\s+/);
-      if (parts.length !== 5) return cronExpression;
-
-      const [minute, hour, day, month, dayOfWeek] = parts;
-
-      // Handle common patterns
-      if (minute === "0" && hour === "*" && day === "*" && month === "*" && dayOfWeek === "*") {
-        return "Every hour";
-      }
-      
-      if (minute !== "*" && hour !== "*" && day === "*" && month === "*" && dayOfWeek === "*") {
-        const hourNum = parseInt(hour);
-        const minuteNum = parseInt(minute);
-        const time = new Date();
-        time.setHours(hourNum, minuteNum);
-        return `Daily at ${time.toLocaleTimeString("en-US", { 
-          hour: "numeric", 
-          minute: "2-digit", 
-          hour12: true 
-        })}`;
-      }
-
-      if (minute !== "*" && hour !== "*" && day === "*" && month === "*" && dayOfWeek !== "*") {
-        const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-        const hourNum = parseInt(hour);
-        const minuteNum = parseInt(minute);
-        const time = new Date();
-        time.setHours(hourNum, minuteNum);
-        
-        if (dayOfWeek.includes(",")) {
-          const dayNums = dayOfWeek.split(",").map(d => parseInt(d.trim()));
-          const dayNames = dayNums.map(num => days[num]).join(", ");
-          return `${dayNames} at ${time.toLocaleTimeString("en-US", { 
-            hour: "numeric", 
-            minute: "2-digit", 
-            hour12: true 
-          })}`;
-        } else {
-          const dayNum = parseInt(dayOfWeek);
-          return `${days[dayNum]} at ${time.toLocaleTimeString("en-US", { 
-            hour: "numeric", 
-            minute: "2-digit", 
-            hour12: true 
-          })}`;
-        }
-      }
-
-      if (minute === "0" && hour === "0" && day === "*" && month === "*" && dayOfWeek === "*") {
-        return "Daily at midnight";
-      }
-
-      if (minute === "0" && hour === "*/6" && day === "*" && month === "*" && dayOfWeek === "*") {
-        return "Every 6 hours";
-      }
-
-      // Handle minute intervals
-      if (minute.startsWith("*/") && hour === "*" && day === "*" && month === "*" && dayOfWeek === "*") {
-        const interval = parseInt(minute.substring(2));
-        if (interval === 1) return "Every minute";
-        if (interval === 5) return "Every 5 minutes";
-        if (interval === 10) return "Every 10 minutes";
-        if (interval === 15) return "Every 15 minutes";
-        if (interval === 30) return "Every 30 minutes";
-        return `Every ${interval} minutes`;
-      }
-
-      // Fallback to original if we can't parse
-      return cronExpression;
-    } catch {
-      return cronExpression;
-    }
-  };
 
   return (
     <div className="bg-white border border-gray-200 rounded-lg shadow-sm max-w-2xl">
@@ -166,7 +82,7 @@ const GetScheduledActionsSuccess: React.FC<GetScheduledActionsSuccessProps> = ({
                   <div className="flex items-center space-x-2 text-gray-600">
                     <Clock className="h-3.5 w-3.5 text-orange-500 flex-shrink-0" />
                     <span className="font-medium">Next run:</span>
-                    <span>{formatDate(action.next_run)}</span>
+                    <span>{formatScheduledActionDate(action.next_run)}</span>
                   </div>
                 </div>
 
@@ -175,7 +91,7 @@ const GetScheduledActionsSuccess: React.FC<GetScheduledActionsSuccessProps> = ({
                   <div className="mt-2 pt-2 border-t border-gray-100">
                     <div className="flex items-center space-x-2 text-xs text-gray-500">
                       <span className="font-medium">Last run:</span>
-                      <span>{formatDate(action.last_run)}</span>
+                      <span>{formatScheduledActionDate(action.last_run)}</span>
                     </div>
                   </div>
                 )}
