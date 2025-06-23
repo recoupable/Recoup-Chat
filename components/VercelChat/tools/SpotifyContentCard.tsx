@@ -3,57 +3,15 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ExternalLink } from "lucide-react";
 import Link from "next/link";
 import { getSpotifyImage } from "@/lib/spotify/getSpotifyImage";
-import {
-  SpotifyArtistSearchResult,
-  SpotifyAlbumSearchResult,
-  SpotifyTrackSearchResult,
-  SpotifyPlaylistSearchResult,
-  SpotifyShowSearchResult,
-  SpotifyEpisodeSearchResult,
-  SpotifyAudiobookSearchResult,
-} from "@/types/spotify";
-
-// Union type for all Spotify content types
-type SpotifyContent =
-  | SpotifyArtistSearchResult
-  | SpotifyAlbumSearchResult
-  | SpotifyTrackSearchResult
-  | SpotifyPlaylistSearchResult
-  | SpotifyShowSearchResult
-  | SpotifyEpisodeSearchResult
-  | SpotifyAudiobookSearchResult;
+import { getSpotifySubtitle, type SpotifyContent } from "@/lib/spotify/spotifyContentUtils";
 
 interface SpotifyContentCardProps {
   content: SpotifyContent;
 }
 
-const getSubtitle = (content: SpotifyContent): string => {
-  switch (content.type) {
-    case "track":
-      return content.artists?.map(artist => artist.name).join(", ") || "";
-    case "album":
-      return content.artists?.map(artist => artist.name).join(", ") || "";
-    case "playlist":
-      return content.owner?.display_name || "";
-    case "show":
-      return content.publisher || "";
-    case "episode":
-      return content.description ? content.description.slice(0, 50) + "..." : "";
-    case "audiobook":
-      return content.publisher || "";
-    case "artist":
-      if (content.genres && content.genres.length > 0) {
-        return content.genres.slice(0, 2).join(", ");
-      }
-      return content.followers ? `${content.followers.total.toLocaleString()} followers` : "";
-    default:
-      return "";
-  }
-};
-
 const SpotifyContentCard = ({ content }: SpotifyContentCardProps) => {
   const imageUrl = getSpotifyImage(content);
-  const subtitle = getSubtitle(content);
+  const subtitle = getSpotifySubtitle(content);
   const spotifyUrl = content.external_urls?.spotify;
   const hasValidUrl = spotifyUrl && spotifyUrl !== "#";
 

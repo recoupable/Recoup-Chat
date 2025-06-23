@@ -1,6 +1,7 @@
 import React from "react";
 import { SpotifySearchResponse } from "@/types/spotify";
 import SpotifyContentCard from "./SpotifyContentCard";
+import { type SpotifyContent } from "@/lib/spotify/spotifyContentUtils";
 
 const typeLabels: Record<string, string> = {
   artists: "Artists",
@@ -44,7 +45,7 @@ const GetSpotifySearchToolResult: React.FC<{
                       className="w-[140px] m-2 flex-shrink-0"
                     >
                       <SpotifyContentCard
-                        content={item as Parameters<typeof SpotifyContentCard>[0]['content']}
+                        content={item as SpotifyContent}
                       />
                     </div>
                   );
