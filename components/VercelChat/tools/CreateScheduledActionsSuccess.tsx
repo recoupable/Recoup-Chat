@@ -1,37 +1,21 @@
 import React from "react";
 import { CreateScheduledActionsResult } from "@/lib/tools/scheduled_actions/createScheduledActions";
 import ScheduledActionCard from "./ScheduledActionCard";
-import { CheckCircle, AlertCircle, Calendar } from "lucide-react";
+import CreateScheduledActionsError from "./CreateScheduledActionsError";
+import { CheckCircle, Calendar } from "lucide-react";
 
 interface CreateScheduledActionsSuccessProps {
   result: CreateScheduledActionsResult;
 }
 
-const CreateScheduledActionsSuccess: React.FC<
-  CreateScheduledActionsSuccessProps
-> = ({ result }) => {
+const CreateScheduledActionsSuccess: React.FC<CreateScheduledActionsSuccessProps> = ({
+  result,
+}) => {
   const { actions, message, error } = result;
 
   // Error state
   if (error) {
-    return (
-      <div className="bg-red-50 border border-red-200 rounded-xl p-4 max-w-2xl">
-        <div className="flex items-start space-x-3">
-          <AlertCircle className="h-5 w-5 text-red-500 mt-0.5 flex-shrink-0" />
-          <div className="flex-1">
-            <h3 className="text-sm font-medium text-red-800">
-              Failed to Create Scheduled Actions
-            </h3>
-            <p className="text-sm text-red-700 mt-1">
-              {message || "An error occurred while creating scheduled actions"}
-            </p>
-            <div className="text-xs text-red-600 mt-2 font-mono bg-red-100 p-2 rounded">
-              {error}
-            </div>
-          </div>
-        </div>
-      </div>
-    );
+    return <CreateScheduledActionsError message={message} error={error} />;
   }
 
   // Success state
@@ -44,11 +28,12 @@ const CreateScheduledActionsSuccess: React.FC<
           <h3 className="text-sm font-medium text-green-800 flex items-center space-x-2">
             <Calendar className="h-4 w-4" />
             <span>
-              {actions.length === 0
+              {actions.length === 0 
                 ? "Scheduled actions processed successfully"
-                : actions.length === 1
-                  ? "1 action created successfully"
-                  : `${actions.length} actions created successfully`}
+                : actions.length === 1 
+                  ? "1 action created successfully" 
+                  : `${actions.length} actions created successfully`
+              }
             </span>
           </h3>
         </div>
@@ -57,9 +42,15 @@ const CreateScheduledActionsSuccess: React.FC<
       {/* Actions List */}
       {actions.length > 0 && (
         <div className="space-y-3">
+          <div className="text-xs font-medium text-green-800 uppercase tracking-wide">
+            Created Actions ({actions.length})
+          </div>
           <div className="space-y-2">
             {actions.map((action, index) => (
-              <ScheduledActionCard key={action.id || index} action={action} />
+              <ScheduledActionCard 
+                key={action.id || index} 
+                action={action}
+              />
             ))}
           </div>
         </div>
