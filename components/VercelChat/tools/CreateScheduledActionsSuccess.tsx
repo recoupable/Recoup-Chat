@@ -22,7 +22,7 @@ const CreateScheduledActionsSuccess: React.FC<CreateScheduledActionsSuccessProps
   // Error state
   if (error) {
     return (
-      <div className="bg-red-50 border border-red-200 rounded-lg p-4 max-w-2xl">
+      <div className="bg-red-50 border border-red-200 rounded-xl p-4 max-w-2xl">
         <div className="flex items-start space-x-3">
           <AlertCircle className="h-5 w-5 text-red-500 mt-0.5 flex-shrink-0" />
           <div className="flex-1">
@@ -43,18 +43,15 @@ const CreateScheduledActionsSuccess: React.FC<CreateScheduledActionsSuccessProps
 
   // Success state
   return (
-    <div className="bg-green-50 border border-green-200 rounded-lg p-4 max-w-2xl">
+    <div className="bg-green-50 border border-green-200 rounded-xl p-4 max-w-2xl">
       {/* Success Header */}
       <div className="flex items-start space-x-3 mb-4">
         <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
         <div className="flex-1">
           <h3 className="text-sm font-medium text-green-800 flex items-center space-x-2">
             <Calendar className="h-4 w-4" />
-            <span>Scheduled Actions Created Successfully</span>
+            <span>{formatActionsCount(actions.length)} created successfully</span>
           </h3>
-          <p className="text-sm text-green-700 mt-1">
-            {message || `Successfully created ${formatActionsCount(actions.length)}`}
-          </p>
         </div>
       </div>
 
