@@ -38,15 +38,15 @@ const Agents = () => {
   };
 
   return (
-    <div className="max-w-full md:max-w-[calc(100vw-200px)] grow py-6 px-2 md:px-10">
-      <p className="text-center md:text-left font-plus_jakarta_sans_bold text-3xl mb-3">
+    <div className="max-w-full md:max-w-[calc(100vw-200px)] grow py-8 px-6 md:px-12">
+      <p className="text-center md:text-left font-plus_jakarta_sans_bold text-3xl mb-4">
         Agents
       </p>
-      <p className="text-base md:text-lg text-gray-400 text-center md:text-left mb-4 font-light font-inter">
+      <p className="text-lg text-gray-500 text-center md:text-left mb-8 font-light font-inter max-w-2xl">
         <span className="sm:hidden">Smarter label teams, powered by agents.</span>
         <span className="hidden sm:inline">Unlock the potential of your roster with intelligent, task-focused agents.</span>
       </p>
-      <div className="mt-2">
+      <div className="mb-8">
         <AgentTags
           tags={tags}
           selectedTag={selectedTag}
@@ -55,13 +55,13 @@ const Agents = () => {
           setShowAllTags={setShowAllTags}
         />
       </div>
-      <div className="mt-16" />
+      <div className="mt-12" />
       {loading ? (
-        <div className="text-center text-gray-400">Loading agents...</div>
+        <div className="text-center text-gray-400 py-12">Loading agents...</div>
       ) : gridAgents.length === 0 ? (
-        <div className="text-center text-gray-400">No agents found for this tag.</div>
+        <div className="text-center text-gray-400 py-12">No agents found for this tag.</div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-10 px-2 md:px-10 md:max-w-[calc(100vw-200px)]">
+        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8">
           {gridAgents.map((agent) => (
             <AgentCard
               key={agent.title}
