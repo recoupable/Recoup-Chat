@@ -42,9 +42,6 @@ const CreateScheduledActionsSuccess: React.FC<CreateScheduledActionsSuccessProps
       {/* Actions List */}
       {actions.length > 0 && (
         <div className="space-y-3">
-          <div className="text-xs font-medium text-green-800 uppercase tracking-wide">
-            Created Actions ({actions.length})
-          </div>
           <div className="space-y-2">
             {actions.map((action, index) => (
               <ScheduledActionCard 
