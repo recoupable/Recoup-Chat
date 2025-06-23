@@ -44,9 +44,11 @@ const CreateScheduledActionsSuccess: React.FC<CreateScheduledActionsSuccessProps
           <h3 className="text-sm font-medium text-green-800 flex items-center space-x-2">
             <Calendar className="h-4 w-4" />
             <span>
-              {actions.length === 1 
-                ? "1 action created successfully" 
-                : `${actions.length} actions created successfully`
+              {actions.length === 0 
+                ? "Scheduled actions processed successfully"
+                : actions.length === 1 
+                  ? "1 action created successfully" 
+                  : `${actions.length} actions created successfully`
               }
             </span>
           </h3>
