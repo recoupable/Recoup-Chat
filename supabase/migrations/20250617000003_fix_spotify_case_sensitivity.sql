@@ -23,3 +23,4 @@ $$ LANGUAGE plpgsql;
 -- 2. Note: Existing Spotify URLs that were incorrectly lowercased cannot be automatically fixed
 -- because the original case information has been lost. These will need to be manually updated
 -- or re-imported from the original source.
+COMMIT
