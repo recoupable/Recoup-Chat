@@ -58,6 +58,7 @@ import GetSpotifyArtistAlbumsResult from "./tools/GetSpotifyArtistAlbumsResult";
 import { SpotifyArtistAlbumsResultUIType } from "@/types/spotify";
 import GetSpotifyArtistAlbumsSkeleton from "./tools/GetSpotifyArtistAlbumsSkeleton";
 import SpotifyArtistTopTracksResult from "./tools/SpotifyArtistTopTracksResult";
+import SpotifyArtistTopTracksSkeleton from "./tools/SpotifyArtistTopTracksSkeleton";
 
 /**
  * Interface for tool call props
@@ -182,6 +183,12 @@ export function getToolCallComponent({ toolName, toolCallId }: ToolInvocation) {
     return (
       <div key={toolCallId}>
         <GetArtistSocialsSkeleton />
+      </div>
+    );
+  } else if (toolName === "get_spotify_artist_top_tracks") {
+    return (
+      <div key={toolCallId}>
+        <SpotifyArtistTopTracksSkeleton />
       </div>
     );
   }
