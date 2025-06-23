@@ -58,6 +58,8 @@ import GetSpotifyArtistAlbumsResult from "./tools/GetSpotifyArtistAlbumsResult";
 import { SpotifyArtistAlbumsResultUIType } from "@/types/spotify";
 import GetSpotifyArtistAlbumsSkeleton from "./tools/GetSpotifyArtistAlbumsSkeleton";
 import SpotifyArtistTopTracksResult from "./tools/SpotifyArtistTopTracksResult";
+import CreateScheduledActionsSuccess from "./tools/CreateScheduledActionsSuccess";
+import { CreateScheduledActionsResult } from "@/lib/tools/scheduled_actions/createScheduledActions";
 
 /**
  * Interface for tool call props
@@ -86,6 +88,7 @@ type ToolResult =
   | SpotifyDeepResearchResultUIType
   | SpotifyArtistAlbumsResultUIType
   | SpotifyArtistTopTracksResultType
+  | CreateScheduledActionsResult
   | Record<string, unknown>;
 
 /**
@@ -334,6 +337,12 @@ export function getToolResultComponent({
     return (
       <div key={toolCallId}>
         <SpotifyArtistTopTracksResult result={result as SpotifyArtistTopTracksResultType} />
+      </div>
+    );
+  } else if (toolName === "create_scheduled_actions") {
+    return (
+      <div key={toolCallId}>
+        <CreateScheduledActionsSuccess result={result as CreateScheduledActionsResult} />
       </div>
     );
   }
