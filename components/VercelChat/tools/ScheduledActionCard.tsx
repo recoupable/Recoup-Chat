@@ -1,6 +1,6 @@
 import React from "react";
 import { Calendar, Clock, Play, Pause } from "lucide-react";
-import { formatScheduledActionDate } from "@/lib/utils/formatDate";
+import { formatScheduledActionDate } from "@/lib/utils/formatScheduledActionDate";
 import { parseCronToHuman } from "@/lib/utils/cronUtils";
 import { Tables } from "@/types/database.types";
 
