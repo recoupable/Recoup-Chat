@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useAgentData, type Agent } from "../Agents/useAgentData";
-import AgentCard from "../Agents/AgentCard";
+import StarterAgentCard from "./StarterAgentCard";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface StarterAgentsProps {
@@ -70,7 +70,7 @@ export function StarterAgents({ isVisible }: StarterAgentsProps) {
                 transitionDelay: `${index * 100}ms`
               }}
             >
-              <AgentCard agent={agent} onClick={() => handleAgentClick(agent)} />
+              <StarterAgentCard agent={agent} onClick={() => handleAgentClick(agent)} />
             </div>
           ))}
         </div>
