@@ -1,7 +1,7 @@
 import React from "react";
 import { CreateScheduledActionsResult } from "@/lib/tools/scheduled_actions/createScheduledActions";
-import GenericSuccess from "./GenericSuccess";
 import ScheduledActionCard from "./ScheduledActionCard";
+import { CheckCircle, AlertCircle, Calendar } from "lucide-react";
 
 interface CreateScheduledActionsSuccessProps {
   result: CreateScheduledActionsResult;
@@ -12,20 +12,6 @@ const CreateScheduledActionsSuccess: React.FC<CreateScheduledActionsSuccessProps
 }) => {
   const { actions, message, error } = result;
 
-  // If there's an error, show error state
-  if (error) {
-    return (
-      <GenericSuccess
-        name="Scheduled Actions"
-        message={message || "Failed to create scheduled actions"}
-      >
-        <div className="text-xs text-red-500 mt-1">
-          Error: {error}
-        </div>
-      </GenericSuccess>
-    );
-  }
-
   // Format actions count for display
   const formatActionsCount = (count: number): string => {
     if (count === 0) return "No actions";
@@ -33,21 +19,72 @@ const CreateScheduledActionsSuccess: React.FC<CreateScheduledActionsSuccessProps
     return `${count} actions`;
   };
 
+  // Error state
+  if (error) {
+    return (
+      <div className="bg-red-50 border border-red-200 rounded-lg p-4 max-w-2xl">
+        <div className="flex items-start space-x-3">
+          <AlertCircle className="h-5 w-5 text-red-500 mt-0.5 flex-shrink-0" />
+          <div className="flex-1">
+            <h3 className="text-sm font-medium text-red-800">
+              Failed to Create Scheduled Actions
+            </h3>
+            <p className="text-sm text-red-700 mt-1">
+              {message || "An error occurred while creating scheduled actions"}
+            </p>
+            <div className="text-xs text-red-600 mt-2 font-mono bg-red-100 p-2 rounded">
+              {error}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   // Success state
   return (
-    <GenericSuccess
-      name="Scheduled Actions"
-      message={message || `Created ${formatActionsCount(actions.length)}`}
-    >
-      <div className="mt-2 space-y-2 max-w-md">
-        {actions.map((action, index) => (
-          <ScheduledActionCard 
-            key={action.id || index} 
-            action={action}
-          />
-        ))}
+    <div className="bg-green-50 border border-green-200 rounded-lg p-4 max-w-2xl">
+      {/* Success Header */}
+      <div className="flex items-start space-x-3 mb-4">
+        <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
+        <div className="flex-1">
+          <h3 className="text-sm font-medium text-green-800 flex items-center space-x-2">
+            <Calendar className="h-4 w-4" />
+            <span>Scheduled Actions Created Successfully</span>
+          </h3>
+          <p className="text-sm text-green-700 mt-1">
+            {message || `Successfully created ${formatActionsCount(actions.length)}`}
+          </p>
+        </div>
       </div>
-    </GenericSuccess>
+
+      {/* Actions List */}
+      {actions.length > 0 && (
+        <div className="space-y-3">
+          <div className="text-xs font-medium text-green-800 uppercase tracking-wide">
+            Created Actions ({actions.length})
+          </div>
+          <div className="space-y-2">
+            {actions.map((action, index) => (
+              <ScheduledActionCard 
+                key={action.id || index} 
+                action={action}
+              />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Empty state (shouldn't happen in success, but just in case) */}
+      {actions.length === 0 && (
+        <div className="text-center py-4">
+          <Calendar className="h-8 w-8 text-green-400 mx-auto mb-2" />
+          <p className="text-sm text-green-600">
+            No scheduled actions to display
+          </p>
+        </div>
+      )}
+    </div>
   );
 };
 
