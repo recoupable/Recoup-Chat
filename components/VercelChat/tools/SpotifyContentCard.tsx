@@ -1,3 +1,4 @@
+import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { ExternalLink } from "lucide-react";
 import Link from "next/link";
@@ -24,7 +25,7 @@ type SpotifyContent =
 
 interface SpotifyContentCardProps {
   content: SpotifyContent;
-  onClick?: (name: string, type: string) => void;
+  onClick?: (name: string) => void;
 }
 
 const getSubtitle = (content: SpotifyContent): string => {
@@ -56,10 +57,10 @@ const SpotifyContentCard = ({ content, onClick }: SpotifyContentCardProps) => {
   const subtitle = getSubtitle(content);
   const spotifyUrl = content.external_urls?.spotify || "#";
 
-  const handleClick = (e: any) => {
+  const handleClick = (e: React.MouseEvent) => {
     if (onClick) {
       e.preventDefault();
-      onClick(content.name, content.type);
+      onClick(content.name);
     }
   };
 

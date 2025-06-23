@@ -53,8 +53,8 @@ const GetSpotifySearchToolResult: React.FC<{
                       className="w-[140px] m-2 flex-shrink-0"
                     >
                       <SpotifyContentCard
-                        content={item as any}
-                        onClick={(name, type) => handleSelect(name, type)}
+                        content={item as Parameters<typeof SpotifyContentCard>[0]['content']}
+                        onClick={(name) => handleSelect(name, key)}
                       />
                     </div>
                   );
