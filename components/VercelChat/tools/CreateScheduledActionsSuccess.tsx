@@ -2,7 +2,7 @@ import React from "react";
 import { CreateScheduledActionsResult } from "@/lib/tools/scheduled_actions/createScheduledActions";
 import GenericSuccess from "./GenericSuccess";
 import { formatCronSchedule, formatActionsCount, getActionStatus, truncatePrompt } from "@/lib/utils/scheduledActionsUtils";
-import { Clock, Calendar, CheckCircle } from "lucide-react";
+import { Calendar, CheckCircle } from "lucide-react";
 
 interface CreateScheduledActionsSuccessProps {
   result: CreateScheduledActionsResult;
