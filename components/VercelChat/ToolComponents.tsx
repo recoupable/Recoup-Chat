@@ -59,6 +59,7 @@ import { SpotifyArtistAlbumsResultUIType } from "@/types/spotify";
 import GetSpotifyArtistAlbumsSkeleton from "./tools/GetSpotifyArtistAlbumsSkeleton";
 import SpotifyArtistTopTracksResult from "./tools/SpotifyArtistTopTracksResult";
 import SpotifyArtistTopTracksSkeleton from "./tools/SpotifyArtistTopTracksSkeleton";
+import SpotifyArtistTopTracksSkeleton from "./tools/SpotifyArtistTopTracksSkeleton";
 import GetScheduledActionsSuccess from "./tools/GetScheduledActionsSuccess";
 import { GetScheduledActionsResult } from "@/lib/tools/scheduled_actions/getScheduledActions";
 
