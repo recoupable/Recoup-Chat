@@ -79,12 +79,15 @@ const GetScheduledActionsSuccess: React.FC<GetScheduledActionsSuccessProps> = ({
         return "Every 6 hours";
       }
 
-      if (minute === "*/15" && hour === "*" && day === "*" && month === "*" && dayOfWeek === "*") {
-        return "Every 15 minutes";
-      }
-
-      if (minute === "*/30" && hour === "*" && day === "*" && month === "*" && dayOfWeek === "*") {
-        return "Every 30 minutes";
+      // Handle minute intervals
+      if (minute.startsWith("*/") && hour === "*" && day === "*" && month === "*" && dayOfWeek === "*") {
+        const interval = parseInt(minute.substring(2));
+        if (interval === 1) return "Every minute";
+        if (interval === 5) return "Every 5 minutes";
+        if (interval === 10) return "Every 10 minutes";
+        if (interval === 15) return "Every 15 minutes";
+        if (interval === 30) return "Every 30 minutes";
+        return `Every ${interval} minutes`;
       }
 
       // Fallback to original if we can't parse
