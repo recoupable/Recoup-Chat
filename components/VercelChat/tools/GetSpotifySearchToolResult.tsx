@@ -1,6 +1,5 @@
 import React from "react";
 import { SpotifySearchResponse } from "@/types/spotify";
-import { useVercelChatContext } from "@/providers/VercelChatProvider";
 import SpotifyContentCard from "./SpotifyContentCard";
 
 const typeLabels: Record<string, string> = {
@@ -16,14 +15,6 @@ const typeLabels: Record<string, string> = {
 const GetSpotifySearchToolResult: React.FC<{
   result: SpotifySearchResponse;
 }> = ({ result }) => {
-  const { append } = useVercelChatContext();
-
-  const handleSelect = (name: string, type: string) => {
-    append({
-      role: "user",
-      content: `I've selected ${name} (${type})`,
-    });
-  };
 
   return (
     <div>
@@ -54,7 +45,6 @@ const GetSpotifySearchToolResult: React.FC<{
                     >
                       <SpotifyContentCard
                         content={item as Parameters<typeof SpotifyContentCard>[0]['content']}
-                        onClick={(name) => handleSelect(name, key)}
                       />
                     </div>
                   );
