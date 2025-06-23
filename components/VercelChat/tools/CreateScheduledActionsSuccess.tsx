@@ -12,13 +12,6 @@ const CreateScheduledActionsSuccess: React.FC<CreateScheduledActionsSuccessProps
 }) => {
   const { actions, message, error } = result;
 
-  // Format actions count for display
-  const formatActionsCount = (count: number): string => {
-    if (count === 0) return "No actions";
-    if (count === 1) return "1 action";
-    return `${count} actions`;
-  };
-
   // Error state
   if (error) {
     return (
@@ -50,7 +43,12 @@ const CreateScheduledActionsSuccess: React.FC<CreateScheduledActionsSuccessProps
         <div className="flex-1">
           <h3 className="text-sm font-medium text-green-800 flex items-center space-x-2">
             <Calendar className="h-4 w-4" />
-            <span>{formatActionsCount(actions.length)} created successfully</span>
+            <span>
+              {actions.length === 1 
+                ? "1 action created successfully" 
+                : `${actions.length} actions created successfully`
+              }
+            </span>
           </h3>
         </div>
       </div>
