@@ -26,7 +26,7 @@ const FileDragOverlay = () => {
         Drop any file here to add it to the conversation
       </p>
       <div className="mt-4 text-xs text-gray-500 dark:text-gray-400">
-        Supported formats: JPG, PNG, GIF, WEBP
+        Supported formats: JPG, PNG, GIF, WEBP, PDF
       </div>
     </div>
   );
