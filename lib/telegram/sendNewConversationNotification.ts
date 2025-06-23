@@ -3,6 +3,7 @@ import { isTestEmail } from "@/lib/email/isTestEmail";
 
 interface NewConversationNotificationParams {
   email: string;
+  accountId: string;
   conversationId: string;
   topic: string;
   firstMessage?: string;
@@ -10,6 +11,7 @@ interface NewConversationNotificationParams {
 
 export const sendNewConversationNotification = async ({
   email,
+  accountId,
   conversationId,
   topic,
   firstMessage,
@@ -19,7 +21,7 @@ export const sendNewConversationNotification = async ({
 
   try {
     const formattedMessage = `🗣️ New Conversation Started
-From: ${email}
+From: ${email || accountId}
 Chat ID: ${conversationId}
 Topic: ${topic}
 Time: ${new Date().toISOString()}${firstMessage ? `\n\nFirst Message:\n${firstMessage}` : ""}`;

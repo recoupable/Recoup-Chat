@@ -13,15 +13,21 @@ interface AgentCardProps {
   onClick: (agent: Agent) => void;
 }
 
-const AgentCard: React.FC<AgentCardProps> = ({ agent, onClick }) => (
-  <button
-    type="button"
-    className="w-full text-left bg-white border border-gray-200 rounded-lg p-4 shadow-none hover:shadow-md hover:-translate-y-1 hover:bg-gray-50 transition-all"
-    onClick={() => onClick(agent)}
-  >
-    <div className="text-lg mb-1 font-medium">{agent.title}</div>
-    <div className="text-gray-400 text-sm font-normal font-inter">{agent.description}</div>
-  </button>
-);
+const AgentCard: React.FC<AgentCardProps> = ({ agent, onClick }) => {
+  return (
+    <button
+      type="button"
+      className="w-full bg-white border border-gray-200/60 rounded-lg px-4 py-3 hover:border-gray-300 hover:shadow-md transition-all duration-200 text-left group hover:-translate-y-px"
+      onClick={() => onClick(agent)}
+    >
+      <div className="text-sm font-semibold text-gray-900 leading-tight group-hover:text-gray-700 transition-colors">
+        {agent.title}
+      </div>
+      <div className="text-gray-600 text-xs leading-relaxed opacity-0 group-hover:opacity-100 transition-all duration-200 max-h-0 group-hover:max-h-20 overflow-hidden mt-1">
+        {agent.description}
+      </div>
+    </button>
+  );
+};
 
 export default AgentCard; 
