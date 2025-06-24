@@ -14,36 +14,30 @@ import handleInstagramProfileScraperResults from "@/lib/apify/handleInstagramPro
 export default async function handleApifyWebhook(
   parsed: z.infer<typeof apifyPayloadSchema>
 ) {
-  let posts: Tables<"posts">[] = [];
-  let social: Tables<"socials"> | null = null;
-  let accountSocials: AccountSocialWithSocial[] = [];
-  let accountArtistIds: Tables<"account_artist_ids">[] = [];
-  let accountEmails: Tables<"account_emails">[] = [];
-  let sentEmails: unknown = null;
-
   try {
     // Only handle Instagram profile scraper results if actorId matches
     if (parsed.eventData.actorId === "dSCLg0C3YEZ83HzYX") {
-      const result = await handleInstagramProfileScraperResults(parsed);
-      posts = result.posts;
-      social = result.social;
-      accountSocials = result.accountSocials;
-      accountArtistIds = result.accountArtistIds;
-      accountEmails = result.accountEmails;
-      sentEmails = result.sentEmails;
+      return await handleInstagramProfileScraperResults(parsed);
     } else {
       console.log(`Unhandled actorId: ${parsed.eventData.actorId}`);
+      return {
+        posts: [],
+        social: null,
+        accountSocials: [],
+        accountArtistIds: [],
+        accountEmails: [],
+        sentEmails: null,
+      };
     }
   } catch (e) {
     console.error("Failed to handle Apify webhook:", e);
+    return {
+      posts: [],
+      social: null,
+      accountSocials: [],
+      accountArtistIds: [],
+      accountEmails: [],
+      sentEmails: null,
+    };
   }
-
-  return {
-    posts,
-    social,
-    accountSocials,
-    accountArtistIds,
-    accountEmails,
-    sentEmails,
-  };
 }
