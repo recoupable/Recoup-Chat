@@ -27,12 +27,17 @@ const GetSpotifyArtistAlbumsResult: React.FC<{
         <div className="font-semibold text-lg">Artist Albums</div>
       </div>
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-        {result.items.map((album) => (
-          <SpotifyContentCard
-            key={album.id}
-            content={album}
-          />
-        ))}
+        {result.items.map((album) => {
+          const releaseYear = album.release_date ? new Date(album.release_date).getFullYear() : null;
+          album = {...album, artists: releaseYear  ? [{ ...album.artists[0], name: releaseYear.toString() }] : album.artists};
+
+          return (
+            <SpotifyContentCard
+              key={album.id}
+              content={album}
+            />
+          );
+        })}
       </div>
       {result.total > result.items.length && (
         <div className="mt-4 text-center text-sm text-gray-500">
