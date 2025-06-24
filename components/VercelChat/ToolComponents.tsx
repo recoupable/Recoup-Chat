@@ -60,9 +60,14 @@ import GetSpotifyArtistAlbumsSkeleton from "./tools/GetSpotifyArtistAlbumsSkelet
 import SpotifyArtistTopTracksResult from "./tools/SpotifyArtistTopTracksResult";
 import SpotifyArtistTopTracksSkeleton from "./tools/SpotifyArtistTopTracksSkeleton";
 import GetScheduledActionsSuccess from "./tools/GetScheduledActionsSuccess";
+import GetScheduledActionsSkeleton from "./tools/GetScheduledActionsSkeleton";
 import { GetScheduledActionsResult } from "@/lib/tools/scheduled_actions/getScheduledActions";
 import CreateScheduledActionsSuccess from "./tools/CreateScheduledActionsSuccess";
+import CreateScheduledActionsSkeleton from "./tools/CreateScheduledActionsSkeleton";
 import { CreateScheduledActionsResult } from "@/lib/tools/scheduled_actions/createScheduledActions";
+import GetSpotifyAlbumWithTracksResult from "./tools/GetSpotifyAlbumWithTracksResult";
+import GetSpotifyAlbumWithTracksSkeleton from "./tools/GetSpotifyAlbumWithTracksSkeleton";
+import { SpotifyAlbum } from "@/lib/tools/getSpotifyAlbum";
 import DeleteScheduledActionsSuccess from "./tools/DeleteScheduledActionsSuccess";
 import { DeleteScheduledActionsResult } from "@/lib/tools/scheduled_actions/deleteScheduledActions";
 
@@ -95,6 +100,7 @@ type ToolResult =
   | SpotifyArtistTopTracksResultType
   | GetScheduledActionsResult
   | CreateScheduledActionsResult
+  | SpotifyAlbum
   | DeleteScheduledActionsResult
   | Record<string, unknown>;
 
@@ -198,6 +204,24 @@ export function getToolCallComponent({ toolName, toolCallId }: ToolInvocation) {
     return (
       <div key={toolCallId}>
         <SpotifyArtistTopTracksSkeleton />
+      </div>
+    );
+  } else if (toolName === "get_scheduled_actions") {
+    return (
+      <div key={toolCallId}>
+        <GetScheduledActionsSkeleton />
+      </div>
+    );
+  } else if (toolName === "get_spotify_album") {
+    return (
+      <div key={toolCallId}>
+        <GetSpotifyAlbumWithTracksSkeleton />
+      </div>
+    );
+  } else if (toolName === "create_scheduled_actions") {
+    return (
+      <div key={toolCallId}>
+        <CreateScheduledActionsSkeleton />
       </div>
     );
   }
@@ -364,6 +388,12 @@ export function getToolResultComponent({
         <CreateScheduledActionsSuccess result={result as CreateScheduledActionsResult} />
       </div>
     );
+  } else if (toolName === "get_spotify_album") {
+    return (
+      <div key={toolCallId}>
+        <GetSpotifyAlbumWithTracksResult result={result as SpotifyAlbum} />
+      </div>
+    );
   } else if (toolName === "delete_scheduled_actions") {
     return (
       <div key={toolCallId}>
@@ -371,7 +401,7 @@ export function getToolResultComponent({
       </div>
     );
   }
-
+ 
   // Default generic result for other tools
   return (
     <GenericSuccess
