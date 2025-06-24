@@ -41,7 +41,7 @@ export default async function handleInstagramCommentsScraper(
 
         // Extract unique post URLs
         processedPostUrls = Array.from(
-          new Set(dataset.map((item: any) => item.postUrl).filter(Boolean))
+          new Set(dataset.map((item: InstagramComment) => item.postUrl).filter(Boolean))
         );
         
         totalComments = dataset.length;
