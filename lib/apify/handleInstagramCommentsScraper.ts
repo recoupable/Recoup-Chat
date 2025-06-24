@@ -29,12 +29,6 @@ export default async function handleInstagramCommentsScraper(
     comments: [],
     processedPostUrls: [],
     totalComments: 0,
-    posts: [],
-    social: null,
-    accountSocials: [],
-    accountArtistIds: [],
-    accountEmails: [],
-    sentEmails: null,
   };
 
   try {
@@ -76,13 +70,6 @@ export default async function handleInstagramCommentsScraper(
       comments,
       processedPostUrls,
       totalComments,
-      // Keep the same structure as other handlers for consistency
-      posts: [],
-      social: null,
-      accountSocials: [],
-      accountArtistIds: [],
-      accountEmails: [],
-      sentEmails: null,
     };
   } catch (error) {
     console.error("Failed to handle Instagram Comments Scraper webhook:", error);
