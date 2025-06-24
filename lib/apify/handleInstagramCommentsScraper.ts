@@ -36,26 +36,15 @@ export default async function handleInstagramCommentsScraper(
       const dataset = await getDataset(datasetId);
       
       if (dataset && Array.isArray(dataset)) {
-        // Process all comments from the dataset
-        comments = dataset.filter((item): item is InstagramComment => {
-          return (
-            typeof item === 'object' &&
-            item !== null &&
-            'id' in item &&
-            'text' in item &&
-            'timestamp' in item &&
-            'ownerUsername' in item &&
-            'ownerProfilePicUrl' in item &&
-            'postUrl' in item
-          );
-        });
+        // Assign comments directly from the dataset
+        comments = dataset as InstagramComment[];
 
         // Extract unique post URLs
         processedPostUrls = Array.from(
-          new Set(comments.map(comment => comment.postUrl))
+          new Set(dataset.map((item: any) => item.postUrl).filter(Boolean))
         );
         
-        totalComments = comments.length;
+        totalComments = dataset.length;
         
         console.log(`Processed ${totalComments} comments from ${processedPostUrls.length} posts`);
         
