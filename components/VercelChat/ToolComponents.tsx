@@ -68,6 +68,8 @@ import { CreateScheduledActionsResult } from "@/lib/tools/scheduled_actions/crea
 import GetSpotifyAlbumWithTracksResult from "./tools/GetSpotifyAlbumWithTracksResult";
 import GetSpotifyAlbumWithTracksSkeleton from "./tools/GetSpotifyAlbumWithTracksSkeleton";
 import { SpotifyAlbum } from "@/lib/tools/getSpotifyAlbum";
+import DeleteScheduledActionsSuccess from "./tools/DeleteScheduledActionsSuccess";
+import { DeleteScheduledActionsResult } from "@/lib/tools/scheduled_actions/deleteScheduledActions";
 
 /**
  * Interface for tool call props
@@ -99,6 +101,7 @@ type ToolResult =
   | GetScheduledActionsResult
   | CreateScheduledActionsResult
   | SpotifyAlbum
+  | DeleteScheduledActionsResult
   | Record<string, unknown>;
 
 /**
@@ -389,6 +392,12 @@ export function getToolResultComponent({
     return (
       <div key={toolCallId}>
         <GetSpotifyAlbumWithTracksResult result={result as SpotifyAlbum} />
+      </div>
+    );
+  } else if (toolName === "delete_scheduled_actions") {
+    return (
+      <div key={toolCallId}>
+        <DeleteScheduledActionsSuccess result={result as DeleteScheduledActionsResult} />
       </div>
     );
   }
