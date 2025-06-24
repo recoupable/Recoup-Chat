@@ -1,40 +1,55 @@
 import React from "react";
-import { Calendar, Clock, Play, Pause } from "lucide-react";
+import { Calendar, Clock, Play, Pause, Trash2 } from "lucide-react";
 import { formatScheduledActionDate } from "@/lib/utils/formatScheduledActionDate";
 import { parseCronToHuman } from "@/lib/utils/cronUtils";
 import { Tables } from "@/types/database.types";
+import { cn } from "@/lib/utils";
 
 type ScheduledAction = Tables<"scheduled_actions">;
 
 export interface ScheduledActionCardProps {
   action: ScheduledAction;
+  isDeleted?: boolean;
 }
 
-const ScheduledActionCard: React.FC<ScheduledActionCardProps> = ({ action }) => {
+const ScheduledActionCard: React.FC<ScheduledActionCardProps> = ({ action, isDeleted }) => {
+  const isActive = action.enabled && !isDeleted;
+  const isPaused = !action.enabled && !isDeleted;
   return (
     <div
-      className={`border rounded-lg p-4 transition-all ${
+      className={cn(`border rounded-lg p-4 transition-all ${
         action.enabled 
           ? "border-green-200 bg-green-50/30" 
           : "border-gray-200 bg-gray-50/30"
-      }`}
+      }`,
+    {
+      "bg-red-50/30 border-red-200 opacity-70": isDeleted,
+    }
+    )}
     >
       {/* Action Header */}
       <div className="flex items-start justify-between mb-3">
         <div className="flex-1 min-w-0">
           <div className="flex items-center space-x-2">
-            <h4 className="text-sm font-medium text-gray-900 truncate">
+            <h4 className="text-sm font-medium text-gray-900 truncate flex-1">
               {action.title}
             </h4>
-            {action.enabled ? (
+            {isActive && (
               <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
                 <Play className="h-3 w-3 mr-1" />
                 Active
               </span>
-            ) : (
+            )}
+            {isPaused && (
               <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600">
                 <Pause className="h-3 w-3 mr-1" />
                 Paused
+              </span>
+            )}
+            {isDeleted && (
+              <span className="ml-auto inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                <Trash2 className="h-3 w-3 mr-1" />
+                Deleted
               </span>
             )}
           </div>
