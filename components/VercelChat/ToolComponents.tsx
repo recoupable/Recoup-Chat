@@ -65,6 +65,7 @@ import { GetScheduledActionsResult } from "@/lib/tools/scheduled_actions/getSche
 import CreateScheduledActionsSuccess from "./tools/CreateScheduledActionsSuccess";
 import { CreateScheduledActionsResult } from "@/lib/tools/scheduled_actions/createScheduledActions";
 import GetSpotifyAlbumWithTracksResult from "./tools/GetSpotifyAlbumWithTracksResult";
+import GetSpotifyAlbumWithTracksSkeleton from "./tools/GetSpotifyAlbumWithTracksSkeleton";
 import { SpotifyAlbum } from "@/lib/tools/getSpotifyAlbum";
 
 /**
@@ -205,6 +206,12 @@ export function getToolCallComponent({ toolName, toolCallId }: ToolInvocation) {
     return (
       <div key={toolCallId}>
         <GetScheduledActionsSkeleton />
+      </div>
+    );
+  } else if (toolName === "get_spotify_album") {
+    return (
+      <div key={toolCallId}>
+        <GetSpotifyAlbumWithTracksSkeleton />
       </div>
     );
   }
