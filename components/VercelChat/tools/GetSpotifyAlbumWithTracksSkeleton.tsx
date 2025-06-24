@@ -54,7 +54,7 @@ const GetSpotifyAlbumWithTracksSkeleton = () => {
         <div className="p-3 sm:p-4">
           <div className="space-y-0.5">
             {/* Generate 8-12 track skeletons */}
-            {Array.from({ length: 10 }).map((_, index) => (
+            {Array.from({ length: 5 }).map((_, index) => (
               <div
                 key={index}
                 className="flex items-center gap-2 sm:gap-3 px-2 sm:px-3 py-2 rounded-xl"
