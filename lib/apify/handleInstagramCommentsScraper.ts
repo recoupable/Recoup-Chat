@@ -1,0 +1,91 @@
+import getDataset from "@/lib/apify/getDataset";
+import { z } from "zod";
+import apifyPayloadSchema from "@/lib/apify/apifyPayloadSchema";
+
+// Type definition for Instagram comment data structure
+export interface InstagramComment {
+  id: string;
+  text: string;
+  timestamp: string;
+  ownerUsername: string;
+  ownerProfilePicUrl: string;
+  postUrl: string;
+}
+
+/**
+ * Handles Instagram Comments Scraper results: fetches dataset, processes comments, and returns results.
+ * @param parsed - The parsed and validated Apify webhook payload
+ * @returns An object with comments and processing metadata
+ */
+export default async function handleInstagramCommentsScraper(
+  parsed: z.infer<typeof apifyPayloadSchema>
+) {
+  const datasetId = parsed.resource.defaultDatasetId;
+  let comments: InstagramComment[] = [];
+  let processedPostUrls: string[] = [];
+  let totalComments = 0;
+  
+  const fallbackResponse = {
+    comments: [],
+    processedPostUrls: [],
+    totalComments: 0,
+    posts: [],
+    social: null,
+    accountSocials: [],
+    accountArtistIds: [],
+    accountEmails: [],
+    sentEmails: null,
+  };
+
+  try {
+    if (datasetId) {
+      const dataset = await getDataset(datasetId);
+      
+      if (dataset && Array.isArray(dataset)) {
+        // Process all comments from the dataset
+        comments = dataset.filter((item): item is InstagramComment => {
+          return (
+            typeof item === 'object' &&
+            item !== null &&
+            'id' in item &&
+            'text' in item &&
+            'timestamp' in item &&
+            'ownerUsername' in item &&
+            'ownerProfilePicUrl' in item &&
+            'postUrl' in item
+          );
+        });
+
+        // Extract unique post URLs
+        processedPostUrls = Array.from(
+          new Set(comments.map(comment => comment.postUrl))
+        );
+        
+        totalComments = comments.length;
+        
+        console.log(`Processed ${totalComments} comments from ${processedPostUrls.length} posts`);
+        
+        // Log sample data for debugging
+        if (comments.length > 0) {
+          console.log('Sample comment:', comments[0]);
+        }
+      }
+    }
+
+    return {
+      comments,
+      processedPostUrls,
+      totalComments,
+      // Keep the same structure as other handlers for consistency
+      posts: [],
+      social: null,
+      accountSocials: [],
+      accountArtistIds: [],
+      accountEmails: [],
+      sentEmails: null,
+    };
+  } catch (error) {
+    console.error("Failed to handle Instagram Comments Scraper webhook:", error);
+    return fallbackResponse;
+  }
+}

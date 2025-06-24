@@ -1,6 +1,7 @@
 import apifyPayloadSchema from "@/lib/apify/apifyPayloadSchema";
 import { z } from "zod";
 import handleInstagramProfileScraperResults from "@/lib/apify/handleInstagramProfileScraperResults";
+import handleInstagramCommentsScraper from "@/lib/apify/handleInstagramCommentsScraper";
 
 /**
  * Handles the Apify webhook payload: routes to appropriate handler based on actorId.
@@ -20,9 +21,13 @@ export default async function handleApifyWebhook(
   };
 
   try {
-    // Only handle Instagram profile scraper results if actorId matches
+    // Handle Instagram profile scraper results
     if (parsed.eventData.actorId === "dSCLg0C3YEZ83HzYX") {
       return await handleInstagramProfileScraperResults(parsed);
+    }
+    // Handle Instagram Comments Scraper results
+    else if (parsed.eventData.actorId === "SbK00X0JYCPblD2wp") {
+      return await handleInstagramCommentsScraper(parsed);
     } else {
       console.log(`Unhandled actorId: ${parsed.eventData.actorId}`);
       return fallbackResponse;
