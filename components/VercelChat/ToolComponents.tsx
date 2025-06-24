@@ -63,6 +63,8 @@ import GetScheduledActionsSuccess from "./tools/GetScheduledActionsSuccess";
 import { GetScheduledActionsResult } from "@/lib/tools/scheduled_actions/getScheduledActions";
 import CreateScheduledActionsSuccess from "./tools/CreateScheduledActionsSuccess";
 import { CreateScheduledActionsResult } from "@/lib/tools/scheduled_actions/createScheduledActions";
+import GetSpotifyAlbumWithTracksResult from "./tools/GetSpotifyAlbumWithTracksResult";
+import { SpotifyAlbum } from "@/lib/tools/getSpotifyAlbum";
 
 /**
  * Interface for tool call props
@@ -361,8 +363,14 @@ export function getToolResultComponent({
         <CreateScheduledActionsSuccess result={result as CreateScheduledActionsResult} />
       </div>
     );
+  } else if (toolName === "get_spotify_album") {
+    return (
+      <div key={toolCallId}>
+        <GetSpotifyAlbumWithTracksResult result={result as unknown as SpotifyAlbum} />
+      </div>
+    );
   }
-
+ 
   // Default generic result for other tools
   return (
     <GenericSuccess
