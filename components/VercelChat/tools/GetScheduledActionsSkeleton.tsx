@@ -16,7 +16,7 @@ const GetScheduledActionsSkeleton = () => {
       <div className="p-4">
         <div className="space-y-3">
           {/* Skeleton for multiple action cards */}
-          {[1, 2, 3].map((index) => (
+          {[1, 2].map((index) => (
             <div
               key={index}
               className="border border-gray-100 rounded-lg p-3 bg-gray-50"
