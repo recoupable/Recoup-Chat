@@ -15,6 +15,7 @@ import getAccountEmails from "../supabase/accountEmails/getAccountEmails";
 import sendApifyWebhookEmail from "@/lib/apify/sendApifyWebhookEmail";
 import normalizeProfileUrl from "@/lib/utils/normalizeProfileUrl";
 import uploadLinkToArweave from "@/lib/arweave/uploadLinkToArweave";
+import runInstagramCommentsScraper from "@/lib/apify/runInstagramCommentsScraper";
 
 /**
  * Handles the Apify webhook payload: fetches dataset, saves posts, saves socials, and returns results.
@@ -87,6 +88,18 @@ export default async function handleApifyWebhook(
             firstResult,
             emails.map((e) => e.email).filter(Boolean) as string[]
           );
+
+          // Trigger comment scraping for the new posts
+          if (firstResult.latestPosts && firstResult.latestPosts.length > 0) {
+            const postUrls = (firstResult.latestPosts as ApifyInstagramPost[])
+              .map((post) => post.url)
+              .filter(Boolean);
+            
+            if (postUrls.length > 0) {
+              console.log("Triggering comment scraping for posts:", postUrls);
+              await runInstagramCommentsScraper(postUrls);
+            }
+          }
         }
       }
     } catch (e) {
