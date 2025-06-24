@@ -6,8 +6,6 @@ const apifyPayloadSchema = z.object({
   eventType: z.any(),
   eventData: z.object({
     actorId: z.string(),
-    actorTaskId: z.string().optional(),
-    actorRunId: z.string(),
   }),
   resource: z.object({
     defaultDatasetId: z.string(),
