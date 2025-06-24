@@ -1,9 +1,5 @@
-import { Tables } from "@/types/database.types";
 import apifyPayloadSchema from "@/lib/apify/apifyPayloadSchema";
 import { z } from "zod";
-import {
-  AccountSocialWithSocial,
-} from "@/lib/supabase/accountSocials/getAccountSocials";
 import handleInstagramProfileScraperResults from "@/lib/apify/handleInstagramProfileScraperResults";
 
 /**
