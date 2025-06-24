@@ -32,7 +32,6 @@ export default async function handleApifyWebhook(
   let accountArtistIds: Tables<"account_artist_ids">[] = [];
   let accountEmails: Tables<"account_emails">[] = [];
   let sentEmails: unknown = null;
-  let commentsScraperResult: unknown = null;
   let dataset;
   if (datasetId) {
     try {
@@ -98,8 +97,7 @@ export default async function handleApifyWebhook(
             
             if (postUrls.length > 0) {
               console.log("Triggering comment scraping for posts:", postUrls);
-              commentsScraperResult = await runInstagramCommentsScraper(postUrls);
-              console.log("Comments scraper result:", commentsScraperResult);
+              await runInstagramCommentsScraper(postUrls);
             }
           }
         }
@@ -116,6 +114,5 @@ export default async function handleApifyWebhook(
     accountArtistIds,
     accountEmails,
     sentEmails,
-    commentsScraperResult,
   };
 }
