@@ -14,30 +14,25 @@ import handleInstagramProfileScraperResults from "@/lib/apify/handleInstagramPro
 export default async function handleApifyWebhook(
   parsed: z.infer<typeof apifyPayloadSchema>
 ) {
+  const fallbackResponse = {
+    posts: [],
+    social: null,
+    accountSocials: [],
+    accountArtistIds: [],
+    accountEmails: [],
+    sentEmails: null,
+  };
+
   try {
     // Only handle Instagram profile scraper results if actorId matches
     if (parsed.eventData.actorId === "dSCLg0C3YEZ83HzYX") {
       return await handleInstagramProfileScraperResults(parsed);
     } else {
       console.log(`Unhandled actorId: ${parsed.eventData.actorId}`);
-      return {
-        posts: [],
-        social: null,
-        accountSocials: [],
-        accountArtistIds: [],
-        accountEmails: [],
-        sentEmails: null,
-      };
+      return fallbackResponse;
     }
   } catch (e) {
     console.error("Failed to handle Apify webhook:", e);
-    return {
-      posts: [],
-      social: null,
-      accountSocials: [],
-      accountArtistIds: [],
-      accountEmails: [],
-      sentEmails: null,
-    };
+    return fallbackResponse;
   }
 }
