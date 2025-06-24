@@ -95,6 +95,7 @@ type ToolResult =
   | SpotifyArtistTopTracksResultType
   | GetScheduledActionsResult
   | CreateScheduledActionsResult
+  | SpotifyAlbum
   | Record<string, unknown>;
 
 /**
@@ -366,7 +367,7 @@ export function getToolResultComponent({
   } else if (toolName === "get_spotify_album") {
     return (
       <div key={toolCallId}>
-        <GetSpotifyAlbumWithTracksResult result={result as unknown as SpotifyAlbum} />
+        <GetSpotifyAlbumWithTracksResult result={result as SpotifyAlbum} />
       </div>
     );
   }
