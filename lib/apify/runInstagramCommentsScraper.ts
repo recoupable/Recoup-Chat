@@ -30,6 +30,10 @@ export default async function runInstagramCommentsScraper(
       url.searchParams.append("postUrls", postUrl);
     });
 
+    // Add webhooks parameter with base64 encoded string
+    const webhooksValue = "ICBbCiAgICB7CiAgICAgICJldmVudFR5cGVzIjogWyJBQ1RPUi5SVU4uU1VDQ0VFREVEIl0sCiAgICAgICJyZXF1ZXN0VXJsIjogImh0dHBzOi8vY2hhdC5yZWNvdXBhYmxlLmNvbS9hcGkvYXBpZnkiCiAgICB9CiAgXQ==";
+    url.searchParams.append("webhooks", webhooksValue);
+
     const response = await fetch(url.toString(), {
       method: "GET",
       headers: { "Content-Type": "application/json" },
