@@ -1,10 +1,9 @@
 import { UpdateAccountInfoResult } from "@/lib/tools/updateAccountInfo";
 import React from "react";
 import ArtistHeroSection from "./ArtistHeroSection";
-import CustomInstructionsSection from "./CustomInstructionsSection";
 import KnowledgeBaseSection from "./KnowledgeBaseSection";
 import { Knowledge } from "@/lib/supabase/artist/updateArtistProfile";
-import { CheckCircle } from "lucide-react";
+import { CheckCircle, FileText } from "lucide-react";
 
 interface UpdateArtistInfoSuccessProps {
   result: UpdateAccountInfoResult;
@@ -37,14 +36,23 @@ const UpdateArtistInfoSuccess: React.FC<UpdateArtistInfoSuccessProps> = ({
 
       <div className="bg-black/40 backdrop-blur-sm rounded-b-xl overflow-hidden">
         <div className="p-4 sm:p-6">
+
+          {/* Custom Instructions */}
           {artistProfile.instruction && (
-            <CustomInstructionsSection instruction={artistProfile.instruction} />
+            <div className="mb-6">
+              <h3 className="text-white text-sm font-medium mb-3 flex items-center gap-2"><FileText className="w-4 h-4" /> Custom Instructions</h3>
+              <div className="bg-gray-800/50 rounded-lg p-4">
+                <p className="text-gray-300 text-sm leading-relaxed">{artistProfile.instruction}</p>
+              </div>
+            </div>
           )}
 
+          {/* Knowledge base */}
           {knowledges.length > 0 && (
             <KnowledgeBaseSection knowledges={knowledges} />
           )}
 
+          {/* Organization */}
           {artistProfile.organization && (
             <div className="mt-4 pt-4 border-t border-gray-700">
               <div className="text-sm text-gray-400">
