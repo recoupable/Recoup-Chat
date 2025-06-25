@@ -1,10 +1,10 @@
 import { UpdateAccountInfoResult } from "@/lib/tools/updateAccountInfo";
 import React from "react";
-import UpdateSuccessMessage from "./UpdateSuccessMessage";
 import ArtistHeroSection from "./ArtistHeroSection";
 import CustomInstructionsSection from "./CustomInstructionsSection";
 import KnowledgeBaseSection from "./KnowledgeBaseSection";
 import { Knowledge } from "@/lib/supabase/artist/updateArtistProfile";
+import { CheckCircle } from "lucide-react";
 
 interface UpdateArtistInfoSuccessProps {
   result: UpdateAccountInfoResult;
@@ -16,7 +16,14 @@ const UpdateArtistInfoSuccess: React.FC<UpdateArtistInfoSuccessProps> = ({
   const { artistProfile, message } = result;
 
   if (!artistProfile) {
-    return <UpdateSuccessMessage message={message} />;
+    return (
+      <div className="bg-gradient-to-b from-gray-900 to-black rounded-2xl overflow-hidden max-w-2xl w-full my-4 p-6">
+        <div className="flex items-center gap-3">
+          <CheckCircle className="w-6 h-6 text-green-500" />
+          <span className="text-white font-medium">{message}</span>
+        </div>
+      </div>
+    );
   }
 
   // Type guard for knowledges
