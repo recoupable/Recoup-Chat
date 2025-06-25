@@ -4,7 +4,6 @@ import UpdateSuccessMessage from "./UpdateSuccessMessage";
 import ArtistHeroSection from "./ArtistHeroSection";
 import CustomInstructionsSection from "./CustomInstructionsSection";
 import KnowledgeBaseSection from "./KnowledgeBaseSection";
-import OrganizationSection from "./OrganizationSection";
 import { Knowledge } from "@/lib/supabase/artist/updateArtistProfile";
 
 interface UpdateArtistInfoSuccessProps {
@@ -21,7 +20,7 @@ const UpdateArtistInfoSuccess: React.FC<UpdateArtistInfoSuccessProps> = ({
   }
 
   // Type guard for knowledges
-  const knowledges = Array.isArray(artistProfile.knowledges) 
+  const knowledges = Array.isArray(artistProfile.knowledges)
     ? (artistProfile.knowledges as unknown as Knowledge[])
     : [];
 
@@ -40,7 +39,12 @@ const UpdateArtistInfoSuccess: React.FC<UpdateArtistInfoSuccessProps> = ({
           )}
 
           {artistProfile.organization && (
-            <OrganizationSection organization={artistProfile.organization} />
+            <div className="mt-4 pt-4 border-t border-gray-700">
+              <div className="text-sm text-gray-400">
+                <span className="text-gray-300">Organization:</span>{" "}
+                {artistProfile.organization}
+              </div>
+            </div>
           )}
         </div>
       </div>
