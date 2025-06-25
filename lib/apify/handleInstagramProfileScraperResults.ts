@@ -90,7 +90,9 @@ export default async function handleInstagramProfileScraperResults(
         );
 
         // Trigger comment scraping for the new posts
-        if (firstResult.latestPosts && firstResult.latestPosts.length > 0) {
+        // Only call runInstagramCommentsScraper if dataset.length === 1
+        // If more than 1 profile, these are fans and should only be saved
+        if (dataset.length === 1 && firstResult.latestPosts && firstResult.latestPosts.length > 0) {
           const postUrls = (firstResult.latestPosts as ApifyInstagramPost[])
             .map((post) => post.url)
             .filter(Boolean);
