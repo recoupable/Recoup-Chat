@@ -69,6 +69,7 @@ import GetSpotifyAlbumWithTracksResult from "./tools/GetSpotifyAlbumWithTracksRe
 import GetSpotifyAlbumWithTracksSkeleton from "./tools/GetSpotifyAlbumWithTracksSkeleton";
 import { SpotifyAlbum } from "@/lib/tools/getSpotifyAlbum";
 import DeleteScheduledActionsSuccess from "./tools/DeleteScheduledActionsSuccess";
+import DeleteScheduledActionsSkeleton from "./tools/DeleteScheduledActionsSkeleton";
 import { DeleteScheduledActionsResult } from "@/lib/tools/scheduled_actions/deleteScheduledActions";
 
 /**
@@ -222,6 +223,12 @@ export function getToolCallComponent({ toolName, toolCallId }: ToolInvocation) {
     return (
       <div key={toolCallId}>
         <CreateScheduledActionsSkeleton />
+      </div>
+    );
+  } else if (toolName === "delete_scheduled_actions") {
+    return (
+      <div key={toolCallId}>
+        <DeleteScheduledActionsSkeleton />
       </div>
     );
   }
