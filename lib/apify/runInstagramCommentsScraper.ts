@@ -1,13 +1,5 @@
 import { APIFY_WEBHOOKS_VALUE } from "@/lib/consts";
-
-/**
- * Interface for Instagram comments scraping result
- */
-export interface InstagramCommentsResult {
-  runId: string;
-  datasetId: string;
-  error: string | null;
-}
+import { ApifyScraperResult } from "@/lib/apify/types";
 
 /**
  * Runs the Instagram comments scraper for the provided post URLs
@@ -16,7 +8,7 @@ export interface InstagramCommentsResult {
  */
 export default async function runInstagramCommentsScraper(
   postUrls: string[]
-): Promise<InstagramCommentsResult> {
+): Promise<ApifyScraperResult> {
   try {
     if (!postUrls || postUrls.length === 0) {
       return {

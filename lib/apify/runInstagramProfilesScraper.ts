@@ -1,13 +1,5 @@
 import { APIFY_WEBHOOKS_VALUE } from "@/lib/consts";
-
-/**
- * Interface for Instagram profiles scraping result
- */
-export interface InstagramProfilesResult {
-  runId: string;
-  datasetId: string;
-  error: string | null;
-}
+import { ApifyScraperResult } from "@/lib/apify/types";
 
 /**
  * Runs the Instagram profiles scraper for the provided handles
@@ -16,7 +8,7 @@ export interface InstagramProfilesResult {
  */
 export default async function runInstagramProfilesScraper(
   handles: string[]
-): Promise<InstagramProfilesResult> {
+): Promise<ApifyScraperResult> {
   try {
     if (!handles || handles.length === 0) {
       return {
