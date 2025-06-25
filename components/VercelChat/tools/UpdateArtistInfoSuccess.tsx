@@ -1,6 +1,11 @@
 import { UpdateAccountInfoResult } from "@/lib/tools/updateAccountInfo";
 import React from "react";
-import GenericSuccess from "./GenericSuccess";
+import UpdateSuccessMessage from "./UpdateSuccessMessage";
+import ArtistHeroSection from "./ArtistHeroSection";
+import CustomInstructionsSection from "./CustomInstructionsSection";
+import KnowledgeBaseSection from "./KnowledgeBaseSection";
+import OrganizationSection from "./OrganizationSection";
+import { Knowledge } from "@/lib/supabase/artist/updateArtistProfile";
 
 interface UpdateArtistInfoSuccessProps {
   result: UpdateAccountInfoResult;
@@ -9,24 +14,37 @@ interface UpdateArtistInfoSuccessProps {
 const UpdateArtistInfoSuccess: React.FC<UpdateArtistInfoSuccessProps> = ({
   result,
 }) => {
-  const { artistProfile } = result;
+  const { artistProfile, message } = result;
+
+  if (!artistProfile) {
+    return <UpdateSuccessMessage message={message} />;
+  }
+
+  // Type guard for knowledges
+  const knowledges = Array.isArray(artistProfile.knowledges) 
+    ? (artistProfile.knowledges as unknown as Knowledge[])
+    : [];
+
   return (
-    <GenericSuccess
-      image={artistProfile?.image || ""}
-      name={artistProfile?.name || ""}
-      message="Artist Info Updated Successfully!"
-    >
-      {artistProfile?.label && (
-        <div className="text-xs text-gray-500 mt-1 italic text-start">
-          Label: {artistProfile?.label}
+    <div className="bg-gradient-to-b from-gray-900 to-black rounded-2xl overflow-hidden max-w-2xl w-full my-4">
+      <ArtistHeroSection artistProfile={artistProfile} />
+
+      <div className="bg-black/40 backdrop-blur-sm rounded-b-xl overflow-hidden">
+        <div className="p-4 sm:p-6">
+          {artistProfile.instruction && (
+            <CustomInstructionsSection instruction={artistProfile.instruction} />
+          )}
+
+          {knowledges.length > 0 && (
+            <KnowledgeBaseSection knowledges={knowledges} />
+          )}
+
+          {artistProfile.organization && (
+            <OrganizationSection organization={artistProfile.organization} />
+          )}
         </div>
-      )}
-      {artistProfile?.instruction && (
-        <div className="text-xs text-gray-500 mt-1 italic text-start">
-          Custom Instructions: {artistProfile?.instruction}
-        </div>
-      )}
-    </GenericSuccess>
+      </div>
+    </div>
   );
 };
 
