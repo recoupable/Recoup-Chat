@@ -3,6 +3,7 @@ import getAccountByEmail from "@/lib/supabase/accounts/getAccountByEmail";
 import { ErrorContext } from "@/lib/telegram/errors/sendErrorNotification";
 import { formatErrorMessage } from "@/lib/telegram/errors/formatErrorMessage";
 import type { Database } from "@/types/database.types";
+import { extractToolNameFromError } from "@/lib/supabase/error_logs/errorTypeParser";
 
 interface CreateErrorLogParams extends ErrorContext {
   telegram_message_id: number;
@@ -37,8 +38,12 @@ export async function createErrorLog(params: CreateErrorLogParams): Promise<void
     // Generate raw message using existing formatter
     const raw_message = formatErrorMessage(params);
 
-    // Extract tool name from stack trace (simple heuristic)
-    const tool_name = extractToolNameFromStack(params.error.stack);
+    // Use robust tool/error type extraction
+    const tool_name = extractToolNameFromError(
+      params.error.message || '',
+      params.error.stack || '',
+      params.error.name || ''
+    );
 
     // Insert error log record
     const errorLogData: ErrorLogInsert = {
@@ -65,28 +70,4 @@ export async function createErrorLog(params: CreateErrorLogParams): Promise<void
     console.error("Error in createErrorLog:", error);
     // Don't throw - this should not break the calling flow
   }
-}
-
-/**
- * Extracts potential tool name from error stack trace
- * Simple heuristic to identify tool-related errors
- */
-function extractToolNameFromStack(stack?: string): string | null {
-  if (!stack) return null;
-  
-  // Look for common tool patterns in stack traces
-  const toolPatterns = [
-    /\/tools\/([^\/\s]+)/,  // /tools/toolName
-    /Tool\.([^.\s]+)/,      // Tool.toolName
-    /tool[._]([^.\s]+)/i,   // tool.name or tool_name
-  ];
-
-  for (const pattern of toolPatterns) {
-    const match = stack.match(pattern);
-    if (match && match[1]) {
-      return match[1];
-    }
-  }
-
-  return null;
 } 
