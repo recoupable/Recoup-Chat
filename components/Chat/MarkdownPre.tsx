@@ -9,7 +9,7 @@ const MarkdownPre: React.FC<MarkdownPreProps & React.HTMLAttributes<HTMLPreEleme
   ...props 
 }) => {
   return (
-    <pre {...props}>
+    <pre {...props} className="grid">
       {children}
     </pre>
   );
