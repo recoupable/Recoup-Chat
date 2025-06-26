@@ -5,10 +5,8 @@ import { ArtistProfile } from "@/lib/supabase/artist/updateArtistProfile";
 
 const ArtistHeroSection = ({
   artistProfile,
-  message,
 }: {
   artistProfile: ArtistProfile;
-  message?: string;
 }) => {
   return (
     <div className="relative">
@@ -44,7 +42,7 @@ const ArtistHeroSection = ({
             <div className="flex items-center gap-2 mb-3">
               <CheckCircle className="w-4 h-4 text-green-500" />
               <span className="text-green-400 text-sm font-medium">
-                {message || "Profile Updated Successfully!"}
+                Profile Updated Successfully!
               </span>
             </div>
 
