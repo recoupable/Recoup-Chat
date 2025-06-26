@@ -24,8 +24,8 @@ export default async function runInstagramProfilesScraper(
       url.searchParams.append("handles", handle);
     });
 
-    // Add webhook parameter with shared constant
-    url.searchParams.append("webhook", APIFY_WEBHOOKS_VALUE);
+    // Add webhooks parameter with shared constant
+    url.searchParams.append("webhooks", APIFY_WEBHOOKS_VALUE);
 
     const response = await fetch(url.toString(), {
       method: "GET",
