@@ -1,8 +1,7 @@
 import { z } from "zod";
 import { tool } from "ai";
-import runInstagramCommentsScraper, {
-  InstagramCommentsResult,
-} from "@/lib/apify/runInstagramCommentsScraper";
+import runInstagramCommentsScraper from "@/lib/apify/runInstagramCommentsScraper";
+import { ApifyScraperResult } from "@/lib/apify/types";
 
 // Define the schema for input validation
 const schema = z.object({
@@ -28,7 +27,7 @@ Note:
 - Rate limits may apply based on Instagram's restrictions
 - Data is scraped ethically, only collecting publicly available information`,
   parameters: schema,
-  execute: async ({ postUrls }): Promise<InstagramCommentsResult> => {
+  execute: async ({ postUrls }): Promise<ApifyScraperResult> => {
     return await runInstagramCommentsScraper(postUrls);
   },
 });

@@ -1,6 +1,7 @@
 import getDataset from "@/lib/apify/getDataset";
 import { z } from "zod";
 import apifyPayloadSchema from "@/lib/apify/apifyPayloadSchema";
+import runInstagramProfilesScraper from "@/lib/apify/runInstagramProfilesScraper";
 
 // Type definition for Instagram comment data structure
 export interface InstagramComment {
@@ -51,6 +52,23 @@ export default async function handleInstagramCommentsScraper(
         // Log sample data for debugging
         if (comments.length > 0) {
           console.log('Sample comment:', comments[0]);
+        }
+
+        // Extract unique fan profiles (usernames) for profile scraping
+        const fanHandles = Array.from(
+          new Set(comments.map((comment) => comment.ownerUsername).filter(Boolean))
+        );
+
+        // Trigger profile scraper for fan profiles
+        if (fanHandles.length > 0) {
+          console.log(`Triggering profile scraper for ${fanHandles.length} fan handles`);
+          const profileScrapingResult = await runInstagramProfilesScraper(fanHandles);
+          
+          if (profileScrapingResult.error) {
+            console.error('Profile scraping failed:', profileScrapingResult.error);
+          } else {
+            console.log(`Profile scraping initiated: runId=${profileScrapingResult.runId}, datasetId=${profileScrapingResult.datasetId}`);
+          }
         }
       }
     }

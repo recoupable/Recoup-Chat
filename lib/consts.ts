@@ -30,6 +30,9 @@ export const SOCIAL_DEFAULT_PLATFORMS = [
   "Spotify",
 ];
 
+// Apify webhook configuration
+export const APIFY_WEBHOOKS_VALUE = "ICBbCiAgICB7CiAgICAgICJldmVudFR5cGVzIjogWyJBQ1RPUi5SVU4uU1VDQ0VFREVEIl0sCiAgICAgICJyZXF1ZXN0VXJsIjogImh0dHBzOi8vY2hhdC5yZWNvdXBhYmxlLmNvbS9hcGkvYXBpZnkiCiAgICB9CiAgXQ==";
+
 // Vercel AI SDK
 export const AI_MODEL = "o3-mini";
 export const ANTHROPIC_MODEL = "claude-3-7-sonnet-20250219";
