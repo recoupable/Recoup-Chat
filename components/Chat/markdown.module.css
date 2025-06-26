@@ -237,6 +237,10 @@
   overflow-x: visible;
 }
 
+.markdown li pre code {
+  white-space: pre-wrap !important;
+}
+
 /* Syntax highlighting emulation via CSS */
 .markdown pre code .comment,
 .markdown pre code span.comment {
