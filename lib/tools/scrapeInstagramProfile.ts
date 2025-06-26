@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { tool } from "ai";
+import { APIFY_WEBHOOKS_VALUE } from "../consts";
 
 // Define the schema for input validation
 const schema = z.object({
@@ -128,6 +129,9 @@ Note:
       handles.forEach((handle) => {
         url.searchParams.append("handles", handle);
       });
+      
+      // Add webhook parameter for triggering agent run
+      url.searchParams.append("webhook", APIFY_WEBHOOKS_VALUE);
 
       const response = await fetch(url.toString(), {
         method: "GET",
