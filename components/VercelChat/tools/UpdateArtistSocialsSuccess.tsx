@@ -14,12 +14,11 @@ const UpdateArtistSocialsSuccess: React.FC<UpdateArtistSocialsSuccessProps> = ({
   result,
 }) => {
   const { selectedArtist } = useArtistProvider();
-  const artistProfile = selectedArtist as ArtistProfile;
 
   return (
     <div className="bg-gradient-to-b from-gray-900 to-black rounded-2xl overflow-hidden max-w-2xl w-full my-4">
       <ArtistHeroSection
-        artistProfile={artistProfile}
+        artistProfile={selectedArtist as ArtistProfile}
         message={result.message || "Artist socials updated successfully."}
       />
       <div className="bg-black/40 backdrop-blur-sm rounded-b-xl overflow-hidden">
