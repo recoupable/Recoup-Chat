@@ -71,6 +71,8 @@ import { SpotifyAlbum } from "@/lib/tools/getSpotifyAlbum";
 import DeleteScheduledActionsSuccess from "./tools/DeleteScheduledActionsSuccess";
 import DeleteScheduledActionsSkeleton from "./tools/DeleteScheduledActionsSkeleton";
 import { DeleteScheduledActionsResult } from "@/lib/tools/scheduled_actions/deleteScheduledActions";
+import UpdateScheduledActionSuccess from "./tools/UpdateScheduledActionSuccess";
+import { UpdateScheduledActionResult } from "./tools/UpdateScheduledActionSuccess";
 
 /**
  * Interface for tool call props
@@ -103,6 +105,7 @@ type ToolResult =
   | CreateScheduledActionsResult
   | SpotifyAlbum
   | DeleteScheduledActionsResult
+  | UpdateScheduledActionResult
   | Record<string, unknown>;
 
 /**
@@ -407,8 +410,14 @@ export function getToolResultComponent({
         <DeleteScheduledActionsSuccess result={result as DeleteScheduledActionsResult} />
       </div>
     );
+  }   else if (toolName === "update_scheduled_action") {
+    return (
+      <div key={toolCallId}>
+        <UpdateScheduledActionSuccess result={result as UpdateScheduledActionResult} />
+      </div>
+    );
   }
- 
+
   // Default generic result for other tools
   return (
     <GenericSuccess
