@@ -2,6 +2,7 @@ import React from "react";
 import { ListTodo, CheckCircle2 } from "lucide-react";
 import { GetScheduledActionsResult } from "@/lib/tools/scheduled_actions/getScheduledActions";
 import ScheduledActionCard from "./ScheduledActionCard";
+import ScheduledActionDetailsDialog from "../dialogs/ScheduledActionDetailsDialog";
 
 export interface GetScheduledActionsSuccessProps {
   result: GetScheduledActionsResult;
@@ -33,10 +34,9 @@ const GetScheduledActionsSuccess: React.FC<GetScheduledActionsSuccessProps> = ({
                  ) : (
            <div className="space-y-3 max-h-80 overflow-y-auto">
              {actions.map((action) => (
-               <ScheduledActionCard 
-                 key={action.id} 
-                 action={action} 
-               />
+              <ScheduledActionDetailsDialog key={action.id} action={action}>
+                <ScheduledActionCard action={action} />
+              </ScheduledActionDetailsDialog>
              ))}
            </div>
          )}
