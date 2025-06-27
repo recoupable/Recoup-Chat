@@ -22,6 +22,22 @@ import attachRichFiles from "@/lib/chat/attachRichFiles";
 import { sendErrorNotification } from "@/lib/telegram/errors/sendErrorNotification";
 import { getAccountEmails } from "@/lib/supabase/account_emails/getAccountEmails";
 
+// CORS headers for cross-origin requests
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Requested-With",
+  "Access-Control-Allow-Credentials": "true",
+};
+
+// Handle OPTIONS preflight requests
+export async function OPTIONS() {
+  return new Response(null, {
+    status: 200,
+    headers: corsHeaders,
+  });
+}
+
 export async function POST(request: NextRequest) {
   const body = await request.json();
   const {
@@ -142,6 +158,7 @@ export async function POST(request: NextRequest) {
         console.error("Error in chat API:", e);
         return JSON.stringify(serializeError(e));
       },
+      headers: corsHeaders,
     });
   } catch (e) {
     sendErrorNotification({
@@ -153,6 +170,7 @@ export async function POST(request: NextRequest) {
       status: 500,
       headers: {
         "Content-Type": "application/json",
+        ...corsHeaders,
       },
     });
   }
