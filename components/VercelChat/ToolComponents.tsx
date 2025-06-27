@@ -73,6 +73,7 @@ import DeleteScheduledActionsSkeleton from "./tools/DeleteScheduledActionsSkelet
 import { DeleteScheduledActionsResult } from "@/lib/tools/scheduled_actions/deleteScheduledActions";
 import UpdateScheduledActionSuccess from "./tools/UpdateScheduledActionSuccess";
 import { UpdateScheduledActionResult } from "./tools/UpdateScheduledActionSuccess";
+import UpdateScheduledActionSkeleton from "./tools/UpdateScheduledActionSkeleton";
 
 /**
  * Interface for tool call props
@@ -228,10 +229,16 @@ export function getToolCallComponent({ toolName, toolCallId }: ToolInvocation) {
         <CreateScheduledActionsSkeleton />
       </div>
     );
-  } else if (toolName === "delete_scheduled_actions") {
+  }   else if (toolName === "delete_scheduled_actions") {
     return (
       <div key={toolCallId}>
         <DeleteScheduledActionsSkeleton />
+      </div>
+    );
+  } else if (toolName === "update_scheduled_action") {
+    return (
+      <div key={toolCallId}>
+        <UpdateScheduledActionSkeleton />
       </div>
     );
   }
