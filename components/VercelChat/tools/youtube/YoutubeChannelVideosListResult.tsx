@@ -1,5 +1,6 @@
 import { YouTubeChannelVideoListResult } from "@/types/youtube";
 import { formatDistanceToNow } from "date-fns";
+import YoutubeVideoDialog from "../../dialogs/YoutubeVideoDialog";
 
 const YoutubeChannelVideosListResult = ({ result }: { result: YouTubeChannelVideoListResult }) => {
   if (!result.success) {
@@ -13,10 +14,8 @@ const YoutubeChannelVideosListResult = ({ result }: { result: YouTubeChannelVide
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 gap-2 sm:gap-3 md:gap-4">
       {result.videos.map((video) => (
-        <div
-          key={video.id}
-          className="group rounded-xl overflow-hidden border border-gray-100 hover:border-gray-200 transition-colors cursor-pointer"
-        >
+        <YoutubeVideoDialog key={video.id} video={video}>
+          <div className="group rounded-xl overflow-hidden border border-gray-100 hover:border-gray-200 transition-colors cursor-pointer">
           {/* Thumbnail */}
           <div className="relative aspect-video">
             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -41,7 +40,8 @@ const YoutubeChannelVideosListResult = ({ result }: { result: YouTubeChannelVide
               <span>{formatDistanceToNow(new Date(video.snippet.publishedAt), { addSuffix: true })}</span>
             </div>
           </div>
-        </div>
+          </div>
+        </YoutubeVideoDialog>
       ))}
     </div>
   );
