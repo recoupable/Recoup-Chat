@@ -1,5 +1,7 @@
 import { z } from "zod";
 import { tool } from "ai";
+import runInstagramProfilesScraper from "../apify/runInstagramProfilesScraper";
+import type { ApifyScraperResult } from "../apify/types";
 
 // Define the schema for input validation
 const schema = z.object({
@@ -8,15 +10,6 @@ const schema = z.object({
     .min(1, "At least one Instagram handle is required")
     .describe("Array of Instagram handles to fetch profiles for"),
 });
-
-/**
- * Interface for Instagram profile scraping result
- */
-export interface InstagramProfileResult {
-  runId: string;
-  datasetId: string;
-  error: string | null;
-}
 
 // Define the scrape_instagram_profile tool
 const scrapeInstagramProfile = tool({
@@ -121,36 +114,8 @@ Note:
 - Rate limits may apply based on Instagram's restrictions
 - Data is scraped ethically, only collecting publicly available information`,
   parameters: schema,
-  execute: async ({ handles }): Promise<InstagramProfileResult> => {
-    try {
-      // Construct URL with handles as query parameters
-      const url = new URL("https://api.recoupable.com/api/instagram/profiles");
-      handles.forEach((handle) => {
-        url.searchParams.append("handles", handle);
-      });
-
-      const response = await fetch(url.toString(), {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-      });
-
-      if (!response.ok) {
-        throw new Error(`API request failed with status ${response.status}`);
-      }
-
-      const data = await response.json();
-      return data;
-    } catch (error) {
-      console.error("Error in scrapeInstagramProfile tool:", error);
-      return {
-        runId: "",
-        datasetId: "",
-        error:
-          error instanceof Error
-            ? error.message
-            : "Failed to scrape Instagram profiles",
-      };
-    }
+  execute: async ({ handles }): Promise<ApifyScraperResult> => {
+    return runInstagramProfilesScraper(handles);
   },
 });
 

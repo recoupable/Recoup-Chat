@@ -68,6 +68,7 @@ const useArtists = () => {
       if (data.artists.length === 0) {
         setSelectedArtist(null);
         setIsLoading(false);
+        artistMode.toggleCreation();
         return;
       }
       if (artistId) {
@@ -78,8 +79,9 @@ const useArtists = () => {
       }
       setIsLoading(false);
     },
-    [userData?.id]
+    [userData]
   );
+
   const saveSetting = async () => {
     setUpdating(true);
     const saveMode = artistMode.settingMode;
@@ -119,7 +121,7 @@ const useArtists = () => {
 
   useEffect(() => {
     getArtists();
-  }, [getArtists]);
+  }, [getArtists, userData]);
 
   return {
     sorted,

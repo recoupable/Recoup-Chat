@@ -31,6 +31,10 @@ import getYouTubeRevenue from "./getYouTubeRevenue";
 import youtubeLoginTool from "./youtubeLogin";
 import getYouTubeChannelVideoList from "./getYouTubeChannelVideoList";
 import setYouTubeThumbnail from "./setYouTubeThumbnail";
+import createScheduledActions from "./scheduled_actions/createScheduledActions";
+import getScheduledActions from "./scheduled_actions/getScheduledActions";
+import updateScheduledAction from "./scheduled_actions/updateScheduledActions";
+import deleteScheduledAction from "./scheduled_actions/deleteScheduledActions";
 
 export async function getMcpTools() {
   const tools = {
@@ -67,6 +71,10 @@ export async function getMcpTools() {
     get_youtube_revenue: getYouTubeRevenue,
     get_youtube_channel_video_list: getYouTubeChannelVideoList,
     set_youtube_thumbnail: setYouTubeThumbnail,
+    create_scheduled_actions: createScheduledActions,
+    get_scheduled_actions: getScheduledActions,
+    update_scheduled_action: updateScheduledAction,
+    delete_scheduled_actions: deleteScheduledAction,
   };
 
   return tools;

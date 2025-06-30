@@ -1,5 +1,7 @@
 import { z } from "zod";
 import { tool } from "ai";
+import runInstagramCommentsScraper from "@/lib/apify/runInstagramCommentsScraper";
+import { ApifyScraperResult } from "@/lib/apify/types";
 
 // Define the schema for input validation
 const schema = z.object({
@@ -8,15 +10,6 @@ const schema = z.object({
     .min(1, "At least one Instagram post URL is required")
     .describe("Array of Instagram post URLs to fetch comments for"),
 });
-
-/**
- * Interface for Instagram comments scraping result
- */
-export interface InstagramCommentsResult {
-  runId: string;
-  datasetId: string;
-  error: string | null;
-}
 
 // Define the scrape_instagram_comments tool
 const scrapeInstagramComments = tool({
@@ -34,36 +27,8 @@ Note:
 - Rate limits may apply based on Instagram's restrictions
 - Data is scraped ethically, only collecting publicly available information`,
   parameters: schema,
-  execute: async ({ postUrls }): Promise<InstagramCommentsResult> => {
-    try {
-      // Construct URL with postUrls as query parameters
-      const url = new URL("https://api.recoupable.com/api/instagram/comments");
-      postUrls.forEach((postUrl) => {
-        url.searchParams.append("postUrls", postUrl);
-      });
-
-      const response = await fetch(url.toString(), {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-      });
-
-      if (!response.ok) {
-        throw new Error(`API request failed with status ${response.status}`);
-      }
-
-      const data = await response.json();
-      return data;
-    } catch (error) {
-      console.error("Error in scrapeInstagramComments tool:", error);
-      return {
-        runId: "",
-        datasetId: "",
-        error:
-          error instanceof Error
-            ? error.message
-            : "Failed to scrape Instagram comments",
-      };
-    }
+  execute: async ({ postUrls }): Promise<ApifyScraperResult> => {
+    return await runInstagramCommentsScraper(postUrls);
   },
 });
 

@@ -54,7 +54,6 @@ export function useVercelChat({
       roomId: id,
       artistId,
       accountId: userId,
-      email: userData?.email,
     },
     experimental_throttle: 100,
     sendExtraMessageFields: true,

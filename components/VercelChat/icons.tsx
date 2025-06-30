@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 export const ArrowUpIcon = ({ size = 16 }: { size?: number }) => (
   <svg
     height={size}
@@ -218,4 +220,8 @@ export const PencilEditIcon = ({ size = 16 }: { size?: number }) => {
       />
     </svg>
   );
+};
+
+export const PDFIcon = () => {
+  return <Image src="/icons/pdf.png" alt="PDF icon" className="w-full" width={128} height={128} />;
 };
