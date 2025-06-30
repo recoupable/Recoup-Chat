@@ -19,7 +19,7 @@ const ScheduledActionDetailsDialog: React.FC<
 
   return (
     <Dialog>
-      <DialogTrigger>
+      <DialogTrigger asChild>
         <div className="cursor-pointer">{children}</div>
       </DialogTrigger>
       <DialogContent
