@@ -23,11 +23,10 @@ const ScheduledActionDetailsDialogHeader = ({
         <span
           className={cn(
             "ml-auto inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium flex-shrink-0",
-            isActive
-              ? "bg-green-100 text-green-800"
-              : isPaused
-                ? "bg-gray-100 text-gray-600"
-                : "bg-red-200 text-red-800"
+            {
+              "bg-green-100 text-green-800": isActive,
+              "bg-gray-100 text-gray-600": isPaused,
+            }
           )}
         >
           {isActive ? "Active" : "Paused"}
