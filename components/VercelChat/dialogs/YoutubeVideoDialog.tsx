@@ -14,8 +14,8 @@ const YoutubeVideoDialog = ({
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild onClick={() => setIsOpen(true)}>{children}</DialogTrigger>
+    <Dialog onOpenChange={setIsOpen}>
+      <DialogTrigger>{children}</DialogTrigger>
       <DialogContent className="max-w-2xl p-4 max-h-[90vh] overflow-hidden flex flex-col">
         <DialogHeader className="mb-2 shrink-0">
           <DialogTitle className="text-lg font-medium">YouTube Video</DialogTitle>

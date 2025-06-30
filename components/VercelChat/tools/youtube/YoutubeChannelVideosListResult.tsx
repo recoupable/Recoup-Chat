@@ -1,5 +1,6 @@
 import { YouTubeChannelVideoListResult } from "@/types/youtube";
 import YoutubeVideoCard from "./YoutubeVideoCard";
+import YoutubeVideoDialog from "../../dialogs/YoutubeVideoDialog";
 
 const YoutubeChannelVideosListResult = ({ result }: { result: YouTubeChannelVideoListResult }) => {
   if (!result.success) {
@@ -13,7 +14,9 @@ const YoutubeChannelVideosListResult = ({ result }: { result: YouTubeChannelVide
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 gap-2 sm:gap-3 md:gap-4">
       {result.videos.map((video) => (
-        <YoutubeVideoCard key={video.id} video={video} />
+        <YoutubeVideoDialog key={video.id} video={video}>
+            <YoutubeVideoCard video={video} />
+        </YoutubeVideoDialog>
       ))}
     </div>
   );
