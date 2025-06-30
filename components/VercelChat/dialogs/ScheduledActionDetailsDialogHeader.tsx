@@ -30,7 +30,7 @@ const ScheduledActionDetailsDialogHeader = ({
                 : "bg-red-200 text-red-800"
           )}
         >
-          {isActive ? "Active" : isPaused ? "Paused" : "Deleted"}
+          {isActive ? "Active" : "Paused"}
         </span>
       </DialogTitle>
     </DialogHeader>
