@@ -20,6 +20,7 @@ import { Message } from "ai";
 import { useDropzone } from "@/hooks/useDropzone";
 import FileDragOverlay from "./FileDragOverlay";
 import { Loader } from "lucide-react";
+import { memo, useCallback } from "react";
 
 interface ChatProps {
   id: string;
@@ -36,7 +37,7 @@ export function Chat({ id, reportId, initialMessages }: ChatProps) {
 }
 
 // Inner component that uses the context
-function ChatContent({ reportId, id }: { reportId?: string; id: string }) {
+function ChatContentMemoized({ reportId, id }: {reportId?: string; id: string;}) {
   const {
     messages,
     status,
@@ -59,6 +60,14 @@ function ChatContent({ reportId, id }: { reportId?: string; id: string }) {
     shouldBeVisible: messages.length === 0 && !reportId && status === "ready",
     deps: [messages.length, reportId, status],
   });
+
+  // Memoize the handler to prevent re-renders
+  const handleSendMessageMemoized = useCallback(
+    (event: React.FormEvent<HTMLFormElement>) => {
+      handleSendMessage(event);
+    },
+    [handleSendMessage]
+  );
 
   if (isLoading) {
     return roomId ? (
@@ -96,7 +105,7 @@ function ChatContent({ reportId, id }: { reportId?: string; id: string }) {
         <>
           {/* Spacer to push content to center */}
           <div className="flex-1"></div>
-          
+
           {/* Centered greeting and chat input */}
           <div className="w-full">
             <ChatGreeting isVisible={isVisible} />
@@ -105,13 +114,13 @@ function ChatContent({ reportId, id }: { reportId?: string; id: string }) {
               <ChatInput
                 input={input}
                 setInput={setInput}
-                onSendMessage={handleSendMessage}
+                onSendMessage={handleSendMessageMemoized}
                 isGeneratingResponse={isGeneratingResponse}
                 onStop={stop}
               />
             </div>
           </div>
-          
+
           {/* Spacer to balance and bottom section */}
           <div className="flex-1">
             <StarterAgents isVisible={isVisible} />
@@ -131,7 +140,7 @@ function ChatContent({ reportId, id }: { reportId?: string; id: string }) {
             <ChatInput
               input={input}
               setInput={setInput}
-              onSendMessage={handleSendMessage}
+              onSendMessage={handleSendMessageMemoized}
               isGeneratingResponse={isGeneratingResponse}
               onStop={stop}
             />
@@ -141,3 +150,9 @@ function ChatContent({ reportId, id }: { reportId?: string; id: string }) {
     </div>
   );
 }
+
+const ChatContent = memo(ChatContentMemoized, (prevProps, nextProps) => {
+  return (
+    prevProps.id === nextProps.id && prevProps.reportId === nextProps.reportId
+  );
+});

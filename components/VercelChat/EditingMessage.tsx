@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction } from "react";
+import React, { Dispatch, SetStateAction, memo } from "react";
 import { UIMessage } from "ai";
 import { MessageEditor } from "./message-editor";
 import { UseChatHelpers } from "@ai-sdk/react";
@@ -10,7 +10,7 @@ interface EditingMessageProps {
   reload: UseChatHelpers["reload"];
 }
 
-const EditingMessage: React.FC<EditingMessageProps> = ({
+const EditingMessageComponent: React.FC<EditingMessageProps> = ({
   message,
   setMode,
   setMessages,
@@ -29,5 +29,9 @@ const EditingMessage: React.FC<EditingMessageProps> = ({
     </div>
   );
 };
+
+const EditingMessage = memo(EditingMessageComponent, (prevProps, nextProps) => {
+  return prevProps.message.id === nextProps.message.id;
+});
 
 export default EditingMessage;

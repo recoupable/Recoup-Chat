@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, memo } from "react";
 import { SpinnerIcon } from "./icons";
 import { UIMessage } from "ai";
 import { UseChatHelpers } from "@ai-sdk/react";
@@ -27,13 +27,13 @@ interface MessagesProps {
   children?: React.ReactNode;
 }
 
-export function Messages({
+const MessagesComponent = ({
   messages,
   status,
   setMessages,
   reload,
   children,
-}: MessagesProps) {
+}: MessagesProps) => {
   const messagesRef = useRef<HTMLDivElement>(null);
   const messagesLength = useMemo(() => messages.length, [messages]);
 
@@ -69,4 +69,12 @@ export function Messages({
       )}
     </div>
   );
-}
+};
+
+export const Messages = memo(MessagesComponent, (prevProps, nextProps) => {
+  return (
+    prevProps.status === nextProps.status &&
+    prevProps.messages === nextProps.messages &&
+    prevProps.children === nextProps.children
+  );
+});
