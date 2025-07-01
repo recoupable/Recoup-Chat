@@ -111,12 +111,4 @@ const Message = ({
   );
 };
 
-// export default memo(Message, (prevProps, nextProps) => {
-//   return (
-//     prevProps.message.id === nextProps.message.id &&
-//     prevProps.message.content === nextProps.message.content &&
-//     prevProps.status === nextProps.status
-//   );
-// });
-
 export default Message;
