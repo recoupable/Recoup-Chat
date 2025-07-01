@@ -37,13 +37,7 @@ export function Chat({ id, reportId, initialMessages }: ChatProps) {
 }
 
 // Inner component that uses the context
-function ChatContentMemoized({
-  reportId,
-  id,
-}: {
-  reportId?: string;
-  id: string;
-}) {
+function ChatContentMemoized({ reportId, id }: {reportId?: string; id: string;}) {
   const {
     messages,
     status,
