@@ -1,6 +1,6 @@
 import { UIMessage } from "ai";
 import ReasoningMessagePart from "./ReasoningMessagePart";
-import { memo, useState } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
@@ -111,10 +111,12 @@ const Message = ({
   );
 };
 
-export default memo(Message, (prevProps, nextProps) => {
-  return (
-    prevProps.message.id === nextProps.message.id &&
-    prevProps.message.content === nextProps.message.content &&
-    prevProps.status === nextProps.status
-  );
-});
+// export default memo(Message, (prevProps, nextProps) => {
+//   return (
+//     prevProps.message.id === nextProps.message.id &&
+//     prevProps.message.content === nextProps.message.content &&
+//     prevProps.status === nextProps.status
+//   );
+// });
+
+export default Message;
