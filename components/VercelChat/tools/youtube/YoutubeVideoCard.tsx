@@ -22,10 +22,10 @@ const YoutubeVideoCard = ({ video }: { video: YouTubeVideo }) => {
 
       {/* Video Info */}
       <div className="p-2 sm:p-3">
-        <h3 className="font-medium text-xs sm:text-sm line-clamp-2 group-hover:text-blue-600 transition-colors">
+        <h3 className="font-medium text-xs sm:text-sm line-clamp-2 group-hover:text-blue-600 transition-colors text-left">
           {video.snippet.title}
         </h3>
-        <div className="flex items-center gap-1 sm:gap-2 mt-1 sm:mt-2 text-[10px] sm:text-xs text-gray-500">
+        <div className="flex items-center gap-1 sm:gap-2 mt-1 sm:mt-2 text-[9px] sm:text-xs text-gray-500 text-left">
           <span>
             {parseInt(video.statistics.viewCount).toLocaleString()} views
           </span>
