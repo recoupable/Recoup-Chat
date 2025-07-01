@@ -1,8 +1,8 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { YouTubeVideo } from "@/types/youtube";
 import { formatDate } from "@/lib/utils/formatDate";
-import { formatDuration } from "@/lib/youtube/formatDuration";
 import { useState } from "react";
+import YoutubeVideoStats from "../YoutubeVideoStats";
 
 const YoutubeVideoDialog = ({
   children,
@@ -41,20 +41,20 @@ const YoutubeVideoDialog = ({
             {video.snippet?.title}
           </h2>
           
-          {/* Channel and stats - flexible layout */}
-          <div className="flex flex-wrap items-center justify-between text-xs text-gray-500 mb-4 gap-y-2">
+          {/* Channel and publish date */}
+          <div className="flex flex-wrap items-center text-xs text-gray-500 mb-4 gap-y-2">
             <div className="flex items-center gap-2 flex-wrap">
               <span className="truncate max-w-[150px]">{video.snippet?.channelTitle}</span>
               <span>•</span>
               <span>{formatDate(video.snippet?.publishedAt || "")}</span>
             </div>
-            
-            <div className="flex items-center gap-2">
-              <span>{parseInt(video.statistics?.viewCount || "0").toLocaleString()} views</span>
-              <span>•</span>
-              <span>{formatDuration(video.contentDetails?.duration || "")}</span>
-            </div>
           </div>
+          
+          {/* Video Statistics */}
+          <YoutubeVideoStats 
+            statistics={video.statistics} 
+            duration={video.contentDetails?.duration} 
+          />
           
           {/* Description - collapsed by default with better overflow handling */}
           <details className="mb-3 group">
