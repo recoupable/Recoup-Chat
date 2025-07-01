@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction } from "react";
+import React, { Dispatch, memo, SetStateAction } from "react";
 import { UIMessage } from "ai";
 import { cn } from "@/lib/utils";
 import { TextMessagePart } from "./messages";
@@ -10,7 +10,7 @@ interface ViewingMessageProps {
   setMode: Dispatch<SetStateAction<"view" | "edit">>;
 }
 
-const ViewingMessage: React.FC<ViewingMessageProps> = ({
+const ViewingMessageComponent: React.FC<ViewingMessageProps> = ({
   message,
   partText,
   setMode,
@@ -32,5 +32,12 @@ const ViewingMessage: React.FC<ViewingMessageProps> = ({
     </div>
   );
 };
+
+const ViewingMessage = memo(ViewingMessageComponent, (prevProps, nextProps) => {
+  return (
+    prevProps.message.id === nextProps.message.id &&
+    prevProps.partText === nextProps.partText
+  );
+});
 
 export default ViewingMessage;

@@ -3,7 +3,7 @@ import React, {
   useContext,
   ReactNode,
   useEffect,
-  useRef,
+  useCallback,
 } from "react";
 import { useVercelChat } from "@/hooks/useVercelChat";
 import { Message, UseChatHelpers } from "@ai-sdk/react";
@@ -81,13 +81,17 @@ export function VercelChatProvider({
     setInput,
     input,
     setMessages,
-    reload,
+    reload: originalReload,
     append,
   } = useVercelChat({
     id: chatId,
     initialMessages,
     uploadedAttachments, // Pass attachments to useVercelChat
   });
+
+  const reload = useCallback(() => {
+    return originalReload();
+  }, [originalReload]);
 
   // When a message is sent successfully, clear the attachments
   const handleSendMessageWithClear = async (

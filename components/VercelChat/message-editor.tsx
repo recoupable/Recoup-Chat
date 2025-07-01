@@ -2,7 +2,7 @@
 
 import { Message } from "ai";
 import { Button } from "@/components/ui/button";
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useRef, useState, useCallback } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { UseChatHelpers } from "@ai-sdk/react";
 import { clientDeleteTrailingMessages } from "@/lib/messages/clientDeleteTrailingMessages";
@@ -43,6 +43,39 @@ export function MessageEditor({
     adjustHeight();
   };
 
+  // Memoize the submit handler to prevent unnecessary re-renders
+  const handleSubmit = useCallback(async () => {
+    setIsSubmitting(true);
+
+    await clientDeleteTrailingMessages({
+      id: message.id,
+    });
+
+    // @ts-expect-error todo: support UIMessage in setMessages
+    setMessages((messages) => {
+      const index = messages.findIndex((m) => m.id === message.id);
+
+      if (index !== -1) {
+        const updatedMessage = {
+          ...message,
+          content: draftContent,
+          parts: [{ type: "text", text: draftContent }],
+        };
+
+        return [...messages.slice(0, index), updatedMessage];
+      }
+
+      return messages;
+    });
+
+    setMode("view");
+    
+    // Only reload if the content has actually changed
+    if (message.content !== draftContent) {
+      reload();
+    }
+  }, [message.id, message.content, draftContent, setMessages, setMode, reload]);
+
   return (
     <div className="flex flex-col gap-2 w-full">
       <Textarea
@@ -68,33 +101,7 @@ export function MessageEditor({
           variant="default"
           className="h-fit py-2 px-3"
           disabled={isSubmitting}
-          onClick={async () => {
-            setIsSubmitting(true);
-
-            await clientDeleteTrailingMessages({
-              id: message.id,
-            });
-
-            // @ts-expect-error todo: support UIMessage in setMessages
-            setMessages((messages) => {
-              const index = messages.findIndex((m) => m.id === message.id);
-
-              if (index !== -1) {
-                const updatedMessage = {
-                  ...message,
-                  content: draftContent,
-                  parts: [{ type: "text", text: draftContent }],
-                };
-
-                return [...messages.slice(0, index), updatedMessage];
-              }
-
-              return messages;
-            });
-
-            setMode("view");
-            reload();
-          }}
+          onClick={handleSubmit}
         >
           {isSubmitting ? "Sending..." : "Send"}
         </Button>
