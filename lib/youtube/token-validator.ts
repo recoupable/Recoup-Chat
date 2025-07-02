@@ -9,13 +9,13 @@ import { isTokenExpired } from "@/lib/youtube/is-token-expired";
  * Checks if tokens exist and haven't expired (with 1-minute safety buffer).
  * Attempts to refresh the token if it's expired and a refresh token is available.
  * 
- * @param account_id - The account ID to validate tokens for
+ * @param artist_account_id - The artist account ID to validate tokens for
  * @returns Promise with validation result including tokens or error details
  */
-export async function validateYouTubeTokens(account_id: string): Promise<YouTubeTokenValidationResult> {
+export async function validateYouTubeTokens(artist_account_id: string): Promise<YouTubeTokenValidationResult> {
   try {
     // Get tokens from database
-    const storedTokens = await getYouTubeTokens(account_id);
+    const storedTokens = await getYouTubeTokens(artist_account_id);
     
     if (!storedTokens) {
       return YouTubeErrorBuilder.createUtilityError('NO_TOKENS', YouTubeErrorMessages.NO_TOKENS);
@@ -28,7 +28,7 @@ export async function validateYouTubeTokens(account_id: string): Promise<YouTube
         // Attempt token refresh using dedicated refresh module
         const refreshResult = await refreshStoredYouTubeToken(
           storedTokens,
-          account_id
+          artist_account_id
         );
 
         if (refreshResult.success) {

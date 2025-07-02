@@ -23,12 +23,12 @@ export interface TokenRefreshResult {
  * Refreshes an expired YouTube access token using the refresh token
  * 
  * @param storedTokens - The current stored tokens including refresh_token
- * @param account_id - Account ID for logging purposes
+ * @param artist_account_id - Artist account ID for logging purposes
  * @returns Promise with refresh result containing new tokens or error details
  */
 export async function refreshStoredYouTubeToken(
   storedTokens: YouTubeTokensRow, 
-  account_id: string
+  artist_account_id: string
 ): Promise<TokenRefreshResult> {
   
   if (!storedTokens.refresh_token) {
@@ -38,7 +38,7 @@ export async function refreshStoredYouTubeToken(
     );
   }
 
-  console.log(`Access token for account ${account_id} expired. Attempting refresh.`);
+  console.log(`Access token for account ${artist_account_id} expired. Attempting refresh.`);
   
   try {
     // Configure OAuth2 client with refresh token
@@ -47,7 +47,7 @@ export async function refreshStoredYouTubeToken(
 
     // Request new access token
     const { credentials } = await oauth2Client.refreshAccessToken();
-    console.log(`Successfully refreshed token for account ${account_id}`);
+    console.log(`Successfully refreshed token for account ${artist_account_id}`);
 
     // Validate refresh response
     if (!credentials.access_token || !credentials.expiry_date) {
@@ -71,21 +71,21 @@ export async function refreshStoredYouTubeToken(
     const updateResult = await insertYouTubeTokens(updatedTokensData);
 
     if (!updateResult) {
-      console.error(`Failed to update refreshed tokens in DB for account ${account_id}`);
+      console.error(`Failed to update refreshed tokens in DB for account ${artist_account_id}`);
       return YouTubeErrorBuilder.createUtilityError(
         'DB_UPDATE_FAILED', 
         YouTubeErrorMessages.DB_UPDATE_FAILED
       );
     }
     
-    console.log(`Successfully updated tokens in DB for account ${account_id}`);
+    console.log(`Successfully updated tokens in DB for account ${artist_account_id}`);
     return {
       success: true,
       tokens: updateResult,
     };
 
   } catch (refreshError: unknown) {
-    console.error(`Error refreshing YouTube token for account ${account_id}:`, refreshError);
+    console.error(`Error refreshing YouTube token for account ${artist_account_id}:`, refreshError);
     
     // Handle specific Google OAuth errors
     if (refreshError && typeof refreshError === 'object' && 'response' in refreshError && 

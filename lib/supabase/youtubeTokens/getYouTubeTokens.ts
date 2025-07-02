@@ -3,17 +3,17 @@ import type { YouTubeTokensRow } from "@/types/youtube";
 
 /**
  * Get YouTube tokens for a specific account
- * @param accountId - The account ID to get tokens for
+ * @param artist_account_id - The artist account ID to get tokens for
  * @returns YouTube tokens or null if not found
  */
 const getYouTubeTokens = async (
-  accountId: string
+  artist_account_id: string
 ): Promise<YouTubeTokensRow | null> => {
   try {
     const { data, error } = await supabase
       .from("youtube_tokens")
       .select("*")
-      .eq("account_id", accountId)
+      .eq("artist_account_id", artist_account_id)
       .single();
 
     if (error) {

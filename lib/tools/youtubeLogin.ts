@@ -4,10 +4,10 @@ import { validateYouTubeTokens } from "@/lib/youtube/token-validator";
 import { YouTubeErrorBuilder } from "@/lib/youtube/error-builder";
 
 const schema = z.object({
-  account_id: z
+  artist_account_id: z
     .string()
     .describe(
-      "account_id from the system prompt of the human account signed in."
+      "artist_account_id from the system prompt of the active artist."
     ),
 });
 
@@ -24,16 +24,16 @@ export interface YouTubeLoginResultType {
 const youtubeLoginTool = tool({
   description: `Check YouTube authentication status for a specific account. 
 Returns authentication status and token expiry if authenticated, or clear instructions if not. 
-IMPORTANT: This tool requires the account_id parameter. Never ask the user for this parameter. It is always passed in the system prompt.`,
+IMPORTANT: This tool requires the artist_account_id parameter. Never ask the user for this parameter. It is always passed in the system prompt.`,
   parameters: schema,
-  execute: async ({ account_id }): Promise<YouTubeLoginResultType> => {
-    if (!account_id || account_id.trim() === "") {
+  execute: async ({ artist_account_id }: { artist_account_id: string }): Promise<YouTubeLoginResultType> => {
+    if (!artist_account_id || artist_account_id.trim() === "") {
       return YouTubeErrorBuilder.createToolError(
-        "No account_id provided to YouTube login tool. The LLM must pass the account_id parameter. Please ensure you're passing the current human's account_id."
+        "No artist_account_id provided to YouTube login tool. The LLM must pass the artist_account_id parameter. Please ensure you're passing the current artist's artist_account_id."
       );
     }
     try {
-      const tokenValidation = await validateYouTubeTokens(account_id);
+      const tokenValidation = await validateYouTubeTokens(artist_account_id);
       if (!tokenValidation.success) {
         return YouTubeErrorBuilder.createToolError(
           `YouTube authentication required for this account. Please authenticate by connecting your YouTube account.`

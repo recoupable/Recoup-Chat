@@ -5,10 +5,10 @@
  * 
  * PROCESS:
  * - Exchanges authorization code for access/refresh tokens
- * - Saves tokens to database linked to account_id from state parameter
+ * - Saves tokens to database linked to artist_account_id from state parameter
  * - Redirects back to original page with success/error status
  * 
- * STATE: Contains JSON with { path, account_id } for context preservation
+ * STATE: Contains JSON with { path, artist_account_id } for context preservation
  */
 
 import { NextRequest, NextResponse } from "next/server";
@@ -21,16 +21,16 @@ export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const code = searchParams.get("code");
   const error = searchParams.get("error");
-  const state = searchParams.get("state"); // Contains JSON with path and account_id
+  const state = searchParams.get("state"); // Contains JSON with path and artist_account_id
 
-  // Parse state to get account_id and redirect path
-  let account_id: string | null = null;
+  // Parse state to get artist_account_id and redirect path
+  let artist_account_id: string | null = null;
   let redirectPath = "/";
 
   if (state) {
     try {
       const stateData = JSON.parse(state);
-      account_id = stateData.account_id;
+      artist_account_id = stateData.artist_account_id;
       redirectPath = stateData.path || "/";
     } catch (parseError) {
       console.error("Error parsing state parameter:", parseError);
@@ -77,9 +77,9 @@ export async function GET(request: NextRequest) {
       throw new Error("No access token received from YouTube");
     }
 
-    // Ensure we have account_id from the state parameter
-    if (!account_id) {
-      console.error("No account_id provided for token storage");
+    // Ensure we have artist_account_id from the state parameter
+    if (!artist_account_id) {
+      console.error("No artist_account_id provided for token storage");
       return NextResponse.redirect(
         new URL(
           redirectPath +
@@ -97,7 +97,7 @@ export async function GET(request: NextRequest) {
 
     // Save tokens to database
     const result = await insertYouTubeTokens({
-      account_id: account_id,
+      artist_account_id: artist_account_id,
       access_token: tokens.access_token,
       refresh_token: tokens.refresh_token || undefined,
       expires_at: expiresAt,
@@ -109,7 +109,7 @@ export async function GET(request: NextRequest) {
 
     console.log(
       "YouTube tokens saved to database successfully for account:",
-      account_id
+      artist_account_id
     );
     console.log("YouTube authentication successful, redirecting...");
     return NextResponse.redirect(
