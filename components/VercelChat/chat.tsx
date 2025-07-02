@@ -56,6 +56,8 @@ function ChatContentMemoized({ reportId, id }: {reportId?: string; id: string;})
   useArtistFromRoom(id);
   const { getRootProps, isDragActive } = useDropzone();
 
+
+
   const { isVisible } = useVisibilityDelay({
     shouldBeVisible: messages.length === 0 && !reportId && status === "ready",
     deps: [messages.length, reportId, status],
