@@ -1,4 +1,4 @@
-export function youtubeLogin(account_id?: string) {
+export function youtubeLogin(artist_account_id?: string) {
   const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
   const redirectUri = `${process.env.NEXT_PUBLIC_URL}/api/auth/callback/google`;
 
@@ -13,10 +13,10 @@ export function youtubeLogin(account_id?: string) {
   // Get current path to redirect back after authentication
   const currentPath = window.location.pathname + window.location.search;
 
-  // Create state object with path and account_id
+  // Create state object with path and artist_account_id
   const stateData = {
     path: currentPath,
-    account_id,
+    artist_account_id,
   };
 
   const authUrl =

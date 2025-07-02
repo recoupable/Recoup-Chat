@@ -13,7 +13,7 @@ const getYouTubeTokens = async (
     const { data, error } = await supabase
       .from("youtube_tokens")
       .select("*")
-      .eq("account_id", artist_account_id)
+      .eq("artist_account_id", artist_account_id)
       .single();
 
     if (error) {

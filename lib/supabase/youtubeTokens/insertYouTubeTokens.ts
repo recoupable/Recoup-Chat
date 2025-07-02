@@ -14,7 +14,7 @@ const insertYouTubeTokens = async (
     const { data, error } = await supabase
       .from("youtube_tokens")
       .upsert(tokens, { 
-        onConflict: "account_id",
+        onConflict: "artist_account_id",
         ignoreDuplicates: false 
       })
       .select("*")

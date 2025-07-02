@@ -1,7 +1,7 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Youtube } from "lucide-react";
-import { useUserProvider } from "@/providers/UserProvder";
+import { useArtistProvider } from "@/providers/ArtistProvider";
 import { youtubeLogin } from "@/lib/youtube/youtubeLogin";
 
 export interface YouTubeErrorDisplayProps {
@@ -11,7 +11,7 @@ export interface YouTubeErrorDisplayProps {
 export function YouTubeErrorDisplay({
   errorMessage,
 }: YouTubeErrorDisplayProps) {
-  const { userData } = useUserProvider();
+  const { selectedArtist } = useArtistProvider();
 
   return (
     <div className="flex flex-col space-y-3 p-4 rounded-lg bg-gray-50 border border-gray-200 my-2 max-w-md">
@@ -29,7 +29,7 @@ export function YouTubeErrorDisplay({
 
       {/* Artist Context */}
       <div className="text-xs text-gray-600">
-        Account: <span className="font-medium">{userData?.account_id}</span>
+        Artist: <span className="font-medium">{selectedArtist?.account_id}</span>
       </div>
 
       {/* Message */}
@@ -37,9 +37,10 @@ export function YouTubeErrorDisplay({
 
       {/* Login Button */}
       <Button
-        onClick={() => youtubeLogin(userData?.account_id)}
+        onClick={() => youtubeLogin(selectedArtist?.account_id)}
         className="w-full bg-red-600 hover:bg-red-700 text-white"
         size="sm"
+        disabled={!selectedArtist?.account_id}
       >
         <Youtube className="h-4 w-4 mr-2" />
         Connect YouTube Account
