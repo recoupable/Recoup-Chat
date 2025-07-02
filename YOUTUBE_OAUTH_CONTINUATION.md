@@ -26,16 +26,18 @@ The chat room page (`app/chat/[roomId]/page.tsx`) detects these parameters and a
 
 ### 3. Implementation Details
 
-#### File: `app/chat/[roomId]/page.tsx`
-- Added `searchParams` support to detect OAuth result parameters
-- Created `createYouTubeOAuthMessages()` function to generate appropriate messages
-- Messages are passed as `initialMessages` to the Chat component
+#### File: `providers/VercelChatProvider.tsx`
+- Added `useEffect` hook to detect OAuth callback parameters on client-side mount
+- Uses `append` function from `useVercelChat` to add messages to existing conversations
+- Automatically cleans up URL parameters after processing
+- Only processes OAuth parameters once using `useRef` to prevent duplicate messages
+- Only runs for existing conversations (when `messages.length > 0`)
 
-#### Function: `createYouTubeOAuthMessages()`
-- Parses URL search parameters for YouTube OAuth results
-- Returns properly typed message objects compatible with the Chat component
-- Handles both success and error scenarios
-- Supports URL-encoded error messages
+#### OAuth Detection Logic:
+- Detects `youtube_auth=success` and `youtube_auth_error=...` URL parameters
+- Creates appropriate continuation messages and appends them to the chat
+- Handles URL decoding for error messages
+- Removes OAuth parameters from URL after processing
 
 ## Benefits
 - ✅ Seamless user experience - no manual "continue" needed

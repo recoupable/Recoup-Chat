@@ -4,12 +4,14 @@ import React, {
   ReactNode,
   useEffect,
   useCallback,
+  useRef,
 } from "react";
 import { useVercelChat } from "@/hooks/useVercelChat";
 import { Message, UseChatHelpers } from "@ai-sdk/react";
 import useAttachments from "@/hooks/useAttachments";
 import { Attachment } from "@ai-sdk/ui-utils";
 import { useArtistProvider } from "./ArtistProvider";
+import { generateUUID } from "@/lib/generateUUID";
 
 // Interface for the context data
 interface VercelChatContextType {
@@ -126,6 +128,54 @@ export function VercelChatProvider({
     clearAttachments,
     hasPendingUploads,
   };
+
+  // Handle YouTube OAuth continuation
+  const hasProcessedOAuth = useRef(false);
+  
+  useEffect(() => {
+    // Only process once and only if we have messages (meaning this is an existing conversation)
+    if (hasProcessedOAuth.current || messages.length === 0 || typeof window === 'undefined') {
+      return;
+    }
+
+    // Check for YouTube OAuth parameters in URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const youtubeAuth = urlParams.get('youtube_auth');
+    const youtubeAuthError = urlParams.get('youtube_auth_error');
+
+    let messageToAppend: { id: string; role: "user"; content: string } | null = null;
+
+    // Handle successful YouTube authentication
+    if (youtubeAuth === 'success') {
+      messageToAppend = {
+        id: generateUUID(),
+        role: "user",
+        content: "Great! I've successfully connected my YouTube account. Please continue with what you were helping me with.",
+      };
+    }
+    // Handle YouTube authentication error
+    else if (youtubeAuthError) {
+      const errorMessage = decodeURIComponent(youtubeAuthError);
+      messageToAppend = {
+        id: generateUUID(),
+        role: "user",
+        content: `I encountered an issue while connecting my YouTube account: ${errorMessage}. Can you help me try connecting again?`,
+      };
+    }
+
+    // Append the message if we have one
+    if (messageToAppend) {
+      hasProcessedOAuth.current = true;
+      append(messageToAppend);
+
+      // Clean up URL parameters
+      urlParams.delete('youtube_auth');
+      urlParams.delete('youtube_auth_error');
+      
+      const cleanUrl = window.location.pathname + (urlParams.toString() ? `?${urlParams.toString()}` : '');
+      window.history.replaceState({}, '', cleanUrl);
+    }
+  }, [append, messages.length]);
 
   // Send chat status and messages to ArtistProvider
   useEffect(() => {
