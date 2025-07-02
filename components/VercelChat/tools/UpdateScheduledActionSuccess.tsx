@@ -2,6 +2,7 @@ import React from "react";
 import ScheduledActionCard from "./ScheduledActionCard";
 import { Tables } from "@/types/database.types";
 import { CheckCircle2 } from "lucide-react";
+import ScheduledActionDetailsDialog from "../dialogs/ScheduledActionDetailsDialog";
 
 export interface UpdateScheduledActionResult {
   actions: Tables<"scheduled_actions">[];
@@ -32,7 +33,9 @@ const UpdateScheduledActionSuccess = ({
       <div className="p-4">
         <div className="space-y-3 max-h-80 overflow-y-auto">
           {actions.map((action) => (
-            <ScheduledActionCard key={action.id} action={action} />
+            <ScheduledActionDetailsDialog key={action.id} action={action}>
+              <ScheduledActionCard action={action} />
+            </ScheduledActionDetailsDialog>
           ))}
         </div>
       </div>
