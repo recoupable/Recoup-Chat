@@ -738,7 +738,7 @@ export type Database = {
       error_logs: {
         Row: {
           account_id: string | null
-          created_at: string | null
+          created_at: string
           error_message: string | null
           error_timestamp: string | null
           error_type: string | null
@@ -752,7 +752,7 @@ export type Database = {
         }
         Insert: {
           account_id?: string | null
-          created_at?: string | null
+          created_at?: string
           error_message?: string | null
           error_timestamp?: string | null
           error_type?: string | null
@@ -766,7 +766,7 @@ export type Database = {
         }
         Update: {
           account_id?: string | null
-          created_at?: string | null
+          created_at?: string
           error_message?: string | null
           error_timestamp?: string | null
           error_type?: string | null
@@ -778,7 +778,22 @@ export type Database = {
           telegram_message_id?: number | null
           tool_name?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "error_logs_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "error_logs_room_id_fkey"
+            columns: ["room_id"]
+            isOneToOne: false
+            referencedRelation: "rooms"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       fan_segments: {
         Row: {
@@ -2159,6 +2174,58 @@ export type Database = {
         }
         Relationships: []
       }
+      social_fans: {
+        Row: {
+          artist_social_id: string
+          created_at: string
+          fan_social_id: string
+          id: string
+          latest_engagement: string | null
+          latest_engagement_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          artist_social_id: string
+          created_at?: string
+          fan_social_id: string
+          id?: string
+          latest_engagement?: string | null
+          latest_engagement_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          artist_social_id?: string
+          created_at?: string
+          fan_social_id?: string
+          id?: string
+          latest_engagement?: string | null
+          latest_engagement_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "social_fans_artist_social_id_fkey"
+            columns: ["artist_social_id"]
+            isOneToOne: false
+            referencedRelation: "socials"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "social_fans_fan_social_id_fkey"
+            columns: ["fan_social_id"]
+            isOneToOne: false
+            referencedRelation: "socials"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "social_fans_latest_engagement_id_fkey"
+            columns: ["latest_engagement_id"]
+            isOneToOne: false
+            referencedRelation: "post_comments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       social_posts: {
         Row: {
           id: string
@@ -2832,7 +2899,7 @@ export type Database = {
       youtube_tokens: {
         Row: {
           access_token: string
-          account_id: string
+          artist_account_id: string
           created_at: string
           expires_at: string
           id: string
@@ -2841,7 +2908,7 @@ export type Database = {
         }
         Insert: {
           access_token: string
-          account_id: string
+          artist_account_id: string
           created_at?: string
           expires_at: string
           id?: string
@@ -2850,7 +2917,7 @@ export type Database = {
         }
         Update: {
           access_token?: string
-          account_id?: string
+          artist_account_id?: string
           created_at?: string
           expires_at?: string
           id?: string
@@ -2859,8 +2926,8 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "youtube_tokens_account_id_fkey"
-            columns: ["account_id"]
+            foreignKeyName: "youtube_tokens_artist_account_id_fkey"
+            columns: ["artist_account_id"]
             isOneToOne: true
             referencedRelation: "accounts"
             referencedColumns: ["id"]
