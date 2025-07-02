@@ -3,6 +3,7 @@ import { CreateScheduledActionsResult } from "@/lib/tools/scheduled_actions/crea
 import ScheduledActionCard from "./ScheduledActionCard";
 import CreateScheduledActionsError from "./CreateScheduledActionsError";
 import { CheckCircle, Calendar } from "lucide-react";
+import ScheduledActionDetailsDialog from "../dialogs/ScheduledActionDetailsDialog";
 
 interface CreateScheduledActionsSuccessProps {
   result: CreateScheduledActionsResult;
@@ -44,10 +45,12 @@ const CreateScheduledActionsSuccess: React.FC<CreateScheduledActionsSuccessProps
         <div className="space-y-3">
           <div className="space-y-2">
             {actions.map((action, index) => (
-              <ScheduledActionCard 
+              <ScheduledActionDetailsDialog 
                 key={action.id || index} 
                 action={action}
-              />
+               >
+                <ScheduledActionCard action={action} />
+              </ScheduledActionDetailsDialog>
             ))}
           </div>
         </div>
