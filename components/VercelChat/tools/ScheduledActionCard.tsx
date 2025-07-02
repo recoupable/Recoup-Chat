@@ -64,7 +64,7 @@ const ScheduledActionCard: React.FC<ScheduledActionCardProps> = ({ action, isDel
       </div>
 
       {/* Schedule Information */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-[0.65rem] md:text-xs">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-[0.65rem]">
         <div className="flex items-center space-x-2 text-gray-600">
           <Calendar className="h-3.5 w-3.5 text-blue-500 flex-shrink-0" />
           <span className="font-medium">Schedule:</span>
