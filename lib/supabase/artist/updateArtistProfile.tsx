@@ -45,15 +45,11 @@ const updateArtistProfile = async (
       infoUpdate.image = image || account_info.image;
       infoUpdate.instruction = instruction || account_info.instruction;
       
-      // Append new knowledge files to existing ones instead of replacing them
       if (knowledges && knowledges.length > 0) {
-        // Ensure proper typing by casting to Knowledge array
         const existingKnowledges = (account_info.knowledges || []) as Knowledge[];
         
         // Filter out duplicates by URL to prevent adding the same file twice
-        const newKnowledges = knowledges.filter(
-          newFile => !existingKnowledges.some(existingFile => existingFile.url === newFile.url)
-        );
+        const newKnowledges = knowledges.filter(newFile => !existingKnowledges.some(existingFile => existingFile.url === newFile.url));
         
         infoUpdate.knowledges = [...existingKnowledges, ...newKnowledges];
       } else {
