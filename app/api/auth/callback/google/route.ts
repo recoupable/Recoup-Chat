@@ -30,7 +30,7 @@ export async function GET(request: NextRequest) {
   if (state) {
     try {
       const stateData = JSON.parse(state);
-      artist_account_id = stateData.artist_account_id || stateData.account_id; // Support both old and new format
+      artist_account_id = stateData.artist_account_id;
       redirectPath = stateData.path || "/";
     } catch (parseError) {
       console.error("Error parsing state parameter:", parseError);
