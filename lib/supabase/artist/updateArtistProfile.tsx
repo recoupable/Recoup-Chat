@@ -44,7 +44,22 @@ const updateArtistProfile = async (
       const infoUpdate: Partial<typeof account_info> = {};
       infoUpdate.image = image || account_info.image;
       infoUpdate.instruction = instruction || account_info.instruction;
-      infoUpdate.knowledges = knowledges ?? account_info.knowledges;
+      
+      // Append new knowledge files to existing ones instead of replacing them
+      if (knowledges && knowledges.length > 0) {
+        // Ensure proper typing by casting to Knowledge array
+        const existingKnowledges = (account_info.knowledges || []) as Knowledge[];
+        
+        // Filter out duplicates by URL to prevent adding the same file twice
+        const newKnowledges = knowledges.filter(
+          newFile => !existingKnowledges.some(existingFile => existingFile.url === newFile.url)
+        );
+        
+        infoUpdate.knowledges = [...existingKnowledges, ...newKnowledges];
+      } else {
+        infoUpdate.knowledges = account_info.knowledges;
+      }
+      
       infoUpdate.label = label || account_info.label;
       await updateAccountInfo(artistId, infoUpdate);
     } else {
