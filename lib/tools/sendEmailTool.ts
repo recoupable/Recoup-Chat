@@ -4,14 +4,8 @@ import sendEmail from "../email/sendEmail";
 import { RECOUP_FROM_EMAIL } from "../consts";
 
 const sendEmailTool = tool({
-  description: `Send an email using the Resend API. Requires 'from', 'to', and 'subject'. Optionally include 'text', 'html', and custom headers.\n\nNotes:\n- The 'from' address must use the recoupable.com domain.\n- If not, it will fallback to ${RECOUP_FROM_EMAIL}.\n- Use context to make the email creative and engaging.\n- Use this tool to send transactional or notification emails to users or admins.`,
+  description: `Send an email using the Resend API. Requires 'to' and 'subject'. Optionally include 'text', 'html', and custom headers.\n\nNotes:\n- Emails are sent from ${RECOUP_FROM_EMAIL}.\n- Use context to make the email creative and engaging.\n- Use this tool to send transactional or notification emails to users or admins.`,
   parameters: z.object({
-    from: z
-      .string()
-      .email()
-      .describe(
-        `Sender email address (must be @recoupable.com; will fallback to ${RECOUP_FROM_EMAIL} if not)`
-      ),
     to: z
       .union([z.string().email(), z.array(z.string().email())])
       .describe("Recipient email address or array of addresses"),
@@ -39,15 +33,17 @@ const sendEmailTool = tool({
       .optional()
       .describe("Optional custom headers for the email"),
   }),
-  execute: async ({ from, to, cc = [], subject, text, html, headers }) => {
-    // Enforce recoupable.com domain for 'from' address
-    let safeFrom = from;
-    if (!/^[^@]+@recoupable\\.com$/i.test(from)) {
-      safeFrom = RECOUP_FROM_EMAIL;
-    }
+  execute: async ({ to, cc = [], subject, text, html, headers }: {
+    to: string | string[];
+    cc?: string[];
+    subject: string;
+    text?: string;
+    html?: string;
+    headers?: Record<string, string>;
+  }) => {
     try {
       const response = await sendEmail({
-        from: safeFrom,
+        from: RECOUP_FROM_EMAIL,
         to,
         cc: cc.length > 0 ? cc : undefined,
         subject,
@@ -60,7 +56,7 @@ const sendEmailTool = tool({
         if (response.ok) {
           return {
             success: true,
-            message: `Email sent successfully from ${safeFrom} to ${to}. ${cc && cc.length > 0 ? `CC: ${JSON.stringify(cc)}` : "none"}.`,
+            message: `Email sent successfully from ${RECOUP_FROM_EMAIL} to ${to}. ${cc && cc.length > 0 ? `CC: ${JSON.stringify(cc)}` : "none"}.`,
             data,
           };
         } else {
@@ -68,14 +64,14 @@ const sendEmailTool = tool({
             success: false,
             message:
               data?.error?.message ||
-              `Failed to send email from ${safeFrom} to ${to}.`,
+              `Failed to send email from ${RECOUP_FROM_EMAIL} to ${to}.`,
             data,
           };
         }
       }
       return {
         success: false,
-        message: `Unknown error sending email from ${safeFrom} to ${to}.`,
+        message: `Unknown error sending email from ${RECOUP_FROM_EMAIL} to ${to}.`,
       };
     } catch (error) {
       return {
@@ -83,7 +79,7 @@ const sendEmailTool = tool({
         message:
           error instanceof Error
             ? error.message
-            : `Failed to send email from ${safeFrom} to ${to} for unknown reason.`,
+            : `Failed to send email from ${RECOUP_FROM_EMAIL} to ${to} for unknown reason.`,
       };
     }
   },
