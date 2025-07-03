@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Youtube } from "lucide-react";
 import { useArtistProvider } from "@/providers/ArtistProvider";
 import { youtubeLogin } from "@/lib/youtube/youtubeLogin";
+import { useYouTubeLoginSuccess } from "@/hooks/useYouTubeLoginSuccess";
 
 export interface YouTubeErrorDisplayProps {
   errorMessage: string;
@@ -12,6 +13,9 @@ export function YouTubeErrorDisplay({
   errorMessage,
 }: YouTubeErrorDisplayProps) {
   const { selectedArtist } = useArtistProvider();
+  
+  // Hook that automatically continues conversation after successful YouTube OAuth
+  useYouTubeLoginSuccess();
 
   return (
     <div className="flex flex-col space-y-3 p-4 rounded-lg bg-gray-50 border border-gray-200 my-2 max-w-md">
