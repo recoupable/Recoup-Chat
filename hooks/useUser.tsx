@@ -1,4 +1,5 @@
 import { usePrivy } from "@privy-io/react-auth";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Address } from "viem";
 import useTrackEmail from "./useTrackEmail";
@@ -21,6 +22,7 @@ const useUser = () => {
   const [imageUploading, setImageUploading] = useState(false);
   const imageRef = useRef() as any;
   const [updating, setUpdating] = useState(false);
+  const router = useRouter();
 
   const toggleModal = () => setIsModalOpen(!isModalOpen);
 
@@ -76,6 +78,7 @@ const useUser = () => {
     setImage("");
     setOrganization("");
     logout();
+    router.push("/");
   };
 
   useEffect(() => {
