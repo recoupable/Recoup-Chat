@@ -23,11 +23,14 @@ export async function GET(request: NextRequest) {
     }
     
     // Also check referer as additional security
-    if (referer && !allowedOrigins.some(allowed => referer.startsWith(allowed))) {
-      return NextResponse.json(
-        { error: "Unauthorized: Invalid referer" },
-        { status: 403 }
-      );
+    if (referer) {
+      const isValidReferer = allowedOrigins.some(allowed => referer.startsWith(allowed));
+      if (!isValidReferer) {
+        return NextResponse.json(
+          { error: "Unauthorized: Invalid referer" },
+          { status: 403 }
+        );
+      }
     }
 
     // Get artist_account_id from query parameters
