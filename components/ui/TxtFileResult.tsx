@@ -87,10 +87,13 @@ export function TxtFileResult({ result }: TxtFileResultProps) {
           </div>
         </div>
 
-        <div className="prose prose-sm dark:prose-invert max-w-none relative">
+        <div className="prose prose-sm dark:prose-invert max-w-none">
           <div 
-            className={cn("mb-4 whitespace-pre-wrap font-mono text-sm p-3 bg-muted/50 rounded-md overflow-hidden")}
-            style={{transition: "max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1)",}}
+            className={cn(
+              "mb-4 whitespace-pre-wrap font-mono text-sm p-3 bg-muted/50 rounded-md overflow-auto",
+              "max-h-[200px] md:max-h-[400px] scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600"
+            )}
+            style={{transition: "max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1)"}}
           >
             {loading ? (<p className="text-muted-foreground">Loading file contents...</p>) : 
              fetchError ? (<p className="text-destructive">{fetchError}</p>) 
