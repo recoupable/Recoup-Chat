@@ -41,9 +41,10 @@ The chat room page (`app/chat/[roomId]/page.tsx`) detects these parameters and a
 - Logs detailed debug information to console for troubleshooting
 
 #### Security Features:
-- API endpoint only accepts requests from same domain (origin/referer validation)
+- Database-based authorization: Verifies account has access to artist via `getAccountArtistIds`
 - Server-side token validation prevents client-side token exposure
-- Secure communication between frontend and backend
+- Two-parameter validation: Requires both `artist_account_id` and `account_id`
+- Returns 400 if account doesn't have access to the specified artist
 
 ## Benefits
 - ✅ Seamless user experience - no manual "continue" needed
@@ -59,6 +60,8 @@ To test the implementation:
 
 ## Related Files
 - `components/VercelChat/tools/youtube/YouTubeErrorDisplay.tsx` - Main implementation
-- `lib/supabase/youtubeTokens/getYouTubeTokens.ts` - Checks for valid YouTube tokens
+- `app/api/youtube/tokens/route.ts` - Secure API endpoint for token validation
+- `lib/supabase/youtubeTokens/getYouTubeTokens.ts` - Server-side token retrieval
+- `lib/supabase/accountArtistIds/getAccountArtistIds.ts` - Account-artist authorization
 - `app/api/auth/callback/google/route.ts` - OAuth callback that saves tokens to database
 - `lib/youtube/youtubeLogin.ts` - Initiates OAuth flow

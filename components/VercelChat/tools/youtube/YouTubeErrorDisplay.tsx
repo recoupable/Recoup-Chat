@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Youtube } from "lucide-react";
 import { useArtistProvider } from "@/providers/ArtistProvider";
+import { useUserProvider } from "@/providers/UserProvder";
 import { youtubeLogin } from "@/lib/youtube/youtubeLogin";
 import { useVercelChatContext } from "@/providers/VercelChatProvider";
 import { generateUUID } from "@/lib/generateUUID";
@@ -14,6 +15,7 @@ export function YouTubeErrorDisplay({
   errorMessage,
 }: YouTubeErrorDisplayProps) {
   const { selectedArtist } = useArtistProvider();
+  const { userData } = useUserProvider();
   const { append, messages } = useVercelChatContext();
   const hasCheckedOAuth = useRef(false);
 
@@ -38,8 +40,10 @@ export function YouTubeErrorDisplay({
     hasCheckedOAuth.current = true;
 
     // Check for valid YouTube tokens via API
-    if (selectedArtist?.account_id) {
-      fetch(`/api/youtube/tokens?artist_account_id=${encodeURIComponent(selectedArtist.account_id)}`)
+    if (selectedArtist?.account_id && userData?.id) {
+      const apiUrl = `/api/youtube/tokens?artist_account_id=${encodeURIComponent(selectedArtist.account_id)}&account_id=${encodeURIComponent(userData.id)}`;
+      
+      fetch(apiUrl)
         .then(response => response.json())
         .then(data => {
           console.log('🔗 YouTube tokens API response:', data);
@@ -63,9 +67,9 @@ export function YouTubeErrorDisplay({
           console.error('❌ Error checking YouTube tokens via API:', error);
         });
     } else {
-      console.log('❌ No selected artist, cannot check tokens');
+      console.log('❌ Missing selected artist or user data, cannot check tokens');
     }
-  }, [selectedArtist?.account_id, messages, append]);
+  }, [selectedArtist?.account_id, userData?.id, messages, append]);
 
   return (
     <div className="flex flex-col space-y-3 p-4 rounded-lg bg-gray-50 border border-gray-200 my-2 max-w-md">

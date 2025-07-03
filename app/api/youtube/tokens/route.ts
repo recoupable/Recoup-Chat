@@ -1,41 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import getYouTubeTokens from "@/lib/supabase/youtubeTokens/getYouTubeTokens";
+import getAccountArtistIds from "@/lib/supabase/accountArtistIds/getAccountArtistIds";
 
 export async function GET(request: NextRequest) {
   try {
-    // Security: Only allow requests from the same domain
-    const origin = request.headers.get('origin');
-    const host = request.headers.get('host');
-    const referer = request.headers.get('referer');
-    
-    // Check if request is coming from same domain
-    const allowedOrigins = [
-      `https://${host}`,
-      `http://${host}`,
-      process.env.NEXT_PUBLIC_URL
-    ].filter(Boolean);
-    
-    if (origin && !allowedOrigins.includes(origin)) {
-      return NextResponse.json(
-        { error: "Unauthorized: Invalid origin" },
-        { status: 403 }
-      );
-    }
-    
-    // Also check referer as additional security
-    if (referer) {
-      const isValidReferer = allowedOrigins.some(allowed => referer.startsWith(allowed));
-      if (!isValidReferer) {
-        return NextResponse.json(
-          { error: "Unauthorized: Invalid referer" },
-          { status: 403 }
-        );
-      }
-    }
-
-    // Get artist_account_id from query parameters
+    // Get parameters from query
     const { searchParams } = new URL(request.url);
     const artistAccountId = searchParams.get('artist_account_id');
+    const accountId = searchParams.get('account_id');
 
     if (!artistAccountId) {
       return NextResponse.json(
@@ -44,7 +16,30 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    console.log('🔍 YouTube tokens API called for artist:', artistAccountId);
+    if (!accountId) {
+      return NextResponse.json(
+        { error: "Missing account_id parameter" },
+        { status: 400 }
+      );
+    }
+
+    console.log('🔍 YouTube tokens API called for artist:', artistAccountId, 'by account:', accountId);
+
+    // Security: Verify the accountId has access to this artistAccountId
+    const accountArtists = await getAccountArtistIds({ accountIds: [accountId] });
+    
+    // Check if the artistAccountId is in the list of artists this account has access to
+    const hasAccess = accountArtists.some((artist: any) => artist.account_id === artistAccountId);
+    
+    if (!hasAccess) {
+      console.log('❌ Authorization failed: Account does not have access to this artist');
+      return NextResponse.json(
+        { error: "Unauthorized: Account does not have access to this artist" },
+        { status: 400 }
+      );
+    }
+
+    console.log('✅ Authorization verified for account access to artist');
 
     // Call the server-side function
     const tokens = await getYouTubeTokens(artistAccountId);
