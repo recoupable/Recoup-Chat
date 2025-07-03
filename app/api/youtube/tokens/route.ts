@@ -2,6 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import getYouTubeTokens from "@/lib/supabase/youtubeTokens/getYouTubeTokens";
 import getAccountArtistIds from "@/lib/supabase/accountArtistIds/getAccountArtistIds";
 
+interface ArtistInfo {
+  account_id: string;
+}
+
 export async function GET(request: NextRequest) {
   try {
     // Get parameters from query
@@ -29,7 +33,7 @@ export async function GET(request: NextRequest) {
     const accountArtists = await getAccountArtistIds({ accountIds: [accountId] });
     
     // Check if the artistAccountId is in the list of artists this account has access to
-    const hasAccess = accountArtists.some((artist: any) => artist.account_id === artistAccountId);
+    const hasAccess = accountArtists.some((artist: ArtistInfo) => artist.account_id === artistAccountId);
     
     if (!hasAccess) {
       console.log('❌ Authorization failed: Account does not have access to this artist');
