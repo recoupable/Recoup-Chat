@@ -1,13 +1,9 @@
-interface YouTubeTokens {
-  access_token: string;
-  refresh_token?: string;
-  expires_at?: string;
-}
+import { YouTubeTokensRow } from "@/types/youtube";
 
 interface YouTubeTokensResponse {
   success: boolean;
   hasValidTokens: boolean;
-  tokens?: YouTubeTokens | null;
+  tokens?: YouTubeTokensRow | null;
   error?: string;
 }
 
