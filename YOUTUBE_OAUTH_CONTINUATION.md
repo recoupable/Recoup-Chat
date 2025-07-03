@@ -26,18 +26,19 @@ The chat room page (`app/chat/[roomId]/page.tsx`) detects these parameters and a
 
 ### 3. Implementation Details
 
-#### File: `providers/VercelChatProvider.tsx`
-- Added `useEffect` hook to detect OAuth callback parameters on client-side mount
-- Uses `append` function from `useVercelChat` to add messages to existing conversations
-- Automatically cleans up URL parameters after processing
-- Only processes OAuth parameters once using `useRef` to prevent duplicate messages
-- Only runs for existing conversations (when `messages.length > 0`)
+#### File: `components/VercelChat/tools/youtube/YouTubeErrorDisplay.tsx`
+- Added `useEffect` hook that runs once on component mount
+- Checks if this component is part of the latest assistant message
+- If yes, calls `getYouTubeTokens()` to check for valid YouTube authentication
+- If valid tokens exist, appends a success message to continue the conversation
+- Only processes once using `useRef` to prevent duplicate messages
 
 #### OAuth Detection Logic:
-- Detects `youtube_auth=success` and `youtube_auth_error=...` URL parameters
-- Creates appropriate continuation messages and appends them to the chat
-- Handles URL decoding for error messages
-- Removes OAuth parameters from URL after processing
+- Triggers when `YouTubeErrorDisplay` component mounts (when auth is required)
+- Checks if component is part of the latest message to avoid processing old messages
+- Uses `getYouTubeTokens(artist_account_id)` to detect successful authentication
+- If valid tokens found, appends continuation message via `append()` function
+- Logs detailed debug information to console for troubleshooting
 
 ## Benefits
 - ✅ Seamless user experience - no manual "continue" needed
@@ -52,6 +53,7 @@ To test the implementation:
 3. Verify the conversation automatically continues with appropriate context
 
 ## Related Files
-- `app/chat/[roomId]/page.tsx` - Main implementation
-- `app/api/auth/callback/google/route.ts` - OAuth callback that redirects with parameters
+- `components/VercelChat/tools/youtube/YouTubeErrorDisplay.tsx` - Main implementation
+- `lib/supabase/youtubeTokens/getYouTubeTokens.ts` - Checks for valid YouTube tokens
+- `app/api/auth/callback/google/route.ts` - OAuth callback that saves tokens to database
 - `lib/youtube/youtubeLogin.ts` - Initiates OAuth flow
