@@ -3,6 +3,7 @@ import { useArtistProvider } from "@/providers/ArtistProvider";
 import { useUserProvider } from "@/providers/UserProvder";
 import { useVercelChatContext } from "@/providers/VercelChatProvider";
 import { generateUUID } from "@/lib/generateUUID";
+import { fetchYouTubeTokens } from "@/lib/youtube/fetchYouTubeTokens";
 
 /**
  * Hook that detects YouTube login success and automatically continues the conversation
@@ -46,10 +47,7 @@ export function useYouTubeLoginSuccess() {
 
     // Check for valid YouTube tokens via API
     if (selectedArtist?.account_id && userData?.id) {
-      const apiUrl = `/api/youtube/tokens?artist_account_id=${encodeURIComponent(selectedArtist.account_id)}&account_id=${encodeURIComponent(userData.id)}`;
-      
-      fetch(apiUrl)
-        .then(response => response.json())
+      fetchYouTubeTokens(selectedArtist.account_id, userData.id)
         .then(data => {
           if (data.success && data.hasValidTokens) {
             const successMessage = {
