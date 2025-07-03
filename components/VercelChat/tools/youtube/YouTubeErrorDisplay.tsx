@@ -7,6 +7,13 @@ import { youtubeLogin } from "@/lib/youtube/youtubeLogin";
 import { useVercelChatContext } from "@/providers/VercelChatProvider";
 import { generateUUID } from "@/lib/generateUUID";
 
+interface MessagePart {
+  type: string;
+  toolInvocation?: {
+    toolName: string;
+  };
+}
+
 export interface YouTubeErrorDisplayProps {
   errorMessage: string;
 }
@@ -29,14 +36,28 @@ export function YouTubeErrorDisplay({
       return;
     }
 
-    // Check if this component is part of the latest message
+    // Check if this component is part of the latest message with YouTube tool call
     const latestMessage = messages[messages.length - 1];
     if (!latestMessage || latestMessage.role !== 'assistant') {
       console.log('❌ Not part of latest assistant message, skipping');
       return;
     }
 
-    console.log('✅ Part of latest message, checking for YouTube tokens');
+    // Check if the latest message contains a YouTube tool invocation
+    const hasYouTubeToolCall = latestMessage.parts?.some((part: MessagePart) => {
+      if (part.type === 'tool-invocation') {
+        const { toolInvocation } = part;
+        return toolInvocation?.toolName === 'youtube_login';
+      }
+      return false;
+    });
+
+    if (!hasYouTubeToolCall) {
+      console.log('❌ Latest message does not contain YouTube tool call, skipping');
+      return;
+    }
+
+    console.log('✅ Latest message contains YouTube tool call, checking for tokens');
     hasCheckedOAuth.current = true;
 
     // Check for valid YouTube tokens via API
