@@ -2,6 +2,7 @@ import React from "react";
 import { Trash2, CheckCircle } from "lucide-react";
 import { DeleteScheduledActionsResult } from "@/lib/tools/scheduled_actions/deleteScheduledActions";
 import ScheduledActionCard from "./ScheduledActionCard";
+import ScheduledActionDetailsDialog from "../dialogs/ScheduledActionDetailsDialog";
 
 export interface DeleteScheduledActionsSuccessProps {
   result: DeleteScheduledActionsResult;
@@ -54,7 +55,9 @@ const DeleteScheduledActionsSuccess: React.FC<DeleteScheduledActionsSuccessProps
         ) : (
           <div className="space-y-3 max-h-80 overflow-y-auto">
             {actions.map((action) => (
-              <ScheduledActionCard key={action.id} action={action} isDeleted={true} />
+              <ScheduledActionDetailsDialog key={action.id} action={action} isDeleted={true}>
+                <ScheduledActionCard action={action} isDeleted={true} />
+              </ScheduledActionDetailsDialog>
             ))}
           </div>
         )}
