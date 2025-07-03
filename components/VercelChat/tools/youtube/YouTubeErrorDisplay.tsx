@@ -1,11 +1,9 @@
-import React, { useEffect, useRef } from "react";
+import React from "react";
 import { Button } from "@/components/ui/button";
 import { Youtube } from "lucide-react";
 import { useArtistProvider } from "@/providers/ArtistProvider";
-import { useUserProvider } from "@/providers/UserProvder";
 import { youtubeLogin } from "@/lib/youtube/youtubeLogin";
-import { useVercelChatContext } from "@/providers/VercelChatProvider";
-import { generateUUID } from "@/lib/generateUUID";
+import { useYouTubeLoginSuccess } from "@/hooks/useYouTubeLoginSuccess";
 
 export interface YouTubeErrorDisplayProps {
   errorMessage: string;

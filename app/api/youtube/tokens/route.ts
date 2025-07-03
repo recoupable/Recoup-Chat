@@ -27,8 +27,6 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    console.log('🔍 YouTube tokens API called for artist:', artistAccountId, 'by account:', accountId);
-
     // Security: Verify the accountId has access to this artistAccountId
     const accountArtists = await getAccountArtistIds({ accountIds: [accountId] });
     
@@ -36,19 +34,14 @@ export async function GET(request: NextRequest) {
     const hasAccess = accountArtists.some((artist: ArtistInfo) => artist.account_id === artistAccountId);
     
     if (!hasAccess) {
-      console.log('❌ Authorization failed: Account does not have access to this artist');
       return NextResponse.json(
         { error: "Unauthorized: Account does not have access to this artist" },
         { status: 400 }
       );
     }
 
-    console.log('✅ Authorization verified for account access to artist');
-
     // Call the server-side function
     const tokens = await getYouTubeTokens(artistAccountId);
-    
-    console.log('🔗 YouTube tokens result:', { hasTokens: !!tokens });
 
     // Return the tokens (they will be null if not found)
     return NextResponse.json({
