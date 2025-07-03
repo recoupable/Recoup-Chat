@@ -43,21 +43,19 @@ export function YouTubeErrorDisplay({
       return;
     }
 
-    // Check if the latest message contains a YouTube tool invocation
-    const hasYouTubeToolCall = latestMessage.parts?.some((part: MessagePart) => {
-      if (part.type === 'tool-invocation') {
-        const { toolInvocation } = part;
-        return toolInvocation?.toolName === 'youtube_login';
-      }
-      return false;
-    });
+    // Check if the FINAL tool call in the latest message is YouTube (meaning it failed)
+    const parts = latestMessage.parts || [];
+    const toolParts = parts.filter((part: MessagePart) => part.type === 'tool-invocation');
+    const lastToolPart = toolParts[toolParts.length - 1];
+    
+    const isLastToolYouTube = lastToolPart?.toolInvocation?.toolName === 'youtube_login';
 
-    if (!hasYouTubeToolCall) {
-      console.log('❌ Latest message does not contain YouTube tool call, skipping');
+    if (!isLastToolYouTube) {
+      console.log('❌ Final tool call is not YouTube (conversation continued successfully), skipping');
       return;
     }
 
-    console.log('✅ Latest message contains YouTube tool call, checking for tokens');
+    console.log('✅ Final tool call is YouTube (auth required), checking for tokens');
     hasCheckedOAuth.current = true;
 
     // Check for valid YouTube tokens via API
