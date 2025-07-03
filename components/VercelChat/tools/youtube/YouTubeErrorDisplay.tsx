@@ -7,13 +7,6 @@ import { youtubeLogin } from "@/lib/youtube/youtubeLogin";
 import { useVercelChatContext } from "@/providers/VercelChatProvider";
 import { generateUUID } from "@/lib/generateUUID";
 
-interface MessagePart {
-  type: string;
-  toolInvocation?: {
-    toolName: string;
-  };
-}
-
 export interface YouTubeErrorDisplayProps {
   errorMessage: string;
 }
@@ -45,10 +38,14 @@ export function YouTubeErrorDisplay({
 
     // Check if the FINAL tool call in the latest message is YouTube (meaning it failed)
     const parts = latestMessage.parts || [];
-    const toolParts = parts.filter((part: MessagePart) => part.type === 'tool-invocation');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const toolParts = parts.filter((part: any) => part.type === 'tool-invocation');
     const lastToolPart = toolParts[toolParts.length - 1];
     
-    const isLastToolYouTube = lastToolPart?.toolInvocation?.toolName === 'youtube_login';
+    // Type guard to check if it's a tool invocation with the right structure
+    const isLastToolYouTube = lastToolPart && 
+      'toolInvocation' in lastToolPart && 
+      lastToolPart.toolInvocation?.toolName === 'youtube_login';
 
     if (!isLastToolYouTube) {
       console.log('❌ Final tool call is not YouTube (conversation continued successfully), skipping');
