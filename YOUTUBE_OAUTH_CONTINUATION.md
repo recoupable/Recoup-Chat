@@ -36,9 +36,14 @@ The chat room page (`app/chat/[roomId]/page.tsx`) detects these parameters and a
 #### OAuth Detection Logic:
 - Triggers when `YouTubeErrorDisplay` component mounts (when auth is required)
 - Checks if component is part of the latest message to avoid processing old messages
-- Uses `getYouTubeTokens(artist_account_id)` to detect successful authentication
+- Calls `/api/youtube/tokens` API endpoint to securely check for valid YouTube authentication
 - If valid tokens found, appends continuation message via `append()` function
 - Logs detailed debug information to console for troubleshooting
+
+#### Security Features:
+- API endpoint only accepts requests from same domain (origin/referer validation)
+- Server-side token validation prevents client-side token exposure
+- Secure communication between frontend and backend
 
 ## Benefits
 - ✅ Seamless user experience - no manual "continue" needed

@@ -4,7 +4,6 @@ import { Youtube } from "lucide-react";
 import { useArtistProvider } from "@/providers/ArtistProvider";
 import { youtubeLogin } from "@/lib/youtube/youtubeLogin";
 import { useVercelChatContext } from "@/providers/VercelChatProvider";
-import getYouTubeTokens from "@/lib/supabase/youtubeTokens/getYouTubeTokens";
 import { generateUUID } from "@/lib/generateUUID";
 
 export interface YouTubeErrorDisplayProps {
@@ -38,13 +37,14 @@ export function YouTubeErrorDisplay({
     console.log('✅ Part of latest message, checking for YouTube tokens');
     hasCheckedOAuth.current = true;
 
-    // Check for valid YouTube tokens
+    // Check for valid YouTube tokens via API
     if (selectedArtist?.account_id) {
-      getYouTubeTokens(selectedArtist.account_id)
-        .then(tokens => {
-          console.log('🔗 YouTube tokens check:', { hasTokens: !!tokens });
+      fetch(`/api/youtube/tokens?artist_account_id=${encodeURIComponent(selectedArtist.account_id)}`)
+        .then(response => response.json())
+        .then(data => {
+          console.log('🔗 YouTube tokens API response:', data);
           
-          if (tokens && tokens.access_token) {
+          if (data.success && data.hasValidTokens) {
             console.log('🎉 Found valid YouTube tokens, appending success message');
             
             const successMessage = {
@@ -60,7 +60,7 @@ export function YouTubeErrorDisplay({
           }
         })
         .catch(error => {
-          console.error('❌ Error checking YouTube tokens:', error);
+          console.error('❌ Error checking YouTube tokens via API:', error);
         });
     } else {
       console.log('❌ No selected artist, cannot check tokens');
