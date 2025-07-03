@@ -71,7 +71,7 @@ export function TxtFileResult({ result }: TxtFileResultProps) {
 
   return (
     <Card className="w-full">
-      <CardContent className="pt-4 p-4">
+      <CardContent className="pt-4 p-4 space-y-4">
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-4 w-full">
             <h3 className="text-lg font-medium">Text File Generated</h3>
