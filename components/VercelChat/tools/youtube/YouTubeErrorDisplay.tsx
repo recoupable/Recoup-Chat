@@ -13,77 +13,9 @@ export function YouTubeErrorDisplay({
   errorMessage,
 }: YouTubeErrorDisplayProps) {
   const { selectedArtist } = useArtistProvider();
-  const { userData } = useUserProvider();
-  const { append, messages } = useVercelChatContext();
-  const hasCheckedOAuth = useRef(false);
-
-  // Check for successful OAuth and continue conversation
-  useEffect(() => {
-    console.log('🔍 YouTubeErrorDisplay useEffect triggered');
-    
-    // Only run once
-    if (hasCheckedOAuth.current) {
-      console.log('❌ Already checked OAuth, skipping');
-      return;
-    }
-
-    // Check if this component is part of the latest message with YouTube tool call
-    const latestMessage = messages[messages.length - 1];
-    if (!latestMessage || latestMessage.role !== 'assistant') {
-      console.log('❌ Not part of latest assistant message, skipping');
-      return;
-    }
-
-    // Check if the FINAL tool call in the latest message is YouTube (meaning it failed)
-    const parts = latestMessage.parts || [];
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const toolParts = parts.filter((part: any) => part.type === 'tool-invocation');
-    const lastToolPart = toolParts[toolParts.length - 1];
-    
-    // Type guard to check if it's a tool invocation with the right structure
-    const isLastToolYouTube = lastToolPart && 
-      'toolInvocation' in lastToolPart && 
-      lastToolPart.toolInvocation?.toolName === 'youtube_login';
-
-    if (!isLastToolYouTube) {
-      console.log('❌ Final tool call is not YouTube (conversation continued successfully), skipping');
-      return;
-    }
-
-    console.log('✅ Final tool call is YouTube (auth required), checking for tokens');
-    hasCheckedOAuth.current = true;
-
-    // Check for valid YouTube tokens via API
-    if (selectedArtist?.account_id && userData?.id) {
-      const apiUrl = `/api/youtube/tokens?artist_account_id=${encodeURIComponent(selectedArtist.account_id)}&account_id=${encodeURIComponent(userData.id)}`;
-      
-      fetch(apiUrl)
-        .then(response => response.json())
-        .then(data => {
-          console.log('🔗 YouTube tokens API response:', data);
-          
-          if (data.success && data.hasValidTokens) {
-            console.log('🎉 Found valid YouTube tokens, appending success message');
-            
-            const successMessage = {
-              id: generateUUID(),
-              role: "user" as const,
-              content: "Great! I've successfully connected my YouTube account. Please continue with what you were helping me with.",
-            };
-            
-            append(successMessage);
-            console.log('✅ Successfully appended OAuth success message');
-          } else {
-            console.log('ℹ️ No valid YouTube tokens found');
-          }
-        })
-        .catch(error => {
-          console.error('❌ Error checking YouTube tokens via API:', error);
-        });
-    } else {
-      console.log('❌ Missing selected artist or user data, cannot check tokens');
-    }
-  }, [selectedArtist?.account_id, userData?.id, messages, append]);
+  
+  // Hook that automatically continues conversation after successful YouTube OAuth
+  useYouTubeLoginSuccess();
 
   return (
     <div className="flex flex-col space-y-3 p-4 rounded-lg bg-gray-50 border border-gray-200 my-2 max-w-md">
