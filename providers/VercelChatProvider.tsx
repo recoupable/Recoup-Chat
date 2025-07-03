@@ -127,8 +127,6 @@ export function VercelChatProvider({
     hasPendingUploads,
   };
 
-
-
   // Send chat status and messages to ArtistProvider
   useEffect(() => {
     updateChatState(status, messages);
