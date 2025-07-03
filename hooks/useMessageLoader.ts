@@ -43,7 +43,7 @@ export function useMessageLoader(
     };
 
     loadMessages();
-  }, [roomId, userId, setMessages]);
+  }, []);
 
   return {
     isLoading,
