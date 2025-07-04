@@ -48,10 +48,10 @@ const schema = z.object({
 
 const getYouTubeRevenueTool = tool({
   description: `Youtube: Get estimated revenue data for a specific date range for a YouTube account.
-This tool requires a valid access_token (and optionally a refresh_token) obtained from a prior authentication step (e.g., youtube_login).
+This tool requires the artist_account_id parameter from the system prompt of the active artist.
 The startDate and endDate parameters are optional - if not provided, it will default to the last 30 days (1 month).
 When provided, dates should be in YYYY-MM-DD format.
-IMPORTANT: Always call the youtube_login tool first to obtain the required tokens before calling this tool.`,
+IMPORTANT: Always call the youtube_login tool first to obtain the required authentication before calling this tool.`,
   parameters: schema,
   // @ts-ignore
   execute: async ({

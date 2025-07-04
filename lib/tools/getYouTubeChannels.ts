@@ -27,9 +27,9 @@ const schema = z.object({
 
 const getYouTubeChannels = tool({
   description: `Get YouTube channel information for a specific account.
-This tool requires a valid access_token (and optionally a refresh_token) obtained from a prior authentication step (e.g., youtube_login).
-Returns an array of comprehensive channel data including statistics, thumbnails, and branding if the tokens are valid.
-IMPORTANT: Always call the youtube_login tool first to obtain the required tokens before calling this tool.`,
+This tool requires the artist_account_id parameter from the system prompt of the active artist.
+Returns an array of comprehensive channel data including statistics, thumbnails, and branding if the artist has valid YouTube authentication.
+IMPORTANT: Always call the youtube_login tool first to obtain the required authentication before calling this tool.`,
   parameters: schema,
   // @ts-ignore
   execute: async ({

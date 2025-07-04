@@ -24,7 +24,8 @@ const schema = z.object({
 });
 
 const setYouTubeThumbnail = tool({
-  description: `Set a custom thumbnail for a YouTube video. Requires a valid access_token, video_id, and a thumbnail_url. Downloads the image, resizes/compresses if needed, and uploads it to YouTube using the Data API thumbnails.set endpoint.`,
+  description: `Set a custom thumbnail for a YouTube video. Requires the artist_account_id parameter from the system prompt of the active artist, video_id, and a thumbnail_url. Downloads the image, resizes/compresses if needed, and uploads it to YouTube using the Data API thumbnails.set endpoint.
+IMPORTANT: Always call the youtube_login tool first to obtain the required authentication before calling this tool.`,
   parameters: schema,
   // @ts-ignore
   execute: async ({
