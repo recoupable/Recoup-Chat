@@ -1,9 +1,8 @@
 import React from "react";
-import { Button } from "@/components/ui/button";
 import { Youtube } from "lucide-react";
 import { useArtistProvider } from "@/providers/ArtistProvider";
-import { youtubeLogin } from "@/lib/youtube/youtubeLogin";
 import { useYouTubeLoginSuccess } from "@/hooks/useYouTubeLoginSuccess";
+import { ConnectYouTubeButton } from "@/components/common/ConnectYouTubeButton";
 
 export interface YouTubeErrorDisplayProps {
   errorMessage: string;
@@ -40,15 +39,12 @@ export function YouTubeErrorDisplay({
       <p className="text-sm text-gray-600">{errorMessage}</p>
 
       {/* Login Button */}
-      <Button
-        onClick={() => youtubeLogin(selectedArtist?.account_id)}
-        className="w-full bg-red-600 hover:bg-red-700 text-white"
+      <ConnectYouTubeButton
+        accountId={selectedArtist?.account_id}
+        className="w-full"
         size="sm"
         disabled={!selectedArtist?.account_id}
-      >
-        <Youtube className="h-4 w-4 mr-2" />
-        Connect YouTube Account
-      </Button>
+      />
 
       <p className="text-xs text-gray-500 text-center">
         You&apos;ll be redirected to Google to authorize access to your YouTube
