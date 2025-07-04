@@ -2,19 +2,14 @@ import { z } from "zod";
 import { tool } from "ai";
 import { YouTubeErrorBuilder } from "@/lib/youtube/error-builder";
 import { getYoutubePlaylistVideos } from "@/lib/youtube/getYoutubePlaylistVideos";
+import { validateYouTubeTokens } from "../youtube/token-validator";
 
 const schema = z.object({
-  access_token: z
-    .string()
-    .describe(
-      "OAuth access token for YouTube API. Must be obtained via prior authentication using the youtube_login tool."
-    ),
-  refresh_token: z
-    .string()
-    .optional()
-    .describe(
-      "OAuth refresh token for YouTube API. Optional, but recommended for token refresh. Must be obtained via prior authentication using the youtube_login tool."
-    ),
+  artist_account_id: z
+  .string()
+  .describe(
+    "artist_account_id from the system prompt of the active artist."
+  ),
   uploads_playlist_id: z
     .string()
     .describe(
@@ -37,22 +32,31 @@ Requires a valid access_token and uploads_playlist_id.
 Returns an array of video metadata including id, title, publishedAt, thumbnails, likes, views, and more.
 This tool follows YouTube API best practices by retrieving videos from the channel's uploads playlist.`,
   parameters: schema,
+  // @ts-ignore
   execute: async ({
-    access_token,
-    refresh_token,
+    artist_account_id,
     uploads_playlist_id,
     max_results = 25,
-  }) => {
-    if (!access_token || !uploads_playlist_id) {
+  }: { artist_account_id: string, uploads_playlist_id: string, max_results: number }) => {
+    if (!artist_account_id || artist_account_id.trim() === "") {
       return YouTubeErrorBuilder.createToolError(
-        "Missing access_token or uploadsPlaylistId."
+        "No artist_account_id provided to YouTube login tool. The LLM must pass the artist_account_id parameter. Please ensure you're passing the current artist's artist_account_id."
       );
     }
 
     try {
+      const tokenValidation = await validateYouTubeTokens(artist_account_id);
+      if (!tokenValidation.success) {
+        return YouTubeErrorBuilder.createToolError(
+          `YouTube authentication required for this account. Please authenticate by connecting your YouTube account.`
+        );
+      }
+
+      const access_token = tokenValidation.tokens!.access_token;
+      const refresh_token = tokenValidation.tokens!.refresh_token;
       const playlistItems = await getYoutubePlaylistVideos({
         access_token,
-        refresh_token,
+        refresh_token: refresh_token || undefined,
         playlist_id: uploads_playlist_id,
         max_results,
       });

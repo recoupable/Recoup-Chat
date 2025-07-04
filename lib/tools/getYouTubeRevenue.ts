@@ -15,19 +15,14 @@ import { YouTubeErrorBuilder } from "@/lib/youtube/error-builder";
 import { YouTubeRevenueResult } from "@/types/youtube";
 import { queryAnalyticsReports } from "@/lib/youtube/queryAnalyticsReports";
 import { handleRevenueError } from "@/lib/youtube/revenue-error-handler";
+import { validateYouTubeTokens } from "../youtube/token-validator";
 
 // Zod schema for parameter validation
 const schema = z.object({
-  access_token: z
+  artist_account_id: z
     .string()
     .describe(
-      "OAuth access token for YouTube API. Must be obtained via prior authentication using the youtube_login tool."
-    ),
-  refresh_token: z
-    .string()
-    .optional()
-    .describe(
-      "OAuth refresh token for YouTube API. Optional, but recommended for token refresh. Must be obtained via prior authentication using the youtube_login tool."
+      "artist_account_id from the system prompt of the active artist."
     ),
   startDate: z
     .string()
@@ -58,18 +53,27 @@ The startDate and endDate parameters are optional - if not provided, it will def
 When provided, dates should be in YYYY-MM-DD format.
 IMPORTANT: Always call the youtube_login tool first to obtain the required tokens before calling this tool.`,
   parameters: schema,
+  // @ts-ignore
   execute: async ({
-    access_token,
-    refresh_token,
+    artist_account_id,
     startDate,
     endDate,
-  }): Promise<YouTubeRevenueResult> => {
-    if (!access_token || access_token.trim() === "") {
+  }: { artist_account_id: string, startDate: string, endDate: string }): Promise<YouTubeRevenueResult> => {
+    if (!artist_account_id || artist_account_id.trim() === "") {
       return YouTubeErrorBuilder.createToolError(
-        "No access_token provided to YouTube revenue tool. Please ensure you pass a valid access_token from the authentication step."
+        "No artist_account_id provided to YouTube login tool. The LLM must pass the artist_account_id parameter. Please ensure you're passing the current artist's artist_account_id."
       );
     }
     try {
+      const tokenValidation = await validateYouTubeTokens(artist_account_id);
+      if (!tokenValidation.success) {
+        return YouTubeErrorBuilder.createToolError(
+          `YouTube authentication required for this account. Please authenticate by connecting your YouTube account.`
+        );
+      }
+      const access_token = tokenValidation.tokens!.access_token;
+      const refresh_token = tokenValidation.tokens!.refresh_token;
+
       const analyticsResult = await queryAnalyticsReports({
         accessToken: access_token,
         refreshToken: refresh_token ?? undefined,

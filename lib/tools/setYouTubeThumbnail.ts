@@ -4,18 +4,13 @@ import { YouTubeErrorBuilder } from "@/lib/youtube/error-builder";
 import { createYouTubeAPIClient } from "@/lib/youtube/oauth-client";
 import { getResizedImageBuffer } from "@/lib/youtube/getResizedImageBuffer";
 import { YouTubeSetThumbnailResult } from "@/types/youtube";
+import { validateYouTubeTokens } from "../youtube/token-validator";
 
 const schema = z.object({
-  access_token: z
+  artist_account_id: z
     .string()
     .describe(
-      "OAuth access token for YouTube API. Must be obtained via prior authentication using the youtube_login tool."
-    ),
-  refresh_token: z
-    .string()
-    .optional()
-    .describe(
-      "OAuth refresh token for YouTube API. Optional, but recommended for token refresh. Must be obtained via prior authentication using the youtube_login tool."
+      "artist_account_id from the system prompt of the active artist."
     ),
   video_id: z
     .string()
@@ -31,18 +26,28 @@ const schema = z.object({
 const setYouTubeThumbnail = tool({
   description: `Set a custom thumbnail for a YouTube video. Requires a valid access_token, video_id, and a thumbnail_url. Downloads the image, resizes/compresses if needed, and uploads it to YouTube using the Data API thumbnails.set endpoint.`,
   parameters: schema,
+  // @ts-ignore
   execute: async ({
-    access_token,
-    refresh_token,
+    artist_account_id,
     video_id,
     thumbnail_url,
-  }): Promise<YouTubeSetThumbnailResult> => {
-    if (!access_token || !video_id || !thumbnail_url) {
+  }: { artist_account_id: string, video_id: string, thumbnail_url: string }): Promise<YouTubeSetThumbnailResult> => {
+    if (!artist_account_id || artist_account_id.trim() === "") {
       return YouTubeErrorBuilder.createToolError(
-        "Missing access_token, video_id, or thumbnail_url."
+        "No artist_account_id provided to YouTube login tool. The LLM must pass the artist_account_id parameter. Please ensure you're passing the current artist's artist_account_id."
       );
     }
     try {
+      const tokenValidation = await validateYouTubeTokens(artist_account_id);
+      if (!tokenValidation.success) {
+        return YouTubeErrorBuilder.createToolError(
+          `YouTube authentication required for this account. Please authenticate by connecting your YouTube account.`
+        );
+      }
+
+      const access_token = tokenValidation.tokens!.access_token;
+      const refresh_token = tokenValidation.tokens!.refresh_token || undefined;
+
       const { buffer, error } = await getResizedImageBuffer(thumbnail_url);
       if (error) {
         return YouTubeErrorBuilder.createToolError(error);
