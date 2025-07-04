@@ -5,26 +5,20 @@ import { Button } from "@/components/ui/button";
 interface ConnectYouTubeButtonProps {
   accountId?: string;
   className?: string;
-  size?: "sm" | "md" | "lg";
+  size?: "sm" | "lg" | "default" | "icon";
   disabled?: boolean;
 }
-
-const sizeMap: Record<"sm" | "md" | "lg", "sm" | "lg" | "default"> = {
-  sm: "sm",
-  md: "default",
-  lg: "lg",
-};
 
 export const ConnectYouTubeButton = ({
   accountId,
   className = "",
-  size = "md",
+  size = "default",
   disabled = false,
 }: ConnectYouTubeButtonProps) => (
   <Button
     onClick={() => youtubeLogin(accountId)}
     className={`bg-red-600 hover:bg-red-700 text-white flex items-center justify-center ${className}`}
-    size={sizeMap[size]}
+    size={size}
     disabled={disabled || !accountId}
   >
     <Youtube className="h-4 w-4 mr-2" />
