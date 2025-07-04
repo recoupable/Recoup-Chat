@@ -40,11 +40,7 @@ IMPORTANT: This tool requires the artist_account_id parameter. Never ask the use
         );
       }
 
-      return YouTubeErrorBuilder.createToolSuccess(
-        "YouTube is connected for this account.",
-        // Intentional empty object, can't leave it undefined
-        {}
-      );
+      return YouTubeErrorBuilder.createToolSuccess("YouTube is connected for this account.");
     } catch (error) {
       return YouTubeErrorBuilder.createToolError(
         error instanceof Error

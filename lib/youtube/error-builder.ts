@@ -62,13 +62,13 @@ export class YouTubeErrorBuilder {
    */
   static createToolSuccess<T extends Record<string, unknown>>(
     message: string, 
-    data: T
-  ): ToolSuccessResponse & T {
+    data?: T
+  ): ToolSuccessResponse & Partial<T> {
     return {
       success: true,
       status: "success",
       message,
-      ...data
+      ...(data || {} as T)
     };
   }
 
