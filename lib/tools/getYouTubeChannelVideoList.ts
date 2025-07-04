@@ -33,7 +33,7 @@ Returns an array of video metadata including id, title, publishedAt, thumbnails,
 This tool follows YouTube API best practices by retrieving videos from the channel's uploads playlist.
 IMPORTANT: Always call the youtube_login tool first to obtain the required authentication before calling this tool.`,
   parameters: schema,
-  // @ts-ignore
+  // @ts-expect-error - Type error
   execute: async ({
     artist_account_id,
     uploads_playlist_id,

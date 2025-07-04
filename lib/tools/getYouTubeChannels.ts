@@ -31,7 +31,6 @@ This tool requires the artist_account_id parameter from the system prompt of the
 Returns an array of comprehensive channel data including statistics, thumbnails, and branding if the artist has valid YouTube authentication.
 IMPORTANT: Always call the youtube_login tool first to obtain the required authentication before calling this tool.`,
   parameters: schema,
-  // @ts-ignore
   execute: async ({
     artist_account_id
   }: { artist_account_id: string }): Promise<YouTubeChannelInfoResult> => {

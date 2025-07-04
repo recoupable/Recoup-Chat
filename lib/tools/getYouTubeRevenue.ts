@@ -53,7 +53,6 @@ The startDate and endDate parameters are optional - if not provided, it will def
 When provided, dates should be in YYYY-MM-DD format.
 IMPORTANT: Always call the youtube_login tool first to obtain the required authentication before calling this tool.`,
   parameters: schema,
-  // @ts-ignore
   execute: async ({
     artist_account_id,
     startDate,

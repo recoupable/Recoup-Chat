@@ -26,7 +26,6 @@ const youtubeLoginTool = tool({
 Returns authentication status and token expiry if authenticated, or clear instructions if not. 
 IMPORTANT: This tool requires the artist_account_id parameter. Never ask the user for this parameter. It is always passed in the system prompt.`,
   parameters: schema,
-  // @ts-ignore
   execute: async ({ artist_account_id }: { artist_account_id: string }): Promise<YouTubeLoginResultType> => {
     if (!artist_account_id || artist_account_id.trim() === "") {
       return YouTubeErrorBuilder.createToolError(
