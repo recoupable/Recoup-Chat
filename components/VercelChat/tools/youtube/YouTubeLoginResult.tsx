@@ -22,7 +22,7 @@ interface YouTubeLoginResultProps {
 
 export function YouTubeLoginResult({ result }: YouTubeLoginResultProps) {
   // Success state - show generic success
-  if (result.authentication) {
+  if (result.success) {
     return (
       <GenericSuccess
         name="YouTube Login Successful"
