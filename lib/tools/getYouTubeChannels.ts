@@ -14,41 +14,44 @@ import { tool } from "ai";
 import { YouTubeChannelInfoResult } from "@/types/youtube";
 import { fetchYouTubeChannelInfo } from "@/lib/youtube/channel-fetcher";
 import { YouTubeErrorBuilder } from "@/lib/youtube/error-builder";
+import { validateYouTubeTokens } from "../youtube/token-validator";
 
 // Zod schema for parameter validation
 const schema = z.object({
-  access_token: z
+  artist_account_id: z
     .string()
     .describe(
-      "OAuth access token for YouTube API. Must be obtained via prior authentication using the youtube_login tool."
-    ),
-  refresh_token: z
-    .string()
-    .optional()
-    .describe(
-      "OAuth refresh token for YouTube API. Optional, but recommended for token refresh. Must be obtained via prior authentication using the youtube_login tool."
+      "artist_account_id from the system prompt of the active artist."
     ),
 });
 
 const getYouTubeChannels = tool({
   description: `Get YouTube channel information for a specific account.
-This tool requires a valid access_token (and optionally a refresh_token) obtained from a prior authentication step (e.g., youtube_login).
-Returns an array of comprehensive channel data including statistics, thumbnails, and branding if the tokens are valid.
-IMPORTANT: Always call the youtube_login tool first to obtain the required tokens before calling this tool.`,
+This tool requires the artist_account_id parameter from the system prompt of the active artist.
+Returns an array of comprehensive channel data including statistics, thumbnails, and branding if the artist has valid YouTube authentication.
+IMPORTANT: Always call the youtube_login tool first to obtain the required authentication before calling this tool.`,
   parameters: schema,
   execute: async ({
-    access_token,
-    refresh_token,
-  }): Promise<YouTubeChannelInfoResult> => {
-    if (!access_token || access_token.trim() === "") {
+    artist_account_id
+  }: { artist_account_id: string }): Promise<YouTubeChannelInfoResult> => {
+    if (!artist_account_id || artist_account_id.trim() === "") {
       return YouTubeErrorBuilder.createToolError(
-        "No access_token provided to YouTube channel info tool. Please ensure you pass a valid access_token from the authentication step."
+        "No artist_account_id provided to YouTube login tool. The LLM must pass the artist_account_id parameter. Please ensure you're passing the current artist's artist_account_id."
       );
     }
     try {
+      const tokenValidation = await validateYouTubeTokens(artist_account_id);
+      if (!tokenValidation.success) {
+        return YouTubeErrorBuilder.createToolError(
+          `YouTube authentication required for this account. Please authenticate by connecting your YouTube account.`
+        );
+      }
+      const access_token = tokenValidation.tokens!.access_token;
+      const refresh_token = tokenValidation.tokens!.refresh_token;
+
       const channelResult = await fetchYouTubeChannelInfo({
         accessToken: access_token,
-        refreshToken: refresh_token ?? undefined,
+        refreshToken: refresh_token || "",
         includeBranding: true,
       });
       if (!channelResult.success) {
