@@ -26,17 +26,8 @@ export function YouTubeLoginResult({ result }: YouTubeLoginResultProps) {
     return (
       <GenericSuccess
         name="YouTube Login Successful"
-        message={
-          result.authentication.access_token
-            ? `Access Token: ${result.authentication.access_token.slice(0, 8)}...`
-            : "YouTube account connected."
-        }
+        message={result.message}
       >
-        {result.authentication.refresh_token && (
-          <div className="text-xs text-gray-500 mt-1">
-            Refresh Token: {result.authentication.refresh_token.slice(0, 8)}...
-          </div>
-        )}
       </GenericSuccess>
     );
   }

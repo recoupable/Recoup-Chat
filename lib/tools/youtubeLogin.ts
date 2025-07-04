@@ -39,15 +39,10 @@ IMPORTANT: This tool requires the artist_account_id parameter. Never ask the use
           `YouTube authentication required for this account. Please authenticate by connecting your YouTube account.`
         );
       }
-      const tokens = tokenValidation.tokens!;
+
       return YouTubeErrorBuilder.createToolSuccess(
         "YouTube is connected for this account.",
-        {
-          authentication: {
-            access_token: tokens.access_token,
-            refresh_token: tokens.refresh_token,
-          },
-        }
+        {}
       );
     } catch (error) {
       return YouTubeErrorBuilder.createToolError(
