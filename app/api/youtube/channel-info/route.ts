@@ -7,18 +7,18 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const artistAccountId = searchParams.get("artistAccountId");
-    const userId = searchParams.get("userId");
+    const accountId = searchParams.get("accountId");
     const includeBranding = searchParams.get("include_branding") === "true";
 
-    if (!artistAccountId || !userId) {
+    if (!artistAccountId || !accountId) {
       return NextResponse.json(
-        { success: false, error: "Missing artistAccountId or userId parameter" },
+        { success: false, error: "Missing artistAccountId or accountId parameter" },
         { status: 400 }
       );
     }
 
-    // Security: Verify the userId has access to this artistAccountId
-    const accountArtists = await getAccountArtistIds({ accountIds: [userId] });
+    // Security: Verify the accountId has access to this artistAccountId
+    const accountArtists = await getAccountArtistIds({ accountIds: [accountId] });
     const hasAccess = accountArtists.some((artist: any) => artist.account_id === artistAccountId);
     if (!hasAccess) {
       return NextResponse.json(
@@ -37,7 +37,7 @@ export async function GET(request: NextRequest) {
     const result = await fetchYouTubeChannelInfo({
       accessToken: tokenResult.tokens.access_token,
       refreshToken: tokenResult.tokens.refresh_token || undefined,
-      includeBranding,
+      includeBranding: true,
     });
     return NextResponse.json(result);
   } catch (error) {

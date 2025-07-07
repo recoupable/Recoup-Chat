@@ -1,26 +1,25 @@
 import { useEffect, useState } from "react";
 
-const useYouTubeConnection = (
+const useYouTubeChannel = (
   artistAccountId: string | undefined,
-  userId: string | undefined
+  accountId: string | undefined
 ) => {
-  const [channelName, setChannelName] = useState<string | null>(null);
-
+  const [channelData, setChannelData] = useState<string | null>(null);
+  
   useEffect(() => {
-    if (!artistAccountId || !userId) {
-      setChannelName(null);
+    if (!artistAccountId || !accountId) {
+      setChannelData(null);
       return;
     }
 
     const fetchChannelInfo = async () => {
       const params = new URLSearchParams({
         artistAccountId,
-        userId,
-        include_branding: "true",
+        accountId,
       });
       const res = await fetch(`/api/youtube/channel-info?${params.toString()}`);
       const channelResult = await res.json();
-      setChannelName(
+      setChannelData(
         channelResult.success &&
           channelResult.channelData &&
           channelResult.channelData.length > 0
@@ -30,9 +29,9 @@ const useYouTubeConnection = (
     };
 
     fetchChannelInfo();
-  }, [artistAccountId, userId]);
+  }, [artistAccountId, accountId]);
 
-  return { channelName };
+  return { channelData };
 };
 
-export default useYouTubeConnection;
+export default useYouTubeChannel;
