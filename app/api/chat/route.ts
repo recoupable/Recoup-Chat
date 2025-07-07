@@ -26,7 +26,8 @@ import { getAccountEmails } from "@/lib/supabase/account_emails/getAccountEmails
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-  "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Requested-With",
+  "Access-Control-Allow-Headers":
+    "Content-Type, Authorization, X-Requested-With",
   "Access-Control-Allow-Credentials": "true",
 };
 
@@ -64,50 +65,19 @@ export async function POST(request: NextRequest) {
 
     const selectedModelId = "sonnet-3.7";
 
-    const [room, tools] = await Promise.all([getRoom(roomId), getMcpTools()]);
-    let conversationName = room?.topic;
-
-    if (!room) {
-      conversationName = await generateChatTitle(messages[0].content);
-
-      await Promise.all([
-        createRoomWithReport({
-          account_id: accountId,
-          topic: conversationName,
-          artist_id: artistId || undefined,
-          chat_id: roomId || undefined,
-        }),
-        sendNewConversationNotification({
-          accountId,
-          email,
-          conversationId: roomId,
-          topic: conversationName,
-          firstMessage: messages[0].content,
-        }),
-      ]);
-    }
-
-    const { lastMessage } = validateMessages(messages);
+    const tools = await getMcpTools();
 
     // Attach files like PDFs and images
     const messagesWithRichFiles = await attachRichFiles(messages, {
       artistId: artistId as string,
     });
 
-    const [, system] = await Promise.all([
-      createMemories({
-        id: lastMessage.id,
-        room_id: roomId,
-        content: filterMessageContentForMemories(lastMessage),
-      }),
-      getSystemPrompt({
-        roomId,
-        artistId,
-        accountId,
-        email,
-        conversationName,
-      }),
-    ]);
+    const system = await getSystemPrompt({
+      roomId,
+      artistId,
+      accountId,
+      email,
+    });
 
     return createDataStreamResponse({
       execute: (dataStream) => {
@@ -121,10 +91,44 @@ export async function POST(request: NextRequest) {
           tools,
           onFinish: async ({ response }) => {
             try {
+              const { lastMessage } = validateMessages(messages);
               const [, assistantMessage] = appendResponseMessages({
                 messages: [lastMessage],
                 responseMessages: response.messages,
               });
+
+              const room = await getRoom(roomId);
+              const conversationName = await generateChatTitle(
+                messages[0].content
+              );
+
+              // Create room and send notification if this is a new conversation
+              if (!room) {
+                await Promise.all([
+                  createRoomWithReport({
+                    account_id: accountId,
+                    topic: conversationName,
+                    artist_id: artistId || undefined,
+                    chat_id: roomId || undefined,
+                  }),
+                  sendNewConversationNotification({
+                    accountId,
+                    email,
+                    conversationId: roomId,
+                    topic: conversationName,
+                    firstMessage: messages[0].content,
+                  }),
+                ]);
+              }
+
+              // Store messages sequentially to maintain correct order
+              // First store the user message, then the assistant message
+              await createMemories({
+                id: lastMessage.id,
+                room_id: roomId,
+                content: filterMessageContentForMemories(lastMessage),
+              });
+
               await createMemories({
                 id: assistantMessage.id,
                 room_id: roomId,
