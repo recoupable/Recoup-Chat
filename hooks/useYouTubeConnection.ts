@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
 import { fetchYouTubeTokens } from "@/lib/youtube/fetchYouTubeTokens";
-import { fetchYouTubeChannelInfo } from "@/lib/youtube/channel-fetcher";
 
 const useYouTubeConnection = (
   artistAccountId: string | undefined,
   userId: string | undefined
 ) => {
-  const [token, setToken] = useState<null | { access_token: string; refresh_token?: string }>(null);
+  const [token, setToken] = useState<null | {
+    access_token: string;
+    refresh_token?: string;
+  }>(null);
   const [channelName, setChannelName] = useState<string | null>(null);
 
   // Fetch YouTube tokens and channel info when artist/user changes
@@ -19,7 +21,11 @@ const useYouTubeConnection = (
 
     const fetchYouTubeData = async () => {
       const response = await fetchYouTubeTokens(artistAccountId, userId);
-      if (!response.success || !response.hasValidTokens || !response.tokens?.access_token) {
+      if (
+        !response.success ||
+        !response.hasValidTokens ||
+        !response.tokens?.access_token
+      ) {
         setToken(null);
         setChannelName(null);
         return;
@@ -28,13 +34,18 @@ const useYouTubeConnection = (
         access_token: response.tokens.access_token,
         refresh_token: response.tokens.refresh_token ?? undefined,
       });
-      const channelResult = await fetchYouTubeChannelInfo({
-        accessToken: response.tokens.access_token,
-        refreshToken: response.tokens.refresh_token || "",
-        includeBranding: true,
+      // Fetch channel info from the new API route
+      const params = new URLSearchParams({
+        access_token: response.tokens.access_token,
+        refresh_token: response.tokens.refresh_token || "",
+        include_branding: "true",
       });
+      const res = await fetch(`/api/youtube/channel-info?${params.toString()}`);
+      const channelResult = await res.json();
       setChannelName(
-        channelResult.success && channelResult.channelData && channelResult.channelData.length > 0
+        channelResult.success &&
+          channelResult.channelData &&
+          channelResult.channelData.length > 0
           ? channelResult.channelData[0].title
           : null
       );
@@ -46,4 +57,4 @@ const useYouTubeConnection = (
   return { token, channelName };
 };
 
-export default useYouTubeConnection; 
+export default useYouTubeConnection;
