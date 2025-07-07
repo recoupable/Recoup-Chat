@@ -7,6 +7,7 @@ import useArtistMode from "./useArtistMode";
 import saveArtist from "@/lib/saveArtist";
 import useInitialArtists from "./useInitialArtists";
 import useCreateArtists from "./useCreateArtists";
+import useYouTubeConnection from "@/hooks/useYouTubeConnection";
 
 // Helper function to sort artists alphabetically by name
 const sortArtistsAlphabetically = (artists: ArtistRecord[]): ArtistRecord[] => {
@@ -43,6 +44,11 @@ const useArtists = () => {
   const { isCreatingArtist, setIsCreatingArtist, updateChatState } =
     useCreateArtists();
 
+  const {
+    token: youtubeToken,
+    channelName: youtubeChannelName,
+  } = useYouTubeConnection(selectedArtist?.account_id, userData?.id);
+  
   const sorted =
     selectedArtist && activeArtistIndex >= 0
       ? [
@@ -142,6 +148,8 @@ const useArtists = () => {
     isCreatingArtist,
     setIsCreatingArtist,
     updateChatState,
+    youtubeToken,
+    youtubeChannelName
   };
 };
 
