@@ -4,6 +4,7 @@ import getArtistIdForRoom from "../supabase/getArtistIdForRoom";
 import getArtistInstruction from "../supabase/getArtistInstruction";
 import getCache from "../redis/getCache";
 import setCache from "../redis/setCache";
+import { getSystemPromptCacheKey } from "../redis/keys";
 
 export async function getSystemPrompt({
   roomId,
@@ -18,7 +19,7 @@ export async function getSystemPrompt({
   email?: string;
   conversationName?: string;
 }): Promise<string> {
-  const cacheKey = `system_prompt:${artistId}:${accountId}`;
+  const cacheKey = getSystemPromptCacheKey({ artistId, accountId });
   const cachedPrompt = await getCache(cacheKey);
 
   if (cachedPrompt) {
