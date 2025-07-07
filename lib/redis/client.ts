@@ -1,16 +1,19 @@
-import { Redis } from '@upstash/redis'
+import { Redis } from "@upstash/redis";
 
-if (!process.env.UPSTASH_REDIS_URL) {
-  throw new Error("UPSTASH_REDIS_URL environment variable is required");
+const REQUIRED_ENV_VARS = [
+  "KV_URL",
+  "KV_REST_API_URL",
+  "KV_REST_API_TOKEN",
+  "KV_REST_API_READ_ONLY_TOKEN",
+  "REDIS_URL",
+];
+
+for (const envVar of REQUIRED_ENV_VARS) {
+  if (!process.env[envVar]) {
+    throw new Error(`${envVar} environment variable is required`);
+  }
 }
 
-if (!process.env.UPSTASH_REDIS_TOKEN) {
-  throw new Error("UPSTASH_REDIS_TOKEN environment variable is required");
-}
+const redis = Redis.fromEnv();
 
-const redis = new Redis({
-  url: process.env.UPSTASH_REDIS_URL,
-  token: process.env.UPSTASH_REDIS_TOKEN,
-})
-
-export default redis; 
+export default redis;
