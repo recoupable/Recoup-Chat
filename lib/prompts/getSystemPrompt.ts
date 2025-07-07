@@ -8,7 +8,7 @@ export async function getSystemPrompt({
   artistId,
   accountId,
   email,
-  conversationName,
+  conversationName = "New conversation",
 }: {
   roomId?: string;
   artistId?: string;
