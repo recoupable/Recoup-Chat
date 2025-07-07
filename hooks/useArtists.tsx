@@ -45,7 +45,6 @@ const useArtists = () => {
     useCreateArtists();
 
   const {
-    token: youtubeToken,
     channelName: youtubeChannelName,
   } = useYouTubeConnection(selectedArtist?.account_id, userData?.id);
   
@@ -148,7 +147,6 @@ const useArtists = () => {
     isCreatingArtist,
     setIsCreatingArtist,
     updateChatState,
-    youtubeToken,
     youtubeChannelName
   };
 };
