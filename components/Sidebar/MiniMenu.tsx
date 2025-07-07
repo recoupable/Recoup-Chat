@@ -41,6 +41,13 @@ const MiniMenu = ({
         >
           <Icon name="segments" />
         </button>
+        <button
+          type="button"
+          className=" p-2 rounded-md"
+          onClick={() => goToItem("privacy")}
+        >
+          <Icon name="privacy" />
+        </button>
         <div className="grow flex items-end justify-center">
           <button type="button" onClick={toggleMenuExpanded}>
             <ArrowRightFromLine />

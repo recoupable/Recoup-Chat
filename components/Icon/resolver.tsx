@@ -276,4 +276,23 @@ export const Icons = {
       />
     </svg>
   ),
+  privacy: () => (
+    <svg
+      width="20"
+      height="20"
+      viewBox="0 0 18 18"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <rect x="4" y="8" width="12" height="8" rx="2" fill="black" />
+      <path
+        d="M7 8V6a3 3 0 1 1 6 0v2"
+        stroke="black"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <circle cx="10" cy="12" r="1" fill="white" />
+    </svg>
+  ),
 };

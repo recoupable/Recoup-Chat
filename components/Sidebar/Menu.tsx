@@ -63,6 +63,17 @@ const Menu = ({ toggleMenuExpanded }: { toggleMenuExpanded: () => void }) => {
           <MenuItemIcon name="segments" />
           Segments
         </Button>
+        <Button
+          variant="ghost"
+          className={cn(
+            "rounded-xl w-full flex justify-start",
+            pathname === "/privacy" && activeClasses
+          )}
+          onClick={() => goToItem("privacy")}
+        >
+          <MenuItemIcon name="privacy" />
+          Privacy Policy
+        </Button>
       </div>
 
       <div className="flex flex-col flex-grow min-h-0">

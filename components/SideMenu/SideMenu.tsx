@@ -93,6 +93,15 @@ const SideMenu = ({
           <MenuItemIcon name="segments" />
           Segments
         </Button>
+        <Button
+          variant="ghost"
+          onClick={() => goToItem("privacy")}
+          className="flex justify-start rounded-xl w-full"
+          aria-label="View privacy policy"
+        >
+          <MenuItemIcon name="privacy" />
+          Privacy Policy
+        </Button>
       </div>
       {address && <RecentChats toggleModal={toggleModal} />}
       <div className="grow flex flex-col gap-1 md:gap-3 justify-end">
