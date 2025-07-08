@@ -5,8 +5,6 @@ type PostComment = Tables<"post_comments">;
 
 interface SelectPostCommentsParams {
   postUrls?: string[];
-  postIds?: string[];
-  socialIds?: string[];
 }
 
 export const selectPostComments = async (
@@ -32,14 +30,6 @@ export const selectPostComments = async (
       // If no posts found for the URLs, return empty array
       return [];
     }
-  }
-
-  if (params?.postIds && params.postIds.length > 0) {
-    query = query.in("post_id", params.postIds);
-  }
-
-  if (params?.socialIds && params.socialIds.length > 0) {
-    query = query.in("social_id", params.socialIds);
   }
 
   const { data, error } = await query;
