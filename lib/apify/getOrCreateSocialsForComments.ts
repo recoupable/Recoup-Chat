@@ -23,7 +23,9 @@ export default async function getOrCreateSocialsForComments(
   );
   
   // Prepare all socials for batch upsert
-  const socialsToUpsert: TablesInsert<"socials">[] = uniqueAuthors.map(author => ({
+  const socialsToUpsert: TablesInsert<"socials">[] = uniqueAuthors
+    .filter((author) => author.username && author.profileUrl)
+    .map((author) => ({
     username: author.username,
     profile_url: author.profileUrl,
     avatar: author.profilePicUrl,
