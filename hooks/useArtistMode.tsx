@@ -1,3 +1,4 @@
+import { useUserProvider } from "@/providers/UserProvder";
 import { ArtistRecord } from "@/types/Artist";
 import { SETTING_MODE } from "@/types/Setting";
 import { useRouter } from "next/navigation";
@@ -9,10 +10,12 @@ const useArtistMode = (
 ) => {
   const [settingMode, setSettingMode] = useState(SETTING_MODE.UPDATE);
   const [isOpenSettingModal, setIsOpenSettingModal] = useState(false);
+  const { email } = useUserProvider();
   const { push } = useRouter();
 
   const toggleCreation = () => {
     clearParams();
+    if (!email) return;
     push("/?q=create a new artist");
   };
 
