@@ -15,6 +15,7 @@ import sendApifyWebhookEmail from "@/lib/apify/sendApifyWebhookEmail";
 import normalizeProfileUrl from "@/lib/utils/normalizeProfileUrl";
 import uploadLinkToArweave from "@/lib/arweave/uploadLinkToArweave";
 import runInstagramCommentsScraper from "@/lib/apify/runInstagramCommentsScraper";
+import getExistingPostComments from "@/lib/apify/getExistingPostComments";
 import apifyPayloadSchema from "@/lib/apify/apifyPayloadSchema";
 
 /**
@@ -98,8 +99,22 @@ export default async function handleInstagramProfileScraperResults(
             .filter(Boolean);
           
           if (postUrls.length > 0) {
-            console.log("Triggering comment scraping for posts:", postUrls);
-            await runInstagramCommentsScraper(postUrls);
+            console.log("Checking existing comments for posts:", postUrls);
+            
+            // Get existing comments for these post URLs
+            const { urlsWithComments, urlsWithoutComments } = await getExistingPostComments(postUrls);
+            
+            // Handle posts with existing comments (use resultsLimit)
+            if (urlsWithComments.length > 0) {
+              console.log("Triggering comment scraping for posts with existing comments (resultsLimit=1):", urlsWithComments);
+              await runInstagramCommentsScraper(urlsWithComments, 1);
+            }
+            
+            // Handle posts without existing comments (no resultsLimit)
+            if (urlsWithoutComments.length > 0) {
+              console.log("Triggering comment scraping for posts without existing comments:", urlsWithoutComments);
+              await runInstagramCommentsScraper(urlsWithoutComments);
+            }
           }
         }
       }
