@@ -1,0 +1,13 @@
+export const getSystemPromptCacheKey = ({
+  artistId,
+  accountId,
+}: {
+  artistId?: string;
+  accountId?: string;
+}) => {
+  return `system_prompt:${artistId}:${accountId}`;
+};
+
+export const getArtistKnowledgeCacheKey = (artistId: string) => {
+  return `artist_knowledge:${artistId}`;
+};

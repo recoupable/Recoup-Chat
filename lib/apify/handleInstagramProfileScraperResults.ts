@@ -3,7 +3,7 @@ import { ApifyInstagramPost } from "@/types/Apify";
 import saveApifyInstagramPosts from "@/lib/apify/saveApifyInstagramPosts";
 import { Tables } from "@/types/database.types";
 import { z } from "zod";
-import insertSocial from "@/lib/supabase/socials/insertSocial";
+import insertSocials from "@/lib/supabase/socials/insertSocials";
 import getSocialByProfileUrl from "@/lib/supabase/socials/getSocialByProfileUrl";
 import getAccountSocials, {
   AccountSocialWithSocial,
@@ -50,14 +50,14 @@ export default async function handleInstagramProfileScraperResults(
         firstResult.profilePicUrl = arweaveResult.url;
       }
 
-      await insertSocial({
+      await insertSocials([{
         username: firstResult.username,
         avatar: firstResult.profilePicUrl,
         profile_url: firstResult.url,
         bio: firstResult.biography,
         followerCount: firstResult.followersCount,
         followingCount: firstResult.followsCount,
-      });
+      }]);
       const normalizedUrl = normalizeProfileUrl(firstResult.url);
       social = await getSocialByProfileUrl(normalizedUrl);
       console.log("social", social);

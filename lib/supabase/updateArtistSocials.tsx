@@ -6,7 +6,7 @@ import getAccountSocials, {
 import deleteAccountSocial from "./accountSocials/deleteAccountSocial";
 import insertAccountSocial from "./accountSocials/insertAccountSocial";
 import getSocialByProfileUrl from "./socials/getSocialByProfileUrl";
-import insertSocial from "./socials/insertSocial";
+import insertSocials from "./socials/insertSocials";
 
 const updateArtistSocials = async (
   artistId: string,
@@ -37,12 +37,12 @@ const updateArtistSocials = async (
             await insertAccountSocial(artistId, social.id);
           }
         } else {
-          const new_social = await insertSocial({
+          const new_socials = await insertSocials([{
             username: getUserNameByProfileLink(value),
             profile_url: value,
-          });
-          if (new_social) {
-            await insertAccountSocial(artistId, new_social.id);
+          }]);
+          if (new_socials.length > 0) {
+            await insertAccountSocial(artistId, new_socials[0].id);
           }
         }
       }
