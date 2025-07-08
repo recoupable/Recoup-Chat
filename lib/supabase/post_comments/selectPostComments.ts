@@ -1,5 +1,6 @@
 import serverClient from "../serverClient";
 import { Tables } from "@/types/database.types";
+import getPosts from "@/lib/supabase/posts/getPosts";
 
 type PostComment = Tables<"post_comments">;
 
@@ -18,13 +19,10 @@ export const selectPostComments = async (
 
   if (params?.postUrls && params.postUrls.length > 0) {
     // First get post IDs for the given URLs
-    const { data: posts } = await serverClient
-      .from("posts")
-      .select("id")
-      .in("post_url", params.postUrls);
+    const posts = await getPosts(params.postUrls);
     
-    if (posts && posts.length > 0) {
-      const postIds = posts.map((post: { id: string }) => post.id);
+    if (posts.length > 0) {
+      const postIds = posts.map((post) => post.id);
       query = query.in("post_id", postIds);
     } else {
       // If no posts found for the URLs, return empty array
