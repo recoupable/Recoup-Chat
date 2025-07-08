@@ -65,7 +65,7 @@ const PRIVACY_POLICY_CONTENT = {
       {
         title: "9. Contact Us",
         paragraphs: [
-          "If you have any questions or concerns about this Privacy Policy, please contact us at support@example.com.",
+          "If you have any questions or concerns about this Privacy Policy, please contact us at hi@recoupable.com.",
         ],
       },
     ],
