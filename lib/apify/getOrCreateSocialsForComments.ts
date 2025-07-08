@@ -1,5 +1,4 @@
-import insertSocial from "@/lib/supabase/socials/insertSocial";
-import getSocialByProfileUrl from "@/lib/supabase/socials/getSocialByProfileUrl";
+import insertSocials from "@/lib/supabase/socials/insertSocials";
 import { TablesInsert, Tables } from "@/types/database.types";
 import { InstagramComment } from "@/lib/apify/handleInstagramCommentsScraper";
 
@@ -23,36 +22,30 @@ export default async function getOrCreateSocialsForComments(
     ])).values()
   );
   
-  const socialMap = new Map<string, Tables<"socials">>();
+  // Prepare all socials for batch upsert
+  const socialsToUpsert: TablesInsert<"socials">[] = uniqueAuthors.map(author => ({
+    username: author.username,
+    profile_url: author.profileUrl,
+    avatar: author.profilePicUrl,
+    bio: null,
+    region: null,
+    followerCount: null,
+    followingCount: null,
+  }));
   
-  // Process each unique author
-  for (const author of uniqueAuthors) {
-    try {
-      // First, try to get existing social
-      let social = await getSocialByProfileUrl(author.profileUrl);
-      
-      if (!social) {
-        // Create new social if it doesn't exist
-        const socialToInsert: TablesInsert<"socials"> = {
-          username: author.username,
-          profile_url: author.profileUrl,
-          avatar: author.profilePicUrl,
-          bio: null,
-          region: null,
-          followerCount: null,
-          followingCount: null,
-        };
-        
-        social = await insertSocial(socialToInsert);
-      }
-      
-      if (social) {
-        socialMap.set(author.username, social);
-      }
-    } catch (error) {
-      console.error(`Error processing social for ${author.username}:`, error);
-    }
+  try {
+    // Batch upsert all socials (creates new or returns existing based on profile_url)
+    const upsertedSocials = await insertSocials(socialsToUpsert);
+    
+    // Create map for easy lookup by username
+    const socialMap = new Map<string, Tables<"socials">>();
+    upsertedSocials.forEach(social => {
+      socialMap.set(social.username, social);
+    });
+    
+    return socialMap;
+  } catch (error) {
+    console.error('Error batch upserting socials:', error);
+    return new Map<string, Tables<"socials">>();
   }
-  
-  return socialMap;
 }
