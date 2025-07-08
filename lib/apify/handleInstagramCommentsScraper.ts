@@ -3,8 +3,8 @@ import { z } from "zod";
 import apifyPayloadSchema from "@/lib/apify/apifyPayloadSchema";
 import runInstagramProfilesScraper from "@/lib/apify/runInstagramProfilesScraper";
 import { insertPostComments } from "@/lib/supabase/post_comments/insertPostComments";
-import getOrCreatePostsForComments from "@/lib/supabase/post_comments/getOrCreatePostsForComments";
-import getOrCreateSocialsForComments from "@/lib/supabase/post_comments/getOrCreateSocialsForComments";
+import getOrCreatePostsForComments from "@/lib/apify/getOrCreatePostsForComments";
+import getOrCreateSocialsForComments from "@/lib/apify/getOrCreateSocialsForComments";
 import { TablesInsert } from "@/types/database.types";
 
 // Type definition for Instagram comment data structure
