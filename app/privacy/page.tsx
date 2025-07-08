@@ -1,5 +1,7 @@
 "use client";
 
-const PrivacyPage = () => null;
+import PrivacyPolicy from "@/components/PrivacyPolicy";
+
+const PrivacyPage = () => <PrivacyPolicy />;
 
 export default PrivacyPage;
