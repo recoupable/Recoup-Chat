@@ -1,10 +1,4 @@
-import { selectPostComments } from "@/lib/supabase/post_comments/selectPostComments";
-import { Tables } from "@/types/database.types";
-
-type PostComment = Tables<"post_comments"> & {
-  post?: Tables<"posts">;
-  social?: Tables<"socials">;
-};
+import { selectPostComments, PostComment } from "@/lib/supabase/post_comments/selectPostComments";
 
 /**
  * Gets existing post comments for the provided post URLs

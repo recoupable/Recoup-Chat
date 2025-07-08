@@ -2,7 +2,10 @@ import serverClient from "../serverClient";
 import { Tables } from "@/types/database.types";
 import getPosts from "@/lib/supabase/posts/getPosts";
 
-type PostComment = Tables<"post_comments">;
+export type PostComment = Tables<"post_comments"> & {
+  post?: Tables<"posts">;
+  social?: Tables<"socials">;
+};
 
 interface SelectPostCommentsParams {
   postUrls?: string[];
