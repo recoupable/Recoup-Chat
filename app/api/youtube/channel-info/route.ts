@@ -8,7 +8,6 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const artistAccountId = searchParams.get("artistAccountId");
     const accountId = searchParams.get("accountId");
-    const includeBranding = searchParams.get("include_branding") === "true";
 
     if (!artistAccountId || !accountId) {
       return NextResponse.json(
