@@ -1,16 +1,16 @@
 import runInstagramCommentsScraper from "@/lib/apify/runInstagramCommentsScraper";
 import getExistingPostComments from "@/lib/apify/getExistingPostComments";
-import { ApifyInstagramPost } from "@/types/Apify";
+import { ApifyInstagramPost, ApifyInstagramProfileResult } from "@/types/Apify";
 
 /**
  * Handles Instagram profile follow-up runs: comment scraping for new posts
  * @param dataset - The complete dataset from the profile scraper
- * @param firstResult - The first result from the dataset containing latest posts
+ * @param firstResult - The first result from the dataset containing latest posts and profile info
  * @returns Promise<void>
  */
 export default async function handleInstagramProfileFollowUpRuns(
   dataset: unknown[],
-  firstResult: any
+  firstResult: ApifyInstagramProfileResult
 ): Promise<void> {
   // Trigger comment scraping for the new posts
   // Only call runInstagramCommentsScraper if dataset.length === 1
