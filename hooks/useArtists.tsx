@@ -68,7 +68,9 @@ const useArtists = () => {
       if (data.artists.length === 0) {
         setSelectedArtist(null);
         setIsLoading(false);
-        artistMode.toggleCreation();
+        if (email) {
+          artistMode.toggleCreation();
+        }
         return;
       }
       if (artistId) {
