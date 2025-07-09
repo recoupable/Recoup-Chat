@@ -1,6 +1,6 @@
 import getDataset from "@/lib/apify/getDataset";
 import { ApifyInstagramPost } from "@/types/Apify";
-import saveApifyInstagramPosts from "@/lib/apify/saveApifyInstagramPosts";
+import saveApifyInstagramPosts from "@/lib/apify/posts/saveApifyInstagramPosts";
 import { Tables } from "@/types/database.types";
 import { z } from "zod";
 import insertSocials from "@/lib/supabase/socials/insertSocials";
@@ -10,11 +10,11 @@ import getAccountSocials, {
 } from "@/lib/supabase/accountSocials/getAccountSocials";
 import insertSocialPosts from "@/lib/supabase/socialPosts/insertSocialPosts";
 import getAccountArtistIds from "@/lib/supabase/accountArtistIds/getAccountArtistIds";
-import getAccountEmails from "../supabase/accountEmails/getAccountEmails";
+import getAccountEmails from "@/lib/supabase/accountEmails/getAccountEmails";
 import sendApifyWebhookEmail from "@/lib/apify/sendApifyWebhookEmail";
 import normalizeProfileUrl from "@/lib/utils/normalizeProfileUrl";
 import uploadLinkToArweave from "@/lib/arweave/uploadLinkToArweave";
-import handleInstagramProfileFollowUpRuns from "@/lib/apify/handleInstagramProfileFollowUpRuns";
+import handleInstagramProfileFollowUpRuns from "@/lib/apify/posts/handleInstagramProfileFollowUpRuns";
 import apifyPayloadSchema from "@/lib/apify/apifyPayloadSchema";
 
 /**

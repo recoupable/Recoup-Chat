@@ -1,6 +1,6 @@
 import apifyPayloadSchema from "@/lib/apify/apifyPayloadSchema";
 import { z } from "zod";
-import handleInstagramProfileScraperResults from "@/lib/apify/handleInstagramProfileScraperResults";
+import handleInstagramProfileScraperResults from "@/lib/apify/posts/handleInstagramProfileScraperResults";
 import handleInstagramCommentsScraper from "@/lib/apify/handleInstagramCommentsScraper";
 
 /**
