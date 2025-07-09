@@ -9,7 +9,10 @@ export const insertPostComments = async (
 ): Promise<PostComment[]> => {
   const { data, error } = await serverClient
     .from("post_comments")
-    .insert(comments)
+    .upsert(comments, { 
+      onConflict: "post_id,social_id,comment,commented_at",
+      ignoreDuplicates: true 
+    })
     .select();
 
   if (error) {
@@ -17,5 +20,5 @@ export const insertPostComments = async (
     throw error;
   }
 
-  return data;
+  return data || [];
 };
