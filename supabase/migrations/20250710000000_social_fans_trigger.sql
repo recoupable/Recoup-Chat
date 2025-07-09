@@ -27,8 +27,8 @@ BEGIN
     -- Check if there's an existing social_fans record
     SELECT latest_engagement INTO existing_latest_engagement
     FROM social_fans
-    WHERE artist_social_id = update_social_fans_on_comment.artist_social_id
-    AND fan_social_id = NEW.social_id;
+    WHERE social_fans.artist_social_id = artist_social_id
+    AND social_fans.fan_social_id = NEW.social_id;
     
     -- If no existing record OR new comment is newer, upsert the record
     IF existing_latest_engagement IS NULL OR NEW.commented_at > existing_latest_engagement THEN
@@ -41,7 +41,7 @@ BEGIN
             updated_at
         )
         VALUES (
-            update_social_fans_on_comment.artist_social_id,
+            artist_social_id,
             NEW.social_id,
             NEW.id,
             NEW.commented_at,
