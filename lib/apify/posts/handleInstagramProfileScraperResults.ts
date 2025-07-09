@@ -10,7 +10,7 @@ import getAccountSocials, {
 } from "@/lib/supabase/accountSocials/getAccountSocials";
 import insertSocialPosts from "@/lib/supabase/socialPosts/insertSocialPosts";
 import getAccountArtistIds from "@/lib/supabase/accountArtistIds/getAccountArtistIds";
-import getAccountEmails from "../supabase/accountEmails/getAccountEmails";
+import getAccountEmails from "@/lib/supabase/accountEmails/getAccountEmails";
 import sendApifyWebhookEmail from "@/lib/apify/sendApifyWebhookEmail";
 import normalizeProfileUrl from "@/lib/utils/normalizeProfileUrl";
 import uploadLinkToArweave from "@/lib/arweave/uploadLinkToArweave";
