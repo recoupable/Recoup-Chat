@@ -3,6 +3,13 @@ import { fetchYouTubeChannelInfo } from "@/lib/youtube/channel-fetcher";
 import { validateYouTubeTokens } from "@/lib/youtube/token-validator";
 import getAccountArtistIds from "@/lib/supabase/accountArtistIds/getAccountArtistIds";
 
+// Type for formatted artist object returned by getAccountArtistIds
+interface FormattedArtist {
+  account_id: string;
+  name: string;
+  [key: string]: unknown;
+}
+
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
@@ -18,7 +25,7 @@ export async function GET(request: NextRequest) {
 
     // Security: Verify the accountId has access to this artistAccountId
     const accountArtists = await getAccountArtistIds({ accountIds: [accountId] });
-    const hasAccess = accountArtists.some((artist: any) => artist.account_id === artistAccountId);
+    const hasAccess = accountArtists.some((artist: FormattedArtist) => artist.account_id === artistAccountId);
     if (!hasAccess) {
       return NextResponse.json(
         { success: false, error: "Unauthorized: User does not have access to this artist" },
