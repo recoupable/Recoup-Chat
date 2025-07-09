@@ -2,9 +2,6 @@ import { SYSTEM_PROMPT } from "@/lib/consts";
 import getKnowledgeBaseContext from "@/lib/agent/getKnowledgeBaseContext";
 import getArtistIdForRoom from "../supabase/getArtistIdForRoom";
 import getArtistInstruction from "../supabase/getArtistInstruction";
-import getCache from "../redis/getCache";
-import setCache from "../redis/setCache";
-import { getSystemPromptCacheKey } from "../redis/keys";
 
 export async function getSystemPrompt({
   roomId,
@@ -19,19 +16,11 @@ export async function getSystemPrompt({
   email?: string;
   conversationName?: string;
 }): Promise<string> {
-  const cacheKey = getSystemPromptCacheKey({ artistId, accountId });
-  const cachedPrompt = await getCache(cacheKey);
-
-  if (cachedPrompt) {
-    return `${cachedPrompt}
-
-  Current date and time in UTC: ${new Date().toISOString()}`;
-  }
-
   const resolvedArtistId = artistId || (await getArtistIdForRoom(roomId || ""));
 
   let systemPrompt = `${SYSTEM_PROMPT} 
 
+  Current date and time in UTC: ${new Date().toISOString()}
   The active artist_account_id is ${resolvedArtistId}. 
   The account_id is ${accountId || "Unknown"} use this to create / delete artists.
   The active_account_email is ${email || "Unknown"}. 
@@ -54,12 +43,7 @@ ${knowledge}
 -----END KNOWLEDGE BASE-----`;
   }
 
-  await setCache(cacheKey, systemPrompt);
-
-  return `${systemPrompt}
-
-  Current date and time in UTC: ${new Date().toISOString()}`;
+  return systemPrompt;
 }
 
 export default getSystemPrompt;
-
