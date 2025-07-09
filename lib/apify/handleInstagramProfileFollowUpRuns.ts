@@ -1,5 +1,5 @@
-import runInstagramCommentsScraper from "@/lib/apify/runInstagramCommentsScraper";
-import getExistingPostComments from "@/lib/apify/getExistingPostComments";
+import runInstagramCommentsScraper from "@/lib/apify/posts/runInstagramCommentsScraper";
+import getExistingPostComments from "@/lib/apify/posts/getExistingPostComments";
 import { ApifyInstagramPost, ApifyInstagramProfileResult } from "@/types/Apify";
 
 /**

@@ -1,6 +1,6 @@
 import getDataset from "@/lib/apify/getDataset";
 import { ApifyInstagramPost } from "@/types/Apify";
-import saveApifyInstagramPosts from "@/lib/apify/saveApifyInstagramPosts";
+import saveApifyInstagramPosts from "@/lib/apify/posts/saveApifyInstagramPosts";
 import { Tables } from "@/types/database.types";
 import { z } from "zod";
 import insertSocials from "@/lib/supabase/socials/insertSocials";
