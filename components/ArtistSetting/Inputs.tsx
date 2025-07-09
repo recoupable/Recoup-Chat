@@ -2,6 +2,7 @@ import { useArtistProvider } from "@/providers/ArtistProvider";
 import Input from "../Input";
 import { Textarea } from "../ui/textarea";
 import { Label } from "../ui/label";
+import { ConnectYouTubeButton } from "@/components/common/ConnectYouTubeButton";
 
 const Inputs = () => {
   const {
@@ -20,9 +21,9 @@ const Inputs = () => {
     instagram,
     setInstagram,
     youtube,
-    setYoutube,
     twitter,
     setTwitter,
+    selectedArtist,
   } = useArtistProvider();
   return (
     <>
@@ -99,14 +100,17 @@ const Inputs = () => {
         />
       </div>
       <div className="col-span-6 space-y-1 md:space-y-2">
-        <Input
-          value={youtube}
-          onChange={(e) => setYoutube(e.target.value)}
-          label="YouTube"
-          id="youtube"
-          name="youtube"
-          hookToForm
-        />
+        <Label htmlFor="youtube">YouTube</Label>
+        {youtube ? (
+          youtube
+        ) : (
+          <ConnectYouTubeButton
+            accountId={selectedArtist?.account_id}
+            className="w-full"
+            size="sm"
+            disabled={!selectedArtist?.account_id}
+          />
+        )}
       </div>
       <div className="col-span-6 space-y-1 md:space-y-2">
         <Input
