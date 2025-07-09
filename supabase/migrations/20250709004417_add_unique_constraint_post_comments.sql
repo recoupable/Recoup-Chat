@@ -6,7 +6,7 @@
 -- This step is necessary before adding the unique constraint
 DELETE FROM "public"."post_comments" 
 WHERE "id" NOT IN (
-    SELECT MIN("id") 
+    SELECT (MIN("id"::text))::uuid 
     FROM "public"."post_comments" 
     GROUP BY "post_id", "social_id", "comment", "commented_at"
 );
