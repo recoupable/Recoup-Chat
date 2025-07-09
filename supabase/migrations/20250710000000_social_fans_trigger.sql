@@ -1,2 +1,0 @@
--- Migration file cleared - content moved to newer timestamp migration
--- This prevents conflicts with already-attempted migrations

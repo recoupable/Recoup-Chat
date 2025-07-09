@@ -1,7 +1,6 @@
 -- Migration: Create trigger to automatically update social_fans table when comments are added
 -- This trigger will upsert records in social_fans whenever a comment is added to post_comments
 -- Only updates if the new comment timestamp is newer than the existing latest_engagement
--- FIXED v2: Variable renamed to v_artist_social_id to eliminate all ambiguous references
 
 -- Create the trigger function
 CREATE OR REPLACE FUNCTION update_social_fans_on_comment()
