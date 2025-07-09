@@ -19,3 +19,15 @@ export type ApifyInstagramPost = {
   ownerId: string;
   isCommentsDisabled: boolean;
 };
+
+export interface ApifyInstagramProfileResult {
+  latestPosts?: ApifyInstagramPost[];
+  profilePicUrlHD?: string;
+  profilePicUrl?: string;
+  username?: string;
+  url?: string;
+  biography?: string;
+  followersCount?: number;
+  followsCount?: number;
+  fullName?: string;
+}

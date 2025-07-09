@@ -14,7 +14,7 @@ import getAccountEmails from "../supabase/accountEmails/getAccountEmails";
 import sendApifyWebhookEmail from "@/lib/apify/sendApifyWebhookEmail";
 import normalizeProfileUrl from "@/lib/utils/normalizeProfileUrl";
 import uploadLinkToArweave from "@/lib/arweave/uploadLinkToArweave";
-import runInstagramCommentsScraper from "@/lib/apify/runInstagramCommentsScraper";
+import handleInstagramProfileFollowUpRuns from "@/lib/apify/handleInstagramProfileFollowUpRuns";
 import apifyPayloadSchema from "@/lib/apify/apifyPayloadSchema";
 
 /**
@@ -90,18 +90,7 @@ export default async function handleInstagramProfileScraperResults(
         );
 
         // Trigger comment scraping for the new posts
-        // Only call runInstagramCommentsScraper if dataset.length === 1
-        // If more than 1 profile, these are fans and should only be saved
-        if (dataset.length === 1 && firstResult.latestPosts && firstResult.latestPosts.length > 0) {
-          const postUrls = (firstResult.latestPosts as ApifyInstagramPost[])
-            .map((post) => post.url)
-            .filter(Boolean);
-          
-          if (postUrls.length > 0) {
-            console.log("Triggering comment scraping for posts:", postUrls);
-            await runInstagramCommentsScraper(postUrls);
-          }
-        }
+        await handleInstagramProfileFollowUpRuns(dataset, firstResult);
       }
     }
   }
