@@ -14,7 +14,7 @@ import getAccountEmails from "../supabase/accountEmails/getAccountEmails";
 import sendApifyWebhookEmail from "@/lib/apify/sendApifyWebhookEmail";
 import normalizeProfileUrl from "@/lib/utils/normalizeProfileUrl";
 import uploadLinkToArweave from "@/lib/arweave/uploadLinkToArweave";
-import handleInstagramProfileFollowUpRuns from "@/lib/apify/handleInstagramProfileFollowUpRuns";
+import handleInstagramProfileFollowUpRuns from "@/lib/apify/posts/handleInstagramProfileFollowUpRuns";
 import apifyPayloadSchema from "@/lib/apify/apifyPayloadSchema";
 
 /**

@@ -2,7 +2,7 @@ import getDataset from "@/lib/apify/getDataset";
 import { z } from "zod";
 import apifyPayloadSchema from "@/lib/apify/apifyPayloadSchema";
 import runInstagramProfilesScraper from "@/lib/apify/runInstagramProfilesScraper";
-import saveApifyInstagramComments from "@/lib/apify/posts/saveApifyInstagramComments";
+import saveApifyInstagramComments from "@/lib/apify/saveApifyInstagramComments";
 
 // Type definition for Instagram comment data structure
 export interface InstagramComment {

@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { tool } from "ai";
-import runInstagramCommentsScraper from "@/lib/apify/posts/runInstagramCommentsScraper";
+import runInstagramCommentsScraper from "@/lib/apify/runInstagramCommentsScraper";
 import { ApifyScraperResult } from "@/lib/apify/types";
 
 // Define the schema for input validation

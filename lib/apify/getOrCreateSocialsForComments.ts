@@ -1,6 +1,6 @@
 import insertSocials from "@/lib/supabase/socials/insertSocials";
 import { TablesInsert, Tables } from "@/types/database.types";
-import { InstagramComment } from "@/lib/apify/posts/handleInstagramCommentsScraper";
+import { InstagramComment } from "@/lib/apify/handleInstagramCommentsScraper";
 
 /**
  * Gets or creates socials for the given Instagram comment authors and returns them as a map

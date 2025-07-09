@@ -1,8 +1,8 @@
 import { insertPostComments } from "@/lib/supabase/post_comments/insertPostComments";
-import getOrCreatePostsForComments from "@/lib/apify/posts/getOrCreatePostsForComments";
+import getOrCreatePostsForComments from "@/lib/apify/getOrCreatePostsForComments";
 import getOrCreateSocialsForComments from "@/lib/apify/getOrCreateSocialsForComments";
 import { TablesInsert } from "@/types/database.types";
-import { InstagramComment } from "@/lib/apify/posts/handleInstagramCommentsScraper";
+import { InstagramComment } from "@/lib/apify/handleInstagramCommentsScraper";
 
 /**
  * Saves Instagram comments to the post_comments table in the database
