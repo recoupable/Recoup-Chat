@@ -21,7 +21,6 @@ const Inputs = () => {
     instagram,
     setInstagram,
     youtube,
-    setYoutube,
     twitter,
     setTwitter,
     selectedArtist,
