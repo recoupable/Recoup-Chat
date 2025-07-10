@@ -10,7 +10,10 @@ const sendEmailTool = tool({
       .union([z.string().email(), z.array(z.string().email())])
       .describe("Recipient email address or array of addresses"),
     cc: z
-      .array(z.string().email())
+      .union([
+        z.string().email().transform((email) => [email]),
+        z.array(z.string().email()),
+      ])
       .optional()
       .describe(
         "Optional array of CC email addresses. active_account_email should always be included unless already in 'to'."
