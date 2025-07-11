@@ -2,13 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { fetchYouTubeChannelInfo } from "@/lib/youtube/channel-fetcher";
 import { validateYouTubeTokens } from "@/lib/youtube/token-validator";
 import getAccountArtistIds from "@/lib/supabase/accountArtistIds/getAccountArtistIds";
-
-// Type for formatted artist object returned by getAccountArtistIds
-interface FormattedArtist {
-  account_id: string;
-  name: string;
-  [key: string]: unknown;
-}
+import { ArtistRecord } from "@/types/Artist";
 
 export async function GET(request: NextRequest) {
   try {
@@ -18,17 +12,27 @@ export async function GET(request: NextRequest) {
 
     if (!artistAccountId || !accountId) {
       return NextResponse.json(
-        { success: false, error: "Missing artistAccountId or accountId parameter" },
+        {
+          success: false,
+          error: "Missing artistAccountId or accountId parameter",
+        },
         { status: 400 }
       );
     }
 
     // Security: Verify the accountId has access to this artistAccountId
-    const accountArtists = await getAccountArtistIds({ accountIds: [accountId] });
-    const hasAccess = accountArtists.some((artist: FormattedArtist) => artist.account_id === artistAccountId);
+    const accountArtists = await getAccountArtistIds({
+      accountIds: [accountId],
+    });
+    const hasAccess = accountArtists.some(
+      (artist: ArtistRecord) => artist.account_id === artistAccountId
+    );
     if (!hasAccess) {
       return NextResponse.json(
-        { success: false, error: "Unauthorized: User does not have access to this artist" },
+        {
+          success: false,
+          error: "Unauthorized: User does not have access to this artist",
+        },
         { status: 403 }
       );
     }
@@ -36,7 +40,10 @@ export async function GET(request: NextRequest) {
     // Validate and get tokens server-side
     const tokenResult = await validateYouTubeTokens(artistAccountId);
     if (!tokenResult.success || !tokenResult.tokens?.access_token) {
-      return NextResponse.json({ success: false, error: "No valid tokens" }, { status: 401 });
+      return NextResponse.json(
+        { success: false, error: "No valid tokens" },
+        { status: 401 }
+      );
     }
 
     // Fetch channel info using tokens

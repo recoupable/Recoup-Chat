@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useArtistProvider } from "@/providers/ArtistProvider";
 import { useUserProvider } from "@/providers/UserProvder";
+import { fetchYouTubeChannelInfo } from "@/lib/youtube/fetchYouTubeChannelInfo";
 
 const useYouTubeChannel = () => {
   const { selectedArtist } = useArtistProvider();
@@ -17,12 +18,10 @@ const useYouTubeChannel = () => {
     }
 
     const fetchChannelInfo = async () => {
-      const params = new URLSearchParams({
+      const channelResult = await fetchYouTubeChannelInfo({
         artistAccountId,
         accountId,
       });
-      const res = await fetch(`/api/youtube/channel-info?${params.toString()}`);
-      const channelResult = await res.json();
       setChannelData(
         channelResult.success &&
           channelResult.channelData &&
