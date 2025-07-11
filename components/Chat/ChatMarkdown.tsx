@@ -14,7 +14,7 @@ interface ChatMarkdownProps {
 
 const ChatMarkdown: React.FC<ChatMarkdownProps> = ({ children }) => {
   return (
-    <div className={`${styles.markdown} w-full max-w-full overflow-hidden [&_li]:md:!max-w-[55ch]`} style={{ overflowX: 'hidden', maxWidth: '100%' }}>
+    <div className={`${styles.markdown} w-full max-w-full overflow-hidden`} style={{ overflowX: 'hidden', maxWidth: '100%', wordBreak: 'break-word', overflowWrap: 'break-word' }}>
       <Markdown
         remarkPlugins={[remarkGfm]}
         components={{
