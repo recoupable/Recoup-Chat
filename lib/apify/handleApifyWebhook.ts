@@ -1,7 +1,7 @@
 import apifyPayloadSchema from "@/lib/apify/apifyPayloadSchema";
 import { z } from "zod";
 import handleInstagramProfileScraperResults from "@/lib/apify/posts/handleInstagramProfileScraperResults";
-import handleInstagramCommentsScraper from "@/lib/apify/handleInstagramCommentsScraper";
+import handleInstagramCommentsScraper from "@/lib/apify/comments/handleInstagramCommentsScraper";
 
 /**
  * Handles the Apify webhook payload: routes to appropriate handler based on actorId.
