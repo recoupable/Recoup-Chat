@@ -31,6 +31,8 @@ const corsHeaders = {
   "Access-Control-Allow-Credentials": "true",
 };
 
+const MAX_MESSAGES = 55;
+
 // Handle OPTIONS preflight requests
 export async function OPTIONS() {
   return new Response(null, {
@@ -84,7 +86,7 @@ export async function POST(request: NextRequest) {
         const result = streamText({
           model: myProvider.languageModel(selectedModelId),
           system,
-          messages: messagesWithRichFiles,
+          messages: messagesWithRichFiles.slice(-MAX_MESSAGES),
           maxSteps: 111,
           experimental_transform: smoothStream({ chunking: "word" }),
           experimental_generateMessageId: generateUUID,
