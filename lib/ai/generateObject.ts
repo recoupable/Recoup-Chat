@@ -1,23 +1,22 @@
 import { generateObject } from "ai";
 import { anthropic } from "@ai-sdk/anthropic";
 
-const generateObjectAI = async <T>({
+const generateObjectAI = async ({
   system,
   prompt,
-  schema,
 }: {
   system?: string;
   prompt: string;
-  schema: any;
 }) => {
   const result = await generateObject({
     system,
     model: anthropic("claude-3-7-sonnet-20250219"),
     prompt,
-    schema,
+    output: "no-schema",
+    mode: "json",
   });
 
-  return result;
+  return result.object;
 };
 
 export default generateObjectAI;

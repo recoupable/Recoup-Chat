@@ -8,8 +8,17 @@ interface GenerateSegmentsParams {
   prompt: string;
 }
 
-interface SegmentGenerationSchema {
+interface SegmentsResult {
   segments: string[];
+}
+
+function isSegmentsResult(obj: unknown): obj is SegmentsResult {
+  return (
+    typeof obj === "object" &&
+    obj !== null &&
+    Array.isArray((obj as SegmentsResult).segments) &&
+    (obj as SegmentsResult).segments.every((s) => typeof s === "string")
+  );
 }
 
 export const generateSegments = async ({
@@ -39,35 +48,17 @@ export const generateSegments = async ({
     
     The segment names should help artists and managers understand their audience better for targeted marketing campaigns.`;
 
-    const analysisPrompt = `Analyze the following fan data and generate segment names based on the provided prompt.
+    const analysisPrompt = `Analyze the following fan data and generate segment names based on the provided prompt.\n\nFan Data Summary:\n- Total fans: ${fanCount}\n- Sample fan data: ${JSON.stringify(fanData.slice(0, 5), null, 2)}\n\nUser's specific prompt: ${prompt}\n\nGenerate segment names that align with the user's requirements and the fan data characteristics.`;
 
-Fan Data Summary:
-- Total fans: ${fanCount}
-- Sample fan data: ${JSON.stringify(fanData.slice(0, 5), null, 2)}
-
-User's specific prompt: ${prompt}
-
-Generate segment names that align with the user's requirements and the fan data characteristics.`;
-
-    const schema = {
-      type: "object",
-      properties: {
-        segments: {
-          type: "array",
-          items: { type: "string" },
-          description: "Array of segment names generated from the fan data analysis"
-        }
-      },
-      required: ["segments"]
-    };
-
-    const result = await generateObjectAI<SegmentGenerationSchema>({
+    const result = await generateObjectAI({
       system: systemPrompt,
       prompt: analysisPrompt,
-      schema,
     });
 
-    return result.segments || [];
+    if (isSegmentsResult(result)) {
+      return result.segments;
+    }
+    return [];
   } catch (error) {
     console.error("Error generating segments:", error);
     throw new Error("Failed to generate segments from fan data");
