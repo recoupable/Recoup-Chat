@@ -25,12 +25,8 @@ interface MetadataPopupProps {
   onClose: () => void;
 }
 
-interface ChatTabProps {
-  metadata: MetadataItem;
-}
-
 // Chat tab component that uses the chat context
-function ChatTab({ metadata }: ChatTabProps) {
+function ChatTab() {
   const {
     messages,
     status,
@@ -219,7 +215,7 @@ function MetadataPopupContent({ metadata, onClose }: { metadata: MetadataItem; o
               className="h-full"
             >
               <VercelChatProvider chatId={`metadata-${metadata.id}`} initialMessages={initialMessages}>
-                <ChatTab metadata={metadata} />
+                <ChatTab />
               </VercelChatProvider>
             </motion.div>
           )}
