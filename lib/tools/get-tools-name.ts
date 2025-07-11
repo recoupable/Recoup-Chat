@@ -14,6 +14,8 @@ export const getDisplayToolName = (name: string) => {
             return "Contact Team";
         case "get_artist_segments":
             return "Get Artist Segments";
+        case "create_artist_segments":
+            return "Create Artist Segments";
         case "get_segment_fans":
             return "Get Segment Fans";
         case "get_artist_socials":
