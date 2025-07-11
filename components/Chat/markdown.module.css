@@ -6,6 +6,9 @@
   overflow-x: hidden !important;
   max-width: 100% !important;
   width: 100%;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
 }
 
 /* Improved paragraph spacing */
@@ -14,6 +17,8 @@
   line-height: 1.4;
   max-width: 100%;
   text-align: left;
+  word-break: break-word;
+  overflow-wrap: break-word;
 }
 
 /* Remove margin for last paragraph to fix chat bubble spacing */
@@ -87,6 +92,8 @@
   font-size: 0.95em;
   font-weight: 600;
   color: rgba(24, 54, 145, 0.9);
+  word-break: break-all;
+  overflow-wrap: break-word;
 }
 
 /* List improvements */
@@ -100,6 +107,9 @@
   margin-bottom: 1em;
   line-height: 1.6;
   position: relative;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  max-width: 100%;
 }
 
 .markdown ul li {
