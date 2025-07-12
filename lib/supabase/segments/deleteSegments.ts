@@ -14,7 +14,7 @@ export const deleteSegments = async (
 
   if (artistSegmentsError) {
     console.error("Error fetching artist segments:", artistSegmentsError);
-    throw artistSegmentsError;
+    return [];
   }
 
   if (!artistSegments || artistSegments.length === 0) {
@@ -34,11 +34,12 @@ export const deleteSegments = async (
 
   if (error) {
     console.error("Error deleting segments:", error);
-    throw error;
+    return [];
   }
 
   if (!data || data.length === 0) {
-    throw new Error(`No segments found with ids: ${segmentIds.join(", ")}`);
+    console.warn(`No segments found with ids: ${segmentIds.join(", ")}`);
+    return [];
   }
 
   return data;
