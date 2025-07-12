@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { tool } from "ai";
-import { selectSocialFans, type SocialFanWithDetails } from "@/lib/supabase/social_fans/selectSocialFans";
+import { selectSocialFans } from "@/lib/supabase/social_fans/selectSocialFans";
 
 // Zod schema for parameter validation
 const schema = z.object({
@@ -9,7 +9,7 @@ const schema = z.object({
 
 const getSocialFans = tool({
   description:
-    "Retrieve social fans data for given artist social IDs. This tool fetches fan engagement data from the social_fans table with expanded social details and comments for better segment name generation.",
+    "Retrieve social fans data for given artist social IDs. This tool fetches fan engagement data from the social_fans table.",
   parameters: schema,
   execute: async ({ social_ids }) => {
     try {
