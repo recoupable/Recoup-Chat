@@ -1,4 +1,4 @@
-import generateObjectAI from "@/lib/ai/generateObject";
+import generateArray from "@/lib/ai/generateArray";
 import { Tables } from "@/types/database.types";
 
 type SocialFan = Tables<"social_fans">;
@@ -37,11 +37,11 @@ export const generateSegments = async ({
 
     const analysisPrompt = `Analyze the following fan data and generate segment names based on the provided prompt.\n\nFan Data Summary:\n- Total fans: ${fanCount}\n- Sample fan data: ${JSON.stringify(fanData.slice(0, 5), null, 2)}\n\nUser's specific prompt: ${prompt}\n\nGenerate segment names that align with the user's requirements and the fan data characteristics.`;
 
-    const result = await generateObjectAI({
+    const result = await generateArray({
       system: systemPrompt,
       prompt: analysisPrompt,
     });
-    console.log("generateObjectAI result", result);
+    console.log("generateArray result", result);
 
     // Return only the first item (segment name) from each sub-array in the result
     return result.map((subArr: string[]) => subArr[0]);
