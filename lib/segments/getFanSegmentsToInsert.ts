@@ -9,16 +9,13 @@ export function getFanSegmentsToInsert(
   segments: GenerateArrayResult[],
   insertedSegments: Tables<"segments">[]
 ) {
-  // Map segment name to inserted segment id
   const segmentNameToId = new Map(
     insertedSegments.map((seg) => [seg.name, seg.id])
   );
 
-  // Build fan-segment associations based on generateSegments output
   return segments.flatMap((segment: GenerateArrayResult) => {
     const segmentId = segmentNameToId.get(segment.segmentName);
     if (!segmentId || !segment.fans) return [];
-    // segment.fans is an array of fan_social_id (string)
     return segment.fans.map((fan_social_id: string) => ({
       fan_social_id,
       segment_id: segmentId,
