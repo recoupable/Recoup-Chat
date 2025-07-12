@@ -31,7 +31,8 @@ export const SOCIAL_DEFAULT_PLATFORMS = [
 ];
 
 // Apify webhook configuration
-export const APIFY_WEBHOOKS_VALUE = "ICBbCiAgICB7CiAgICAgICJldmVudFR5cGVzIjogWyJBQ1RPUi5SVU4uU1VDQ0VFREVEIl0sCiAgICAgICJyZXF1ZXN0VXJsIjogImh0dHBzOi8vY2hhdC5yZWNvdXBhYmxlLmNvbS9hcGkvYXBpZnkiCiAgICB9CiAgXQ==";
+export const APIFY_WEBHOOKS_VALUE =
+  "ICBbCiAgICB7CiAgICAgICJldmVudFR5cGVzIjogWyJBQ1RPUi5SVU4uU1VDQ0VFREVEIl0sCiAgICAgICJyZXF1ZXN0VXJsIjogImh0dHBzOi8vY2hhdC5yZWNvdXBhYmxlLmNvbS9hcGkvYXBpZnkiCiAgICB9CiAgXQ==";
 
 // Vercel AI SDK
 export const AI_MODEL = "o3-mini";
@@ -1785,3 +1786,16 @@ export const SPOTIFY_DEEP_RESEARCH_REQUIREMENTS = `
   - album art
   - album name
   `;
+
+export const SEGMENT_SYSTEM_PROMPT = `You are an expert music industry analyst specializing in fan segmentation. 
+    Your task is to analyze fan data and generate meaningful segment names that would be useful for marketing and engagement strategies.
+    
+    Guidelines for segment names:
+    - Keep names concise and descriptive (2-4 words)
+    - Focus on engagement patterns, demographics, or behavioral characteristics
+    - Use clear, actionable language that marketers can understand
+    - Avoid generic terms like "fans" or "followers"
+    - Consider factors like engagement frequency, recency, and intensity
+    - Generate 5-10 segment names that cover different aspects of the fan base
+    
+    The segment names should help artists and managers understand their audience better for targeted marketing campaigns.`;

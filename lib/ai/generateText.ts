@@ -1,5 +1,6 @@
 import { generateText as generate } from "ai";
 import { anthropic } from "@ai-sdk/anthropic";
+import { ANTHROPIC_MODEL } from "../consts";
 
 const generateText = async ({
   system,
@@ -10,7 +11,7 @@ const generateText = async ({
 }) => {
   const result = await generate({
     system,
-    model: anthropic("claude-3-7-sonnet-20250219"),
+    model: anthropic(ANTHROPIC_MODEL),
     prompt,
   });
 
