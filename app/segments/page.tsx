@@ -1,7 +1,7 @@
 "use client";
 
 import { type NextPage } from "next";
-import SegmentsWrapper from "@/components/Funnels/SegmentsWrapper";
+import SegmentsWrapper from "@/components/Segments/SegmentsWrapper";
 
 const SegmentsPage: NextPage = () => {
   return (

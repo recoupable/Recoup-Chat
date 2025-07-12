@@ -1,9 +1,9 @@
 import { useArtistProvider } from "@/providers/ArtistProvider";
 import { useFunnelAnalysisProvider } from "@/providers/FunnelAnalysisProvider";
-import Segments from "./Segments";
+import Segments from "../Segments/Segments";
 import SocialSharing from "../SocialSharing";
 import getAggregatedSocialProfiles from "@/lib/agent/getAggregatedSocialProfiles";
-import SegmentsSkeleton from "./SegmentsSkeleton";
+import SegmentsSkeleton from "../Segments/SegmentsSkeleton";
 import { Skeleton } from "../ui/skeleton";
 import { useArtistSegments } from "@/hooks/useArtistSegments";
 

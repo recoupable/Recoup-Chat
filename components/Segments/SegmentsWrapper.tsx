@@ -1,5 +1,6 @@
 import Segments from "./Segments";
 import SegmentsSkeleton from "./SegmentsSkeleton";
+import NoSegmentsFound from "./NoSegmentsFound";
 import { useArtistProvider } from "@/providers/ArtistProvider";
 import { useArtistSegments } from "@/hooks/useArtistSegments";
 
@@ -9,6 +10,7 @@ const SegmentsWrapper = () => {
     data: segments,
     isLoading,
     error,
+    refetch,
   } = useArtistSegments(selectedArtist?.account_id);
 
   if (!selectedArtist || isLoading) {
@@ -23,13 +25,7 @@ const SegmentsWrapper = () => {
     );
   }
 
-  if (!segments?.length) {
-    return (
-      <div className="text-lg text-center py-8">
-        No segments found for this artist.
-      </div>
-    );
-  }
+  if (!segments?.length) return <NoSegmentsFound refetch={refetch} />;
 
   return <Segments segments={segments} />;
 };
