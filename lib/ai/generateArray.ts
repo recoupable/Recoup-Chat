@@ -1,6 +1,7 @@
 import { generateObject } from "ai";
 import { anthropic } from "@ai-sdk/anthropic";
 import { z } from "zod";
+import { ANTHROPIC_MODEL } from "../consts";
 
 const generateArray = async ({
   system,
@@ -10,7 +11,7 @@ const generateArray = async ({
   prompt: string;
 }) => {
   const result = await generateObject({
-    model: anthropic("claude-3-7-sonnet-20250219"),
+    model: anthropic(ANTHROPIC_MODEL),
     system,
     prompt,
     output: "array",
