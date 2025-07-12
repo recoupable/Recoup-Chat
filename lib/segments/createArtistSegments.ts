@@ -2,6 +2,7 @@ import getAccountSocials from "../supabase/accountSocials/getAccountSocials";
 import { selectSocialFans } from "../supabase/social_fans/selectSocialFans";
 import { generateSegments } from "./generateSegments";
 import { insertSegments } from "../supabase/segments/insertSegments";
+import { deleteSegments } from "../supabase/segments/deleteSegments";
 import { insertArtistSegments } from "../supabase/artist_segments/insertArtistSegments";
 import { Tables } from "@/types/database.types";
 import { successResponse, errorResponse } from "./createSegmentResponses";
@@ -42,7 +43,10 @@ export const createArtistSegments = async ({
       return errorResponse("Failed to generate segment names");
     }
 
-    // Step 4: Insert segments into the database
+    // Step 4: Delete existing segments for the artist
+    await deleteSegments(artist_account_id);
+
+    // Step 5: Insert segments into the database
     const segmentsToInsert = segmentNames.map((name: string) => ({
       name,
       updated_at: new Date().toISOString(),
@@ -50,7 +54,7 @@ export const createArtistSegments = async ({
 
     const insertedSegments = await insertSegments(segmentsToInsert);
 
-    // Step 5: Associate segments with the artist
+    // Step 6: Associate segments with the artist
     const artistSegmentsToInsert = insertedSegments.map(
       (segment: Tables<"segments">) => ({
         artist_account_id,
