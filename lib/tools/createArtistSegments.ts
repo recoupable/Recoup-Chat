@@ -8,7 +8,12 @@ import { insertArtistSegments } from "@/lib/supabase/artist_segments/insertArtis
 
 // Zod schema for parameter validation
 const schema = z.object({
-  artist_account_id: z.string().min(1, "Artist account ID is required"),
+  artist_account_id: z
+    .string()
+    .min(
+      1,
+      "artist_account_id is required and should be pulled from the system prompt. Never request this from the user."
+    ),
   prompt: z.string().min(1, "Prompt is required"),
 });
 
