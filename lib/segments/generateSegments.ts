@@ -8,26 +8,13 @@ interface GenerateSegmentsParams {
   prompt: string;
 }
 
-interface SegmentsResult {
-  segments: string[];
-}
-
-function isSegmentsResult(obj: unknown): obj is SegmentsResult {
-  return (
-    typeof obj === "object" &&
-    obj !== null &&
-    Array.isArray((obj as SegmentsResult).segments) &&
-    (obj as SegmentsResult).segments.every((s) => typeof s === "string")
-  );
-}
-
 export const generateSegments = async ({
   fans,
   prompt,
 }: GenerateSegmentsParams): Promise<string[]> => {
   try {
     const fanCount = fans.length;
-    const fanData = fans.map(fan => ({
+    const fanData = fans.map((fan) => ({
       artist_social_id: fan.artist_social_id,
       fan_social_id: fan.fan_social_id,
       latest_engagement: fan.latest_engagement,
@@ -54,11 +41,10 @@ export const generateSegments = async ({
       system: systemPrompt,
       prompt: analysisPrompt,
     });
+    console.log("generateObjectAI result", result);
 
-    if (isSegmentsResult(result)) {
-      return result.segments;
-    }
-    return [];
+    // Return only the first item (segment name) from each sub-array in the result
+    return result.map((subArr: string[]) => subArr[0]);
   } catch (error) {
     console.error("Error generating segments:", error);
     throw new Error("Failed to generate segments from fan data");

@@ -19,9 +19,11 @@ const createArtistSegments = tool({
   execute: async ({ artist_account_id, prompt }) => {
     try {
       // Step 1: Get all social IDs for the artist
-      const accountSocials = await getAccountSocials({ accountId: artist_account_id });
-      const socialIds = accountSocials.map(as => as.social_id);
-      
+      const accountSocials = await getAccountSocials({
+        accountId: artist_account_id,
+      });
+      const socialIds = accountSocials.map((as) => as.social_id);
+
       if (socialIds.length === 0) {
         return {
           success: false,
@@ -34,7 +36,7 @@ const createArtistSegments = tool({
 
       // Step 2: Get all fans for the artist
       const fans = await selectSocialFans({ social_ids: socialIds });
-      
+
       if (fans.length === 0) {
         return {
           success: false,
@@ -47,7 +49,7 @@ const createArtistSegments = tool({
 
       // Step 3: Generate segment names using AI
       const segmentNames = await generateSegments({ fans, prompt });
-      
+      console.log("segmentNames", segmentNames);
       if (segmentNames.length === 0) {
         return {
           success: false,
@@ -59,21 +61,23 @@ const createArtistSegments = tool({
       }
 
       // Step 4: Insert segments into the database
-      const segmentsToInsert = segmentNames.map(name => ({
+      const segmentsToInsert = segmentNames.map((name) => ({
         name,
         updated_at: new Date().toISOString(),
       }));
-      
+
       const insertedSegments = await insertSegments(segmentsToInsert);
 
       // Step 5: Associate segments with the artist
-      const artistSegmentsToInsert = insertedSegments.map(segment => ({
+      const artistSegmentsToInsert = insertedSegments.map((segment) => ({
         artist_account_id,
         segment_id: segment.id,
         updated_at: new Date().toISOString(),
       }));
-      
-      const insertedArtistSegments = await insertArtistSegments(artistSegmentsToInsert);
+
+      const insertedArtistSegments = await insertArtistSegments(
+        artistSegmentsToInsert
+      );
 
       return {
         success: true,
