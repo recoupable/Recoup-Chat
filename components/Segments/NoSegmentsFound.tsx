@@ -1,6 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { useArtistProvider } from "@/providers/ArtistProvider";
 import { toast } from "react-toastify";
+import { SpinnerIcon } from "@/components/VercelChat/icons";
+import React from "react";
 
 interface NoSegmentsFoundProps {
   refetch?: () => void;
@@ -8,11 +10,13 @@ interface NoSegmentsFoundProps {
 
 const NoSegmentsFound = ({ refetch }: NoSegmentsFoundProps) => {
   const { selectedArtist } = useArtistProvider();
+  const [loading, setLoading] = React.useState(false);
 
   const handleCreateSegments = async () => {
     if (!selectedArtist?.account_id) return;
     const artist_account_id = selectedArtist.account_id;
     const prompt = "Segment my fans";
+    setLoading(true);
     try {
       const response = await fetch("/api/segments/create", {
         method: "POST",
@@ -30,6 +34,8 @@ const NoSegmentsFound = ({ refetch }: NoSegmentsFoundProps) => {
         error instanceof Error ? error.message : "Failed to generate segments"
       );
       console.error(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -37,7 +43,9 @@ const NoSegmentsFound = ({ refetch }: NoSegmentsFoundProps) => {
     <div className="text-lg text-center py-8 flex flex-col items-center gap-4">
       <div>No segments found for this artist.</div>
       {selectedArtist?.account_id && (
-        <Button onClick={handleCreateSegments}>Generate Segments</Button>
+        <Button onClick={handleCreateSegments} disabled={loading}>
+          {loading && <SpinnerIcon size={18} />} Generate Segments
+        </Button>
       )}
     </div>
   );
