@@ -2,6 +2,7 @@ import generateArray from "@/lib/ai/generateArray";
 import { SEGMENT_SYSTEM_PROMPT } from "../consts";
 import getAnalysisPrompt from "./getAnalysisPrompt";
 import { SocialFanWithDetails } from "../supabase/social_fans/selectSocialFans";
+import { GenerateArrayResult } from "../ai/generateArray";
 
 export interface GenerateSegmentsParams {
   fans: SocialFanWithDetails[];
@@ -11,7 +12,7 @@ export interface GenerateSegmentsParams {
 export const generateSegments = async ({
   fans,
   prompt,
-}: GenerateSegmentsParams): Promise<string[]> => {
+}: GenerateSegmentsParams): Promise<GenerateArrayResult[]> => {
   try {
     const analysisPrompt = getAnalysisPrompt({ fans, prompt });
 
@@ -20,8 +21,7 @@ export const generateSegments = async ({
       prompt: analysisPrompt,
     });
 
-    // Return only the first item (segment name) from each sub-array in the result
-    return result.map((subArr: string[]) => subArr[0]);
+    return result;
   } catch (error) {
     console.error("Error generating segments:", error);
     throw new Error("Failed to generate segments from fan data");

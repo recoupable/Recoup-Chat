@@ -1,9 +1,10 @@
 import { Tables } from "@/types/database.types";
+import { GenerateArrayResult } from "../ai/generateArray";
 
 interface CreateArtistSegmentsSuccessData {
-  segments: Tables<"segments">[];
-  artist_segments: Tables<"artist_segments">[];
-  segment_names: string[];
+  supabase_segments: Tables<"segments">[];
+  supabase_artist_segments: Tables<"artist_segments">[];
+  segments: GenerateArrayResult[];
 }
 
 export const successResponse = (
