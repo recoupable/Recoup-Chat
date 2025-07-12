@@ -44,7 +44,12 @@ const NoSegmentsFound = ({ refetch }: NoSegmentsFoundProps) => {
       <div>No segments found for this artist.</div>
       {selectedArtist?.account_id && (
         <Button onClick={handleCreateSegments} disabled={loading}>
-          {loading && <SpinnerIcon size={18} />} Generate Segments
+          {loading && (
+            <div className="inline-block animate-spin">
+              <SpinnerIcon />
+            </div>
+          )}
+          Generate Segments
         </Button>
       )}
     </div>
