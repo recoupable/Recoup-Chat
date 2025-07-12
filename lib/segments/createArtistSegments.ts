@@ -4,6 +4,7 @@ import { generateSegments } from "./generateSegments";
 import { insertSegments } from "../supabase/segments/insertSegments";
 import { insertArtistSegments } from "../supabase/artist_segments/insertArtistSegments";
 import { Tables } from "@/types/database.types";
+import { successResponse, errorResponse } from "./createSegmentResponses";
 
 interface CreateArtistSegmentsParams {
   artist_account_id: string;
@@ -24,39 +25,21 @@ export const createArtistSegments = async ({
     );
 
     if (socialIds.length === 0) {
-      return {
-        success: false,
-        status: "error",
-        message: "No social accounts found for this artist",
-        data: [],
-        count: 0,
-      };
+      return errorResponse("No social accounts found for this artist");
     }
 
     // Step 2: Get all fans for the artist
     const fans = await selectSocialFans({ social_ids: socialIds });
 
     if (fans.length === 0) {
-      return {
-        success: false,
-        status: "error",
-        message: "No fans found for this artist",
-        data: [],
-        count: 0,
-      };
+      return errorResponse("No fans found for this artist");
     }
 
     // Step 3: Generate segment names using AI
     const segmentNames = await generateSegments({ fans, prompt });
     console.log("segmentNames", segmentNames);
     if (segmentNames.length === 0) {
-      return {
-        success: false,
-        status: "error",
-        message: "Failed to generate segment names",
-        data: [],
-        count: 0,
-      };
+      return errorResponse("Failed to generate segment names");
     }
 
     // Step 4: Insert segments into the database
@@ -80,28 +63,21 @@ export const createArtistSegments = async ({
       artistSegmentsToInsert
     );
 
-    return {
-      success: true,
-      status: "success",
-      message: `Successfully created ${segmentNames.length} segments for artist`,
-      data: {
+    return successResponse(
+      `Successfully created ${segmentNames.length} segments for artist`,
+      {
         segments: insertedSegments,
         artist_segments: insertedArtistSegments,
         segment_names: segmentNames,
       },
-      count: segmentNames.length,
-    };
+      segmentNames.length
+    );
   } catch (error) {
     console.error("Error creating artist segments:", error);
-    return {
-      success: false,
-      status: "error",
-      message:
-        error instanceof Error
-          ? error.message
-          : "Failed to create artist segments",
-      data: [],
-      count: 0,
-    };
+    return errorResponse(
+      error instanceof Error
+        ? error.message
+        : "Failed to create artist segments"
+    );
   }
 };
