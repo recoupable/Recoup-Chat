@@ -6,6 +6,7 @@ import {
   wrapLanguageModel,
   defaultSettingsMiddleware,
 } from "ai";
+import { ANTHROPIC_MODEL } from "./consts";
 
 // custom provider with different model settings:
 export const myProvider = customProvider({
@@ -20,7 +21,7 @@ export const myProvider = customProvider({
           },
         },
       }),
-      model: anthropic("claude-3-7-sonnet-20250219"),
+      model: anthropic(ANTHROPIC_MODEL),
     }),
     "grok-3-mini": xai("grok-3-mini"),
   },
