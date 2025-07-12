@@ -5,6 +5,7 @@ interface CreateArtistSegmentsSuccessData {
   supabase_segments: Tables<"segments">[];
   supabase_artist_segments: Tables<"artist_segments">[];
   segments: GenerateArrayResult[];
+  supabase_fan_segments: Tables<"fan_segments">[];
 }
 
 export const successResponse = (

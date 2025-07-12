@@ -4,9 +4,11 @@ import { generateSegments } from "./generateSegments";
 import { insertSegments } from "../supabase/segments/insertSegments";
 import { deleteSegments } from "../supabase/segments/deleteSegments";
 import { insertArtistSegments } from "../supabase/artist_segments/insertArtistSegments";
+import { insertFanSegments } from "../supabase/fan_segments/insertFanSegments";
 import { Tables } from "@/types/database.types";
 import { successResponse, errorResponse } from "./createSegmentResponses";
 import { GenerateArrayResult } from "../ai/generateArray";
+import { getFanSegmentsToInsert } from "./getFanSegmentsToInsert";
 
 interface CreateArtistSegmentsParams {
   artist_account_id: string;
@@ -68,11 +70,19 @@ export const createArtistSegments = async ({
       artistSegmentsToInsert
     );
 
+    // Step 7: Associate fans with the new segments
+    const fanSegmentsToInsert = getFanSegmentsToInsert(
+      segments,
+      insertedSegments
+    );
+    const insertedFanSegments = await insertFanSegments(fanSegmentsToInsert);
+
     return successResponse(
       `Successfully created ${segments.length} segments for artist`,
       {
         supabase_segments: insertedSegments,
         supabase_artist_segments: insertedArtistSegments,
+        supabase_fan_segments: insertedFanSegments,
         segments,
       },
       segments.length
