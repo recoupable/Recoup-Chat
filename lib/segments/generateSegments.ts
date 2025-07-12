@@ -1,12 +1,10 @@
 import generateArray from "@/lib/ai/generateArray";
-import { Tables } from "@/types/database.types";
 import { SEGMENT_SYSTEM_PROMPT } from "../consts";
 import getAnalysisPrompt from "./getAnalysisPrompt";
-
-type SocialFan = Tables<"social_fans">;
+import { SocialFanWithDetails } from "../supabase/social_fans/selectSocialFans";
 
 export interface GenerateSegmentsParams {
-  fans: SocialFan[];
+  fans: SocialFanWithDetails[];
   prompt: string;
 }
 
