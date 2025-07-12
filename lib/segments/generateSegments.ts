@@ -1,5 +1,6 @@
 import generateArray from "@/lib/ai/generateArray";
 import { Tables } from "@/types/database.types";
+import { SEGMENT_SYSTEM_PROMPT } from "../consts";
 
 type SocialFan = Tables<"social_fans">;
 
@@ -22,26 +23,13 @@ export const generateSegments = async ({
       updated_at: fan.updated_at,
     }));
 
-    const systemPrompt = `You are an expert music industry analyst specializing in fan segmentation. 
-    Your task is to analyze fan data and generate meaningful segment names that would be useful for marketing and engagement strategies.
-    
-    Guidelines for segment names:
-    - Keep names concise and descriptive (2-4 words)
-    - Focus on engagement patterns, demographics, or behavioral characteristics
-    - Use clear, actionable language that marketers can understand
-    - Avoid generic terms like "fans" or "followers"
-    - Consider factors like engagement frequency, recency, and intensity
-    - Generate 5-10 segment names that cover different aspects of the fan base
-    
-    The segment names should help artists and managers understand their audience better for targeted marketing campaigns.`;
-
-    const analysisPrompt = `Analyze the following fan data and generate segment names based on the provided prompt.\n\nFan Data Summary:\n- Total fans: ${fanCount}\n- Sample fan data: ${JSON.stringify(fanData.slice(0, 5), null, 2)}\n\nUser's specific prompt: ${prompt}\n\nGenerate segment names that align with the user's requirements and the fan data characteristics.`;
+    const maxFans = 10000;
+    const analysisPrompt = `Analyze the following fan data and generate segment names based on the provided prompt.\n\nFan Data Summary:\n- Total fans: ${fanCount}\n- Fan data: ${JSON.stringify(fanData.slice(0, maxFans), null, 2)}\n\nArtist's specific prompt: ${prompt}\n\nGenerate segment names that align with the artist's requirements and the fan data characteristics.`;
 
     const result = await generateArray({
-      system: systemPrompt,
+      system: SEGMENT_SYSTEM_PROMPT,
       prompt: analysisPrompt,
     });
-    console.log("generateArray result", result);
 
     // Return only the first item (segment name) from each sub-array in the result
     return result.map((subArr: string[]) => subArr[0]);
