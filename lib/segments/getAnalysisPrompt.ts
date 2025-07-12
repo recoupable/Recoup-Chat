@@ -3,11 +3,11 @@ import { GenerateSegmentsParams } from "./generateSegments";
 const getAnalysisPrompt = ({ fans, prompt }: GenerateSegmentsParams) => {
   const fanCount = fans.length;
   const fanData = fans.map((fan) => ({
-    artist_social_id: fan.artist_social_id,
-    fan_social_id: fan.fan_social_id,
-    latest_engagement: fan.latest_engagement,
-    created_at: fan.created_at,
-    updated_at: fan.updated_at,
+    username: fan.fan_social.username,
+    bio: fan.fan_social.bio,
+    followerCount: fan.fan_social.followerCount,
+    followingCount: fan.fan_social.followingCount,
+    comment: fan.latest_engagement_comment?.comment || null,
   }));
 
   const maxFans = 10000;
