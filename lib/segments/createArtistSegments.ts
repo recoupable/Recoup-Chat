@@ -44,12 +44,7 @@ export const createArtistSegments = async ({
     }
 
     // Step 4: Delete existing segments for the artist
-    try {
-      await deleteSegments(artist_account_id);
-    } catch (error) {
-      console.warn("Warning: Failed to delete existing segments:", error);
-      // Continue with creating new segments even if deletion fails
-    }
+    await deleteSegments(artist_account_id);
 
     // Step 5: Insert segments into the database
     const segmentsToInsert = segmentNames.map((name: string) => ({
