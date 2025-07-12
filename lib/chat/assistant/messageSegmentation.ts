@@ -1,8 +1,8 @@
-import { FanData, FanDataWithDetails, JsonObject } from "./messageParser";
+import { FanData, JsonObject } from "./messageParser";
 
 export interface MessageSegment {
   type: "text" | "fans";
-  content: string | FanData | FanDataWithDetails;
+  content: string | FanData;
 }
 
 /**
@@ -28,7 +28,7 @@ export const createMessageSegments = (
       }
     }
 
-    // Add the fan data (supports both old and new formats)
+    // Add the fan data
     segments.push({ type: "fans", content: obj.json });
     lastEnd = obj.end;
   });

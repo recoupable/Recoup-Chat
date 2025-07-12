@@ -1,39 +1,13 @@
 import { Database } from "@/types/database.types";
 
 type Social = Database["public"]["Tables"]["socials"]["Row"];
-type PostComment = Database["public"]["Tables"]["post_comments"]["Row"];
 
-// Extended fan data interface with social details and comments
-export interface FanDataWithDetails {
-  fans: Array<{
-    // Social details
-    socials: {
-      username: string;
-      bio: string | null;
-      followerCount: number | null;
-      followingCount: number | null;
-      avatar: string | null;
-      profile_url: string;
-      region: string | null;
-      updated_at: string;
-    };
-    // Comment data
-    comments: {
-      comment: string | null;
-      commented_at: string;
-      post_id: string | null;
-      social_id: string | null;
-    } | null;
-  }>;
-}
-
-// Keep the original interface for backward compatibility
 export interface FanData {
   fans: Social[];
 }
 
 export interface JsonObject {
-  json: FanData | FanDataWithDetails;
+  json: FanData;
   start: number;
   end: number;
 }
@@ -58,7 +32,6 @@ export const findJsonObjects = (text: string): JsonObject[] => {
         try {
           const jsonStr = text.slice(start, i + 1);
           const parsed = JSON.parse(jsonStr);
-          // Check for both old and new fan data formats
           if (parsed && Array.isArray(parsed.fans)) {
             results.push({
               json: parsed,
