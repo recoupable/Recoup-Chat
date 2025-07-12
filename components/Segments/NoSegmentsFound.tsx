@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button";
-import { createArtistSegments } from "@/lib/segments/createArtistSegments";
 import { useArtistProvider } from "@/providers/ArtistProvider";
 import { toast } from "react-toastify";
 
@@ -15,7 +14,15 @@ const NoSegmentsFound = ({ refetch }: NoSegmentsFoundProps) => {
     const artist_account_id = selectedArtist.account_id;
     const prompt = "Segment my fans";
     try {
-      await createArtistSegments({ artist_account_id, prompt });
+      const response = await fetch("/api/segments/create", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ artist_account_id, prompt }),
+      });
+      const data = await response.json();
+      if (!response.ok || data.error) {
+        throw new Error(data.error || "Failed to generate segments");
+      }
       toast.success("Segments generated successfully!");
       if (refetch) refetch();
     } catch (error) {
