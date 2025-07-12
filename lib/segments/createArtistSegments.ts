@@ -6,6 +6,7 @@ import { deleteSegments } from "../supabase/segments/deleteSegments";
 import { insertArtistSegments } from "../supabase/artist_segments/insertArtistSegments";
 import { Tables } from "@/types/database.types";
 import { successResponse, errorResponse } from "./createSegmentResponses";
+import { GenerateArrayResult } from "../ai/generateArray";
 
 interface CreateArtistSegmentsParams {
   artist_account_id: string;
@@ -37,12 +38,9 @@ export const createArtistSegments = async ({
     }
 
     // Step 3: Generate segment names using AI
-    const generateSegmentResults = await generateSegments({ fans, prompt });
-    const segmentNames = generateSegmentResults.map(
-      (segment) => segment.segmentName
-    );
+    const segments = await generateSegments({ fans, prompt });
 
-    if (segmentNames.length === 0) {
+    if (segments.length === 0) {
       return errorResponse("Failed to generate segment names");
     }
 
@@ -50,8 +48,8 @@ export const createArtistSegments = async ({
     await deleteSegments(artist_account_id);
 
     // Step 5: Insert segments into the database
-    const segmentsToInsert = segmentNames.map((name: string) => ({
-      name,
+    const segmentsToInsert = segments.map((segment: GenerateArrayResult) => ({
+      name: segment.segmentName,
       updated_at: new Date().toISOString(),
     }));
 
@@ -71,13 +69,13 @@ export const createArtistSegments = async ({
     );
 
     return successResponse(
-      `Successfully created ${segmentNames.length} segments for artist`,
+      `Successfully created ${segments.length} segments for artist`,
       {
-        segments: insertedSegments,
-        artist_segments: insertedArtistSegments,
-        segment_names: segmentNames,
+        supabase_segments: insertedSegments,
+        supabase_artist_segments: insertedArtistSegments,
+        segments,
       },
-      segmentNames.length
+      segments.length
     );
   } catch (error) {
     console.error("Error creating artist segments:", error);
