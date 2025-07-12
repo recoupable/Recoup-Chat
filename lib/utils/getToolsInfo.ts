@@ -7,6 +7,7 @@ function getToolInfo(toolName: string): { message: string } {
     }
     // Artist data tools
     else if (toolName === "get_artist_segments" ||
+        toolName === "create_artist_segments" ||
         toolName === "get_artist_socials" ||
         toolName === "create_new_artist" ||
         toolName === "delete_artist") {
