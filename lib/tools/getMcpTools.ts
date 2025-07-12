@@ -36,6 +36,7 @@ import getScheduledActions from "./scheduled_actions/getScheduledActions";
 import updateScheduledAction from "./scheduled_actions/updateScheduledActions";
 import deleteScheduledAction from "./scheduled_actions/deleteScheduledActions";
 import getSocialFans from "./getSocialFans";
+import generateArray from "./generateArray";
 
 export async function getMcpTools() {
   const tools = {
@@ -77,6 +78,7 @@ export async function getMcpTools() {
     update_scheduled_action: updateScheduledAction,
     delete_scheduled_actions: deleteScheduledAction,
     get_social_fans: getSocialFans,
+    generate_array: generateArray,
   };
 
   return tools;
