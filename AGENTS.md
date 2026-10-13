@@ -31,6 +31,7 @@ pnpm build          # Production build (uses webpack)
 pnpm lint           # Run linter
 pnpm format         # Run prettier + lint
 pnpm update-types   # Regenerate Supabase types
+pnpm instructions:check # Check maintained architecture paths in this file
 ```
 
 ## Architecture
@@ -40,11 +41,10 @@ pnpm update-types   # Regenerate Supabase types
 - `components/` - React UI components (shadcn/ui + Radix primitives)
 - `hooks/` - React hooks for data fetching and state
 - `lib/` - Core business logic organized by domain:
-  - `lib/ai/` - AI/LLM integrations
-  - `lib/chat/` - Chat message handling
+  - `lib/ai/` - AI helper utilities and model presentation
+  - `lib/api/` - Client API origin and response helpers
+  - `lib/chat/` - Workflow chat transport and message helpers
   - `lib/supabase/` - Database operations
-  - `lib/tools/` - AI tool definitions
-  - `lib/browser/` - Stagehand browser automation
   - `lib/stripe/` - Payment processing
 - `providers/` - React context providers
 - `types/` - TypeScript type definitions
@@ -56,7 +56,6 @@ pnpm update-types   # Regenerate Supabase types
 - **Database**: Supabase (PostgreSQL)
 - **Auth**: Privy
 - **Payments**: Stripe
-- **Browser Automation**: Stagehand (Playwright + AI)
 - **Styling**: Tailwind CSS v4, shadcn/ui, Radix UI
 
 ## Code Principles (from principles.md)
@@ -79,7 +78,16 @@ pnpm update-types   # Regenerate Supabase types
 
 ## MCP Tools
 
-Tools like `send_email` are now provided by the recoup-api MCP server, not defined locally. Tool chains in `lib/chat/toolChains/` reference tool names that MCP provides.
+The central API owns MCP registration and tool execution. App chat uses
+`hooks/useChatTransport.ts` and `lib/chat/createWorkflowChatTransport.ts` to send
+messages to the API's `POST /api/chat` and resume through
+`GET /api/chat/{chatId}/stream`. `lib/api/getClientApiBaseUrl.ts` selects the client
+API origin. Keep session/chat identifiers and authenticated headers at the
+transport boundary; App tool-result renderers do not register server tools.
+Implement tool/business-logic changes in the owning API repository.
+
+Run `pnpm instructions:check` after changing the architecture sections. It checks
+only maintained paths in this file, not historical documents or example trees.
 
 ## Constants (`lib/consts.ts`)
 

@@ -29,6 +29,9 @@ jobs:
         with:
           version: 8
 
+      - name: Check maintained contributor paths
+        run: node scripts/check-maintained-instructions.mjs
+
       - name: Install dependencies
         run: pnpm install
 
