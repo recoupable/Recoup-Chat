@@ -56,7 +56,9 @@ function bytesStream(chunks: Uint8Array[]) {
 }
 
 async function collect(stream: ReadableStream<Uint8Array>) {
-  return Array.fromAsync(parseSurfaceStream(stream));
+  const events = [];
+  for await (const event of parseSurfaceStream(stream)) events.push(event);
+  return events;
 }
 
 describe("surface contracts", () => {
