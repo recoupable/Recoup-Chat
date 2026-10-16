@@ -47,6 +47,9 @@ const EvidencePanel = ({
   }, [focusRequest]);
 
   let safeHref: string | undefined;
+  const observedAt = evidence ? new Date(evidence.observedAt) : null;
+  const hasValidObservedAt =
+    observedAt !== null && Number.isFinite(observedAt.getTime());
   if (evidence?.href) {
     try {
       const url = new URL(evidence.href);
@@ -115,14 +118,18 @@ const EvidencePanel = ({
             <div>
               <dt className="text-muted-foreground">Observed at</dt>
               <dd className="mt-1 font-medium">
-                <time dateTime={evidence.observedAt}>
-                  {new Intl.DateTimeFormat("en-US", {
-                    dateStyle: "medium",
-                    timeStyle: "short",
-                    timeZone: "UTC",
-                  }).format(new Date(evidence.observedAt))}{" "}
-                  UTC
-                </time>
+                {hasValidObservedAt ? (
+                  <time dateTime={evidence.observedAt}>
+                    {new Intl.DateTimeFormat("en-US", {
+                      dateStyle: "medium",
+                      timeStyle: "short",
+                      timeZone: "UTC",
+                    }).format(observedAt)}{" "}
+                    UTC
+                  </time>
+                ) : (
+                  <span>Date unavailable</span>
+                )}
               </dd>
             </div>
           </dl>

@@ -18,7 +18,7 @@ const releaseEvidence: Evidence[] = [
     observedAt: "2026-10-16T09:00:00Z",
     kind: "submitted",
     status: "current",
-    text: "SYNTHETIC EXAMPLE. Four tracks are planned for the Night Swimming EP. Glasshouse and Low Tide have masters and artwork. After Hours is missing artwork. Daybreak has a master, but its contributor confirmation is still pending. This worksheet is a submitted claim, not proof of ownership or delivery.",
+    text: "SYNTHETIC EXAMPLE. Four tracks are planned for the Night Swimming EP. Glasshouse and Low Tide have masters and artwork. After Hours has a master but is missing artwork. Daybreak has a master, but its contributor confirmation is still pending. Maya coordinates Glasshouse and Low Tide; Jules coordinates After Hours and Daybreak. This worksheet is a submitted claim, not proof of ownership or delivery.",
   },
   {
     id: "contributor-note",
@@ -75,8 +75,8 @@ const releaseRows = [
     id: "daybreak",
     label: "Daybreak",
     values: {
-      material: "Master + artwork",
-      review: "Confirmation pending",
+      material: "Master; artwork unconfirmed",
+      review: "Confirm contributors; check artwork",
       owner: "Jules",
     },
     evidenceIds: ["delivery-sheet", "contributor-note"],
@@ -89,7 +89,7 @@ const releaseCollection: Component = {
   title: "Track readiness",
   columns: [
     { key: "material", label: "Materials" },
-    { key: "review", label: "Review" },
+    { key: "review", label: "Next step" },
     { key: "owner", label: "Owner" },
   ],
   rows: releaseRows,
@@ -265,7 +265,7 @@ const sourcingInitial: Surface = {
       items: [
         {
           id: "quotes",
-          label: "Quotes received",
+          label: "Quote rows loaded",
           value: "1 / 3",
           detail: "Example stream has more records",
           evidenceIds: ["quote-sheet"],
@@ -283,7 +283,7 @@ const sourcingInitial: Surface = {
   ],
   evidence: sourcingEvidence,
   fallbackText:
-    "Synthetic supplier example for 500 studio bags. One of three quotes received: Northline, $2,400, 21 days, sample reviewed. Source: fictional October quote comparison and sample log. No purchase has been approved or placed.",
+    "Synthetic supplier example for 500 studio bags. One of three quote rows loaded: Northline, $2,400, 21 days, sample reviewed. Source: fictional October quote comparison and sample log. No purchase has been approved or placed.",
 };
 
 export const playgroundScenarios: PlaygroundScenario[] = [
@@ -303,7 +303,7 @@ export const playgroundScenarios: PlaygroundScenario[] = [
         upsert: [releaseCollection, releaseMetrics],
         remove: [],
         fallbackText:
-          "Synthetic Night Swimming example. All four tracks received. Glasshouse and Low Tide are ready for review. After Hours needs artwork; Daybreak needs contributor confirmation. Sources: fictional delivery worksheet revision 3, contributor follow-up, and readiness calculation. No release approval or delivery has occurred.",
+          "Synthetic Night Swimming example. All four tracks received. Glasshouse and Low Tide are ready for review. After Hours needs artwork; Daybreak needs contributor confirmation and its artwork is unconfirmed. Sources: fictional delivery worksheet revision 3, contributor follow-up, and readiness calculation. No release approval or delivery has occurred.",
       },
       {
         type: "surface.patch",
@@ -332,9 +332,9 @@ export const playgroundScenarios: PlaygroundScenario[] = [
               },
               {
                 id: "confirmation",
-                label: "Confirm Daybreak contributors",
+                label: "Check Daybreak documentation",
                 detail:
-                  "Jules · inspect the missing confirmation before review.",
+                  "Jules · confirm contributors and check the unrecorded artwork before review.",
                 status: "needs-review",
                 evidenceIds: ["contributor-note"],
               },

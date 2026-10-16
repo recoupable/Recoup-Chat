@@ -8,6 +8,9 @@ import type { PlaygroundScenario } from "./scenarios";
 
 export function useExampleReplay(scenario: PlaygroundScenario) {
   const [surface, setSurface] = useState(scenario.initial);
+  const [completedSurface, setCompletedSurface] = useState<Surface | null>(
+    null,
+  );
   const [status, setStatus] = useState<
     "ready" | "streaming" | "complete" | "stopped" | "error"
   >("ready");
@@ -71,7 +74,12 @@ export function useExampleReplay(scenario: PlaygroundScenario) {
         throw new Error(
           "The stream ended early. The last valid view is still available; replay to finish.",
         );
-      if (active.current === controller) setStatus("complete");
+      if (active.current === controller) {
+        // Commit only after a valid completion and EOF. A malformed refresh must
+        // not replace the coherent answer the user is already reading/editing.
+        setCompletedSurface(current);
+        setStatus("complete");
+      }
     } catch (cause) {
       if (controller.signal.aborted || active.current !== controller) return;
       setError(
@@ -85,5 +93,5 @@ export function useExampleReplay(scenario: PlaygroundScenario) {
     }
   };
 
-  return { surface, status, error, replay, stop };
+  return { surface, completedSurface, status, error, replay, stop };
 }

@@ -49,11 +49,13 @@ describe("useExampleReplay", () => {
     fetchMock.mockResolvedValue(response(scenario.events));
     const { result } = renderHook(() => useExampleReplay(scenario));
     expect(result.current.status).toBe("ready");
+    expect(result.current.completedSurface).toBeNull();
     await act(async () => {
       await result.current.replay();
     });
     expect(result.current.status).toBe("complete");
     expect(result.current.surface.revision).toBe(2);
+    expect(result.current.completedSurface).toBe(result.current.surface);
     expect(result.current.error).toBeNull();
     expect(fetchMock).toHaveBeenCalledWith(
       "/api/intelligent-ui/playground?scenario=release",
@@ -75,6 +77,7 @@ describe("useExampleReplay", () => {
     expect(result.current.status).toBe("error");
     expect(result.current.error).toMatch(/could not be validated/);
     expect(result.current.surface.revision).toBe(1);
+    expect(result.current.completedSurface).toBeNull();
     const collection = result.current.surface.components.find(
       (component) => component.type === "collection",
     );
@@ -90,6 +93,7 @@ describe("useExampleReplay", () => {
     expect(result.current.status).toBe("error");
     expect(result.current.error).toMatch(/ended early/);
     expect(result.current.surface.revision).toBe(1);
+    expect(result.current.completedSurface).toBeNull();
   });
 
   it("rejects updates after completion instead of advancing the completed view", async () => {
@@ -114,6 +118,7 @@ describe("useExampleReplay", () => {
     expect(result.current.status).toBe("error");
     expect(result.current.error).toMatch(/after completion/);
     expect(result.current.surface.revision).toBe(2);
+    expect(result.current.completedSurface).toBeNull();
     expect(result.current.surface.fallbackText).not.toBe(
       "Untrusted later update",
     );
@@ -133,6 +138,7 @@ describe("useExampleReplay", () => {
     });
     expect(result.current.status).toBe("error");
     expect(result.current.surface).toBe(completed);
+    expect(result.current.completedSurface).toBe(completed);
   });
 
   it.each(["surface", "workspace", "subject", "kind"] as const)(
@@ -154,6 +160,7 @@ describe("useExampleReplay", () => {
       expect(result.current.status).toBe("error");
       expect(result.current.error).toMatch(/different workspace or subject/);
       expect(result.current.surface).toEqual(scenario.initial);
+      expect(result.current.completedSurface).toBeNull();
     },
   );
 
@@ -186,6 +193,7 @@ describe("useExampleReplay", () => {
     expect(result.current.status).toBe("stopped");
     expect(result.current.error).toBeNull();
     expect(result.current.surface.revision).toBe(1);
+    expect(result.current.completedSurface).toBeNull();
     expect(fetchMock.mock.calls[0][1].signal.aborted).toBe(true);
     expect(cancel).toHaveBeenCalled();
     expect(body.locked).toBe(false);
@@ -217,6 +225,7 @@ describe("useExampleReplay", () => {
     expect(result.current.status).toBe("complete");
     expect(result.current.surface.title).toBe("Current run");
     expect(result.current.surface.revision).toBe(2);
+    expect(result.current.completedSurface).toBe(result.current.surface);
     expect(result.current.error).toBeNull();
   });
 
@@ -239,6 +248,7 @@ describe("useExampleReplay", () => {
     });
     expect(result.current.status).toBe("complete");
     expect(result.current.error).toBeNull();
+    expect(result.current.completedSurface).toBe(result.current.surface);
   });
 
   it("unmount aborts a pending stream and releases the reader", async () => {
@@ -306,4 +316,126 @@ describe("useExampleReplay", () => {
     expect(result.current.replay.surface.revision).toBe(2);
     expect(result.current.workingView.view).toEqual(userWork);
   });
+
+  it("does not commit a valid completion until the stream also reaches EOF", async () => {
+    let streamController!: ReadableStreamDefaultController<Uint8Array>;
+    const body = new ReadableStream<Uint8Array>({
+      start(controller) {
+        streamController = controller;
+        controller.enqueue(
+          new TextEncoder().encode(
+            scenario.events
+              .map((event) => `${JSON.stringify(event)}\n`)
+              .join(""),
+          ),
+        );
+      },
+    });
+    fetchMock.mockResolvedValue({ ok: true, body });
+    const { result } = renderHook(() => useExampleReplay(scenario));
+    let run!: Promise<void>;
+    act(() => {
+      run = result.current.replay();
+    });
+    await waitFor(() => expect(result.current.surface.revision).toBe(2));
+    expect(result.current.status).toBe("streaming");
+    expect(result.current.completedSurface).toBeNull();
+    await act(async () => {
+      streamController.close();
+      await run;
+    });
+    expect(result.current.status).toBe("complete");
+    expect(result.current.completedSurface).toBe(result.current.surface);
+  });
+
+  it.each(["partial", "malformed", "after-completion"] as const)(
+    "preserves the prior completed document when a replacement is %s",
+    async (failure) => {
+      const next = structuredClone(scenario.events);
+      if (next[0].type !== "surface.snapshot")
+        throw new Error("Missing snapshot");
+      next[0].surface.title = "Replacement run";
+      const nextEvents =
+        failure === "after-completion"
+          ? [
+              ...next,
+              {
+                type: "surface.patch",
+                surfaceId: scenario.initial.id,
+                baseRevision: 2,
+                revision: 3,
+                upsert: [],
+                remove: [],
+              },
+            ]
+          : next.slice(0, 2);
+      fetchMock
+        .mockResolvedValueOnce(response(scenario.events))
+        .mockResolvedValueOnce(
+          response(nextEvents, failure === "malformed" ? "{broken}\n" : ""),
+        );
+      const { result } = renderHook(() => useExampleReplay(scenario));
+      await act(async () => {
+        await result.current.replay();
+      });
+      const completed = result.current.completedSurface;
+      await act(async () => {
+        await result.current.replay();
+      });
+      expect(result.current.status).toBe("error");
+      expect(result.current.completedSurface).toBe(completed);
+      expect(result.current.surface.title).toBe("Replacement run");
+      expect(result.current.surface.revision).toBe(
+        failure === "after-completion" ? 2 : 1,
+      );
+      expect(result.current.surface).not.toBe(completed);
+    },
+  );
+
+  it.each([2, 4])(
+    "preserves the prior completed document when stopped after %i new events",
+    async (eventCount) => {
+      const next = structuredClone(scenario.events);
+      if (next[0].type !== "surface.snapshot")
+        throw new Error("Missing snapshot");
+      next[0].surface.title = "Stopped replacement";
+      const body = new ReadableStream<Uint8Array>({
+        start(controller) {
+          controller.enqueue(
+            new TextEncoder().encode(
+              next
+                .slice(0, eventCount)
+                .map((event) => `${JSON.stringify(event)}\n`)
+                .join(""),
+            ),
+          );
+        },
+      });
+      fetchMock
+        .mockResolvedValueOnce(response(scenario.events))
+        .mockResolvedValueOnce({ ok: true, body });
+      const { result } = renderHook(() => useExampleReplay(scenario));
+      await act(async () => {
+        await result.current.replay();
+      });
+      const completed = result.current.completedSurface;
+      let run!: Promise<void>;
+      act(() => {
+        run = result.current.replay();
+      });
+      await waitFor(() =>
+        expect(result.current.surface.title).toBe("Stopped replacement"),
+      );
+      expect(result.current.status).toBe("streaming");
+      expect(result.current.completedSurface).toBe(completed);
+      await act(async () => {
+        result.current.stop();
+        await run;
+      });
+      expect(result.current.status).toBe("stopped");
+      expect(result.current.completedSurface).toBe(completed);
+      expect(result.current.surface.revision).toBe(eventCount === 2 ? 1 : 2);
+      expect(body.locked).toBe(false);
+    },
+  );
 });

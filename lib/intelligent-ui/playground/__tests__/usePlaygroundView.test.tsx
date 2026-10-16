@@ -3,7 +3,11 @@ import { act, cleanup, renderHook } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { usePlaygroundView } from "../usePlaygroundView";
 import { playgroundScenarios, type PlaygroundScenario } from "../scenarios";
-import { emptyViewState, type PlaygroundViewState } from "../viewState";
+import {
+  emptyViewState,
+  VIEW_STATE_MAX_SERIALIZED_LENGTH,
+  type PlaygroundViewState,
+} from "../viewState";
 
 const release = playgroundScenarios[0];
 const sourcing = playgroundScenarios[1];
@@ -157,8 +161,8 @@ describe("usePlaygroundView", () => {
     JSON.stringify({ ...emptyViewState, notes: 42 }),
     JSON.stringify({ ...emptyViewState, notes: "x".repeat(4001) }),
     JSON.stringify({ ...emptyViewState, untrustedField: "value" }),
-    "x".repeat(12001),
-  ])("recovers from invalid or oversized saved data", (raw) => {
+    "x".repeat(VIEW_STATE_MAX_SERIALIZED_LENGTH + 1),
+  ])("recovers from invalid or oversized saved data: case %#", (raw) => {
     stored.set(keyFor(release), raw);
     const { result } = renderHook(() => usePlaygroundView(release));
     expect(result.current.restored).toBe(true);

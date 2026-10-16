@@ -6,7 +6,11 @@ const id = z
   .min(1)
   .max(128)
   .regex(/^[A-Za-z0-9][A-Za-z0-9._:-]*$/);
-const label = z.string().min(1).max(160);
+const label = z
+  .string()
+  .min(1)
+  .max(160)
+  .refine((value) => value.trim().length > 0, "Label must contain text");
 const revision = z.number().int().nonnegative().max(Number.MAX_SAFE_INTEGER);
 const evidenceIds = z
   .array(id)
@@ -20,7 +24,14 @@ export const evidenceSchema = z
     id,
     label,
     sourceLabel: label,
-    observedAt: z.string().max(64).datetime({ offset: true }),
+    observedAt: z
+      .string()
+      .max(64)
+      .datetime({ offset: true })
+      .refine(
+        (value) => Number.isFinite(Date.parse(value)),
+        "Invalid timestamp",
+      ),
     text: z.string().min(1).max(8000),
     kind: z.enum(["observed", "submitted", "derived", "proposed"]),
     status: z.enum(["current", "partial", "withdrawn"]),

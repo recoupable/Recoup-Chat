@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import {
   emptyViewState,
   viewStateSchema,
+  VIEW_STATE_MAX_SERIALIZED_LENGTH,
   type PlaygroundViewState,
 } from "./viewState";
 import type { PlaygroundScenario } from "./scenarios";
@@ -18,7 +19,7 @@ export function usePlaygroundView(scenario: PlaygroundScenario) {
   useEffect(() => {
     try {
       const raw = localStorage.getItem(key);
-      if (raw && raw.length <= 12000) {
+      if (raw && raw.length <= VIEW_STATE_MAX_SERIALIZED_LENGTH) {
         const result = viewStateSchema.safeParse(JSON.parse(raw));
         if (result.success) {
           const rowIds = new Set(
@@ -64,7 +65,10 @@ export function usePlaygroundView(scenario: PlaygroundScenario) {
     // Bounded practice notes are saved immediately so switching examples cannot
     // discard an edit still waiting on a debounce timer.
     try {
-      localStorage.setItem(key, JSON.stringify(view));
+      const serialized = JSON.stringify(viewStateSchema.parse(view));
+      if (serialized.length > VIEW_STATE_MAX_SERIALIZED_LENGTH)
+        throw new Error("Saved view exceeds the storage limit");
+      localStorage.setItem(key, serialized);
       // eslint-disable-next-line react-hooks/set-state-in-effect -- Report the outcome of the external storage write.
       setSaved(true);
     } catch {

@@ -1,119 +1,129 @@
 # Intelligent UI playground
 
-First executable slice of [epic #2197](https://github.com/recoupable/app/issues/2197),
+An executable design slice of [epic #2197](https://github.com/recoupable/app/issues/2197),
 guided by [RFC #2240](https://github.com/recoupable/app/issues/2240).
+See [RESEARCH.md](./RESEARCH.md) for the 2026 studies, design decisions, limits,
+and proposed evaluation. This redesign has not undergone a comparative user study.
 
 Run `pnpm install --frozen-lockfile`, then `pnpm dev`, and open
-`/labs/intelligent-ui`. No AI, authentication, or database credentials are needed
-for these synthetic examples. A Vercel preview must explicitly set
-`RECOUP_INTELLIGENT_UI_PLAYGROUND=true`. Production deployments always return 404
-for both the page and its stream endpoint. The examples cannot execute tools,
-approve a release, or place an order.
+`/labs/intelligent-ui`. No AI, authentication, or database credentials are needed.
+A Vercel preview must set `RECOUP_INTELLIGENT_UI_PLAYGROUND=true`. Production
+always returns 404 for both the page and stream endpoint.
 
-## What is implemented
+## Conversation first
 
-- One validated surface contract and a fixed catalog of four components:
-  summary, metrics, collection, and checklist.
-- A React renderer shared by release-readiness and supplier-review scenarios.
-  Domain labels and evidence are fixture data; the renderer contains no artist,
-  supplier, tool, or account lookup logic.
-- Actual paced NDJSON transport over a Next route: snapshot, two atomic patches,
-  completion. The producer replays bundled examples; it does not generate content.
-- Evidence inspection with source, time, submitted/observed/derived/proposed kind,
-  and current/partial/withdrawn status. Stream completion never implies evidence
-  completeness or business approval.
-- Local filtering, row selection, evidence inspection, notes, and a plain-text
-  representation. User state survives streamed revisions and reloads. Only view
-  state is stored on the device; streamed documents are not accepted records.
-- Cancellation, late-request rejection, invalid-update recovery, accessible
-  controls, mobile horizontal table scrolling, and light/dark tokens.
+The host shows a question and a concise answer in Recoup's normal reading column.
+A pure presentation policy may add **one** useful collection. It never adds UI
+just because the document contains components.
+
+- Release review shows two affected tracks, with all four available on request.
+- Supplier comparison aligns three quotes, lead times, and sample-review status.
+- A simple track-count question returns text with an optional source link.
+- Sources open on request. A desktop table becomes labelled records on narrow
+  containers, retaining decision-relevant fields without horizontal scrolling.
+- One follow-up action opens an editable local draft. Copying has an accessible
+  manual fallback. No message is sent, model called, or business action executed.
+
+The hero, repeated summaries/metrics/checklists, search, ineffective row selection,
+and permanent evidence/notes rail have been removed. Their unused React renderers
+were deleted. The four versioned **contract** types remain in protocol fixtures
+so selection can be tested against a richer document without rendering it all.
+This is not a complete component catalog or a published SDK.
 
 ## Boundaries
 
-| Layer             | Files                                                              | Responsibility                                                            |
-| ----------------- | ------------------------------------------------------------------ | ------------------------------------------------------------------------- |
-| Portable contract | `schema.ts`, `validateUniqueIds.ts`                                | Strict v1 data validation; no React, Next, DOM, or Recoup service imports |
-| Protocol          | `applySurfaceEvent.ts`, `parseSurfaceStream.ts`, `streamLimits.ts` | Atomic revisions and bounded stream decoding                              |
-| React adapter     | `components/IntelligentUI/Surface*`, `Evidence*`                   | Inert text, accessible visual patterns, interaction callbacks             |
-| Example host      | `playground/`, `components/IntelligentUI/Playground*`              | Synthetic domain data, fetch lifecycle, local persistence, controls       |
-| Transport entry   | `app/api/intelligent-ui/playground/route.ts`                       | Environment gate, fixture enum, cancellable stream                        |
+| Layer             | Files                                                              | Responsibility                                                       |
+| ----------------- | ------------------------------------------------------------------ | -------------------------------------------------------------------- |
+| Portable contract | `schema.ts`, `validateUniqueIds.ts`                                | Strict v1 validation; no React, Next, DOM, or service imports        |
+| Protocol          | `applySurfaceEvent.ts`, `parseSurfaceStream.ts`, `streamLimits.ts` | Atomic revisions and bounded decoding                                |
+| Presentation      | `presentation/`                                                    | Host-authored task intent; text or one useful collection             |
+| React adapter     | `components/IntelligentUI/InlineCollection.tsx`, `Evidence*`       | Inert text, responsive patterns, source disclosure                   |
+| Example host      | `playground/`, `Playground*`, `FollowUpDraft.tsx`                  | Fixture data, paired authored answers, local drafts, replay controls |
+| Transport         | `app/api/intelligent-ui/playground/route.ts`                       | Environment gate, fixture enum, cancellable NDJSON                   |
 
-This is an internal prototype, not a published SDK. The fixed catalog is the
-minimal baseline for the runtime comparison in #2200; it does not claim OpenUI,
-json-render, A2UI, or ChatGPT's private implementation has won that comparison.
-Nothing interprets model-produced JavaScript, HTML, arbitrary URLs, or tool names.
+The policy is a conservative prototype, not a learned ranking system. Comparison
+requires at least two distinct records with a meaningful difference in a displayed
+schema column. Review requires an explicit, valid subset. Missing candidates fall
+back to text. It contains no confidence scores, domain lookups, or action authority.
+The host narrows release columns only for review; comparisons retain all columns
+used by the policy. Source coverage remains distinct from subset completeness.
 
-## Protocol v1
+## Replay and response coherence
 
-1. `surface.snapshot` initializes an empty stream session with a complete validated
-   document. The host verifies its surface, workspace, and subject identities
-   against the selected scenario.
-2. `surface.patch` targets that surface, requires the exact current `baseRevision`,
-   and advances `revision` by one. Components are upserted/removed atomically.
-   An optional evidence list replaces the whole evidence set in the same transaction.
-   The final document must still have valid references. The context is immutable.
-3. `surface.complete` must match the current surface/revision. The host rejects
-   any later event and treats an EOF before completion as interruption.
+The lab opens with the completed, validated fixture, not a loading dashboard.
+Protocol diagnostics and replay are behind **About this example**.
 
-Stable component IDs keep React trees mounted. Collection row IDs are unique
-across a surface so controlled selection is unambiguous. Other item IDs are unique
-within their component. Replay creates a new stream session; it preserves local
-selection even while previously seen rows await their replayed records.
+1. `surface.snapshot` initializes an empty stream with a validated document.
+   The host checks surface, workspace, subject kind, and subject ID.
+2. `surface.patch` requires the exact current base revision and advances by one.
+   Upserts/removals and optional evidence replacement are validated atomically.
+3. `surface.complete` must match the document revision. Events after completion
+   and EOF before completion are errors.
 
-Unknown versions and component types are rejected. Invalid patches leave the last
-valid view intact. Source links permit only credential-free HTTPS; text stays
-inert. Parser limits are 256 KiB per line, 2 MiB per stream, and 256 events. Zod
-also bounds text, components, rows, columns, and evidence references. These limits
-are prototype defaults, not an authorization or tenancy boundary.
+`useExampleReplay` exposes the latest valid streamed document separately from
+`completedSurface`, which commits only after a valid completion **and EOF**.
+The visible answer stays intact during replay, interruption, or cancellation.
+An old request cannot replace a newer request's result.
 
-## Persistence and isolation
+Authored prose and drafts describe one exact fixture. The conversation adopts a
+completed replay only if its content matches that fixture; a changed document is
+reported in diagnostics and cannot silently contradict the authored answer.
+A future live producer needs a versioned answer/UI bundle; this fixture guard is
+not a substitute for that contract. The lab makes no model-generation claim.
 
-`PlaygroundWorkspace` is keyed by scenario, so switching examples unmounts the old
-controller and aborts its request. A request identity check also rejects callbacks
-from superseded fetches. Device state uses a fixture-version/workspace/subject
-namespace and is validated before restoration. Unknown row/evidence IDs are
-discarded. Storage failures leave the working view usable and report that it has
-not been saved. Fixture version 1 must change if fixture IDs acquire new meanings.
+Stable IDs preserve component identity. Drafts and disclosure state live outside
+the streamed document. No update steals focus, overwrites an edit, or opens a source.
+Stream completion does not establish source completeness or business approval.
 
-The exact lab path is also gated in `proxy.ts`, before the root Suspense boundary
-can commit a streaming HTTP 200 response. The page retains its independent gate;
-the stream endpoint does not depend on the proxy. Other routes pass through.
+Unknown versions/types, invalid references, blank labels, invalid dates, and
+unsafe source links are rejected. Text stays inert. Links permit credential-free
+HTTPS only. Bounds: 256 KiB per line, 2 MiB per stream, 256 events, plus schema
+limits on fields and records. These are prototype limits, not tenant authorization.
 
-The exact lab path mounts only the theme provider, avoiding account provisioning,
-wallet, checkout, and impersonation effects. Nearby paths retain their existing
-providers and chrome. Exact PWA NetworkOnly rules keep the page and its GET stream
-out of offline response caches. The page is dynamic and noindex.
+## Persistence and availability
 
-## Stories exercised
+`PlaygroundWorkspace` is keyed by conversation example. Switching examples
+unmounts and aborts the old controller. Existing fixture-version/workspace/subject
+storage validates state before restoration, discards unknown IDs, and uses the
+same serialized-size bound for reads and writes. Drafts are saved immediately;
+storage failure leaves them usable in the tab. Restoring never opens an inspector.
+Only local view state is stored, not accepted business records. Fixture version 1
+must change if IDs acquire different meanings.
 
-- As a release coordinator, I can see which example tracks need follow-up and
-  inspect what supports each claim.
-- As an operator, I can compare supplier quotes using the same components without
-  music-specific code in the renderer.
-- As a reviewer, I can select records and take notes while further records arrive.
-- As a returning user, I can recover my practice notes and selection on this device.
-- As a keyboard or mobile user, I can inspect evidence and use the text view.
-- As an integrator, I can inspect the document and reject stale or malformed updates
-  before they reach the renderer.
+The exact lab path is gated in `proxy.ts` before root Suspense can commit HTTP 200.
+The page and stream also gate independently. Production stays inaccessible even
+if the preview flag is set. The exact lab mounts only the theme provider, avoiding
+account, wallet, checkout, and impersonation effects. Other routes retain their
+normal providers. PWA NetworkOnly rules exclude the page/stream from response
+caches. The dynamic page is noindex.
 
-These advance #2202, #2203, #2205, #2206, and #2207; they do not satisfy those
-tickets' entire platform acceptance criteria. Live chat integration (#2209),
-authorized data adapters, action receipts/approval, cross-device persistence,
-package distribution/second host, and a model-driven producer remain subsequent
-work. Existing backend authority and company/subject identities remain owned by
-their existing services.
+## Stories and remaining work
+
+A coordinator can identify affected tracks, inspect evidence, and prepare a local
+follow-up. An operator can compare suppliers with the same renderer. A simple
+question needs no widget. Drafts survive replay/reload; source dialogs return focus
+to their initiating controls. Integrators can inspect malformed or partial streams
+without displacing the coherent answer.
+
+This advances #2202–#2207, including selectivity (#2204), but does not close their
+platform-wide acceptance criteria. Live chat (#2209), model-produced response
+bundles, authorized adapters/actions, receipts, cross-device state, distributed
+packages/second hosts, and usability evaluation remain separate work.
 
 ## Verification
 
-Run `pnpm exec vitest run lib/intelligent-ui components/IntelligentUI
-app/labs/intelligent-ui providers/__tests__/PlaygroundProviders.test.tsx
-components/Context/__tests__/ContextPageLayout.test.tsx` (as one line).
-Tests cover protocol limits, references, source safety, revision ordering,
-cancellation, restored state, renderer interaction, environment gates, and
-provider/cache boundaries. Also run `pnpm exec next typegen`,
-`pnpm exec tsc --noEmit`, and scoped ESLint. The Intelligent UI GitHub workflow
-runs these checks for changes to this feature and its integration boundaries.
+Run, as one line:
 
-Browser checks: select a row and enter a fictional note, replay updates, inspect
-both sources on a row, switch examples during replay, return/reload, filter to
-zero matches, toggle text view, and check mobile/dark/keyboard behavior.
+```sh
+pnpm exec vitest run lib/intelligent-ui components/IntelligentUI app/labs/intelligent-ui providers/__tests__/PlaygroundProviders.test.tsx components/Context/__tests__/ContextPageLayout.test.tsx
+```
+
+Also run `pnpm exec next typegen`, `pnpm exec tsc --noEmit`, and scoped ESLint.
+The feature CI runs these checks. Tests cover selectivity, protocol limits and
+ordering, coherent replay commits, source safety, dialogs, draft persistence,
+clipboard recovery, environment gates, and provider/cache isolation.
+
+Manual visual checks remain necessary: desktop/mobile, text resizing, dark mode,
+keyboard order, source popover-to-dialog handoff, draft close/restore, and replay
+while editing. Automated DOM checks do not establish visual quality or prove
+that the interface improves real user outcomes.
