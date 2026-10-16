@@ -75,6 +75,10 @@ namespace and is validated before restoration. Unknown row/evidence IDs are
 discarded. Storage failures leave the working view usable and report that it has
 not been saved. Fixture version 1 must change if fixture IDs acquire new meanings.
 
+The exact lab path is also gated in `proxy.ts`, before the root Suspense boundary
+can commit a streaming HTTP 200 response. The page retains its independent gate;
+the stream endpoint does not depend on the proxy. Other routes pass through.
+
 The exact lab path mounts only the theme provider, avoiding account provisioning,
 wallet, checkout, and impersonation effects. Nearby paths retain their existing
 providers and chrome. Exact PWA NetworkOnly rules keep the page and its GET stream

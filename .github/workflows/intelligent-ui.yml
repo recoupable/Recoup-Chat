@@ -12,6 +12,7 @@ on:
       - "providers/__tests__/PlaygroundProviders.test.tsx"
       - "components/Context/**"
       - "next.config.mjs"
+      - "proxy.ts"
       - "package.json"
       - "pnpm-lock.yaml"
       - "tsconfig.json"
@@ -28,6 +29,7 @@ on:
       - "providers/__tests__/PlaygroundProviders.test.tsx"
       - "components/Context/**"
       - "next.config.mjs"
+      - "proxy.ts"
       - "package.json"
       - "pnpm-lock.yaml"
       - "tsconfig.json"
@@ -53,7 +55,7 @@ jobs:
       - run: pnpm exec next typegen
       - run: pnpm exec tsc --noEmit
       - run: >-
-          pnpm exec eslint lib/intelligent-ui components/IntelligentUI
+          pnpm exec eslint proxy.ts lib/intelligent-ui components/IntelligentUI
           app/labs/intelligent-ui app/api/intelligent-ui/playground
           providers/Providers.tsx components/Context/ContextPageLayout.tsx
           providers/__tests__/PlaygroundProviders.test.tsx
