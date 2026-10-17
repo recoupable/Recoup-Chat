@@ -21,6 +21,7 @@ export function createSupplierScenario(source: Surface) {
     "Which supplier makes sense for 500 studio bags?",
     {
       ...source,
+      components: [],
       id: "example-supplier-answer",
       title: "Studio bags · 500 units",
       answer: {

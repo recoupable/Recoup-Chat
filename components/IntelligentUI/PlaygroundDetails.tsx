@@ -76,7 +76,7 @@ export default function PlaygroundDetails({
         </details>
         <details>
           <summary className="w-fit cursor-pointer rounded-lg py-3 outline-none focus-visible:ring-2 focus-visible:ring-ring">
-            Protocol and presentation decision
+            Protocol and answer data
           </summary>
           <pre
             role="region"

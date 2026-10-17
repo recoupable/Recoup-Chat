@@ -25,16 +25,19 @@ export function validateAnswer(
     ctx,
     ["answer", "parts"],
   );
-  validateUniqueIds(
-    answer.parts
-      .filter((part) => part.type === "representation")
-      .map((part) => part.componentId),
-    ctx,
-    ["answer", "parts"],
-  );
+  const representations = new Set<string>();
   const sources = new Set(surface.evidence.map((source) => source.id));
   answer.parts.forEach((part, index) => {
     const path = ["answer", "parts", index];
+    if (part.type === "representation") {
+      if (representations.has(part.componentId))
+        ctx.addIssue({
+          code: "custom",
+          path: [...path, "componentId"],
+          message: `Duplicate representation: ${part.componentId}`,
+        });
+      representations.add(part.componentId);
+    }
     if (part.type === "sources") {
       part.evidenceIds.forEach((id) => {
         if (!sources.has(id))

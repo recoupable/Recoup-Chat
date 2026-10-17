@@ -6,6 +6,18 @@ import MarkdownPart from "../MarkdownPart";
 afterEach(cleanup);
 
 describe("ordinary Markdown safety", () => {
+  it("preserves text when unsupported formatting is removed", () => {
+    render(
+      <MarkdownPart
+        text={
+          "## Summary\n\n```text\nKeep this example\n```\n\n~~Earlier wording~~"
+        }
+      />,
+    );
+    expect(screen.getByText("Summary")).toBeTruthy();
+    expect(screen.getByText("Keep this example")).toBeTruthy();
+    expect(screen.getByText("Earlier wording")).toBeTruthy();
+  });
   it("does not render raw HTML, executable links or remote images", () => {
     const { container } = render(
       <MarkdownPart
@@ -16,7 +28,8 @@ describe("ordinary Markdown safety", () => {
     );
     expect(container.querySelector("script")).toBeNull();
     expect(container.querySelector("img")).toBeNull();
-    expect(screen.getByText("bad").getAttribute("href")).toBe("");
+    expect(screen.getByText("bad")).toBeTruthy();
+    expect(container.querySelector("a")).toBeNull();
   });
   it("retains semantic tables and safe, clearly external source links", () => {
     render(

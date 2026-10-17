@@ -36,6 +36,8 @@ export function applySurfaceEvent(
       "Patch must advance the current surface revision by exactly one",
     );
   }
+  if (previous.answer && !event.answer)
+    throw new Error("A patch to an answered surface requires a fresh answer");
   const components = new Map(
     previous.components.map((component) => [component.id, component]),
   );

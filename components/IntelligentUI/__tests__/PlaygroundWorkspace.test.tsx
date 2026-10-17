@@ -103,7 +103,9 @@ describe("composed responses", () => {
       figure.compareDocumentPosition(interpretation) &
         Node.DOCUMENT_POSITION_FOLLOWING,
     ).not.toBe(0);
-    expect(within(figure).getByLabelText("420,000 plays")).toBeTruthy();
+    expect(within(figure).getByText("420,000").textContent).toBe(
+      "420,000 plays",
+    );
     expect(within(figure).getAllByRole("listitem")).toHaveLength(8);
     expect(within(figure).queryByRole("button")).toBeNull();
     expect(within(figure).queryByRole("slider")).toBeNull();
@@ -135,7 +137,7 @@ describe("composed responses", () => {
         screen.getByRole("article", { name: "Recoup response" }),
       ).queryByText(/account for 72%/),
     ).toBeNull();
-    expect(screen.getByLabelText("0 plays")).toBeTruthy();
+    expect(screen.getByText("0")).toBeTruthy();
     expect(screen.getByText(/580,000 supplied plays/)).toBeTruthy();
   });
 
@@ -152,7 +154,7 @@ describe("composed responses", () => {
         screen.getByRole("article", { name: "Recoup response" }),
       ).getByText(/account for 72%/),
     ).toBeTruthy();
-    expect(screen.getByLabelText("420,000 plays")).toBeTruthy();
+    expect(screen.getByText("420,000")).toBeTruthy();
   });
 
   it("exposes equivalent data when the host cannot render a representation", () => {
@@ -219,7 +221,7 @@ describe("composed responses", () => {
     expect(
       screen.getByText(/Billing and Accounts account for 90% of the minutes/),
     ).toBeTruthy();
-    expect(screen.getByLabelText("600 minutes")).toBeTruthy();
+    expect(screen.getByText("600")).toBeTruthy();
     expect(screen.queryByText("Spotify plays")).toBeNull();
   });
 });
@@ -233,7 +235,7 @@ describe("linked time state", () => {
     chorus.focus();
     fireEvent.click(chorus);
     expect(audio.currentTime).toBe(28);
-    expect(chorus.getAttribute("aria-pressed")).toBe("true");
+    expect(chorus.getAttribute("aria-current")).toBe("true");
     expect(
       within(screen.getByRole("region", { name: "Chorus" })).getByText(
         /The motif moves up an octave/,
@@ -246,7 +248,7 @@ describe("linked time state", () => {
     expect(
       screen
         .getByRole("button", { name: "Verse, 0:08 to 0:20" })
-        .getAttribute("aria-pressed"),
+        .getAttribute("aria-current"),
     ).toBe("true");
     expect(
       within(screen.getByRole("region", { name: "Verse" })).getByText(
@@ -272,7 +274,7 @@ describe("linked time state", () => {
     expect(
       screen
         .getByRole("button", { name: "Chorus, 0:28 to 0:40" })
-        .getAttribute("aria-pressed"),
+        .getAttribute("aria-current"),
     ).toBe("true");
     expect(play).not.toHaveBeenCalled();
   });
@@ -305,6 +307,10 @@ describe("linked time state", () => {
         screen.getByRole("article", { name: "Recoup response" }),
       ).getByRole("status").textContent,
     ).toContain("Audio is unavailable");
+    expect(screen.queryByText(/press play/)).toBeNull();
+    expect(
+      screen.getByText("Choose a section to read its notes."),
+    ).toBeTruthy();
     fireEvent.click(
       screen.getByRole("button", { name: "Chorus, 0:28 to 0:40" }),
     );
@@ -364,5 +370,19 @@ describe("linked time state", () => {
     ).toContain("Audio is unavailable");
     fireEvent.click(screen.getByText("Read all section notes"));
     expect(screen.getByText(/0:28–0:40 · Chorus/)).toBeTruthy();
+  });
+
+  it("presents a notes-only timeline without claiming that audio failed", () => {
+    const surface = structuredClone(getCompletedExample(scenario("song")));
+    const timeline = surface.components[0];
+    if (timeline.type !== "timeline") throw new Error("Expected timeline");
+    delete timeline.media;
+    render(<AnswerRenderer surface={surface} onInspectEvidence={vi.fn()} />);
+    expect(screen.queryByText(/Audio is unavailable/)).toBeNull();
+    expect(screen.queryByText(/press play/)).toBeNull();
+    fireEvent.click(
+      screen.getByRole("button", { name: "Chorus, 0:28 to 0:40" }),
+    );
+    expect(screen.getByRole("region", { name: "Chorus" })).toBeTruthy();
   });
 });

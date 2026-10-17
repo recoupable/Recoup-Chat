@@ -30,7 +30,7 @@ describe("coherent answer contracts", () => {
         upsert: [],
         remove: [],
       }),
-    ).toThrow();
+    ).toThrow("A patch to an answered surface requires a fresh answer");
     expect(listening.revision).toBe(2);
     expect(
       applySurfaceEvent(listening, {
@@ -55,6 +55,13 @@ describe("coherent answer contracts", () => {
       },
       (surface: Surface) => {
         surface.answer!.parts.push(surface.answer!.parts[0]);
+      },
+      (surface: Surface) => {
+        surface.answer!.parts.push({
+          type: "sources",
+          id: "empty",
+          evidenceIds: [],
+        });
       },
       (surface: Surface) => {
         surface.answer!.parts.push({
@@ -96,12 +103,25 @@ describe("coherent answer contracts", () => {
       url: "https://example.com/audio",
     });
     expect(surfaceSchema.safeParse(changed).success).toBe(false);
-    Object.assign(changed.answer!.parts[0], { code: "fetch()" });
-    expect(surfaceSchema.safeParse(changed).success).toBe(false);
+    const changedAnswer = structuredClone(song);
+    Object.assign(changedAnswer.answer!.parts[0], { code: "fetch()" });
+    expect(surfaceSchema.safeParse(changedAnswer).success).toBe(false);
   });
 });
 
 describe("representation meaning", () => {
+  it("names only contributing records and uses singular agreement", () => {
+    const component = structuredClone(listening.components[0]);
+    if (component.type !== "distribution")
+      throw new Error("Expected distribution");
+    expect(describeConcentration(component, 1)).toContain(
+      "Glasshouse accounts for 42%",
+    );
+    component.items.slice(1).forEach((item) => (item.value = 0));
+    expect(describeConcentration(component, 2)).toBe(
+      "Glasshouse accounts for 100% of the plays in this selection.",
+    );
+  });
   it("uses identical arithmetic for the headline, ranked bars and text alternative", () => {
     const component = structuredClone(listening.components[0]);
     if (component.type !== "distribution")

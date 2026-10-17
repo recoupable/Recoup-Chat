@@ -447,7 +447,11 @@ const protocolScenarios: PlaygroundScenario[] = [
 
 export const playgroundScenarios: PlaygroundScenario[] = [
   ...protocolScenarios,
-  createSupplierScenario(getCompletedExample(protocolScenarios[1])),
+  createSupplierScenario(
+    getCompletedExample(
+      protocolScenarios.find((item) => item.id === "sourcing")!,
+    ),
+  ),
   listeningScenario,
   songScenario,
 ];

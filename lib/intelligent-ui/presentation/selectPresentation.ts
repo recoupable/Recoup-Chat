@@ -36,5 +36,7 @@ export function selectPresentation(
     return { mode: "text", reason: "benefit-mismatch" };
   if (!host[component.type])
     return { mode: "text", reason: "unsupported-host" };
-  return { mode: "visual", component, reason: intent.benefit };
+  return component.type === "distribution"
+    ? { mode: "visual", component, reason: "show-distribution" }
+    : { mode: "visual", component, reason: "navigate-time" };
 }

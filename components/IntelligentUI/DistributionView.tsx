@@ -48,11 +48,9 @@ export default function DistributionView({
                 }}
               />
             </div>
-            <span
-              className="text-right font-mono text-xs tabular-nums"
-              aria-label={`${number.format(item.value)} ${component.measure.unit}`}
-            >
+            <span className="text-right font-mono text-xs tabular-nums">
               {number.format(item.value)}
+              <span className="sr-only"> {component.measure.unit}</span>
             </span>
           </li>
         ))}
@@ -72,7 +70,7 @@ export default function DistributionView({
           {component.measure.population}.{" "}
           {component.complete
             ? "Complete supplied selection."
-            : `Partial: ${component.items.length} of ${component.totalCount} records. Shares describe supplied records only.`}
+            : `Partial: ${component.items.length} of ${component.totalCount} records. Bars compare supplied records only.`}
         </p>
       </figcaption>
     </figure>

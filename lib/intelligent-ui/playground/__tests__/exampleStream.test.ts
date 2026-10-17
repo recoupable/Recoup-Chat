@@ -11,6 +11,14 @@ afterEach(() => {
   vi.useRealTimers();
 });
 
+const expectedComponents: Record<string, string[]> = {
+  release: ["checklist", "collection", "metrics", "summary"],
+  sourcing: ["checklist", "collection", "metrics", "summary"],
+  supplier: [],
+  listening: ["distribution"],
+  song: ["timeline"],
+};
+
 describe("synthetic example streams", () => {
   it.each(playgroundScenarios)(
     "validates every revision in $id",
@@ -28,7 +36,9 @@ describe("synthetic example streams", () => {
       }
       expect(events).toEqual(scenario.events);
       expect(surface?.revision).toBe(2);
-      expect(surface?.components.length).toBeGreaterThan(0);
+      expect(surface?.components.map((item) => item.type).sort()).toEqual(
+        expectedComponents[scenario.id],
+      );
       if (["supplier", "listening", "song"].includes(scenario.id)) {
         expect(surface?.answer?.revision).toBe(surface?.revision);
         expect(surface?.answer?.parts.length).toBeGreaterThan(1);

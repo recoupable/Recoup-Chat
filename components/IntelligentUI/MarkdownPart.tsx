@@ -8,6 +8,7 @@ export default function MarkdownPart({ text }: { text: string }) {
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         skipHtml
+        unwrapDisallowed
         allowedElements={[
           "p",
           "strong",
@@ -39,12 +40,15 @@ export default function MarkdownPart({ text }: { text: string }) {
           }
         }}
         components={{
-          a: ({ children, ...props }) => (
-            <a {...props} target="_blank" rel="noreferrer">
-              {children}
-              <span className="sr-only"> (opens in a new tab)</span>
-            </a>
-          ),
+          a: ({ children, href }) =>
+            href ? (
+              <a href={href} target="_blank" rel="noreferrer">
+                {children}
+                <span className="sr-only"> (opens in a new tab)</span>
+              </a>
+            ) : (
+              <>{children}</>
+            ),
           table: ({ children }) => (
             <div className="max-w-full overflow-x-auto">
               <table className="w-full text-left text-sm leading-6 [&_th]:px-2 [&_th]:py-3 [&_th]:font-medium [&_th]:text-muted-foreground [&_td]:px-2 [&_td]:py-3 [&_tr]:shadow-[0_1px_0_var(--border)] [&_th:first-child]:pl-0 [&_td:first-child]:pl-0 [&_th:last-child]:pr-0 [&_td:last-child]:pr-0">

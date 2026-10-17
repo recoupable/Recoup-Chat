@@ -98,7 +98,7 @@ export default function TimelineView({
           onError={() => setUnavailable(true)}
         />
       )}
-      {unavailable && (
+      {component.media && unavailable && (
         <p
           role="status"
           className="mt-4 text-sm leading-6 text-muted-foreground"
@@ -112,6 +112,7 @@ export default function TimelineView({
         position={position}
         onSeek={seek}
         descriptionId={`${id}-explanation`}
+        playbackAvailable={Boolean(restored && audioUrl && !unavailable)}
       />
       <div
         id={`${id}-explanation`}

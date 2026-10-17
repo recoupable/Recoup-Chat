@@ -1,4 +1,7 @@
-import type { Representation } from "../representations/schemas";
+import type {
+  DistributionComponent,
+  TimelineComponent,
+} from "../representations/schemas";
 
 export type PresentationIntent =
   | { kind: "text" }
@@ -20,8 +23,13 @@ export type PresentationDecision =
     }
   | {
       mode: "visual";
-      component: Representation;
-      reason: "show-distribution" | "navigate-time";
+      component: DistributionComponent;
+      reason: "show-distribution";
+    }
+  | {
+      mode: "visual";
+      component: TimelineComponent;
+      reason: "navigate-time";
     };
 
 export type RepresentationCapabilities = {

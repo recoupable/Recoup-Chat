@@ -39,7 +39,10 @@ export const answerSchema = z
             .object({
               type: z.literal("sources"),
               id: identifierSchema,
-              evidenceIds: evidenceIdsSchema,
+              evidenceIds: evidenceIdsSchema.refine(
+                (ids) => ids.length > 0,
+                "A sources part requires at least one source",
+              ),
             })
             .strict(),
         ]),

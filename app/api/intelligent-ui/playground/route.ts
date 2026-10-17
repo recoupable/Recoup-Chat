@@ -8,14 +8,17 @@ export const dynamic = "force-dynamic";
 export function GET(request: Request): Response {
   if (!isPlaygroundEnabled()) return new Response(null, { status: 404 });
   const result = z
-    .enum(["release", "sourcing", "supplier", "listening", "song"])
+    .string()
+    .max(128)
     .safeParse(new URL(request.url).searchParams.get("scenario"));
-  if (!result.success)
+  const scenario = result.success
+    ? playgroundScenarios.find((item) => item.id === result.data)
+    : undefined;
+  if (!scenario)
     return Response.json(
       { error: "Choose a supported example." },
       { status: 400 },
     );
-  const scenario = playgroundScenarios.find((item) => item.id === result.data)!;
   return new Response(createExampleStream(scenario.events, request.signal), {
     headers: {
       "Content-Type": "application/x-ndjson; charset=utf-8",

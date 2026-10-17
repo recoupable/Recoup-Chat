@@ -7,11 +7,13 @@ export default function SegmentedTimeline({
   position,
   onSeek,
   descriptionId,
+  playbackAvailable,
 }: {
   component: TimelineComponent;
   position: number;
   onSeek: (position: number) => void;
   descriptionId: string;
+  playbackAvailable: boolean;
 }) {
   const active = getActiveSection(component, position);
   return (
@@ -26,7 +28,7 @@ export default function SegmentedTimeline({
             key={section.id}
             type="button"
             onClick={() => onSeek(section.start)}
-            aria-pressed={active?.id === section.id}
+            aria-current={active?.id === section.id ? "true" : undefined}
             aria-controls={descriptionId}
             aria-label={`${section.label}, ${formatTime(section.start)} to ${formatTime(section.end)}`}
             className={`relative min-h-16 min-w-11 cursor-pointer overflow-hidden rounded-lg px-1 py-2 text-center outline-none focus-visible:z-10 focus-visible:ring-2 focus-visible:ring-ring ${active?.id === section.id ? "bg-accent text-accent-foreground shadow-[inset_0_0_0_1px_var(--brand-link)]" : "bg-muted/60 text-muted-foreground hover:bg-muted"}`}
@@ -49,7 +51,9 @@ export default function SegmentedTimeline({
         ))}
       </div>
       <p className="mt-2.5 text-xs leading-5 text-muted-foreground">
-        Choose a section to jump. Playback starts when you press play.
+        {playbackAvailable
+          ? "Choose a section to jump. Playback starts when you press play."
+          : "Choose a section to read its notes."}
       </p>
     </div>
   );
