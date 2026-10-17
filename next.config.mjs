@@ -122,6 +122,11 @@ export default withPWA({
       method: "GET",
     },
     {
+      urlPattern: /^https?:\/\/[^/]+\/api\/intelligent-ui\/playground\/audio(?:[?]|$)/,
+      handler: "NetworkOnly",
+      method: "GET",
+    },
+    {
       urlPattern: /^https?:\/\/[^/]+\/(?:api\/)?oauth(?:[/?]|$)/,
       handler: "NetworkOnly",
       method: "GET",

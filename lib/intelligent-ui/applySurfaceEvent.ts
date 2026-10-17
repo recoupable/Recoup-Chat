@@ -52,5 +52,6 @@ export function applySurfaceEvent(
     components: [...components.values()],
     evidence: event.evidence ?? previous.evidence,
     fallbackText: event.fallbackText ?? previous.fallbackText,
+    answer: event.answer ?? previous.answer,
   });
 }

@@ -2,7 +2,7 @@
 import { act, cleanup, renderHook, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { useExampleReplay } from "../useExampleReplay";
-import { usePlaygroundView } from "../usePlaygroundView";
+import { useTimelinePosition } from "../../representations/useTimelinePosition";
 import { playgroundScenarios } from "../scenarios";
 
 const scenario = playgroundScenarios[0];
@@ -270,7 +270,7 @@ describe("useExampleReplay", () => {
     expect(body.locked).toBe(false);
   });
 
-  it("streamed revisions preserve selection, filter and working notes edited during replay", async () => {
+  it("streamed revisions preserve the local playback position changed during replay", async () => {
     let streamController!: ReadableStreamDefaultController<Uint8Array>;
     const body = new ReadableStream<Uint8Array>({
       start(controller) {
@@ -284,21 +284,16 @@ describe("useExampleReplay", () => {
     fetchMock.mockResolvedValue({ ok: true, body });
     const { result } = renderHook(() => ({
       replay: useExampleReplay(scenario),
-      workingView: usePlaygroundView(scenario),
+      workingView: useTimelinePosition("replay-test", 48),
     }));
     let run!: Promise<void>;
     act(() => {
       run = result.current.replay.replay();
     });
     await waitFor(() => expect(body.locked).toBe(true));
-    const userWork = {
-      selectedRowIds: ["glasshouse"],
-      filter: "glass",
-      notes: "Review the supplied evidence",
-      evidenceId: "delivery-sheet",
-    };
+    const userWork = 31.5;
     act(() => {
-      result.current.workingView.setView(userWork);
+      result.current.workingView.setPosition(userWork);
     });
     await act(async () => {
       streamController.enqueue(
@@ -314,7 +309,7 @@ describe("useExampleReplay", () => {
     });
     expect(result.current.replay.status).toBe("complete");
     expect(result.current.replay.surface.revision).toBe(2);
-    expect(result.current.workingView.view).toEqual(userWork);
+    expect(result.current.workingView.position).toEqual(userWork);
   });
 
   it("does not commit a valid completion until the stream also reaches EOF", async () => {

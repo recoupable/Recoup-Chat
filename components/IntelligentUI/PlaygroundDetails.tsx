@@ -3,7 +3,7 @@
 import { Pause, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { Surface } from "@/lib/intelligent-ui/schema";
-import type { PresentationDecision } from "@/lib/intelligent-ui/presentation/types";
+import { getAnswerText } from "@/lib/intelligent-ui/presentation/getAnswerText";
 
 const labels = {
   ready: "Completed fixture shown",
@@ -16,7 +16,6 @@ const labels = {
 export default function PlaygroundDetails({
   surface,
   streamedSurface,
-  decision,
   status,
   error,
   replay,
@@ -24,7 +23,6 @@ export default function PlaygroundDetails({
 }: {
   surface: Surface;
   streamedSurface: Surface;
-  decision: PresentationDecision;
   status: keyof typeof labels;
   error: string | null;
   replay: () => void;
@@ -38,17 +36,19 @@ export default function PlaygroundDetails({
       <div className="mt-3 space-y-5 leading-6">
         <p>
           This is a design prototype using fictional records and authored
-          answers. The shared policy chooses{" "}
-          {decision.mode === "inline"
-            ? "one collection for this task"
-            : "text without a generated surface"}
-          . Drafts stay on this device and are never sent.
+          answers. Response parts combine ordinary Markdown, a static
+          distribution, or a linked section timeline and native audio player.
+          The audio is an original synthesized study; its section notes were
+          authored with it. No model analyzed a recording. Playback position
+          stays on this device.
         </p>
         <p>
           Replaying tests the update protocol, not AI generation. Incoming
-          revisions are inspected below; the conversation adopts a new document
-          only when the entire stream validates. Your draft and reading position
-          stay in place.
+          revisions are inspected below; text and visual data share a revision,
+          and the conversation adopts a new response only when the entire stream
+          validates. The concentration insight is calculated from those data.
+          Replaying the same timeline preserves position and never starts
+          playback.
         </p>
         <div className="flex flex-wrap items-center gap-3">
           <Button
@@ -71,7 +71,7 @@ export default function PlaygroundDetails({
             Plain-text data
           </summary>
           <p className="mt-2 whitespace-pre-wrap text-sm leading-7 text-foreground">
-            {surface.fallbackText}
+            {getAnswerText(surface)}
           </p>
         </details>
         <details>
@@ -86,7 +86,7 @@ export default function PlaygroundDetails({
           >
             {JSON.stringify(
               {
-                decision: decision.reason,
+                answer: surface.answer,
                 streamRevision: streamedSurface.revision,
                 streamedSurface,
               },

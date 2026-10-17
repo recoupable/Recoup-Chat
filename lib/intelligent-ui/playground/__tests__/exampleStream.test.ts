@@ -28,12 +28,11 @@ describe("synthetic example streams", () => {
       }
       expect(events).toEqual(scenario.events);
       expect(surface?.revision).toBe(2);
-      expect(surface?.components.map((component) => component.type)).toEqual([
-        "summary",
-        "metrics",
-        "collection",
-        "checklist",
-      ]);
+      expect(surface?.components.length).toBeGreaterThan(0);
+      if (["supplier", "listening", "song"].includes(scenario.id)) {
+        expect(surface?.answer?.revision).toBe(surface?.revision);
+        expect(surface?.answer?.parts.length).toBeGreaterThan(1);
+      }
       expect(surface?.fallbackText).toContain("Synthetic");
       expect(
         surface?.evidence.every((item) =>

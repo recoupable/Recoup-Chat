@@ -22,6 +22,7 @@ describe("playground offline-cache isolation", () => {
   it.each([
     [0, "/labs/intelligent-ui"],
     [1, "/api/intelligent-ui/playground"],
+    [2, "/api/intelligent-ui/playground/audio"],
   ] as const)(
     "places an exact NetworkOnly rule before defaults for %s",
     (index, path) => {
@@ -42,7 +43,7 @@ describe("playground offline-cache isolation", () => {
   );
 
   it("preserves the existing OAuth exclusion", () => {
-    const rule = state.options!.runtimeCaching[2];
+    const rule = state.options!.runtimeCaching[3];
     expect(rule.handler).toBe("NetworkOnly");
     expect(
       rule.urlPattern.test("https://preview.example/oauth/authorize"),

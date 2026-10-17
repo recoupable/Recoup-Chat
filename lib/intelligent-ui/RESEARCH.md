@@ -5,23 +5,28 @@ for the playground redesign, not validated outcomes for Recoup.
 
 ## Decision and scope
 
-Make the answer primary. Add one compact inline collection only when it helps the
-person compare, select, or inspect information. A useful answer may contain no
-generated interface. The four component types in the protocol are data-contract
-capabilities, not a requirement to display four components in every response. This
-redesign renders collections and falls back to text; it removes the unused metric,
-summary, and checklist widgets from the visual catalog.
+Help the person understand, explore, decide or act. Compose ordinary prose,
+static visuals and optional interaction in the order that serves the answer.
+A static representation can earn space through understanding alone. A control,
+custom table or business action is not evidence of added value.
 
-The specimen follows the reading rhythm of Recoup chat: a user question, a concise
-assistant answer and an optional interactive object. An explicit **Draft follow-up**
-button opens an authored, editable local draft for the current example. There is
-no record-selection control. The draft can be copied; it does not send a message,
-call a model, execute a tool, or authorize a business operation.
+The current three specimens deliberately contrast:
 
-This remains a synthetic demonstration backed by bundled fixtures and paced NDJSON.
-It is not a live chat integration, model-driven producer, MCP UI integration, or
-published SDK. Fixture claims are fictional. No interface state grants production
-authority, accepts a company record, approves a release, or places an order.
+- A supplier question answered with prose and ordinary Markdown.
+- A listening-concentration explanation with a static ranked distribution.
+- An arrangement explanation with original audio, time-bound authored notes and
+  linked section selection/playback.
+
+This replaces the earlier one-collection constraint and action-oriented examples.
+Representations, optional behavior and typed state are separate: the same time
+position coordinates a media player, interval selector and explanation. It is not
+one bespoke component per business tool or story.
+
+This remains an authored fixture demonstration with paced NDJSON, not a live chat
+integration, model producer, MCP host integration or published SDK. The original
+instrumental is synthesized locally; its notes describe that arrangement rather
+than claim analysis of a customer recording. No participant study has established
+that these choices improve Recoup outcomes.
 
 ## Evidence and its limits
 
@@ -61,51 +66,31 @@ tested on Recoup.
   complete navigation hierarchy. It is vendor design guidance, not comparative
   usability evidence.
 
-## Before and after
+## Design decisions and selection
 
-These are Recoup design decisions proposed from the evidence and the existing
-chat layout. They should be evaluated, not presented as experimentally optimal.
+These are implementation hypotheses informed by the sources and the user-provided
+examples. They are not experimentally optimal layouts or findings about Recoup.
 
-| Previous demonstration                                             | Redesign decision                                                                   | Reason                                                                         |
-| ------------------------------------------------------------------ | ----------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
-| Large marketing hero, 1440px canvas, independent workspace framing | A narrow conversation specimen aligned with the app's `MessageFrame` reading column | Start with the user's question and answer; avoid learning a separate workspace |
-| Summary, metric cards, table, and checklist on every scenario      | Concise answer plus at most one useful inline collection by default                 | Remove repeated facts and competing visual hierarchies                         |
-| Text view replaces the visual view                                 | Prose remains alongside optional UI; retain an accessible text representation       | Explanation, qualification, and interaction serve different purposes           |
-| Permanent evidence and notes sidebar                               | Sources disclose on request near the claim; follow-up draft appears when relevant   | Keep contextual information available without occupying a permanent rail       |
-| Search and selection counts before any intent to manipulate        | Offer controls only when record volume or a concrete next step warrants them        | A checkbox with no meaningful consequence is extra work                        |
-| Repeated category, revision, component labels, and JSON            | Quiet lab controls; technical details remain secondary                              | Implementation details should not interrupt the answer                         |
-| Full-screen dashboard identity                                     | Existing app type, color, spacing, and focus conventions                            | The result should feel like part of the conversation                           |
+| Prior assumption                                         | Current decision                                                               | Intended benefit                                                |
+| -------------------------------------------------------- | ------------------------------------------------------------------------------ | --------------------------------------------------------------- |
+| A comparison with different values deserves a collection | Prefer good Markdown when it already communicates a few quotes clearly         | Avoid a bulky duplicate of an ordinary answer                   |
+| UI must lead to a decision or action                     | Understanding and exploration can complete a response                          | Allow useful distributions, diagrams and media explanations     |
+| One compact object follows every answer                  | Order prose, representation and interpretation purposefully                    | Keep the explanation connected to the relevant visual           |
+| Modularity means sharing a list/table component          | Share representations, optional behavior, typed state and data semantics       | Coordinate views and reuse behavior across domains              |
+| Add interactivity to justify rich output                 | Static visuals are sufficient when controls add no benefit                     | Reduce work and distraction                                     |
+| Put model-authored numeric claims beside a chart         | Calculate the concentration insight from the same validated values as the bars | Prevent changed values from retaining a stale computed headline |
+| Rebuild a playback interface                             | Use a native player and a linked section representation                        | Preserve familiar accessible playback controls                  |
 
-## Selectivity policy
+The authored recipe identifies the intended benefit. The policy verifies that its
+registered representation and host support fit that request. It is not a learned
+or independently validated usefulness judge. Data shape alone never requests UI.
+A future generator needs selection evaluations against strong text and static
+baselines, including cases where it should choose no custom representation.
 
-The host chooses presentation; a domain pack supplies records and evidence. Avoid
-putting music-specific decisions inside the portable renderer.
-
-1. **Answer first.** Give the result and important qualification in ordinary prose.
-   Do not withhold the answer until the user explores a widget.
-2. **Use text alone** for a simple fact, short explanation, clarification, or brief
-   sequence whose meaning is already clear. A single number does not require a
-   metric card. A list of next steps does not automatically require a checklist.
-3. **Add one compact collection** when aligned attributes or record-specific
-   selection make a concrete task easier. Choose only the columns required for
-   the current decision. Do not render the entire available domain schema.
-4. **Expand intentionally.** More records, more fields, or a larger workspace are
-   user-directed disclosures. A follow-up question may change the representation;
-   ordinary data arrival should not unexpectedly rebuild it.
-5. **Keep conversation available.** In a future live integration, a person should
-   be able to continue in words instead of operating the UI. This specimen has no
-   conversation composer: its task-specific button opens a local draft with
-   visible subject identities. Record selection may be a future pattern when it
-   has a concrete consequence. No automatic send or execution.
-
-For release readiness, lead with the two unresolved materials and distinguish
-readiness for review from approval. A compact exception list can expose sources
-and prepare a follow-up; all four tracks need not occupy the initial answer.
-For supplier comparison, aligned quote, lead-time, and review fields earn space.
-For “How many tracks are in this example?”, the answer can simply be “Four.”
-
-The one-collection limit is a default for this specimen, not a universal limit on
-the contract or a claim that complex future tasks never need a larger surface.
+Useful space follows the information need. A distribution or media explanation
+can occupy more room than a sentence; it still needs a readable hierarchy,
+restrained chrome, preserved conversational context and accessible alternatives.
+Use Recoup Sky tokens and typography rather than importing another host's skin.
 
 ## Interaction constraints
 
@@ -123,18 +108,22 @@ the contract or a claim that complex future tasks never need a larger surface.
 
 ### Predictable streaming
 
-The current conversation begins with a completed, validated bundled fixture.
-Replay exposes incoming revisions only inside the optional technical disclosure.
-The host accepts a replayed document after the complete event **and** clean stream
-EOF, and only if the whole document matches the fixture associated with its
-authored answer and draft. A changed or invalid replay leaves that baseline in
-place. This guards fixture coherence; it is not a general live producer protocol
-or a demonstration of progressive visible answer rendering.
+The lab begins with a completed, validated fixture. Ordered answer parts and data
+share a revision. A patch that leaves the answer at an older revision is rejected.
+Replay commits only after a valid completion and clean EOF, preserving the prior
+answer on cancellation or error. A coherent changed response can replace both
+text and visual values; the concentration insight recomputes from its data.
+Matching revisions do not prove the truth of arbitrary authored prose.
+
+Native time updates, selection and explanation share a bounded position.
+Returning to the same timeline can restore that position but never starts audio.
+Missing or mismatched audio retains the supplied notes. Section changes do not
+move keyboard focus or announce every playhead update.
 
 The following are constraints for future progressive integration, not claims that
 the current buffered specimen has validated that experience:
 
-- Update stable objects in place. Preserve selection, draft text, focus, and the
+- Update stable objects in place. Preserve selection, playback context, edits, focus, and the
   user's reading position. Never replace user edits with streamed content.
 - Do not automatically reorder rows, reveal a new sidebar, or move controls under
   the pointer while a person is interacting. Signal meaningful changes quietly.
@@ -142,7 +131,7 @@ the current buffered specimen has validated that experience:
   explicit; older requests must not overwrite a newer scenario or replay.
 - Partial records must look partial. Receiving the final event does not prove a
   complete source, current quote, accepted finding, or authorized operation.
-- Selection changes and local drafts are reversible. Any future business action
+- Local selection and view changes are reversible. Any future business action
   requires its own authorized server path and truthful outcome/receipt handling.
 
 ### Mobile and accessibility
@@ -169,34 +158,29 @@ This research plan is not a new approval or release gate.
 
 ### Conditions and procedure
 
-Compare **A: concise text only** with **B: the same answer plus one compact
-interactive collection where useful**. A may use normal headings and bullets; it
-must be a good text answer, not an intentionally weak baseline. Both conditions
-provide the same facts, qualifications, source contents, and an equally available
-way to draft a follow-up. In the current specimen, an explicit button opens the
-same authored draft for editing; neither condition sends it. A later study of
-record selection requires implementing that interaction first. The simple-fact
-task should select text-only presentation in both.
+Compare **A: strong prose/Markdown**, **B: an appropriate static visual with
+explanation**, and **C: useful interaction where applicable**. All variants use
+equivalent facts, qualifications and source access. Do not add artificial controls
+or weaken the text baseline to make an interface win. The supplier case should
+be allowed to end with Markdown; the listening case need not have controls.
 
-Start with a formative target of 12–16 participants spanning release coordination
-and operations experience, including nontechnical users. This is a proposed
-recruitment target, not a completed sample or a statistically powered experiment.
-Counterbalance condition order and use matched synthetic task variants to reduce
-answer memorization. Include desktop and mobile sessions; arrange keyboard and
-screen-reader coverage rather than inferring accessibility from mouse users.
+An optional formative target is 12–16 participants across relevant creative,
+analyst and operations roles, including nontechnical people. This is a proposed
+sample, not completed recruitment or a powered experiment. Counterbalance task
+and condition order using matched synthetic variants. Include desktop/mobile,
+keyboard and assistive-technology coverage; record actual samples and limits.
 
-Use identical content and controlled delivery timing. Record both time from the
-first useful answer to a submitted response and total time including delivery.
-Ask participants to answer before collecting preference ratings. Observe task
-failures and recovery; do not coach participants through the interface.
+Use controlled delivery timing and ask for task answers before preferences.
+Observe errors and recovery without coaching. Record local behavior separately
+from model or provider waiting. No user study has been run for these specimens.
 
-| Task                                                                                | Expected outcome and scoring                                                                                                                                                                      |
-| ----------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Release: identify what prevents review and prepare a scoped follow-up               | Identify missing artwork and contributor confirmation, preserve the correct track identities in the draft, and avoid claiming release approval. Score each fact and identity against the fixture. |
-| Supplier: compare the shortest lead time with the lowest quote and inspect the gap  | Correctly distinguish the fastest and cheapest suppliers, identify the missing sample review, and avoid treating a submitted quote as a purchase authorization.                                   |
-| Simple fact: ask how many tracks are in the example                                 | Correct answer with no mandatory widget interaction. Record unnecessary clicks, disclosure, or navigation.                                                                                        |
-| Source check: verify one claim using partial evidence                               | Locate the supporting source and correctly explain what it does and does not establish. Opening a source alone is not a successful verification.                                                  |
-| Replay: open and edit a draft while fixture revisions arrive in the diagnostic view | Preserve the draft and focus while the visible answer stays unchanged. Repeat with stop/retry and a scenario switch. This evaluates buffered continuity, not noticing a changing answer.          |
+| Task                    | Expected observation                                                                                                                                                |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Supplier trade-offs     | Correctly distinguish fastest/cheapest and sample/certification gaps without extra navigation or an invented purchasing action.                                     |
+| Listening concentration | Interpret the share and long tail, name the supplied population/window, and avoid confusing plays with unique listeners or inferring causes.                        |
+| Song arrangement        | Locate the stated sections, hear the available source, and explain the authored arrangement change. Compare timestamped text, static intervals and linked playback. |
+| Source checking         | Identify what a source supports and what remains absent; source opening alone is not successful verification.                                                       |
+| Replay and return       | Preserve selected time, focus and complete response through replay, interruption and a return visit. Playback must not start unexpectedly.                          |
 
 ### Measures and decision rule
 
@@ -209,7 +193,7 @@ failures and recovery; do not coach participants through the interface.
   are not a validated cognitive-load instrument or a NASA-TLX score.
 - **Source checking:** successful claim-to-source matching and recognition of
   incomplete evidence. Also record whether participants overtrust visual polish.
-- **Continuity and access:** lost edits, focus jumps, mistaken row targets,
+- **Continuity and access:** lost edits or playback position, focus jumps, mistaken interval targets,
   keyboard/screen-reader blockers, and narrow-screen reading failures.
 - **Preference:** collect last, with an explanation; keep it separate from
   performance and correctness.
@@ -217,8 +201,9 @@ failures and recovery; do not coach participants through the interface.
 Before sessions, freeze task rubrics, delivery timing, exclusion rules, and the
 analysis plan. Report per-task paired differences and individual failures;
 describe uncertainty and avoid significance claims from an underpowered sample.
-Retain an interactive pattern when the evidence suggests a concrete speed or
-effort benefit without an observed accuracy, source-checking, or access penalty.
+Retain a representation when evidence suggests a concrete understanding,
+exploration, decision or task benefit without a correctness, source-checking or
+access penalty. Interactivity and lower elapsed time are not universal goals.
 Remove or revise it when it adds work or hides qualifications. An inconclusive
 result is inconclusive, not proof that more UI is better.
 
@@ -233,5 +218,5 @@ renderer so future hosts can apply their own display and capability constraints.
 This remains a bounded first specimen. It does not complete the epic's live chat
 transport integration, progressive visible streaming, authorized source binding,
 cross-device persistence, second host adapter, or action receipt requirements.
-Those need their own implementation and evidence; a quiet synthetic example and
-passing protocol tests do not establish them.
+Those need their own implementation and evidence. Passing protocol tests and a
+polished fixture do not establish live capability or measured user benefit.

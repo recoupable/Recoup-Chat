@@ -1,25 +1,30 @@
-import type { CollectionComponent } from "../schema";
+import type { Representation } from "../representations/schemas";
 
-/** The host names the task; available data alone does not request a UI. */
 export type PresentationIntent =
   | { kind: "text" }
-  | { kind: "compare"; componentId: string }
-  | { kind: "review"; componentId: string; rowIds: string[] };
+  | {
+      kind: "representation";
+      componentId: string;
+      benefit: "show-distribution" | "navigate-time";
+    };
 
 export type PresentationDecision =
   | {
       mode: "text";
       reason:
-        | "text-requested"
+        | "text-sufficient"
         | "unsupported-intent"
-        | "collection-unavailable"
-        | "comparison-not-useful"
-        | "review-rows-unavailable";
+        | "representation-unavailable"
+        | "benefit-mismatch"
+        | "unsupported-host";
     }
   | {
-      mode: "inline";
-      component: CollectionComponent;
-      /** Coverage of the original collection, independent of a review subset. */
-      sourceComplete: boolean;
-      reason: "comparison" | "review";
+      mode: "visual";
+      component: Representation;
+      reason: "show-distribution" | "navigate-time";
     };
+
+export type RepresentationCapabilities = {
+  distribution: boolean;
+  timeline: boolean;
+};

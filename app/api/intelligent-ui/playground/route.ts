@@ -8,7 +8,7 @@ export const dynamic = "force-dynamic";
 export function GET(request: Request): Response {
   if (!isPlaygroundEnabled()) return new Response(null, { status: 404 });
   const result = z
-    .enum(["release", "sourcing"])
+    .enum(["release", "sourcing", "supplier", "listening", "song"])
     .safeParse(new URL(request.url).searchParams.get("scenario"));
   if (!result.success)
     return Response.json(

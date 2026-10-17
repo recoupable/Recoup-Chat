@@ -1,6 +1,15 @@
 import type { Component, Evidence, Surface, SurfaceEvent } from "../schema";
+import { getCompletedExample } from "./getCompletedExample";
+import { createSupplierScenario } from "./createSupplierScenario";
+import { listeningScenario } from "./listeningScenario";
+import { songScenario } from "./songScenario";
 
-export type ScenarioId = "release" | "sourcing";
+export type ScenarioId =
+  | "release"
+  | "sourcing"
+  | "supplier"
+  | "listening"
+  | "song";
 export type PlaygroundScenario = {
   id: ScenarioId;
   label: string;
@@ -286,7 +295,7 @@ const sourcingInitial: Surface = {
     "Synthetic supplier example for 500 studio bags. One of three quote rows loaded: Northline, $2,400, 21 days, sample reviewed. Source: fictional October quote comparison and sample log. No purchase has been approved or placed.",
 };
 
-export const playgroundScenarios: PlaygroundScenario[] = [
+const protocolScenarios: PlaygroundScenario[] = [
   {
     id: "release",
     label: "Release readiness",
@@ -434,4 +443,11 @@ export const playgroundScenarios: PlaygroundScenario[] = [
       { type: "surface.complete", surfaceId: sourcingInitial.id, revision: 2 },
     ],
   },
+];
+
+export const playgroundScenarios: PlaygroundScenario[] = [
+  ...protocolScenarios,
+  createSupplierScenario(getCompletedExample(protocolScenarios[1])),
+  listeningScenario,
+  songScenario,
 ];

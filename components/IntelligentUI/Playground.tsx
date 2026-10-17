@@ -13,7 +13,9 @@ import PlaygroundWorkspace from "./PlaygroundWorkspace";
 export default function Playground() {
   const [exampleId, setExampleId] = useState(conversationExamples[0].id);
   const { setTheme, resolvedTheme } = useTheme();
-  const example = conversationExamples.find((item) => item.id === exampleId)!;
+  const example =
+    conversationExamples.find((item) => item.id === exampleId) ??
+    conversationExamples[0];
   const scenario = playgroundScenarios.find(
     (item) => item.id === example.scenarioId,
   )!;
@@ -61,7 +63,7 @@ export default function Playground() {
           <label className="flex items-center gap-2 text-xs text-muted-foreground">
             Example
             <select
-              value={exampleId}
+              value={example.id}
               onChange={(event) => setExampleId(event.target.value)}
               className="min-h-11 max-w-full cursor-pointer rounded-xl bg-muted/50 px-3 text-sm text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >

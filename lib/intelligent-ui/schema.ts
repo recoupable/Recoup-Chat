@@ -1,23 +1,15 @@
 import { z } from "zod";
 import { validateUniqueIds } from "./validateUniqueIds";
-
-const id = z
-  .string()
-  .min(1)
-  .max(128)
-  .regex(/^[A-Za-z0-9][A-Za-z0-9._:-]*$/);
-const label = z
-  .string()
-  .min(1)
-  .max(160)
-  .refine((value) => value.trim().length > 0, "Label must contain text");
-const revision = z.number().int().nonnegative().max(Number.MAX_SAFE_INTEGER);
-const evidenceIds = z
-  .array(id)
-  .max(32)
-  .superRefine((ids, ctx) => {
-    validateUniqueIds(ids, ctx, []);
-  });
+import {
+  identifierSchema as id,
+  labelSchema as label,
+  revisionSchema as revision,
+  evidenceIdsSchema as evidenceIds,
+} from "./contractValues";
+import { distributionSchema, timelineSchema } from "./representations/schemas";
+import { validateRepresentation } from "./representations/validateRepresentation";
+import { answerSchema } from "./presentation/answerSchema";
+import { validateAnswer } from "./presentation/validateAnswer";
 
 export const evidenceSchema = z
   .object({
@@ -140,8 +132,14 @@ export const componentSchema = z
     metricsSchema,
     collectionSchema,
     checklistSchema,
+    distributionSchema,
+    timelineSchema,
   ])
   .superRefine((component, ctx) => {
+    if (component.type === "distribution" || component.type === "timeline") {
+      validateRepresentation(component, ctx);
+      return;
+    }
     if (component.type === "metrics" || component.type === "checklist") {
       validateUniqueIds(
         component.items.map((item) => item.id),
@@ -201,9 +199,11 @@ export const surfaceSchema = z
     components: z.array(componentSchema).max(24),
     evidence: z.array(evidenceSchema).max(128),
     fallbackText: z.string().min(1).max(24000),
+    answer: answerSchema.optional(),
   })
   .strict()
   .superRefine((surface, ctx) => {
+    validateAnswer(surface, ctx);
     validateUniqueIds(
       surface.components.map((component) => component.id),
       ctx,
@@ -241,13 +241,19 @@ export const surfaceSchema = z
             ]
           : (component.type === "collection"
               ? component.rows
-              : component.items
+              : component.type === "timeline"
+                ? component.sections
+                : component.items
             ).map((item, itemIndex) => ({
               ids: item.evidenceIds,
               path: [
                 "components",
                 index,
-                component.type === "collection" ? "rows" : "items",
+                component.type === "collection"
+                  ? "rows"
+                  : component.type === "timeline"
+                    ? "sections"
+                    : "items",
                 itemIndex,
                 "evidenceIds",
               ],
@@ -281,6 +287,7 @@ export const surfaceEventSchema = z
         remove: z.array(id).max(24),
         evidence: z.array(evidenceSchema).max(128).optional(),
         fallbackText: z.string().min(1).max(24000).optional(),
+        answer: answerSchema.optional(),
       })
       .strict(),
     z

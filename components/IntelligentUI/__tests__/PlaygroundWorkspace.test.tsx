@@ -11,370 +11,358 @@ import {
 import { playgroundScenarios } from "@/lib/intelligent-ui/playground/scenarios";
 import { conversationExamples } from "@/lib/intelligent-ui/playground/conversationExamples";
 import { getCompletedExample } from "@/lib/intelligent-ui/playground/getCompletedExample";
+import type { Surface } from "@/lib/intelligent-ui/schema";
 import PlaygroundWorkspace from "../PlaygroundWorkspace";
+import AnswerRenderer from "../AnswerRenderer";
 
-const release = playgroundScenarios.find(
-  (scenario) => scenario.id === "release",
-)!;
-const sourcing = playgroundScenarios.find(
-  (scenario) => scenario.id === "sourcing",
-)!;
-const releaseExample = conversationExamples.find(
-  (example) => example.id === "release-review",
-)!;
-const supplierExample = conversationExamples.find(
-  (example) => example.id === "supplier-comparison",
-)!;
-const simpleExample = conversationExamples.find(
-  (example) => example.id === "simple-answer",
-)!;
 const fetchMock = vi.fn();
+const play = vi.fn().mockResolvedValue(undefined);
+const pause = vi.fn();
+const scenario = (id: string) =>
+  playgroundScenarios.find((item) => item.id === id)!;
+const example = (id: string) =>
+  conversationExamples.find((item) => item.scenarioId === id)!;
+
+function mount(id: string) {
+  return render(
+    <PlaygroundWorkspace scenario={scenario(id)} example={example(id)} />,
+  );
+}
+function readyAudio() {
+  const audio = screen.getByLabelText(
+    "Original instrumental demo · 48 seconds",
+  ) as HTMLAudioElement;
+  Object.defineProperty(audio, "duration", { configurable: true, value: 48 });
+  Object.defineProperty(audio, "readyState", { configurable: true, value: 1 });
+  fireEvent.loadedMetadata(audio);
+  return audio;
+}
+function response(surface: Surface) {
+  return {
+    ok: true,
+    body: new ReadableStream<Uint8Array>({
+      start(controller) {
+        controller.enqueue(
+          new TextEncoder().encode(
+            `${JSON.stringify({ type: "surface.snapshot", surface })}\n${JSON.stringify({ type: "surface.complete", surfaceId: surface.id, revision: surface.revision })}\n`,
+          ),
+        );
+        controller.close();
+      },
+    }),
+  };
+}
 
 beforeEach(() => {
   localStorage.clear();
   fetchMock.mockReset();
+  play.mockClear();
+  pause.mockClear();
   vi.stubGlobal("fetch", fetchMock);
+  vi.spyOn(HTMLMediaElement.prototype, "play").mockImplementation(play);
+  vi.spyOn(HTMLMediaElement.prototype, "pause").mockImplementation(pause);
 });
-
 afterEach(() => {
   cleanup();
   localStorage.clear();
+  vi.restoreAllMocks();
   vi.unstubAllGlobals();
 });
 
-describe("PlaygroundWorkspace", () => {
-  it("rejects a valid but changed replay rather than combining new values with an old authored answer", async () => {
-    const changed = structuredClone(getCompletedExample(sourcing));
-    changed.title = "A different supplier comparison";
-    const quotes = changed.components.find(
-      (item) => item.type === "collection",
-    );
-    if (quotes?.type !== "collection")
-      throw new Error("Missing supplier fixture");
-    quotes.rows.find((row) => row.id === "common-ground")!.values.lead =
-      "2 days";
-    const frames = [
-      { type: "surface.snapshot", surface: changed },
-      {
-        type: "surface.complete",
-        surfaceId: changed.id,
-        revision: changed.revision,
-      },
-    ];
-    fetchMock.mockResolvedValueOnce({
-      ok: true,
-      body: new ReadableStream<Uint8Array>({
-        start(controller) {
-          controller.enqueue(
-            new TextEncoder().encode(
-              frames.map((frame) => JSON.stringify(frame)).join("\n") + "\n",
-            ),
-          );
-          controller.close();
-        },
-      }),
-    });
-    render(
-      <PlaygroundWorkspace scenario={sourcing} example={supplierExample} />,
-    );
-    fireEvent.click(
-      screen.getByRole("button", { name: "Draft sample request" }),
-    );
-    const editor = screen.getByRole("textbox", {
-      name: "Follow-up draft",
-    }) as HTMLTextAreaElement;
-    fireEvent.change(editor, { target: { value: "Keep this request." } });
-    fireEvent.click(screen.getByText("About this example"));
-    fireEvent.click(screen.getByRole("button", { name: "Replay updates" }));
-    expect((await screen.findByRole("alert")).textContent).toBe(
-      "Replay data differs from the authored example. The original answer is still shown.",
-    );
-    const commonGround = within(screen.getByRole("table"))
-      .getByRole("rowheader", { name: "Common Ground" })
-      .closest("tr")!;
-    expect(within(commonGround).getByText("14 days")).toBeTruthy();
-    expect(within(commonGround).queryByText("2 days")).toBeNull();
-    expect(screen.getByText(supplierExample.answer)).toBeTruthy();
-    expect(editor.value).toBe("Keep this request.");
-  });
-
-  it("leads with an answer and one useful collection, with only the two release follow-ups visible", () => {
-    render(<PlaygroundWorkspace scenario={release} example={releaseExample} />);
-    const response = screen.getByRole("article", { name: "Recoup response" });
-    const answer = within(response).getByText(releaseExample.answer);
-    const collection = within(response).getByRole("region", {
-      name: releaseExample.inlineTitle,
-    });
+describe("composed responses", () => {
+  it("keeps the supplier answer as ordinary Markdown without a generated comparison or action", () => {
+    mount("supplier");
+    const answer = screen.getByRole("article", { name: "Recoup response" });
+    const table = within(answer).getByRole("table");
+    expect(within(table).getByText("Common Ground")).toBeTruthy();
+    expect(within(table).getByText("$2,650")).toBeTruthy();
+    expect(within(table).getByText("14 days")).toBeTruthy();
     expect(
-      answer.compareDocumentPosition(collection) &
-        Node.DOCUMENT_POSITION_FOLLOWING,
-    ).not.toBe(0);
-    expect(within(response).getAllByRole("region")).toHaveLength(1);
-    const table = within(response).getByRole("table");
-    expect(
-      within(table)
-        .getAllByRole("rowheader")
-        .map((element) => element.textContent),
-    ).toEqual(["After Hours", "Daybreak"]);
-    expect(
-      within(table)
-        .getAllByRole("columnheader")
-        .map((element) => element.textContent),
-    ).toEqual(["Track", "Next step", "Owner", "Sources"]);
-    expect(within(response).queryByRole("checkbox")).toBeNull();
-    expect(within(response).queryByRole("textbox")).toBeNull();
-    expect(within(response).queryByText("At a glance")).toBeNull();
-    expect(screen.queryByRole("dialog")).toBeNull();
+      within(answer).getByText(/Material certification hasn’t been supplied/),
+    ).toBeTruthy();
+    expect(within(answer).queryByRole("figure")).toBeNull();
+    expect(within(answer).queryByRole("region")).toBeNull();
+    expect(within(answer).queryByRole("textbox")).toBeNull();
+    expect(within(answer).getAllByRole("button")).toHaveLength(2);
     expect(fetchMock).not.toHaveBeenCalled();
   });
 
-  it("reveals all tracks only when requested and returns to the focused follow-up view", () => {
-    render(<PlaygroundWorkspace scenario={release} example={releaseExample} />);
-    fireEvent.click(screen.getByRole("button", { name: "View all 4 tracks" }));
-    expect(
-      within(screen.getByRole("table"))
-        .getAllByRole("rowheader")
-        .map((element) => element.textContent),
-    ).toEqual(["Glasshouse", "Low Tide", "After Hours", "Daybreak"]);
-    fireEvent.click(
-      screen.getByRole("button", { name: "Show follow-ups only" }),
-    );
-    expect(
-      within(screen.getByRole("table")).getAllByRole("rowheader"),
-    ).toHaveLength(2);
-  });
-
-  it("leaves a simple answer as text with an accessible source, without adding a generated surface or task CTA", async () => {
-    render(<PlaygroundWorkspace scenario={release} example={simpleExample} />);
-    const response = screen.getByRole("article", { name: "Recoup response" });
-    expect(within(response).getByText(simpleExample.answer)).toBeTruthy();
-    expect(within(response).queryByRole("region")).toBeNull();
-    expect(within(response).queryByRole("table")).toBeNull();
-    expect(within(response).getAllByRole("button")).toHaveLength(1);
-    const source = within(response).getByRole("button", {
-      name: "Delivery sheet · revision 3",
+  it("interleaves a derived insight, static distribution, interpretation and sources", () => {
+    mount("listening");
+    const answer = screen.getByRole("article", { name: "Recoup response" });
+    const insight = within(answer).getByText(/account for 72%/);
+    const figure = within(answer).getByRole("figure", {
+      name: "Where the plays go",
     });
-    source.focus();
-    fireEvent.click(source);
+    const interpretation = within(answer).getByText(/These counts show/);
     expect(
-      await screen.findByRole("dialog", { name: "Source details" }),
+      insight.compareDocumentPosition(figure) &
+        Node.DOCUMENT_POSITION_FOLLOWING,
+    ).not.toBe(0);
+    expect(
+      figure.compareDocumentPosition(interpretation) &
+        Node.DOCUMENT_POSITION_FOLLOWING,
+    ).not.toBe(0);
+    expect(within(figure).getByLabelText("420,000 plays")).toBeTruthy();
+    expect(within(figure).getAllByRole("listitem")).toHaveLength(8);
+    expect(within(figure).queryByRole("button")).toBeNull();
+    expect(within(figure).queryByRole("slider")).toBeNull();
+    expect(
+      within(figure).getByText(/Complete supplied selection/),
     ).toBeTruthy();
-    fireEvent.keyDown(document.activeElement!, { key: "Escape" });
-    await waitFor(() => expect(document.activeElement).toBe(source));
+    expect(fetchMock).not.toHaveBeenCalled();
   });
 
-  it("presents all three suppliers and preserves the source's actual tradeoffs", () => {
-    render(
-      <PlaygroundWorkspace scenario={sourcing} example={supplierExample} />,
-    );
-    const response = screen.getByRole("article", { name: "Recoup response" });
-    const table = within(response).getByRole("table");
-    expect(
-      within(table)
-        .getAllByRole("rowheader")
-        .map((element) => element.textContent),
-    ).toEqual(["Northline", "Common Ground", "Fieldwork"]);
-    const fieldwork = within(table)
-      .getByRole("rowheader", { name: "Fieldwork" })
-      .closest("tr")!;
-    expect(within(fieldwork).getByText("$2,250")).toBeTruthy();
-    expect(within(fieldwork).getByText("28 days")).toBeTruthy();
-    expect(within(fieldwork).getByText("Sample pending")).toBeTruthy();
-    expect(within(response).getByText(supplierExample.answer)).toBeTruthy();
-  });
-
-  it("keeps an edited draft when closed, when the collection expands, and after remount", async () => {
-    const first = render(
-      <PlaygroundWorkspace scenario={release} example={releaseExample} />,
-    );
-    const trigger = screen.getByRole("button", { name: "Draft follow-up" });
-    fireEvent.click(trigger);
-    const editor = screen.getByRole("textbox", { name: "Follow-up draft" });
-    await waitFor(() => expect(document.activeElement).toBe(editor));
-    fireEvent.change(editor, {
-      target: {
-        value:
-          "Please check the missing material by Friday.\nKeep this wording.",
-      },
-    });
-    fireEvent.click(screen.getByRole("button", { name: "Close draft" }));
-    expect(document.activeElement).toBe(trigger);
-    fireEvent.click(screen.getByRole("button", { name: "View all 4 tracks" }));
-    fireEvent.click(trigger);
-    expect(
-      (
-        screen.getByRole("textbox", {
-          name: "Follow-up draft",
-        }) as HTMLTextAreaElement
-      ).value,
-    ).toBe("Please check the missing material by Friday.\nKeep this wording.");
-    first.unmount();
-    render(<PlaygroundWorkspace scenario={release} example={releaseExample} />);
-    expect(screen.queryByRole("textbox")).toBeNull();
-    fireEvent.click(screen.getByRole("button", { name: "Draft follow-up" }));
-    expect(
-      (
-        screen.getByRole("textbox", {
-          name: "Follow-up draft",
-        }) as HTMLTextAreaElement
-      ).value,
-    ).toBe("Please check the missing material by Friday.\nKeep this wording.");
-  });
-
-  it("keeps an intentionally cleared draft empty after closing, reopening, and remounting", () => {
-    const first = render(
-      <PlaygroundWorkspace scenario={release} example={releaseExample} />,
-    );
-    fireEvent.click(screen.getByRole("button", { name: "Draft follow-up" }));
-    fireEvent.change(screen.getByRole("textbox", { name: "Follow-up draft" }), {
-      target: { value: "" },
-    });
-    fireEvent.click(screen.getByRole("button", { name: "Close draft" }));
-    fireEvent.click(screen.getByRole("button", { name: "Draft follow-up" }));
-    expect(
-      (
-        screen.getByRole("textbox", {
-          name: "Follow-up draft",
-        }) as HTMLTextAreaElement
-      ).value,
-    ).toBe("");
-    first.unmount();
-    render(<PlaygroundWorkspace scenario={release} example={releaseExample} />);
-    fireEvent.click(screen.getByRole("button", { name: "Draft follow-up" }));
-    expect(
-      (
-        screen.getByRole("textbox", {
-          name: "Follow-up draft",
-        }) as HTMLTextAreaElement
-      ).value,
-    ).toBe("");
-  });
-
-  it("restores focus to stable source buttons after both direct inspection and a popover-to-dialog handoff", async () => {
-    render(<PlaygroundWorkspace scenario={release} example={releaseExample} />);
-    const list = screen.getByRole("list", {
-      name: "Night Swimming · follow-ups records",
-    });
-    const single = within(list).getByRole("button", {
-      name: "Inspect 1 source for After Hours",
-    });
-    fireEvent.click(single);
-    let dialog = await screen.findByRole("dialog", { name: "Source details" });
-    await waitFor(() =>
-      expect(dialog.contains(document.activeElement)).toBe(true),
-    );
-    fireEvent.click(
-      within(dialog).getByRole("button", { name: "Close evidence inspector" }),
-    );
-    await waitFor(() => expect(document.activeElement).toBe(single));
-
-    const multiple = within(list).getByRole("button", {
-      name: "2 sources for Daybreak",
-    });
-    multiple.focus();
-    fireEvent.click(multiple);
-    const choices = await screen.findByRole("dialog", {
-      name: "Sources for Daybreak",
-    });
-    fireEvent.click(
-      within(choices).getByRole("button", { name: /Contributor follow-up/ }),
-    );
-    dialog = await screen.findByRole("dialog", { name: "Source details" });
-    await waitFor(() =>
-      expect(
-        screen.queryByRole("dialog", { name: "Sources for Daybreak" }),
-      ).toBeNull(),
-    );
-    await waitFor(() =>
-      expect(dialog.contains(document.activeElement)).toBe(true),
-    );
-    fireEvent.keyDown(document.activeElement!, { key: "Escape" });
-    await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
-    await waitFor(() => expect(document.activeElement).toBe(multiple));
-  });
-
-  it("does not open or focus a restored source automatically", () => {
-    const subject = release.initial.context.subject;
-    localStorage.setItem(
-      `recoup:iui:fixture-v1:${release.initial.context.workspaceId}:${subject.kind}:${subject.id}`,
-      JSON.stringify({
-        selectedRowIds: [],
-        filter: "",
-        notes: "Saved note",
-        evidenceId: "delivery-sheet",
-      }),
-    );
-    const { rerender } = render(<button>Keep my focus</button>);
-    const control = screen.getByRole("button", { name: "Keep my focus" });
-    control.focus();
-    rerender(
-      <>
-        <button>Keep my focus</button>
-        <PlaygroundWorkspace scenario={release} example={releaseExample} />
-      </>,
-    );
-    expect(screen.queryByRole("dialog")).toBeNull();
-    expect(document.activeElement).toBe(control);
-  });
-
-  it("retains the coherent answer, collection, and draft after a stopped replay and a malformed replay", async () => {
-    const encoder = new TextEncoder();
-    const cancel = vi.fn();
-    fetchMock.mockResolvedValueOnce({
-      ok: true,
-      body: new ReadableStream<Uint8Array>({
-        start(controller) {
-          controller.enqueue(
-            encoder.encode(`${JSON.stringify(release.events[0])}\n`),
-          );
-        },
-        cancel,
-      }),
-    });
-    render(<PlaygroundWorkspace scenario={release} example={releaseExample} />);
-    fireEvent.click(screen.getByRole("button", { name: "Draft follow-up" }));
-    const editor = screen.getByRole("textbox", {
-      name: "Follow-up draft",
-    }) as HTMLTextAreaElement;
-    fireEvent.change(editor, {
-      target: { value: "Preserve this working draft." },
-    });
+  it("updates calculated prose and visual values together after a coherent changed replay", async () => {
+    const changed = structuredClone(getCompletedExample(scenario("listening")));
+    const component = changed.components[0];
+    if (component.type !== "distribution")
+      throw new Error("Expected distribution");
+    component.items[0].value = 0;
+    changed.evidence[0].text =
+      "SYNTHETIC EXAMPLE. Revised observations: Glasshouse 0; Low Tide 300,000; After Hours 160,000; Daybreak 60,000; Night Drive 30,000; Stillwater 15,000; Blue Hour 10,000; Home 5,000. Total 580,000 plays over the same September window.";
+    fetchMock.mockResolvedValueOnce(response(changed));
+    mount("listening");
     fireEvent.click(screen.getByText("About this example"));
     fireEvent.click(screen.getByRole("button", { name: "Replay updates" }));
-    const stop = await screen.findByRole("button", { name: "Stop replay" });
-    fireEvent.click(stop);
-    await waitFor(() => expect(cancel).toHaveBeenCalled());
     expect(
-      screen.getByText("Replay stopped. The current answer is unchanged."),
+      await within(
+        screen.getByRole("article", { name: "Recoup response" }),
+      ).findByText(/Low Tide and After Hours account for 79.3%/),
     ).toBeTruthy();
-    expect(screen.getByText(releaseExample.answer)).toBeTruthy();
     expect(
-      within(screen.getByRole("table")).getAllByRole("rowheader"),
-    ).toHaveLength(2);
-    expect(editor.value).toBe("Preserve this working draft.");
+      within(
+        screen.getByRole("article", { name: "Recoup response" }),
+      ).queryByText(/account for 72%/),
+    ).toBeNull();
+    expect(screen.getByLabelText("0 plays")).toBeTruthy();
+    expect(screen.getByText(/580,000 supplied plays/)).toBeTruthy();
+  });
 
-    fetchMock.mockResolvedValueOnce({
-      ok: true,
-      body: new ReadableStream<Uint8Array>({
-        start(controller) {
-          controller.enqueue(
-            encoder.encode(
-              `${JSON.stringify(release.events[0])}\n{"type":"not-valid"}\n`,
-            ),
-          );
-          controller.close();
-        },
-      }),
-    });
+  it("rejects an answer/data revision mismatch and preserves the complete prior response", async () => {
+    const changed = structuredClone(getCompletedExample(scenario("listening")));
+    changed.revision = 3;
+    fetchMock.mockResolvedValueOnce(response(changed));
+    mount("listening");
+    fireEvent.click(screen.getByText("About this example"));
     fireEvent.click(screen.getByRole("button", { name: "Replay updates" }));
     expect(await screen.findByRole("alert")).toBeTruthy();
     expect(
-      screen.getByText("Replay interrupted. The current answer is unchanged."),
+      within(
+        screen.getByRole("article", { name: "Recoup response" }),
+      ).getByText(/account for 72%/),
     ).toBeTruthy();
-    expect(screen.getByText(releaseExample.answer)).toBeTruthy();
+    expect(screen.getByLabelText("420,000 plays")).toBeTruthy();
+  });
+
+  it("exposes equivalent data when the host cannot render a representation", () => {
+    const surface = getCompletedExample(scenario("listening"));
+    render(
+      <AnswerRenderer
+        surface={surface}
+        capabilities={{ distribution: false, timeline: false }}
+        onInspectEvidence={vi.fn()}
+      />,
+    );
+    expect(screen.queryByRole("figure")).toBeNull();
+    expect(screen.getByText(/Total supplied: 1,000,000 plays/)).toBeTruthy();
     expect(
-      within(screen.getByRole("table")).getAllByRole("rowheader"),
-    ).toHaveLength(2);
-    expect(editor.value).toBe("Preserve this working draft.");
+      within(
+        screen.getByRole("article", { name: "Recoup response" }),
+      ).getByText(/account for 72%/),
+    ).toBeTruthy();
+  });
+
+  it("opens evidence only on request and restores focus after closing", async () => {
+    mount("listening");
+    expect(screen.queryByRole("dialog")).toBeNull();
+    const trigger = screen.getByRole("button", {
+      name: "September play observations",
+    });
+    trigger.focus();
+    fireEvent.click(trigger);
+    const dialog = await screen.findByRole("dialog", {
+      name: "Source details",
+    });
+    expect(within(dialog).getByText(/SYNTHETIC EXAMPLE/)).toBeTruthy();
+    fireEvent.keyDown(document.activeElement!, { key: "Escape" });
+    await waitFor(() => expect(document.activeElement).toBe(trigger));
+  });
+
+  it("reuses the same distribution and calculation for a non-music subject", () => {
+    const surface = structuredClone(getCompletedExample(scenario("listening")));
+    const distribution = surface.components[0];
+    if (distribution.type !== "distribution")
+      throw new Error("Expected distribution");
+    surface.context = {
+      workspaceId: "example-support",
+      subject: { kind: "queue", id: "support", label: "Support queues" },
+    };
+    distribution.title = "Where support time goes";
+    distribution.measure = {
+      ...distribution.measure,
+      label: "Resolution time",
+      unit: "minutes",
+      population: "Three supplied queues",
+    };
+    distribution.items = [
+      { id: "billing", label: "Billing", value: 600, evidenceIds: [] },
+      { id: "accounts", label: "Accounts", value: 300, evidenceIds: [] },
+      { id: "other", label: "Other", value: 100, evidenceIds: [] },
+    ];
+    distribution.totalCount = 3;
+    surface.answer!.parts = surface.answer!.parts.slice(0, 2);
+    render(<AnswerRenderer surface={surface} onInspectEvidence={vi.fn()} />);
+    expect(
+      screen.getByRole("figure", { name: "Where support time goes" }),
+    ).toBeTruthy();
+    expect(
+      screen.getByText(/Billing and Accounts account for 90% of the minutes/),
+    ).toBeTruthy();
+    expect(screen.getByLabelText("600 minutes")).toBeTruthy();
+    expect(screen.queryByText("Spotify plays")).toBeNull();
+  });
+});
+
+describe("linked time state", () => {
+  it("seeks from section selection without starting audio, and follows the actual playhead", () => {
+    mount("song");
+    const audio = readyAudio();
+    expect(audio.autoplay).toBe(false);
+    const chorus = screen.getByRole("button", { name: "Chorus, 0:28 to 0:40" });
+    chorus.focus();
+    fireEvent.click(chorus);
+    expect(audio.currentTime).toBe(28);
+    expect(chorus.getAttribute("aria-pressed")).toBe("true");
+    expect(
+      within(screen.getByRole("region", { name: "Chorus" })).getByText(
+        /The motif moves up an octave/,
+      ),
+    ).toBeTruthy();
+    expect(document.activeElement).toBe(chorus);
+    expect(play).not.toHaveBeenCalled();
+    audio.currentTime = 9;
+    fireEvent.timeUpdate(audio);
+    expect(
+      screen
+        .getByRole("button", { name: "Verse, 0:08 to 0:20" })
+        .getAttribute("aria-pressed"),
+    ).toBe("true");
+    expect(
+      within(screen.getByRole("region", { name: "Verse" })).getByText(
+        /The motif stays familiar/,
+      ),
+    ).toBeTruthy();
+    expect(document.activeElement).toBe(chorus);
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it("restores position on return, never restores playback, and pauses an unmounted player", () => {
+    const first = mount("song");
+    const audio = readyAudio();
+    fireEvent.click(
+      screen.getByRole("button", { name: "Chorus, 0:28 to 0:40" }),
+    );
+    expect(audio.currentTime).toBe(28);
+    first.unmount();
+    expect(pause).toHaveBeenCalled();
+    mount("song");
+    const restored = readyAudio();
+    expect(restored.currentTime).toBe(28);
+    expect(
+      screen
+        .getByRole("button", { name: "Chorus, 0:28 to 0:40" })
+        .getAttribute("aria-pressed"),
+    ).toBe("true");
+    expect(play).not.toHaveBeenCalled();
+  });
+
+  it("keeps the player and current position stable during a valid replay", async () => {
+    const first = getCompletedExample(scenario("song"));
+    fetchMock.mockResolvedValueOnce(response(first));
+    mount("song");
+    const audio = readyAudio();
+    fireEvent.click(screen.getByRole("button", { name: "Lift, 0:20 to 0:28" }));
+    fireEvent.click(screen.getByText("About this example"));
+    fireEvent.click(screen.getByRole("button", { name: "Replay updates" }));
+    await screen.findByText("Replay complete");
+    expect(
+      screen.getByLabelText("Original instrumental demo · 48 seconds"),
+    ).toBe(audio);
+    expect(audio.currentTime).toBe(20);
+    expect(play).not.toHaveBeenCalled();
+  });
+
+  it("preserves meaningful section exploration when audio fails or has the wrong duration", () => {
+    mount("song");
+    const audio = screen.getByLabelText(
+      "Original instrumental demo · 48 seconds",
+    ) as HTMLAudioElement;
+    Object.defineProperty(audio, "duration", { configurable: true, value: 60 });
+    fireEvent.loadedMetadata(audio);
+    expect(
+      within(
+        screen.getByRole("article", { name: "Recoup response" }),
+      ).getByRole("status").textContent,
+    ).toContain("Audio is unavailable");
+    fireEvent.click(
+      screen.getByRole("button", { name: "Chorus, 0:28 to 0:40" }),
+    );
+    expect(
+      within(screen.getByRole("region", { name: "Chorus" })).getByText(
+        /The motif moves up an octave/,
+      ),
+    ).toBeTruthy();
+    expect(play).not.toHaveBeenCalled();
+  });
+
+  it("keeps section notes usable if the browser rejects a seek", () => {
+    mount("song");
+    const audio = readyAudio();
+    Object.defineProperty(audio, "currentTime", {
+      configurable: true,
+      get: () => 0,
+      set: () => {
+        throw new DOMException("Cannot seek", "InvalidStateError");
+      },
+    });
+    fireEvent.click(
+      screen.getByRole("button", { name: "Chorus, 0:28 to 0:40" }),
+    );
+    expect(
+      within(
+        screen.getByRole("article", { name: "Recoup response" }),
+      ).getByRole("status").textContent,
+    ).toContain("Audio is unavailable");
+    expect(
+      within(screen.getByRole("region", { name: "Chorus" })).getByText(
+        /The motif moves up an octave/,
+      ),
+    ).toBeTruthy();
+    expect(play).not.toHaveBeenCalled();
+  });
+
+  it("does not attach an arbitrary asset URL and still offers all supplied notes", () => {
+    const surface = structuredClone(getCompletedExample(scenario("song")));
+    const timeline = surface.components[0];
+    if (timeline.type !== "timeline") throw new Error("Expected timeline");
+    timeline.media!.assetId = "unrecognized";
+    render(
+      <AnswerRenderer
+        surface={surface}
+        resolveAudioAsset={() => undefined}
+        onInspectEvidence={vi.fn()}
+      />,
+    );
+    expect(
+      screen.queryByLabelText("Original instrumental demo · 48 seconds"),
+    ).toBeNull();
+    expect(
+      within(
+        screen.getByRole("article", { name: "Recoup response" }),
+      ).getByRole("status").textContent,
+    ).toContain("Audio is unavailable");
+    fireEvent.click(screen.getByText("Read all section notes"));
+    expect(screen.getByText(/0:28–0:40 · Chorus/)).toBeTruthy();
   });
 });
