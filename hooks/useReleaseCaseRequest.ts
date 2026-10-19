@@ -35,8 +35,9 @@ export function useReleaseCaseRequest(
         signal: AbortSignal.timeout(30000),
       });
       if (response.status === 401)
-        throw new ReleaseCaseRequestError("Please sign in again.");
-      if (!response.ok) throw new Error(RELEASE_CASE_ERROR);
+        throw new ReleaseCaseRequestError("Please sign in again.", 401);
+      if (!response.ok)
+        throw new ReleaseCaseRequestError(RELEASE_CASE_ERROR, response.status);
       const result: unknown = await response.json();
       return result as ReleaseCaseResponses[Action];
     },
