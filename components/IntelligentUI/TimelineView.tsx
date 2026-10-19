@@ -8,6 +8,7 @@ import { useTimelinePosition } from "@/lib/intelligent-ui/representations/useTim
 import { getRepresentationText } from "@/lib/intelligent-ui/representations/getRepresentationText";
 import { formatTime } from "@/lib/intelligent-ui/representations/formatTime";
 import SegmentedTimeline from "./SegmentedTimeline";
+import { isAudioPositionSeekable } from "./isAudioPositionSeekable";
 
 export default function TimelineView({
   component,
@@ -26,24 +27,48 @@ export default function TimelineView({
     component.durationSeconds,
   );
   const [unavailable, setUnavailable] = useState(!audioUrl);
+  const [mediaReady, setMediaReady] = useState(false);
   const section = getActiveSection(component, position);
   useEffect(() => {
     const element = audio.current;
     return () => element?.pause();
   }, [restored, audioUrl, unavailable]);
+  const prepareAudio = (settled: boolean) => {
+    const element = audio.current;
+    if (!element) return;
+    if (
+      !Number.isFinite(element.duration) ||
+      Math.abs(element.duration - component.durationSeconds) > 0.1
+    ) {
+      element.pause();
+      setUnavailable(true);
+      return;
+    }
+    const target = pendingSeek.current ?? position;
+    pendingSeek.current = target;
+    if (!isAudioPositionSeekable(element.seekable, target)) {
+      setMediaReady(false);
+      if (settled) {
+        element.pause();
+        setUnavailable(true);
+      }
+      return;
+    }
+    try {
+      element.currentTime = target;
+      pendingSeek.current = null;
+      setMediaReady(true);
+    } catch {
+      element.pause();
+      setUnavailable(true);
+    }
+  };
   const seek = (value: number) => {
     const next = Math.max(0, Math.min(component.durationSeconds, value));
     pendingSeek.current = next;
     setPosition(next);
-    if (audio.current && audio.current.readyState > 0 && !unavailable) {
-      try {
-        audio.current.currentTime = next;
-        pendingSeek.current = null;
-      } catch {
-        audio.current.pause();
-        setUnavailable(true);
-      }
-    }
+    if (audio.current && audio.current.readyState > 0 && !unavailable)
+      prepareAudio(audio.current.readyState >= 3);
   };
   return (
     <section
@@ -65,24 +90,9 @@ export default function TimelineView({
           src={audioUrl}
           aria-label={component.media?.label ?? component.title}
           className="mt-5 h-11 w-full [color-scheme:light] dark:[color-scheme:dark]"
-          onLoadedMetadata={() => {
-            const element = audio.current;
-            if (
-              !element ||
-              !Number.isFinite(element.duration) ||
-              Math.abs(element.duration - component.durationSeconds) > 0.1
-            ) {
-              element?.pause();
-              setUnavailable(true);
-              return;
-            }
-            try {
-              element.currentTime = pendingSeek.current ?? position;
-              pendingSeek.current = null;
-            } catch {
-              element.pause();
-              setUnavailable(true);
-            }
+          onLoadedMetadata={() => prepareAudio(false)}
+          onCanPlay={() => {
+            if (pendingSeek.current !== null) prepareAudio(true);
           }}
           onTimeUpdate={() => {
             const element = audio.current;
@@ -92,6 +102,7 @@ export default function TimelineView({
               value !== undefined &&
               Number.isFinite(value) &&
               element.readyState > 0 &&
+              mediaReady &&
               !unavailable &&
               pendingSeek.current === null
             )
@@ -116,7 +127,9 @@ export default function TimelineView({
         position={position}
         onSeek={seek}
         descriptionId={`${id}-explanation`}
-        playbackAvailable={Boolean(restored && audioUrl && !unavailable)}
+        playbackAvailable={Boolean(
+          restored && audioUrl && !unavailable && mediaReady,
+        )}
       />
       <div
         id={`${id}-explanation`}

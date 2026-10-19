@@ -34,6 +34,10 @@ function readyAudio() {
   ) as HTMLAudioElement;
   Object.defineProperty(audio, "duration", { configurable: true, value: 48 });
   Object.defineProperty(audio, "readyState", { configurable: true, value: 1 });
+  Object.defineProperty(audio, "seekable", {
+    configurable: true,
+    value: { length: 1, start: () => 0, end: () => 48 },
+  });
   fireEvent.loadedMetadata(audio);
   return audio;
 }
@@ -234,6 +238,54 @@ describe("composed responses", () => {
 });
 
 describe("linked time state", () => {
+  it("waits for seekable ranges before offering jumps or applying a pending selection", () => {
+    mount("song");
+    const audio = screen.getByLabelText(
+      "Original instrumental demo · 48 seconds",
+    ) as HTMLAudioElement;
+    Object.defineProperty(audio, "duration", { configurable: true, value: 48 });
+    Object.defineProperty(audio, "readyState", {
+      configurable: true,
+      value: 1,
+    });
+    fireEvent.loadedMetadata(audio);
+    fireEvent.click(
+      screen.getByRole("button", { name: "Chorus, 0:28 to 0:40" }),
+    );
+    expect(audio.currentTime).toBe(0);
+    expect(screen.queryByText(/Choose a section to jump/)).toBeNull();
+    Object.defineProperty(audio, "seekable", {
+      configurable: true,
+      value: { length: 1, start: () => 0, end: () => 48 },
+    });
+    fireEvent.canPlay(audio);
+    expect(audio.currentTime).toBe(28);
+    expect(screen.getByText(/Choose a section to jump/)).toBeTruthy();
+    expect(play).not.toHaveBeenCalled();
+  });
+
+  it("keeps notes usable when ready media has no seekable range", () => {
+    mount("song");
+    const audio = screen.getByLabelText(
+      "Original instrumental demo · 48 seconds",
+    ) as HTMLAudioElement;
+    Object.defineProperty(audio, "duration", { configurable: true, value: 48 });
+    Object.defineProperty(audio, "readyState", {
+      configurable: true,
+      value: 4,
+    });
+    fireEvent.loadedMetadata(audio);
+    fireEvent.canPlay(audio);
+    expect(
+      screen.queryByLabelText("Original instrumental demo · 48 seconds"),
+    ).toBeNull();
+    fireEvent.click(
+      screen.getByRole("button", { name: "Chorus, 0:28 to 0:40" }),
+    );
+    expect(screen.getByRole("region", { name: "Chorus" })).toBeTruthy();
+    expect(screen.queryByText(/Choose a section to jump/)).toBeNull();
+    expect(play).not.toHaveBeenCalled();
+  });
   it("keeps the restored section if media emits a zero time update before metadata or failure", () => {
     const first = mount("song");
     readyAudio();

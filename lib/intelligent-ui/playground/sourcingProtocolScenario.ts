@@ -153,7 +153,7 @@ export const sourcingProtocolScenario: PlaygroundScenario = {
       ],
       remove: [],
       fallbackText:
-        "Synthetic supplier comparison for 500 studio bags. Northline: $2,400, 21 days, sample reviewed. Common Ground: $2,650, 14 days, sample reviewed. Fieldwork: $2,250, 28 days, sample pending. No supplier has a material certification in this fixture. Sources: fictional October quotes, sample log, and review recommendation. No purchase has been approved or placed.",
+        "Synthetic supplier comparison for 500 studio bags. Northline: $2,400, 21 days, sample reviewed. Common Ground: $2,650, 14 days, sample reviewed. Fieldwork: $2,250, 28 days, sample pending. No supplier has a material certification in this fixture. Sources: fictional October quotes and sample log. No purchase has been approved or placed.",
     },
     {
       type: "surface.patch",
