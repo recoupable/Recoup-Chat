@@ -21,3 +21,8 @@ export interface PendingFileReplacement {
   file: File;
   opened: OpenedFileRevision;
 }
+
+export interface ScopedReplacementFailure {
+  scope: string;
+  message: string;
+}

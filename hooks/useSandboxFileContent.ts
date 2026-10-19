@@ -35,9 +35,13 @@ export default function useSandboxFileContent(
     options?.includeRevision ?? false,
   );
 
-  const select = useCallback((path: string) => {
-    setSelectedPath(path);
-  }, []);
+  const select = useCallback(
+    (path: string) => {
+      setSelectedPath(path);
+      reopen(path);
+    },
+    [reopen],
+  );
 
   return {
     selectedPath: effectivePath,
@@ -49,9 +53,6 @@ export default function useSandboxFileContent(
     openedRevision:
       query.error || query.isFetching ? undefined : query.data?.openedRevision,
     scopeKey,
-    reopen: (path: string) => {
-      setSelectedPath(path);
-      reopen(path);
-    },
+    reopen: select,
   };
 }

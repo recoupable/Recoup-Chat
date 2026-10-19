@@ -1,19 +1,17 @@
 "use client";
 
-import SandboxFileBrowser from "./SandboxFileBrowser";
-import SandboxDropZone from "./SandboxDropZone";
-import NoSandboxFiles from "./NoSandboxFiles";
+import SandboxFileWorkspace from "./SandboxFileWorkspace";
 import useSandboxes from "@/hooks/useSandboxes";
 import useSandboxFileContent from "@/hooks/useSandboxFileContent";
 import { useSandboxFileDrop } from "@/hooks/useSandboxFileDrop";
-import { Loader } from "lucide-react";
 import { useState } from "react";
 import { getGuardedGitApiBaseUrl } from "@/lib/sandboxes/getGuardedGitApiBaseUrl";
 import { useGuardedFileReplacement } from "@/hooks/useGuardedFileReplacement";
 import GuardedFileReplacementNotice from "./GuardedFileReplacementNotice";
 
 export default function SandboxFileTree() {
-  const { filetree, isLoading, error, refetch } = useSandboxes();
+  const listing = useSandboxes();
+  const { filetree, refetch } = listing;
   const [protectReplacement, setProtectReplacement] = useState(false);
   const available = Boolean(getGuardedGitApiBaseUrl());
   const fileContent = useSandboxFileContent({
@@ -37,45 +35,18 @@ export default function SandboxFileTree() {
   });
   const busy = uploading || guarded.saving;
   const onDrop = (files: File[]) => {
-    if (protectReplacement) void guarded.replace(files);
+    if (protectReplacement || guarded.hasPending) void guarded.replace(files);
     else handleFilesDropped(files);
   };
 
-  if (isLoading) {
-    return (
-      <div className="flex items-center gap-2 text-muted-foreground">
-        <Loader className="h-4 w-4 animate-spin" />
-        <span>Loading files...</span>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="text-destructive">
-        <p>Failed to load files</p>
-        <button
-          onClick={() => refetch()}
-          className="text-sm underline hover:no-underline"
-        >
-          Try again
-        </button>
-      </div>
-    );
-  }
-
-  if (filetree.length === 0) {
-    return <NoSandboxFiles onDrop={onDrop} disabled={busy} />;
-  }
-
   return (
     <div className="space-y-4">
-      {(available || protectReplacement) && (
+      {(available || protectReplacement || guarded.hasPending) && (
         <label className="flex items-center gap-2 text-sm">
           <input
             type="checkbox"
-            checked={protectReplacement}
-            disabled={busy || Boolean(guarded.pending)}
+            checked={protectReplacement || guarded.hasPending}
+            disabled={busy || guarded.hasPending}
             onChange={(event) => setProtectReplacement(event.target.checked)}
           />
           Protect replacement of the opened file
@@ -86,11 +57,17 @@ export default function SandboxFileTree() {
         error={guarded.error}
         disabled={busy}
         onDiscard={guarded.discard}
-        onReopen={fileContent.reopen}
+        onReopen={(path) => {
+          setProtectReplacement(true);
+          fileContent.reopen(path);
+        }}
       />
-      <SandboxDropZone onDrop={onDrop} uploading={busy}>
-        <SandboxFileBrowser filetree={filetree} fileContent={fileContent} />
-      </SandboxDropZone>
+      <SandboxFileWorkspace
+        listing={listing}
+        fileContent={fileContent}
+        onDrop={onDrop}
+        busy={busy}
+      />
     </div>
   );
 }

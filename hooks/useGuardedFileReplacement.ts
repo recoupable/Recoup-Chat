@@ -1,13 +1,12 @@
 import { useLayoutEffect, useRef, useState } from "react";
 import { usePrivy } from "@privy-io/react-auth";
-import { uploadSandboxFiles } from "@/lib/sandboxes/uploadSandboxFiles";
+import { saveOpenedFileReplacement } from "@/lib/sandboxes/saveOpenedFileReplacement";
 import { isOpenedRevisionCurrent } from "@/lib/sandboxes/isOpenedRevisionCurrent";
-
 import type {
   GuardedReplacementOptions,
   PendingFileReplacement,
+  ScopedReplacementFailure,
 } from "@/lib/sandboxes/guardedFileTypes";
-
 export function useGuardedFileReplacement(options: GuardedReplacementOptions) {
   const { getAccessToken } = usePrivy();
   const latest = useRef(options);
@@ -20,16 +19,24 @@ export function useGuardedFileReplacement(options: GuardedReplacementOptions) {
     };
   }, [options]);
   const inFlight = useRef(false);
+  const retained = useRef<PendingFileReplacement | null>(null);
   const [saving, setSaving] = useState(false);
   const [pending, setPending] = useState<PendingFileReplacement | null>(null);
-  const [failure, setFailure] = useState<{
-    scope: string;
-    message: string;
-  } | null>(null);
+  const [failure, setFailure] = useState<ScopedReplacementFailure | null>(null);
 
   const replace = async (files: File[]) => {
     if (inFlight.current) return;
     const { opened, scopeKey, selectedPath, enabled } = latest.current;
+    if (retained.current) {
+      setFailure({
+        scope: scopeKey,
+        message:
+          retained.current.opened.scopeKey === scopeKey
+            ? "Keep a copy or discard the kept replacement before starting another."
+            : "Return to the original account to keep or discard its replacement before starting another.",
+      });
+      return;
+    }
     if (
       !enabled ||
       !opened ||
@@ -46,6 +53,7 @@ export function useGuardedFileReplacement(options: GuardedReplacementOptions) {
       return;
     }
     const original = { file: files[0], opened: { ...opened } };
+    retained.current = original;
     setPending(original);
     setFailure(null);
     inFlight.current = true;
@@ -54,21 +62,8 @@ export function useGuardedFileReplacement(options: GuardedReplacementOptions) {
       mounted.current &&
       isOpenedRevisionCurrent(latest.current, original.opened);
     try {
-      const accessToken = await getAccessToken();
-      if (!accessToken || !isCurrent())
-        throw new Error(
-          "The account, file or connection changed. Reopen before replacing.",
-        );
-      await uploadSandboxFiles({
-        accessToken,
-        files,
-        path: opened.path.split("/").slice(0, -1).join("/"),
-        guard: { opened: original.opened, isCurrent },
-      });
-      if (!isCurrent())
-        throw new Error(
-          "The view changed while saving. Reopen to confirm the saved revision.",
-        );
+      await saveOpenedFileReplacement(getAccessToken, original, isCurrent);
+      retained.current = null;
       setPending(null);
       options.onSaved();
     } catch (error) {
@@ -87,10 +82,15 @@ export function useGuardedFileReplacement(options: GuardedReplacementOptions) {
   return {
     replace,
     saving,
+    hasPending: Boolean(pending),
     pending: pending?.opened.scopeKey === options.scopeKey ? pending : null,
     error: failure?.scope === options.scopeKey ? failure.message : null,
     discard: () => {
-      if (!inFlight.current) {
+      if (
+        !inFlight.current &&
+        retained.current?.opened.scopeKey === latest.current.scopeKey
+      ) {
+        retained.current = null;
         setPending(null);
         setFailure(null);
       }

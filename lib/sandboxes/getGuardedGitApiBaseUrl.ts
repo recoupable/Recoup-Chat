@@ -5,7 +5,7 @@ export function getGuardedGitApiBaseUrl(): string | null {
   const configured = process.env.NEXT_PUBLIC_GUARDED_GIT_API_ORIGIN;
   if (
     !configured ||
-    !/^https:\/\/api-[a-z0-9]+-recoup\.vercel\.app$/.test(configured)
+    !/^https:\/\/api-[a-z0-9]{9}-recoup\.vercel\.app$/.test(configured)
   )
     return null;
   return getClientApiBaseUrl() === configured ? configured : null;

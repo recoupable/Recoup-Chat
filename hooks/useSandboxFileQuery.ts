@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef } from "react";
+import { useCallback, useLayoutEffect, useRef } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { usePrivy } from "@privy-io/react-auth";
 import { getFileContents } from "@/lib/sandboxes/getFileContents";
@@ -50,13 +50,13 @@ export function useSandboxFileQuery(
       retry: false,
     }),
   });
-  return {
-    query,
-    scopeKey,
-    reopen: (target: string) => {
+  const reopen = useCallback(
+    (target: string) => {
       void client.invalidateQueries({
-        queryKey: [...prefix, target, includeRevision],
+        queryKey: ["sandbox-file-content", apiBaseUrl, scopeKey, target],
       });
     },
-  };
+    [client, apiBaseUrl, scopeKey],
+  );
+  return { query, scopeKey, reopen };
 }
