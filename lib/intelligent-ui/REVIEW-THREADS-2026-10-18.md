@@ -83,10 +83,11 @@ is a review disposition, not product acceptance or merge approval.
 
 ## Documentation corrections after runtime verification
 
-| Comment                                                                          | Disposition | Evidence / rationale                                                                                                                                                         |
-| -------------------------------------------------------------------------------- | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [4309563818](https://github.com/recoupable/app/pull/2243#discussion_r4309563818) | Addressed   | Removed the stale 17-count wording; 18 structural suggestions remain at the documented review checkpoint.                                                                    |
-| [4309563822](https://github.com/recoupable/app/pull/2243#discussion_r4309563822) | Addressed   | Manifest and handoff now pin final runtime verification to immutable commit 133b14470fd9e351934f9b822693a3c656d21320; later documentation commits do not alter that runtime. |
+| Comment                                                                          | Disposition | Evidence / rationale                                                                                                                                                              |
+| -------------------------------------------------------------------------------- | ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [4309563818](https://github.com/recoupable/app/pull/2243#discussion_r4309563818) | Addressed   | Removed the stale 17-count wording; 18 structural suggestions remain at the documented review checkpoint.                                                                         |
+| [4309563822](https://github.com/recoupable/app/pull/2243#discussion_r4309563822) | Addressed   | Manifest and handoff now pin final runtime verification to immutable commit 133b14470fd9e351934f9b822693a3c656d21320; later documentation commits do not alter that runtime.      |
+| [4309580267](https://github.com/recoupable/app/pull/2243#discussion_r4309580267) | Addressed   | Removed wording that incorrectly grouped later documentation comments into the runtime-verification checkpoint. Individual dispositions remain dated by their review stage above. |
 
-The 61 assessed threads are not 61 validated defects. Eighteen structural
+The 62 assessed threads are not 62 validated defects. Eighteen structural
 suggestions remain for reviewer agreement; final remote state is recorded on PR #2243.
