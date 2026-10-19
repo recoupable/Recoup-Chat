@@ -40,9 +40,9 @@ export default function MarkdownPart({ text }: { text: string }) {
           }
         }}
         components={{
-          a: ({ children, href }) =>
+          a: ({ children, href, title }) =>
             href ? (
-              <a href={href} target="_blank" rel="noreferrer">
+              <a href={href} title={title} target="_blank" rel="noreferrer">
                 {children}
                 <span className="sr-only"> (opens in a new tab)</span>
               </a>

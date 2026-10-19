@@ -33,7 +33,13 @@ export default function EvidenceDialog({
           }}
         >
           <Dialog.Title className="sr-only">Source details</Dialog.Title>
-          {evidence && <EvidencePanel evidence={evidence} onClose={onClose} />}
+          {evidence && (
+            <EvidencePanel
+              evidence={evidence}
+              onClose={onClose}
+              focusRequest={1}
+            />
+          )}
         </Dialog.Content>
       </Dialog.Portal>
     </Dialog.Root>

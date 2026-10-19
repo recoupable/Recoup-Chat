@@ -32,6 +32,8 @@ export async function* parseSurfaceStream(
           if (++eventCount > SURFACE_STREAM_LIMITS.events)
             throw new Error("Surface event limit exceeded");
           yield surfaceEventSchema.parse(JSON.parse(line));
+          if (signal?.aborted)
+            throw new DOMException("Surface stream aborted", "AbortError");
         }
         return;
       }

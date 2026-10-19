@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import IntelligentUIPlaygroundPage from "../page";
+import Playground from "@/components/IntelligentUI/Playground";
 
 vi.mock("next/navigation", () => ({
   notFound: () => {
@@ -21,6 +22,6 @@ describe("playground server page", () => {
   it("allows local development", () => {
     vi.stubEnv("NODE_ENV", "development");
     vi.stubEnv("VERCEL_ENV", "");
-    expect(IntelligentUIPlaygroundPage()).toBeTruthy();
+    expect(IntelligentUIPlaygroundPage().type).toBe(Playground);
   });
 });

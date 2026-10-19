@@ -2,38 +2,8 @@ name: Intelligent UI playground
 
 on:
   pull_request:
-    paths:
-      - ".github/workflows/intelligent-ui.yml"
-      - "lib/intelligent-ui/**"
-      - "components/IntelligentUI/**"
-      - "app/labs/intelligent-ui/**"
-      - "app/api/intelligent-ui/**"
-      - "providers/Providers.tsx"
-      - "providers/__tests__/PlaygroundProviders.test.tsx"
-      - "components/Context/**"
-      - "next.config.mjs"
-      - "proxy.ts"
-      - "package.json"
-      - "pnpm-lock.yaml"
-      - "tsconfig.json"
-      - "vitest.config.ts"
   push:
     branches: [main]
-    paths:
-      - ".github/workflows/intelligent-ui.yml"
-      - "lib/intelligent-ui/**"
-      - "components/IntelligentUI/**"
-      - "app/labs/intelligent-ui/**"
-      - "app/api/intelligent-ui/**"
-      - "providers/Providers.tsx"
-      - "providers/__tests__/PlaygroundProviders.test.tsx"
-      - "components/Context/**"
-      - "next.config.mjs"
-      - "proxy.ts"
-      - "package.json"
-      - "pnpm-lock.yaml"
-      - "tsconfig.json"
-      - "vitest.config.ts"
 
 permissions:
   contents: read

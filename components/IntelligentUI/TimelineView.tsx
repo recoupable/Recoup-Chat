@@ -64,7 +64,7 @@ export default function TimelineView({
           preload="metadata"
           src={audioUrl}
           aria-label={component.media?.label ?? component.title}
-          className="mt-5 h-11 w-full"
+          className="mt-5 h-11 w-full [color-scheme:light] dark:[color-scheme:dark]"
           onLoadedMetadata={() => {
             const element = audio.current;
             if (
@@ -85,10 +85,14 @@ export default function TimelineView({
             }
           }}
           onTimeUpdate={() => {
-            const value = audio.current?.currentTime;
+            const element = audio.current;
+            const value = element?.currentTime;
             if (
+              element &&
               value !== undefined &&
               Number.isFinite(value) &&
+              element.readyState > 0 &&
+              !unavailable &&
               pendingSeek.current === null
             )
               setPosition(

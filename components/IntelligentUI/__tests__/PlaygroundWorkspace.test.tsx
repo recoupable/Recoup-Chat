@@ -187,6 +187,13 @@ describe("composed responses", () => {
       name: "Source details",
     });
     expect(within(dialog).getByText(/SYNTHETIC EXAMPLE/)).toBeTruthy();
+    await waitFor(() =>
+      expect(document.activeElement).toBe(
+        within(dialog).getByRole("heading", {
+          name: "September play observations",
+        }),
+      ),
+    );
     fireEvent.keyDown(document.activeElement!, { key: "Escape" });
     await waitFor(() => expect(document.activeElement).toBe(trigger));
   });
@@ -227,6 +234,22 @@ describe("composed responses", () => {
 });
 
 describe("linked time state", () => {
+  it("keeps the restored section if media emits a zero time update before metadata or failure", () => {
+    const first = mount("song");
+    readyAudio();
+    fireEvent.click(
+      screen.getByRole("button", { name: "Chorus, 0:28 to 0:40" }),
+    );
+    first.unmount();
+    mount("song");
+    const audio = screen.getByLabelText(
+      "Original instrumental demo · 48 seconds",
+    );
+    fireEvent.timeUpdate(audio);
+    expect(screen.getByRole("region", { name: "Chorus" })).toBeTruthy();
+    fireEvent.error(audio);
+    expect(screen.getByRole("region", { name: "Chorus" })).toBeTruthy();
+  });
   it("seeks from section selection without starting audio, and follows the actual playhead", () => {
     mount("song");
     const audio = readyAudio();

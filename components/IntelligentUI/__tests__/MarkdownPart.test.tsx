@@ -35,13 +35,14 @@ describe("ordinary Markdown safety", () => {
     render(
       <MarkdownPart
         text={
-          "| Supplier | Quote |\n| --- | ---: |\n| Northline | $2,400 |\n\n[source](https://example.com/quote)"
+          '| Supplier | Quote |\n| --- | ---: |\n| Northline | $2,400 |\n\n[source](https://example.com/quote "Quoted terms and context")'
         }
       />,
     );
     expect(screen.getByRole("table")).toBeTruthy();
     const link = screen.getByRole("link", { name: /source/ });
     expect(link.getAttribute("href")).toBe("https://example.com/quote");
+    expect(link.getAttribute("title")).toBe("Quoted terms and context");
     expect(link.getAttribute("rel")).toBe("noreferrer");
   });
 });

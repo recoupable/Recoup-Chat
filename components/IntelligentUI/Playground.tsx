@@ -2,17 +2,14 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Moon, Sun } from "lucide-react";
-import { useTheme } from "next-themes";
 import LogoIcon from "@/components/Logo/LogoIcon";
-import { Button } from "@/components/ui/button";
 import { conversationExamples } from "@/lib/intelligent-ui/playground/conversationExamples";
 import { playgroundScenarios } from "@/lib/intelligent-ui/playground/scenarios";
 import PlaygroundWorkspace from "./PlaygroundWorkspace";
+import PlaygroundThemeToggle from "./PlaygroundThemeToggle";
 
 export default function Playground() {
   const [exampleId, setExampleId] = useState(conversationExamples[0].id);
-  const { setTheme, resolvedTheme } = useTheme();
   const example =
     conversationExamples.find((item) => item.id === exampleId) ??
     conversationExamples[0];
@@ -38,18 +35,7 @@ export default function Playground() {
         </Link>
         <div className="flex items-center gap-3">
           <span className="text-xs text-muted-foreground">Design lab</span>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="size-11"
-            aria-label="Toggle color theme"
-            onClick={() =>
-              setTheme(resolvedTheme === "dark" ? "light" : "dark")
-            }
-          >
-            <Sun className="hidden size-4 dark:block" aria-hidden="true" />
-            <Moon className="size-4 dark:hidden" aria-hidden="true" />
-          </Button>
+          <PlaygroundThemeToggle />
         </div>
       </header>
       <main className="mx-auto max-w-3xl px-5 pt-8 pb-12 sm:px-8 sm:pt-12">

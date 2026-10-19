@@ -75,7 +75,7 @@ describe("useExampleReplay", () => {
       await result.current.replay();
     });
     expect(result.current.status).toBe("error");
-    expect(result.current.error).toMatch(/could not be validated/);
+    expect(result.current.error).toMatch(/could not be loaded or validated/);
     expect(result.current.surface.revision).toBe(1);
     expect(result.current.completedSurface).toBeNull();
     const collection = result.current.surface.components.find(

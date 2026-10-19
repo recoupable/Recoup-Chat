@@ -5,6 +5,7 @@ import { applySurfaceEvent } from "../applySurfaceEvent";
 import { parseSurfaceStream } from "../parseSurfaceStream";
 import type { Surface } from "../schema";
 import type { PlaygroundScenario } from "./scenarios";
+import { ExampleReplayError } from "./ExampleReplayError";
 
 export function useExampleReplay(scenario: PlaygroundScenario) {
   const [surface, setSurface] = useState(scenario.initial);
@@ -45,13 +46,17 @@ export function useExampleReplay(scenario: PlaygroundScenario) {
         { signal: controller.signal, cache: "no-store" },
       );
       if (!response.ok || !response.body)
-        throw new Error("The example stream is unavailable. Try replaying it.");
+        throw new ExampleReplayError(
+          "The example stream is unavailable. Try replaying it.",
+        );
       for await (const event of parseSurfaceStream(response.body, {
         signal: controller.signal,
       })) {
         if (active.current !== controller) return;
         if (complete)
-          throw new Error("The example sent data after completion.");
+          throw new ExampleReplayError(
+            "The example sent data after completion.",
+          );
         if (
           event.type === "surface.snapshot" &&
           (event.surface.id !== scenario.initial.id ||
@@ -62,7 +67,7 @@ export function useExampleReplay(scenario: PlaygroundScenario) {
             event.surface.context.subject.kind !==
               scenario.initial.context.subject.kind)
         ) {
-          throw new Error(
+          throw new ExampleReplayError(
             "The example belongs to a different workspace or subject.",
           );
         }
@@ -71,7 +76,7 @@ export function useExampleReplay(scenario: PlaygroundScenario) {
         complete = event.type === "surface.complete";
       }
       if (!complete)
-        throw new Error(
+        throw new ExampleReplayError(
           "The stream ended early. The last valid view is still available; replay to finish.",
         );
       if (active.current === controller) {
@@ -83,9 +88,9 @@ export function useExampleReplay(scenario: PlaygroundScenario) {
     } catch (cause) {
       if (controller.signal.aborted || active.current !== controller) return;
       setError(
-        cause instanceof Error && cause.message.startsWith("The ")
+        cause instanceof ExampleReplayError
           ? cause.message
-          : "An update could not be validated. The last valid view is still available; replay to try again.",
+          : "The example could not be loaded or validated. The last valid view is still available; replay to try again.",
       );
       setStatus("error");
     } finally {

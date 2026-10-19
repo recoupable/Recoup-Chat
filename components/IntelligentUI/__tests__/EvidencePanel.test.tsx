@@ -125,6 +125,24 @@ describe("EvidencePanel", () => {
     }
   });
 
+  it("focuses the empty-state heading after closing a restored standalone inspector", () => {
+    const Harness = () => {
+      const [selected, setSelected] = useState<Evidence | null>(evidence);
+      return (
+        <EvidencePanel evidence={selected} onClose={() => setSelected(null)} />
+      );
+    };
+    render(<Harness />);
+    const close = screen.getByRole("button", {
+      name: "Close evidence inspector",
+    });
+    close.focus();
+    fireEvent.click(close);
+    expect(document.activeElement).toBe(
+      screen.getByRole("heading", { name: "Follow the evidence." }),
+    );
+  });
+
   it("makes withdrawn evidence explicit and does not interpret markup in source text", () => {
     const text = "<script>alert('example')</script>";
     const { container } = render(

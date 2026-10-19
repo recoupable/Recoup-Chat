@@ -130,10 +130,12 @@ source safety, interval bounds, native-media events, position restoration,
 non-autoplay, missing-media fallback, WAV/range correctness, and environment/
 provider/cache isolation.
 
-Manual browser review of visual quality, actual device audio playback, native
-media accessibility, light/dark contrast and 200% zoom remains separate from DOM
-and byte-level checks. Prior browser access was blocked by the browser URL policy;
-no fresh visual review is claimed or bypassed through another browser surface.
+The [October 18 review handoff](REVIEW-2026-10-18.md) records all baseline review
+comment dispositions and permitted desktop-browser evidence at desktop, 390px and
+320px widths, including keyboard use, native seeking, restoration and a simulated
+missing-media fallback. Browser access was permitted in that session. Physical
+mobile playback, audible quality, native screen-reader use and 200% zoom remain
+unverified; browser captures do not substitute for those checks or a user study.
 Optional participant research is unrun and does not block shipping; deterministic
 correctness regressions remain mandatory.
 

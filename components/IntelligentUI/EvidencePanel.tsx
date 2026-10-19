@@ -32,6 +32,13 @@ const EvidencePanel = ({
   const panel = useRef<HTMLElement>(null);
   const heading = useRef<HTMLHeadingElement>(null);
   const returnFocus = useRef<HTMLElement | null>(null);
+  const focusEmpty = useRef(false);
+  useEffect(() => {
+    if (!evidence && focusEmpty.current) {
+      heading.current?.focus({ preventScroll: true });
+      focusEmpty.current = false;
+    }
+  }, [evidence]);
   useEffect(() => {
     if (focusRequest > 0 && heading.current) {
       const activeElement = document.activeElement;
@@ -81,6 +88,9 @@ const EvidencePanel = ({
             aria-label="Close evidence inspector"
             className="-mr-2 min-h-11 min-w-11 focus-visible:ring-2"
             onClick={() => {
+              focusEmpty.current =
+                !returnFocus.current?.isConnected &&
+                Boolean(panel.current?.contains(document.activeElement));
               onClose();
               if (returnFocus.current?.isConnected) returnFocus.current.focus();
             }}
@@ -162,7 +172,12 @@ const EvidencePanel = ({
         </>
       ) : (
         <>
-          <h2 id={headingId} className="text-lg font-medium tracking-tight">
+          <h2
+            ref={heading}
+            id={headingId}
+            tabIndex={-1}
+            className="rounded-sm text-lg font-medium tracking-tight focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
             Follow the evidence.
           </h2>
           <p className="mt-3 text-sm leading-7 text-muted-foreground">

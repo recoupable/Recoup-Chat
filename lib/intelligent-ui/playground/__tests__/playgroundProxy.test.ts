@@ -1,10 +1,13 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { NextRequest } from "next/server";
-import { proxy } from "@/proxy";
+import { proxy, config } from "@/proxy";
 
 afterEach(() => vi.unstubAllEnvs());
 
 describe("playground request gate", () => {
+  it("matches the exact lab path before the page can stream", () => {
+    expect(config.matcher).toBe("/labs/intelligent-ui");
+  });
   it("returns a real no-store 404 before production can stream a page", () => {
     vi.stubEnv("NODE_ENV", "production");
     vi.stubEnv("VERCEL_ENV", "production");

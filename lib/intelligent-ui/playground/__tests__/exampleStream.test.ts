@@ -90,6 +90,7 @@ describe("synthetic example streams", () => {
     await reader.cancel();
     expect(await pending).toEqual({ done: true, value: undefined });
     await vi.runAllTimersAsync();
+    expect(await reader.read()).toEqual({ done: true, value: undefined });
     expect(vi.getTimerCount()).toBe(0);
   });
 });
