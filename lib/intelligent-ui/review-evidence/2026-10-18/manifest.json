@@ -1,0 +1,69 @@
+{
+  "review_date": "2026-10-18",
+  "source_baseline": "97dacb222a214c050968e1fd80690f5f9ccdbb14",
+  "host": "Codex in-app Chromium on macOS",
+  "scope": "Synthetic local fixtures; normal desktop and measured 320/390 CSS viewport widths",
+  "files": [
+    {
+      "name": "supplier-desktop.jpg",
+      "bytes": 40109,
+      "sha256": "65d288b0c26463c372fb7153d57f5c3adb6412659ec174fae532c25b406a16f0"
+    },
+    {
+      "name": "listening-desktop-final.jpg",
+      "bytes": 30997,
+      "sha256": "665d6f7c7525ae26c9c5a2175d24536c8a0f37797cfef0fc1a11731c6b5bf8dd"
+    },
+    {
+      "name": "song-desktop.jpg",
+      "bytes": 44134,
+      "sha256": "118acde534abc4a0d445580825bdbdbeb3c7d9029cfab7034f9ba1a1666e502a"
+    },
+    {
+      "name": "supplier-320.jpg",
+      "bytes": 29132,
+      "sha256": "cc1e5226aee4de9ca5dad00aa7b64e60f7dc590bf3716126fda8f2f9eb8801e0"
+    },
+    {
+      "name": "listening-320.jpg",
+      "bytes": 28234,
+      "sha256": "621e3e32fa48df72c263bf94b24660e2759db36d6f7864806a276291b83382e1"
+    },
+    {
+      "name": "song-320.jpg",
+      "bytes": 32315,
+      "sha256": "98fcc670f46eb2a13dd76e5ce3205dcb9bc06c85770a3cf9ff5c5fac130bc91d"
+    },
+    {
+      "name": "source-keyboard-390.jpg",
+      "bytes": 44103,
+      "sha256": "f1ba4fa2f1b7f203949cce2be7e4209713034d4fdf9345e13883d59a9ffcb1ce"
+    },
+    {
+      "name": "song-seek-390.jpg",
+      "bytes": 41985,
+      "sha256": "1785ff3f3111991d51025f7a530185381b01290324b87b2f821f990f2ade120f"
+    },
+    {
+      "name": "song-dark-390.jpg",
+      "bytes": 40735,
+      "sha256": "05569bcd9a3982c0ae6e09dc63d0fa2760e344b3e6805afb8163ab85e5ca485f"
+    },
+    {
+      "name": "song-missing-audio-restored-390.jpg",
+      "bytes": 38753,
+      "sha256": "353cea03d4d02a944ca25439df1e71f2caff0c82516236f502a3a88ca67ee2fd"
+    }
+  ],
+  "limitations": [
+    "No physical mobile device or native screen reader",
+    "No audible sound-quality review",
+    "Screenshots are local evidence, not measured user benefit"
+  ],
+  "reviewed_source_commit": "cae767d6e54f93a4986354ee2b04973ff7f4daa6",
+  "final_code_commit": "a0b2c2eeaf866e112e2cea46128905793bc7fa44",
+  "final_media_change_verification": "191 tests; native-browser follow-up blocked by policy on generated connection-refused data page",
+  "merge_recommendation": "Hold for permitted native-media smoke check and reviewer agreement on structural dispositions; no automatic merge",
+  "missing_media_http_status": "Not captured; browser media error and notes fallback were observed",
+  "verification": "Native browser captures apply to cae767d6e; final runtime code a0b2c2eea has 191 passing tests, type/lint/format/build; final native range-readiness smoke remains blocked"
+}
