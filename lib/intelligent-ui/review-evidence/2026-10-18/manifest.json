@@ -66,5 +66,7 @@
   "missing_media_http_status": "Not captured; browser media error and notes fallback were observed",
   "verification": "Native browser captures apply to cae767d6e. Final runtime has 191 passing tests, type/lint/format/build. Final range-readiness/progress retry smoke remains blocked.",
   "core_runtime_commit": "a0b2c2eeaf866e112e2cea46128905793bc7fa44",
-  "runtime_source_reference": "PR #2243 head including retry-on-progress correction; publication SHA is recorded in the PR handoff"
+  "runtime_source_reference": "https://github.com/recoupable/app/commit/133b14470fd9e351934f9b822693a3c656d21320",
+  "final_code_commit": "133b14470fd9e351934f9b822693a3c656d21320",
+  "verification_source_commit": "133b14470fd9e351934f9b822693a3c656d21320"
 }

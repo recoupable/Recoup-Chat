@@ -81,5 +81,12 @@ is a review disposition, not product acceptance or merge approval.
 | [4309494760](https://github.com/recoupable/app/pull/2243#discussion_r4309494760) | Addressed              | A transient canplay range gap pauses/hides controls and retains pending selection. Metadata/canplay/progress retry preparation; absence of a range no longer marks media permanently unavailable.                    |
 | [4309494762](https://github.com/recoupable/app/pull/2243#discussion_r4309494762) | Already addressed      | Final handoff distinguishes the original baseline, captured runtime cae767d6e, core fixes a0b2c2eea and latest PR head. It no longer labels the earlier head as current implementation.                              |
 
-The 59 assessed threads are not 59 validated defects. Eighteen structural
+## Documentation corrections after runtime verification
+
+| Comment                                                                          | Disposition | Evidence / rationale                                                                                                                                                         |
+| -------------------------------------------------------------------------------- | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [4309563818](https://github.com/recoupable/app/pull/2243#discussion_r4309563818) | Addressed   | Removed the stale 17-count wording; 18 structural suggestions remain at the documented review checkpoint.                                                                    |
+| [4309563822](https://github.com/recoupable/app/pull/2243#discussion_r4309563822) | Addressed   | Manifest and handoff now pin final runtime verification to immutable commit 133b14470fd9e351934f9b822693a3c656d21320; later documentation commits do not alter that runtime. |
+
+The 61 assessed threads are not 61 validated defects. Eighteen structural
 suggestions remain for reviewer agreement; final remote state is recorded on PR #2243.
