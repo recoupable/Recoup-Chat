@@ -84,12 +84,3 @@ pnpm lint
 A feature PR, local fixture, CI result or automatic preview build does not complete
 hosted web/MCP acceptance. No manual deployment, production write, credential
 rotation, paid action, client import or merge is part of this change.
-
-## Review disposition
-
-The retry description and stale test-command filter were corrected after review.
-New per-document provenance rendering is separated from snapshot metadata.
-Automated size-limit suggestions also cover the existing assessment hook, viewer,
-guest funnel and older tests, which already exceeded 100 lines before this change.
-Broader decomposition of those existing flows is deferred; this PR keeps the
-behavioral fix bounded. Those advisories are not claims of verified access defects.
