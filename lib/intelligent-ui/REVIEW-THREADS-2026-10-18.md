@@ -3,11 +3,20 @@
 Baseline: `97dacb222a214c050968e1fd80690f5f9ccdbb14`, 101 total threads,
 48 unresolved (10 marked outdated). All 48 have current-source dispositions below:
 19 addressed, 13 already addressed/superseded, 16 structural suggestions not adopted.
-[Final handoff and merge recommendation](REVIEW-2026-10-18.md).
+[Current handoff and merge gate](REVIEW-FINAL-2026-10-19.md).
 
 Outdated is GitHub's flag at capture, not this review's technical conclusion.
 New comments generated after publication must be assessed separately. A resolution
 is a review disposition, not product acceptance or merge approval.
+
+Policy follow-up: `.coderabbit.yaml` configures a warning-mode custom check that
+flags functions over 20 lines; its path guidance asks for components under 200
+lines and utility functions under 50 lines. It does not say all lib files must be
+under 50 lines. TimelineView and EvidencePanel are below 200; test files are
+excluded by its path filters, and Markdown/config files have no 100-line cap there.
+The stream parser/replay hook exceed function guidance: retaining their cohesive
+reader/cancellation lifecycles is an explicit warning-level exception, not a claim
+that the guidance is absent. Per-file reasons below remain open for owner agreement.
 
 | Comment                                                                          | Outdated | Disposition                    | Current evidence / rationale                                                                                                                                                                                                 |
 | -------------------------------------------------------------------------------- | -------- | ------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -89,5 +98,18 @@ is a review disposition, not product acceptance or merge approval.
 | [4309563822](https://github.com/recoupable/app/pull/2243#discussion_r4309563822) | Addressed   | Manifest and handoff now pin final runtime verification to immutable commit 133b14470fd9e351934f9b822693a3c656d21320; later documentation commits do not alter that runtime.      |
 | [4309580267](https://github.com/recoupable/app/pull/2243#discussion_r4309580267) | Addressed   | Removed wording that incorrectly grouped later documentation comments into the runtime-verification checkpoint. Individual dispositions remain dated by their review stage above. |
 
-The 62 assessed threads are not 62 validated defects. Eighteen structural
+## Findings from the f63bcb802 review
+
+| Comment                                                                          | Disposition                       | Evidence / rationale                                                                                                                                                                                                                                   |
+| -------------------------------------------------------------------------------- | --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| [4316059866](https://github.com/recoupable/app/pull/2243#discussion_r4316059866) | Addressed in 5d47ecf6d            | Clamp pending position to accepted native media duration before seekability validation; synchronize shared position after successful seeking. Saved-end restoration regressions cover 47.95s and 48.05s media; the shorter case failed before the fix. |
+| [4316059890](https://github.com/recoupable/app/pull/2243#discussion_r4316059890) | Not applicable after verification | Recounted the first table's 48 rows: 19 Fixed in this review, 13 Already addressed / superseded, 16 Not adopted. The existing header is correct; changing it to 18/13/17 would introduce an error.                                                     |
+| [4316080725](https://github.com/recoupable/app/pull/2243#discussion_r4316080725) | Addressed                         | Added the actual .coderabbit.yaml warning/function/component thresholds and explicit lifecycle exceptions above and in the final handoff. Utility-function guidance is not a lib-file limit.                                                           |
+
+Other review notes: historical evidence now links to its superseding validation.
+The October 19 scrollWidth was actually read from document.documentElement.scrollWidth
+and equaled viewport width; equal values do not demonstrate fabricated measurement.
+The historical observation is preserved rather than rewritten.
+
+The 65 assessed threads are not 65 validated defects. Eighteen structural
 suggestions remain for reviewer agreement; final remote state is recorded on PR #2243.

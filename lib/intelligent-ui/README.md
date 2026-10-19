@@ -130,11 +130,14 @@ source safety, interval bounds, native-media events, position restoration,
 non-autoplay, missing-media fallback, WAV/range correctness, and environment/
 provider/cache isolation.
 
-The [October 19 final validation](REVIEW-2026-10-19.md) records native readiness,
-paused/playing selection, reload restoration and failure-note recovery on the
-final runtime. It supersedes the earlier browser-access hold. Deterministic tests
-cover forced canplay-before-seekable/progress ordering; the browser review observed
-natural loading recovery without forcing event order. The [earlier review](REVIEW-2026-10-18.md)
+The [latest review-fix handoff](REVIEW-FINAL-2026-10-19.md) records 193 passing tests
+and a production build for the media-duration boundary correction. A new native
+reload was rejected by Browser Use's URL protocol policy, so that correction is
+regression-test verified and still lacks a native smoke check. The [earlier native
+validation](REVIEW-2026-10-19.md) records readiness, paused/playing selection, reload
+restoration and failure-note recovery at b3c277c4f, before the boundary correction.
+Forced canplay-before-seekable/progress ordering is deterministic-test coverage.
+The [earlier review](REVIEW-2026-10-18.md)
 preserves the baseline dispositions and desktop/390px/320px evidence. Physical
 mobile playback, audible quality, native screen-reader use and 200% zoom remain
 unverified; browser captures do not substitute for those checks or a user study.

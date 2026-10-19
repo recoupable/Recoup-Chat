@@ -29,5 +29,7 @@
       "bytes": 2457,
       "sha256": "4bee28354ff1048420d3161116e92b02dc96886f9e22e634c252d2dff3f7bec4"
     }
-  ]
+  ],
+  "status_scope": "Historical source-specific validation; see superseding manifest for latest runtime and merge gate.",
+  "superseded_by": "../2026-10-19-final/manifest.json"
 }

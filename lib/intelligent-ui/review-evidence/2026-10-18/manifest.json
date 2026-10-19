@@ -68,5 +68,7 @@
   "core_runtime_commit": "a0b2c2eeaf866e112e2cea46128905793bc7fa44",
   "runtime_source_reference": "https://github.com/recoupable/app/commit/133b14470fd9e351934f9b822693a3c656d21320",
   "final_code_commit": "133b14470fd9e351934f9b822693a3c656d21320",
-  "verification_source_commit": "133b14470fd9e351934f9b822693a3c656d21320"
+  "verification_source_commit": "133b14470fd9e351934f9b822693a3c656d21320",
+  "status_scope": "Historical source-specific validation; see superseding manifest for latest runtime and merge gate.",
+  "superseded_by": "../2026-10-19-final/manifest.json"
 }

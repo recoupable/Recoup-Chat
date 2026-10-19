@@ -1,5 +1,8 @@
 # Native audio validation — October 19, 2026
 
+Historical captures before the duration-boundary fix. See the
+[latest validation and gate](../2026-10-19-final/README.md).
+
 Source: `b3c277c4fc453ce3836ba47b27fc6d5a0a521edc`; runtime unchanged from
 `133b14470fd9e351934f9b822693a3c656d21320`. Synthetic local fixtures, in-app Chromium.
 [Detailed handoff](../../REVIEW-2026-10-19.md), [observations](observations.json),

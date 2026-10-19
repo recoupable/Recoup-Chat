@@ -1,0 +1,43 @@
+{
+  "review_date": "2026-10-19",
+  "runtime_verification_commit": "5d47ecf6dd7b9790151fd0f36ab6dffd7900e9cd",
+  "local_verification": {
+    "tests": 193,
+    "test_files": 24,
+    "typescript": "pass",
+    "scoped_eslint": "pass",
+    "format_and_diff": "pass",
+    "production_build": "pass"
+  },
+  "native_verification_for_runtime": "Blocked by Browser Use URL protocol policy on reload; no new native-boundary pass or screenshot.",
+  "tab_url_metadata": "http://localhost:3217/labs/intelligent-ui",
+  "policy_reason": "Requested URL protocol not allowed; allowed protocols http: and https:. Effective rejected protocol not disclosed.",
+  "workarounds_attempted": false,
+  "merge_gate": "HOLD for permitted native boundary smoke check, current CI/reviews and explicit Sidney approval.",
+  "historical_files": [
+    {
+      "path": "../2026-10-19/native-ready-paused.png",
+      "bytes": 44052,
+      "sha256": "2f03c5e2800a6bda5963d0063c9b76a809509d1a274545c3a46056f234938a7d",
+      "source_commit": "b3c277c4fc453ce3836ba47b27fc6d5a0a521edc"
+    },
+    {
+      "path": "../2026-10-19/native-failure-notes.png",
+      "bytes": 48751,
+      "sha256": "77ffcd5e52bab6bfbd44607d65d163dc90831a673e343f17f700795d9379c219",
+      "source_commit": "b3c277c4fc453ce3836ba47b27fc6d5a0a521edc"
+    },
+    {
+      "path": "../2026-10-19/native-restored-after-failure.png",
+      "bytes": 39230,
+      "sha256": "66399cec681308f9481db7e06c9733d70843f1dde359f91c27c4e81ab6264ea9",
+      "source_commit": "b3c277c4fc453ce3836ba47b27fc6d5a0a521edc"
+    },
+    {
+      "path": "../2026-10-19/observations.json",
+      "bytes": 2457,
+      "sha256": "4bee28354ff1048420d3161116e92b02dc96886f9e22e634c252d2dff3f7bec4",
+      "source_commit": "b3c277c4fc453ce3836ba47b27fc6d5a0a521edc"
+    }
+  ]
+}

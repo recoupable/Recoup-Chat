@@ -1,5 +1,8 @@
 # Browser evidence — October 18, 2026
 
+Historical snapshot. See the [latest validation and gate](../2026-10-19-final/README.md)
+and [subsequent native captures](../2026-10-19/README.md).
+
 Synthetic local fixtures in the Codex in-app Chromium browser on macOS.
 [SHA-256 manifest](manifest.json) records captured source `cae767d6e` and the
 core runtime `a0b2c2eea` and final runtime verification commit `133b14470`. Final seekability changes are DOM-test verified;
