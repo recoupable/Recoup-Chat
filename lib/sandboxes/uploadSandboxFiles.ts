@@ -1,5 +1,8 @@
 import { getClientApiBaseUrl } from "@/lib/api/getClientApiBaseUrl";
-import { upload } from "@vercel/blob/client";
+import { stageSandboxFiles } from "./stageSandboxFiles";
+import { assertFileReplacementGuard } from "./assertFileReplacementGuard";
+import { SandboxFileConflictError } from "./SandboxFileConflictError";
+import type { FileReplacementGuard } from "./guardedFileTypes";
 
 interface UploadedFile {
   path: string;
@@ -11,6 +14,7 @@ interface UploadSandboxFilesResponse {
   uploaded?: UploadedFile[];
   errors?: string[];
   error?: string;
+  conflicts?: string[];
 }
 
 /**
@@ -30,41 +34,25 @@ export async function uploadSandboxFiles({
   files,
   path,
   message,
+  guard,
 }: {
   accessToken: string;
   files: File[];
   path?: string;
   message?: string;
+  guard?: FileReplacementGuard;
 }): Promise<{ uploaded: UploadedFile[]; errors?: string[] }> {
-  const results = await Promise.allSettled(
-    files.map(async (file) => {
-      const blob = await upload(file.name, file, {
-        access: "public",
-        handleUploadUrl: `${getClientApiBaseUrl()}/api/sandboxes/staged-file`,
-        headers: { Authorization: `Bearer ${accessToken}` },
-      });
-      return { url: blob.url, name: file.name };
-    }),
+  if (guard) assertFileReplacementGuard(guard, files, path);
+  const apiBaseUrl = guard?.opened.apiBaseUrl ?? getClientApiBaseUrl();
+  const { blobFiles, blobErrors } = await stageSandboxFiles(
+    accessToken,
+    files,
+    apiBaseUrl,
+    guard?.opened.sha,
   );
 
-  const blobFiles: { url: string; name: string }[] = [];
-  const blobErrors: string[] = [];
-
-  results.forEach((r, i) => {
-    if (r.status === "fulfilled") {
-      blobFiles.push(r.value);
-    } else {
-      blobErrors.push(`${files[i].name}: ${r.reason?.message || "Upload failed"}`);
-    }
-  });
-
-  if (blobFiles.length === 0) {
-    throw new Error(
-      blobErrors[0] || "Failed to upload files to temporary storage",
-    );
-  }
-
-  const response = await fetch(`${getClientApiBaseUrl()}/api/sandboxes/files`, {
+  if (guard) assertFileReplacementGuard(guard, files, path);
+  const response = await fetch(`${apiBaseUrl}/api/sandboxes/files`, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${accessToken}`,
@@ -78,9 +66,21 @@ export async function uploadSandboxFiles({
   });
 
   const data: UploadSandboxFilesResponse = await response.json();
+  if (guard && (response.status === 409 || data.conflicts?.length))
+    throw new SandboxFileConflictError();
 
   if (!response.ok || data.status === "error") {
     throw new Error(data.error || "Failed to upload files");
+  }
+  if (
+    guard &&
+    (data.errors?.length ||
+      data.uploaded?.length !== 1 ||
+      !/^[a-f0-9]{40}$/.test(data.uploaded[0].sha))
+  ) {
+    throw new Error(
+      "The saved revision could not be confirmed. Your replacement has been kept.",
+    );
   }
 
   const allErrors = [...blobErrors, ...(data.errors || [])];
