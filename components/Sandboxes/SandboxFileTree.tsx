@@ -1,23 +1,45 @@
 "use client";
 
-import { FileTree } from "@/components/ai-elements/file-tree";
-import FileNodeComponent from "./FileNodeComponent";
-import SandboxFilePreview from "./SandboxFilePreview";
+import SandboxFileBrowser from "./SandboxFileBrowser";
 import SandboxDropZone from "./SandboxDropZone";
 import NoSandboxFiles from "./NoSandboxFiles";
 import useSandboxes from "@/hooks/useSandboxes";
 import useSandboxFileContent from "@/hooks/useSandboxFileContent";
 import { useSandboxFileDrop } from "@/hooks/useSandboxFileDrop";
 import { Loader } from "lucide-react";
+import { useState } from "react";
+import { getGuardedGitApiBaseUrl } from "@/lib/sandboxes/getGuardedGitApiBaseUrl";
+import { useGuardedFileReplacement } from "@/hooks/useGuardedFileReplacement";
+import GuardedFileReplacementNotice from "./GuardedFileReplacementNotice";
 
 export default function SandboxFileTree() {
   const { filetree, isLoading, error, refetch } = useSandboxes();
-  const fileContent = useSandboxFileContent();
+  const [protectReplacement, setProtectReplacement] = useState(false);
+  const available = Boolean(getGuardedGitApiBaseUrl());
+  const fileContent = useSandboxFileContent({
+    includeRevision: protectReplacement,
+  });
   const { handleFilesDropped, uploading } = useSandboxFileDrop({
     selectedPath: fileContent.selectedPath,
     filetree,
     refetch,
   });
+  const guarded = useGuardedFileReplacement({
+    enabled: protectReplacement,
+    opened: fileContent.openedRevision,
+    selectedPath: fileContent.selectedPath,
+    scopeKey: fileContent.scopeKey,
+    onSaved: () => {
+      refetch();
+      if (fileContent.selectedPath)
+        fileContent.reopen(fileContent.selectedPath);
+    },
+  });
+  const busy = uploading || guarded.saving;
+  const onDrop = (files: File[]) => {
+    if (protectReplacement) void guarded.replace(files);
+    else handleFilesDropped(files);
+  };
 
   if (isLoading) {
     return (
@@ -43,33 +65,32 @@ export default function SandboxFileTree() {
   }
 
   if (filetree.length === 0) {
-    return (
-      <NoSandboxFiles onDrop={handleFilesDropped} disabled={uploading} />
-    );
+    return <NoSandboxFiles onDrop={onDrop} disabled={busy} />;
   }
 
   return (
-    <SandboxDropZone onDrop={handleFilesDropped} uploading={uploading}>
-      <div className="w-full lg:max-w-md lg:shrink-0">
-        <h2 className="mb-2 text-lg font-medium">Repository Files</h2>
-        <FileTree
-          selectedPath={fileContent.selectedPath}
-          onSelect={fileContent.select}
-        >
-          {filetree.map((node) => (
-            <FileNodeComponent key={node.path} node={node} />
-          ))}
-        </FileTree>
-      </div>
-      {fileContent.selectedPath && (
-        <SandboxFilePreview
-          selectedPath={fileContent.selectedPath}
-          content={fileContent.content}
-          imageUrl={fileContent.imageUrl}
-          loading={fileContent.loading}
-          error={fileContent.error}
-        />
+    <div className="space-y-4">
+      {(available || protectReplacement) && (
+        <label className="flex items-center gap-2 text-sm">
+          <input
+            type="checkbox"
+            checked={protectReplacement}
+            disabled={busy || Boolean(guarded.pending)}
+            onChange={(event) => setProtectReplacement(event.target.checked)}
+          />
+          Protect replacement of the opened file
+        </label>
       )}
-    </SandboxDropZone>
+      <GuardedFileReplacementNotice
+        pending={guarded.pending}
+        error={guarded.error}
+        disabled={busy}
+        onDiscard={guarded.discard}
+        onReopen={fileContent.reopen}
+      />
+      <SandboxDropZone onDrop={onDrop} uploading={busy}>
+        <SandboxFileBrowser filetree={filetree} fileContent={fileContent} />
+      </SandboxDropZone>
+    </div>
   );
 }
