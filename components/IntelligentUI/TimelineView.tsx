@@ -33,7 +33,7 @@ export default function TimelineView({
     const element = audio.current;
     return () => element?.pause();
   }, [restored, audioUrl, unavailable]);
-  const prepareAudio = (settled: boolean) => {
+  const prepareAudio = () => {
     const element = audio.current;
     if (!element) return;
     if (
@@ -48,10 +48,7 @@ export default function TimelineView({
     pendingSeek.current = target;
     if (!isAudioPositionSeekable(element.seekable, target)) {
       setMediaReady(false);
-      if (settled) {
-        element.pause();
-        setUnavailable(true);
-      }
+      element.pause();
       return;
     }
     try {
@@ -68,7 +65,7 @@ export default function TimelineView({
     pendingSeek.current = next;
     setPosition(next);
     if (audio.current && audio.current.readyState > 0 && !unavailable)
-      prepareAudio(audio.current.readyState >= 3);
+      prepareAudio();
   };
   return (
     <section
@@ -83,35 +80,55 @@ export default function TimelineView({
           `Section notes · ${formatTime(component.durationSeconds)}`}
       </p>
       {restored && audioUrl && !unavailable && (
-        <audio
-          ref={audio}
-          controls
-          preload="metadata"
-          src={audioUrl}
-          aria-label={component.media?.label ?? component.title}
-          className="mt-5 h-11 w-full [color-scheme:light] dark:[color-scheme:dark]"
-          onLoadedMetadata={() => prepareAudio(false)}
-          onCanPlay={() => {
-            if (pendingSeek.current !== null) prepareAudio(true);
-          }}
-          onTimeUpdate={() => {
-            const element = audio.current;
-            const value = element?.currentTime;
-            if (
-              element &&
-              value !== undefined &&
-              Number.isFinite(value) &&
-              element.readyState > 0 &&
-              mediaReady &&
-              !unavailable &&
-              pendingSeek.current === null
-            )
-              setPosition(
-                Math.max(0, Math.min(component.durationSeconds, value)),
-              );
-          }}
-          onError={() => setUnavailable(true)}
-        />
+        <div className="mt-5 min-h-11">
+          {!mediaReady && (
+            <p
+              role="status"
+              className="text-xs leading-5 text-muted-foreground"
+            >
+              Audio preview is not ready. You can explore the notes.
+            </p>
+          )}
+          <audio
+            ref={audio}
+            controls
+            preload="metadata"
+            hidden={!mediaReady}
+            src={audioUrl}
+            aria-label={component.media?.label ?? component.title}
+            className="h-11 w-full [color-scheme:light] dark:[color-scheme:dark]"
+            onLoadedMetadata={prepareAudio}
+            onCanPlay={() => {
+              if (pendingSeek.current !== null) prepareAudio();
+            }}
+            onProgress={() => {
+              if (
+                pendingSeek.current !== null &&
+                audio.current &&
+                audio.current.readyState > 0 &&
+                !unavailable
+              )
+                prepareAudio();
+            }}
+            onTimeUpdate={() => {
+              const element = audio.current;
+              const value = element?.currentTime;
+              if (
+                element &&
+                value !== undefined &&
+                Number.isFinite(value) &&
+                element.readyState > 0 &&
+                mediaReady &&
+                !unavailable &&
+                pendingSeek.current === null
+              )
+                setPosition(
+                  Math.max(0, Math.min(component.durationSeconds, value)),
+                );
+            }}
+            onError={() => setUnavailable(true)}
+          />
+        </div>
       )}
       {component.media && unavailable && (
         <p

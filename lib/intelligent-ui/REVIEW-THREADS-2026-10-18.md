@@ -72,5 +72,14 @@ is a review disposition, not product acceptance or merge approval.
 | [4309460117](https://github.com/recoupable/app/pull/2243#discussion_r4309460117) | Addressed                         | Current verified run is 191 tests in 24 files; final handoff and PR description use that figure. Historical 170/189 runs are not current-head verification.                                                                          |
 | [4309460123](https://github.com/recoupable/app/pull/2243#discussion_r4309460123) | Addressed                         | Ten synthetic browser screenshots and their hash manifest are committed under review-evidence/2026-10-18. Captured source and the later native-verification gap are explicit.                                                        |
 
-The 55 assessed threads are not 55 validated defects. Seventeen structural
+## Follow-up comments read at f4cd405ff
+
+| Comment                                                                          | Disposition            | Evidence / rationale                                                                                                                                                                                                 |
+| -------------------------------------------------------------------------------- | ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [4309494756](https://github.com/recoupable/app/pull/2243#discussion_r4309494756) | Not adopted            | The sourcing module owns one declarative protocol fixture, including its evidence, values and events. Splitting solely at 100 lines makes consistency review harder; left open for maintainer agreement.             |
+| [4309494759](https://github.com/recoupable/app/pull/2243#discussion_r4309494759) | Addressed / superseded | The current test explicitly supplies empty TimeRanges and asserts that unready audio remains mounted but hidden. It can recover on a later progress event. It does not assume an undefined native seekable property. |
+| [4309494760](https://github.com/recoupable/app/pull/2243#discussion_r4309494760) | Addressed              | A transient canplay range gap pauses/hides controls and retains pending selection. Metadata/canplay/progress retry preparation; absence of a range no longer marks media permanently unavailable.                    |
+| [4309494762](https://github.com/recoupable/app/pull/2243#discussion_r4309494762) | Already addressed      | Final handoff distinguishes the original baseline, captured runtime cae767d6e, core fixes a0b2c2eea and latest PR head. It no longer labels the earlier head as current implementation.                              |
+
+The 59 assessed threads are not 59 validated defects. Eighteen structural
 suggestions remain for reviewer agreement; final remote state is recorded on PR #2243.

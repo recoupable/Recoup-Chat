@@ -2,7 +2,7 @@
 
 Synthetic local fixtures in the Codex in-app Chromium browser on macOS.
 [SHA-256 manifest](manifest.json) records captured source `cae767d6e` and the
-later runtime code `a0b2c2eea`. Final seekability changes are DOM-test verified;
+later core runtime `a0b2c2eea`; latest retry correction is referenced by the PR head. Final seekability changes are DOM-test verified;
 post-restart native-browser readback was blocked on a generated connection-refused
 error page. These screenshots are earlier observed states, not proof of that
 later native path, physical devices or measured user benefit.

@@ -136,6 +136,8 @@ comment dispositions and permitted desktop-browser evidence at desktop, 390px an
 missing-media fallback. Browser access was permitted in that session. Physical
 mobile playback, audible quality, native screen-reader use and 200% zoom remain
 unverified; browser captures do not substitute for those checks or a user study.
+The final handling of delayed seekable ranges is test-verified; it still needs a
+permitted native-browser smoke check after access was blocked on a generated error page.
 Optional participant research is unrun and does not block shipping; deterministic
 correctness regressions remain mandatory.
 

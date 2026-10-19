@@ -254,12 +254,16 @@ describe("linked time state", () => {
     );
     expect(audio.currentTime).toBe(0);
     expect(screen.queryByText(/Choose a section to jump/)).toBeNull();
+    fireEvent.canPlay(audio);
+    expect(audio.hidden).toBe(true);
+    expect(screen.queryByText(/Audio is unavailable/)).toBeNull();
     Object.defineProperty(audio, "seekable", {
       configurable: true,
       value: { length: 1, start: () => 0, end: () => 48 },
     });
-    fireEvent.canPlay(audio);
+    fireEvent.progress(audio);
     expect(audio.currentTime).toBe(28);
+    expect(audio.hidden).toBe(false);
     expect(screen.getByText(/Choose a section to jump/)).toBeTruthy();
     expect(play).not.toHaveBeenCalled();
   });
@@ -274,11 +278,17 @@ describe("linked time state", () => {
       configurable: true,
       value: 4,
     });
+    Object.defineProperty(audio, "seekable", {
+      configurable: true,
+      value: { length: 0, start: () => 0, end: () => 0 },
+    });
     fireEvent.loadedMetadata(audio);
     fireEvent.canPlay(audio);
     expect(
-      screen.queryByLabelText("Original instrumental demo · 48 seconds"),
-    ).toBeNull();
+      screen.getByLabelText("Original instrumental demo · 48 seconds"),
+    ).toBe(audio);
+    expect(audio.hidden).toBe(true);
+    expect(screen.queryByText(/Audio is unavailable/)).toBeNull();
     fireEvent.click(
       screen.getByRole("button", { name: "Chorus, 0:28 to 0:40" }),
     );
