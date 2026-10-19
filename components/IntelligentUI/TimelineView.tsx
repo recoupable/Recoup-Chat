@@ -44,7 +44,7 @@ export default function TimelineView({
       setUnavailable(true);
       return;
     }
-    const target = pendingSeek.current ?? position;
+    const target = Math.min(pendingSeek.current ?? position, element.duration);
     pendingSeek.current = target;
     if (!isAudioPositionSeekable(element.seekable, target)) {
       setMediaReady(false);
@@ -54,6 +54,7 @@ export default function TimelineView({
     try {
       element.currentTime = target;
       pendingSeek.current = null;
+      if (target !== position) setPosition(target);
       setMediaReady(true);
     } catch {
       element.pause();

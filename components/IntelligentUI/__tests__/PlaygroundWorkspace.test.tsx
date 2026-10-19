@@ -28,15 +28,18 @@ function mount(id: string) {
     <PlaygroundWorkspace scenario={scenario(id)} example={example(id)} />,
   );
 }
-function readyAudio() {
+function readyAudio(duration = 48) {
   const audio = screen.getByLabelText(
     "Original instrumental demo · 48 seconds",
   ) as HTMLAudioElement;
-  Object.defineProperty(audio, "duration", { configurable: true, value: 48 });
+  Object.defineProperty(audio, "duration", {
+    configurable: true,
+    value: duration,
+  });
   Object.defineProperty(audio, "readyState", { configurable: true, value: 1 });
   Object.defineProperty(audio, "seekable", {
     configurable: true,
-    value: { length: 1, start: () => 0, end: () => 48 },
+    value: { length: 1, start: () => 0, end: () => duration },
   });
   fireEvent.loadedMetadata(audio);
   return audio;
@@ -238,6 +241,24 @@ describe("composed responses", () => {
 });
 
 describe("linked time state", () => {
+  it.each([47.95, 48.05])(
+    "restores a saved end position within an accepted %s-second media duration",
+    (duration) => {
+      const first = mount("song");
+      const original = readyAudio();
+      original.currentTime = 48;
+      fireEvent.timeUpdate(original);
+      first.unmount();
+      mount("song");
+      const restored = readyAudio(duration);
+      expect(restored.currentTime).toBe(Math.min(48, duration));
+      expect(restored.hidden).toBe(false);
+      expect(screen.getByRole("region", { name: "Outro" })).toBeTruthy();
+      expect(screen.getByText(/Choose a section to jump/)).toBeTruthy();
+      expect(play).not.toHaveBeenCalled();
+    },
+  );
+
   it("waits for seekable ranges before offering jumps or applying a pending selection", () => {
     mount("song");
     const audio = screen.getByLabelText(
