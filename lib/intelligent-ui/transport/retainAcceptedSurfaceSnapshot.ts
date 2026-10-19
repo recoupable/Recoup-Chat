@@ -1,5 +1,5 @@
 import type { UIMessage } from "ai";
-import { readSurfaceSnapshotPart } from "./readSurfaceSnapshotPart";
+import { readLatestSurfaceSnapshotPart } from "./readLatestSurfaceSnapshotPart";
 import type { SurfaceSnapshotScope } from "./types";
 
 /** Preserve accepted state when a later model step rewrites ordinary message parts. */
@@ -15,13 +15,7 @@ export function retainAcceptedSurfaceSnapshot(
     message.role !== "assistant"
   )
     return message;
-  const candidate = accepted.parts.find(
-    (p) =>
-      p.type === "data-intelligent-ui-snapshot" &&
-      "id" in p &&
-      p.id === scope.surfaceId,
-  );
-  const part = readSurfaceSnapshotPart(candidate, scope);
+  const part = readLatestSurfaceSnapshotPart(accepted.parts, scope);
   if (!part) return message;
   let inserted = false;
   const parts = message.parts.flatMap((p) => {

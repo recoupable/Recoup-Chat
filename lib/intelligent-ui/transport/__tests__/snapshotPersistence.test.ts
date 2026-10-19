@@ -101,3 +101,59 @@ it("does not recover another message's or workspace's saved state", () => {
     ),
   ).toBe(ordinary);
 });
+
+it.each([
+  [1, 4],
+  [4, 1],
+])(
+  "recovers the highest accepted copy from saved revisions %i, %i",
+  (first, second) => {
+    const ordinary: UIMessage = {
+      id: scope.messageId,
+      role: "assistant",
+      parts: [{ type: "text", text: "Continued explanation" }],
+    };
+    const accepted: UIMessage = {
+      ...ordinary,
+      parts: [
+        snapshotPart(first, `Revision ${first}`),
+        snapshotPart(second, `Revision ${second}`),
+      ],
+    };
+    const recovered = retainAcceptedSurfaceSnapshot(ordinary, accepted, scope);
+    expect(recovered.parts).toEqual([
+      ...ordinary.parts,
+      snapshotPart(4, "Revision 4"),
+    ]);
+    const reloaded: UIMessage = JSON.parse(JSON.stringify(recovered));
+    const replay = acceptSurfaceSnapshotPart(
+      reloaded,
+      snapshotPart(2, "Intermediate"),
+      scope,
+    );
+    expect(replay.status).toBe("stale");
+    expect(replay.message).toBe(reloaded);
+  },
+);
+
+it("keeps the first stored copy on a highest-revision tie and rejects conflicting replay", () => {
+  const first = snapshotPart(4, "First accepted claim");
+  const conflict = snapshotPart(4, "Conflicting saved claim");
+  const ordinary: UIMessage = {
+    id: scope.messageId,
+    role: "assistant",
+    parts: [],
+  };
+  const recovered = retainAcceptedSurfaceSnapshot(
+    ordinary,
+    {
+      ...ordinary,
+      parts: [snapshotPart(1, "Old version"), first, conflict],
+    },
+    scope,
+  );
+  expect(recovered.parts).toEqual([first]);
+  const replay = acceptSurfaceSnapshotPart(recovered, conflict, scope);
+  expect(replay.status).toBe("conflict");
+  expect(replay.message).toBe(recovered);
+});

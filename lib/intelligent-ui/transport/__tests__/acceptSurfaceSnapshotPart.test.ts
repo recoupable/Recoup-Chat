@@ -268,6 +268,51 @@ it("collapses duplicate stored parts when accepting the next full snapshot", () 
   ]);
 });
 
+it.each([
+  [1, 4],
+  [4, 1],
+])(
+  "uses the newest accepted revision among restored copies ordered %i, %i",
+  (first, second) => {
+    const message: UIMessage = JSON.parse(
+      JSON.stringify({
+        ...original,
+        parts: [
+          ...original.parts,
+          snapshotPart(first, `Revision ${first}`),
+          snapshotPart(second, `Revision ${second}`),
+        ],
+      }),
+    );
+    const stale = acceptSurfaceSnapshotPart(
+      message,
+      snapshotPart(2, "Intermediate"),
+      scope,
+    );
+    expect(stale.status).toBe("stale");
+    expect(stale.message).toBe(message);
+    expect(stale.message.parts).toContainEqual(snapshotPart(4, "Revision 4"));
+    expect(
+      acceptSurfaceSnapshotPart(message, snapshotPart(4, "Revision 4"), scope)
+        .status,
+    ).toBe("replayed");
+    expect(
+      acceptSurfaceSnapshotPart(message, snapshotPart(4, "Conflicting"), scope)
+        .status,
+    ).toBe("conflict");
+    const next = acceptSurfaceSnapshotPart(
+      message,
+      snapshotPart(5, "Next"),
+      scope,
+    );
+    expect(next.status).toBe("accepted");
+    expect(next.message.parts).toEqual([
+      ...original.parts,
+      snapshotPart(5, "Next"),
+    ]);
+  },
+);
+
 it("rejects non-JSON cyclic input without throwing through the caller", () => {
   const input: Record<string, unknown> = {};
   input.data = input;

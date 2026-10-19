@@ -1,5 +1,6 @@
 import type { UIMessage } from "ai";
 import { readSurfaceSnapshotPart } from "./readSurfaceSnapshotPart";
+import { readLatestSurfaceSnapshotPart } from "./readLatestSurfaceSnapshotPart";
 import { isSameJsonValue } from "./isSameJsonValue";
 import { retainAcceptedSurfaceSnapshot } from "./retainAcceptedSurfaceSnapshot";
 import type { SurfaceSnapshotResult, SurfaceSnapshotScope } from "./types";
@@ -13,10 +14,7 @@ export function acceptSurfaceSnapshotPart(
   const part = readSurfaceSnapshotPart(input, scope);
   if (!part || message.id !== scope.messageId || message.role !== "assistant")
     return { message, status: "rejected" };
-  const index = message.parts.findIndex(
-    (p) => p.type === part.type && "id" in p && p.id === part.id,
-  );
-  const previous = readSurfaceSnapshotPart(message.parts[index], scope);
+  const previous = readLatestSurfaceSnapshotPart(message.parts, scope);
   if (previous && part.data.revision < previous.data.revision)
     return { message, status: "stale" };
   if (previous && part.data.revision === previous.data.revision)

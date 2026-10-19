@@ -22,6 +22,10 @@ snapshot into one cumulative accepted assistant message:
 - Older revisions are stale. Identical revisions are replayed; changed content
   at the same revision is a conflict. Both keep the previous message. Equality
   ignores JSON object-key order while preserving array order.
+- If restored copies coexist, the highest valid in-scope revision establishes
+  the accepted floor, regardless of copy order. At that highest revision, the
+  first stored copy wins ties; a conflicting replay cannot replace it. Stale,
+  replayed, and conflicting inputs leave the stored message unchanged.
 - Accepted input is parsed into detached data. Ordinary message parts retain
   their position, and replacement collapses duplicate parts for this surface.
 
@@ -41,7 +45,8 @@ the ordinary chat stream remain healthy.
 accepted snapshot into a later cumulative message write, preserving other parts
 and metadata. It never promotes an unaccepted raw SDK snapshot, even one with a
 higher revision. It can restore a part omitted by a later model step and remove
-duplicate target parts. Reload must use that retained record as accepted state.
+duplicate target parts, retaining the highest valid saved revision with the same
+tie rule. Reload must use that retained record as accepted state.
 This pure fold provides no database locking, compare-and-swap, or protection
 against concurrent writers; it is not wired into Supabase or an API writer.
 
