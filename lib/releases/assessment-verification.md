@@ -23,7 +23,7 @@ currently selected release. Older responses without a manifest explicitly report
 that source-version details are unavailable. Missing result/source IDs are never
 invented. Unavailable or denied responses clear the prior brief and provenance.
 
-A failed or uncertain save can be retried with its original idempotency key.
+A network or 5xx save failure can be retried with its original idempotency key.
 Concurrent clicks are suppressed. A new preview starts a new save revision.
 Client retry does not establish database idempotency: the existing server/database
 must reject changed output under an already used key. No automatic retry is made.
@@ -55,7 +55,7 @@ API fixture source: e4d9b6902879936e5a5f159dab85acd4f82cfb48.
 Repeat the app checks:
 
 ```sh
-pnpm exec vitest run components/Releases components/Context hooks/__tests__/useContextFunnel.test.tsx hooks/__tests__/useReleaseCases.test.tsx hooks/__tests__/useReleaseCaseReview.test.tsx lib/context
+pnpm exec vitest run components/Releases components/Context hooks/__tests__/useContextFunnel.test.tsx hooks/__tests__/useReleaseCaseReview.test.tsx lib/context
 pnpm exec tsc --noEmit
 pnpm lint
 ```
@@ -84,3 +84,12 @@ pnpm lint
 A feature PR, local fixture, CI result or automatic preview build does not complete
 hosted web/MCP acceptance. No manual deployment, production write, credential
 rotation, paid action, client import or merge is part of this change.
+
+## Review disposition
+
+The retry description and stale test-command filter were corrected after review.
+New per-document provenance rendering is separated from snapshot metadata.
+Automated size-limit suggestions also cover the existing assessment hook, viewer,
+guest funnel and older tests, which already exceeded 100 lines before this change.
+Broader decomposition of those existing flows is deferred; this PR keeps the
+behavioral fix bounded. Those advisories are not claims of verified access defects.
