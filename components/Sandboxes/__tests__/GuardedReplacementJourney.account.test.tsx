@@ -22,6 +22,9 @@ it("shows A's retained recovery after B rejects a drop and A returns", async () 
   fixture.actor = "actor-b";
   view.rerender(<SandboxFileTree />);
   fireEvent.click(screen.getByRole("button", { name: "Drop replacement" }));
+  expect(screen.getByRole("alert").textContent).toContain(
+    "Return to the original account",
+  );
   expect(screen.queryByRole("button", { name: "Keep a copy" })).toBeNull();
   fixture.actor = "actor-a";
   view.rerender(<SandboxFileTree />);
