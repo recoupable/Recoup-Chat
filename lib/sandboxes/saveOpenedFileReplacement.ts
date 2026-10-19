@@ -19,8 +19,4 @@ export async function saveOpenedFileReplacement(
     path: original.opened.path.split("/").slice(0, -1).join("/"),
     guard: { opened: original.opened, isCurrent },
   });
-  if (!isCurrent())
-    throw new Error(
-      "The view changed while saving. Reopen to confirm the saved revision.",
-    );
 }

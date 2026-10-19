@@ -16,7 +16,7 @@ export default function GuardedFileReplacementNotice({
   onDiscard: () => void;
   disabled: boolean;
 }) {
-  if (!error) return null;
+  if (!error && !pending) return null;
   const keepCopy = () => {
     if (!pending) return;
     const url = URL.createObjectURL(pending.file);
@@ -28,7 +28,7 @@ export default function GuardedFileReplacementNotice({
   };
   return (
     <div className="rounded-lg bg-muted p-4 text-sm space-y-3">
-      <p role="alert">{error}</p>
+      {error && <p role="alert">{error}</p>}
       {pending && (
         <>
           <p className="text-muted-foreground">

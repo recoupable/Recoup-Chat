@@ -65,7 +65,7 @@ export function useGuardedFileReplacement(options: GuardedReplacementOptions) {
       await saveOpenedFileReplacement(getAccessToken, original, isCurrent);
       retained.current = null;
       setPending(null);
-      options.onSaved();
+      if (isCurrent()) options.onSaved();
     } catch (error) {
       setFailure({
         scope: scopeKey,

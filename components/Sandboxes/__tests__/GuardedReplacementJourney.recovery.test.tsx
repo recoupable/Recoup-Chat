@@ -26,6 +26,9 @@ it.each(["loading", "error", "empty"])(
       fixture.listingError = new Error("Synthetic listing failure");
     if (state === "empty") fixture.empty = true;
     view.rerender(<SandboxFileTree />);
+    fireEvent.click(screen.getByRole("button", { name: "View latest file" }));
+    expect(fixture.reopen).toHaveBeenCalledWith("notes/draft.txt");
+    expect(screen.getByText("Opened draft")).toBeTruthy();
     expect(
       (screen.getByRole("button", { name: "Keep a copy" }) as HTMLButtonElement)
         .disabled,

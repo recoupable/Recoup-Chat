@@ -2,7 +2,6 @@ import React from "react";
 import { cleanup } from "@testing-library/react";
 import { beforeEach, afterEach, vi } from "vitest";
 import { fixture, file, opened } from "./guardedJourney.data";
-vi.stubGlobal("React", React);
 vi.mock("@privy-io/react-auth", () => ({
   usePrivy: () => ({ getAccessToken: async () => "synthetic-token" }),
 }));

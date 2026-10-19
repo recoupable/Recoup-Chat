@@ -1,6 +1,6 @@
 import { FileTree } from "@/components/ai-elements/file-tree";
 import FileNodeComponent from "./FileNodeComponent";
-import SandboxFilePreview from "./SandboxFilePreview";
+import SandboxSelectedFilePreview from "./SandboxSelectedFilePreview";
 import type { FileNode } from "@/lib/sandboxes/parseFileTree";
 import type useSandboxFileContent from "@/hooks/useSandboxFileContent";
 
@@ -25,15 +25,7 @@ export default function SandboxFileBrowser({
           ))}
         </FileTree>
       </div>
-      {fileContent.selectedPath && (
-        <SandboxFilePreview
-          selectedPath={fileContent.selectedPath}
-          content={fileContent.content}
-          imageUrl={fileContent.imageUrl}
-          loading={fileContent.loading}
-          error={fileContent.error}
-        />
-      )}
+      <SandboxSelectedFilePreview fileContent={fileContent} />
     </>
   );
 }

@@ -1,3 +1,5 @@
+import type { ReactNode } from "react";
+import SandboxSelectedFilePreview from "./SandboxSelectedFilePreview";
 import { Loader } from "lucide-react";
 import NoSandboxFiles from "./NoSandboxFiles";
 import SandboxDropZone from "./SandboxDropZone";
@@ -17,15 +19,21 @@ export default function SandboxFileWorkspace({
   onDrop: (files: File[]) => void;
   busy: boolean;
 }) {
+  const withPreview = (status: ReactNode) => (
+    <>
+      {status}
+      <SandboxSelectedFilePreview fileContent={fileContent} />
+    </>
+  );
   if (listing.isLoading)
-    return (
+    return withPreview(
       <div className="flex items-center gap-2 text-muted-foreground">
         <Loader className="h-4 w-4 animate-spin" />
         <span>Loading files...</span>
-      </div>
+      </div>,
     );
   if (listing.error)
-    return (
+    return withPreview(
       <div className="text-destructive">
         <p>Failed to load files</p>
         <button
@@ -34,10 +42,10 @@ export default function SandboxFileWorkspace({
         >
           Try again
         </button>
-      </div>
+      </div>,
     );
   if (!listing.filetree.length)
-    return <NoSandboxFiles onDrop={onDrop} disabled={busy} />;
+    return withPreview(<NoSandboxFiles onDrop={onDrop} disabled={busy} />);
   return (
     <SandboxDropZone onDrop={onDrop} uploading={busy}>
       <SandboxFileBrowser
