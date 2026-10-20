@@ -15,3 +15,29 @@ pnpm exec vitest run --config vitest.oauth.browser.config.ts
 ```
 
 The Chromium suite uses the real React component with synthetic Privy/API fixtures. It verifies sign-in gating, visible read/write and persistent-access consent, explicit approval/denial, and stale-account protection. API tests separately exercise the actual provider, Next HTTP boundary, cookies, durable PostgreSQL storage and token exchange. These checks do not constitute real Privy or named-agent interoperability evidence.
+
+## User-verified read-only registration
+
+`/oauth/claim?claim_attempt_token=…` requires `OAUTH_CONSENT_ENABLED=true`,
+`OAUTH_AGENT_REGISTRATION_ENABLED=true`, and the configured `OAUTH_ISSUER`.
+It uses the existing Privy-only OAuth
+layout. The account holder must sign in, enter the six-digit code shown by their
+agent, and approve personal read access for one hour. Decline needs no code.
+The API requires a matching verified email and a one-use approval ticket.
+
+The client sends no account ID, scopes, or lifetime. It validates the server's
+personal `mcp:read` policy before rendering consent, binds displayed metadata and
+typed codes to the current account/issuer/attempt, and rejects redirects. The browser
+carries the opaque `claim_attempt_token` from the URL; it never receives the agent's
+polling `claim_token` or resulting API credential. Failed submissions
+reload a fresh ticket before retrying. Locked or expired claims require a new
+request in the agent.
+
+OAuth routes retain `no-store`, `no-referrer`, and frame-ancestor protections.
+Page analytics omits these routes and filters OAuth events after navigation.
+Connected Agents already supports the finite one-hour grant and revocation.
+
+Deploy the matching database migration and API with its registration flag disabled,
+then enable this page on the configured consent origin. Enable API discovery last,
+after the account-holder verification page is reachable. Existing OAuth authorization
+and Connected Agents keep their current flags and behavior.

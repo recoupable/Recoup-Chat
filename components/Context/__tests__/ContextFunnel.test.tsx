@@ -35,7 +35,10 @@ it("does not ask visitors to save before metadata finishes", () => {
 it("offers sign-in after the guest preview is ready", () => {
   state.snapshot = { status: "ready" };
   render(<ContextFunnel />);
-  expect(screen.getByRole("button", { name: "Sign in and save" })).toBeTruthy();
+  expect(
+    screen.getByRole("button", { name: "Sign in to keep details" }),
+  ).toBeTruthy();
+  expect(screen.getByText(/A saved assessment is a separate/)).toBeTruthy();
 });
 it("does not tell a signed-in visitor to sign in", () => {
   state.authenticated = true;
@@ -43,7 +46,7 @@ it("does not tell a signed-in visitor to sign in", () => {
   render(<ContextFunnel />);
   expect(screen.queryByText(/Sign in to keep/)).toBeNull();
   expect(
-    screen.getByRole("button", { name: "Save to my account" }),
+    screen.getByRole("button", { name: "Keep song details" }),
   ).toBeTruthy();
 });
 it("does not report failed extraction as saved", () => {

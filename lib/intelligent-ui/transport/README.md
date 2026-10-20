@@ -1,8 +1,8 @@
 # Snapshot transport contracts
 
 This is a synthetic contract slice of [#2205](https://github.com/recoupable/app/issues/2205).
-It depends on the Surface schema from unmerged [#2243](https://github.com/recoupable/app/pull/2243),
-starting at `38fed8661af1f8cc03e3716863ee64afc4a323ad`. It is not imported by
+It uses the Surface schema from [#2243](https://github.com/recoupable/app/pull/2243),
+merged as `9faf39d56840e008e28bd14ff8197dfb6cec77ab`. It is not imported by
 production chat. The `data-intelligent-ui-snapshot` name is an experimental
 candidate, not an enabled API contract.
 
@@ -76,5 +76,4 @@ These are Node SDK and serialized-message tests against the app's installed
 API package-version compatibility, real persistence, concurrent recovery,
 renderer behavior, browser/media behavior, or latency/resource targets.
 Production publication, integration, and the remaining #2205 acceptance criteria
-require separate work. #2209 rendering is outside this slice; #2243's merge hold
-is unchanged.
+require separate work. #2209 rendering is outside this slice.

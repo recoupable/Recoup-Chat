@@ -1,5 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
+import AssessmentProvenance from "./AssessmentProvenance";
 import { Input } from "@/components/ui/input";
 import { useCompanyAssessment } from "@/hooks/useCompanyAssessment";
 interface Props {
@@ -25,7 +26,7 @@ export default function CompanyAssessment({
       <h2 className="text-lg font-semibold">Evidence summary</h2>
       <p className="text-sm text-muted-foreground">
         See what’s saved and what’s missing. Preview a summary, then save a
-        version you can return to later.
+        snapshot of this summary and its evidence versions.
       </p>
       <div className="flex flex-wrap gap-2">
         <Button
@@ -37,11 +38,15 @@ export default function CompanyAssessment({
         </Button>
         <Button
           disabled={
-            assessment.busy || !assessment.brief || !!assessment.savedId
+            assessment.busy ||
+            (!assessment.brief && !assessment.retrySave) ||
+            !!assessment.savedId
           }
           onClick={() => void assessment.run("save_brief")}
         >
-          Save assessment
+          {assessment.retrySave
+            ? "Retry saving assessment"
+            : "Save assessment snapshot"}
         </Button>
       </div>
       {assessment.brief && (
@@ -78,6 +83,10 @@ export default function CompanyAssessment({
               {assessment.brief.guidance}
             </p>
           </details>
+          <AssessmentProvenance
+            brief={assessment.brief}
+            snapshot={assessment.snapshot}
+          />
         </div>
       )}
       <details className="rounded-xl bg-muted/30 px-4 py-3">

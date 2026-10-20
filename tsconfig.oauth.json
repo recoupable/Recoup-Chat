@@ -1,0 +1,14 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": { "incremental": false },
+  "include": [
+    "next-env.d.ts",
+    "app/layout.tsx",
+    "app/oauth/**/*.tsx",
+    "components/OAuth/**/*.tsx",
+    "components/Analytics/**/*.tsx",
+    "lib/oauth/**/*.ts",
+    "scripts/oauth/*.browser.test.tsx"
+  ],
+  "exclude": ["node_modules"]
+}

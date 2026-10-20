@@ -82,8 +82,15 @@ export default function ContextFunnel() {
                     ? "Keep these song details in your personal Recoup account."
                     : "Sign in to keep this work in your personal Recoup account. Your work stays here while you sign in."}
                 </p>
+                <p className="mb-4 text-xs text-muted-foreground">
+                  A saved assessment is a separate, versioned summary of your
+                  evidence. Keeping these details saves the request to your
+                  account.
+                </p>
                 <Button disabled={loading || funnel.busy} onClick={funnel.save}>
-                  {authenticated ? "Save to my account" : "Sign in and save"}
+                  {authenticated
+                    ? "Keep song details"
+                    : "Sign in to keep details"}
                 </Button>
               </>
             )}

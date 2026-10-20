@@ -1,6 +1,9 @@
 "use client";
 import { useCallback, useEffect, useRef, useState } from "react";
-import type { CompanyAssessmentBrief } from "@/lib/releases/assessmentTypes";
+import type {
+  CompanyAssessmentBrief,
+  CompanyAssessmentSnapshot,
+} from "@/lib/releases/assessmentTypes";
 import { ReleaseCaseRequestError } from "@/lib/releases/errors";
 import { useReleaseCaseRequest } from "./useReleaseCaseRequest";
 export function useCompanyAssessment(
@@ -9,6 +12,11 @@ export function useCompanyAssessment(
   getAccessToken: () => Promise<string | null>,
 ) {
   const [brief, setBrief] = useState<CompanyAssessmentBrief | null>(null);
+  const [snapshot, setSnapshot] = useState<CompanyAssessmentSnapshot | null>(
+    null,
+  );
+  const [retrySave, setRetrySave] = useState(false);
+  const inFlight = useRef(false);
   const [savedId, setSavedId] = useState("");
   const [openId, setOpenId] = useState("");
   const [busy, setBusy] = useState(false);
@@ -28,6 +36,8 @@ export function useCompanyAssessment(
     [],
   );
   const run = async (action: "brief" | "save_brief" | "read_brief") => {
+    if (inFlight.current) return;
+    inFlight.current = true;
     const revision = generation.current;
     setBusy(true);
     setNotice("");
@@ -40,13 +50,16 @@ export function useCompanyAssessment(
         if (result.purpose !== "company_onboarding")
           throw new Error("Unexpected assessment purpose");
         if (revision === generation.current) {
+          setSnapshot(null);
+          setRetrySave(false);
           setSavedId("");
           setOpenId("");
           workKey.current = null;
           setBrief(result);
         }
       } else {
-        workKey.current ??= `company-assessment:${crypto.randomUUID()}`;
+        if (action === "save_brief")
+          workKey.current ??= `company-assessment:${crypto.randomUUID()}`;
         const result =
           action === "save_brief"
             ? await request(
@@ -60,18 +73,21 @@ export function useCompanyAssessment(
               )
             : await request({ action, brief_id: openId.trim() }, revision);
         if (revision !== generation.current) return;
+        setRetrySave(false);
         if (
           result.snapshot.brief &&
           result.snapshot.brief.purpose !== "company_onboarding"
         )
           throw new Error("Unexpected assessment purpose");
         if (result.snapshot.state !== "saved" || !result.snapshot.brief) {
+          setSnapshot(null);
           setBrief(null);
           setSavedId("");
           setNotice(
             "This saved assessment is unavailable. Check current access and evidence.",
           );
         } else {
+          setSnapshot(result.snapshot);
           setBrief(result.snapshot.brief);
           setSavedId(result.snapshot.id);
           setOpenId(result.snapshot.id);
@@ -89,6 +105,13 @@ export function useCompanyAssessment(
     } catch (error) {
       if (revision === generation.current) {
         setBrief(null);
+        setSnapshot(null);
+        setSavedId("");
+        setRetrySave(
+          action === "save_brief" &&
+            (!(error instanceof ReleaseCaseRequestError) ||
+              (error.status !== undefined && error.status >= 500)),
+        );
         setNotice(
           error instanceof ReleaseCaseRequestError
             ? error.message
@@ -96,8 +119,21 @@ export function useCompanyAssessment(
         );
       }
     } finally {
-      if (revision === generation.current) setBusy(false);
+      if (revision === generation.current) {
+        setBusy(false);
+        inFlight.current = false;
+      }
     }
   };
-  return { brief, savedId, openId, setOpenId, busy, notice, run };
+  return {
+    brief,
+    snapshot,
+    retrySave,
+    savedId,
+    openId,
+    setOpenId,
+    busy,
+    notice,
+    run,
+  };
 }

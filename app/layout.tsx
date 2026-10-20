@@ -16,7 +16,7 @@ import MobileDownloadModal from "@/components/ModalDownloadModal";
 import { ToastContainer } from "react-toastify";
 import { Toaster } from "sonner";
 import localFont from "next/font/local";
-import { Analytics } from "@vercel/analytics/next";
+import PageAnalytics from "@/components/Analytics/PageAnalytics";
 import AccountOverrideBadge from "@/components/AccountOverrideBadge";
 
 const dmSans = localFont({
@@ -131,7 +131,7 @@ export default function RootLayout({
             <Toaster />
           </Providers>
         </Suspense>
-        <Analytics />
+        <PageAnalytics />
       </body>
     </html>
   );
