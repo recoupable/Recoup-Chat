@@ -25,6 +25,18 @@ export default function EvidenceDialog({
         <Dialog.Content
           aria-describedby={undefined}
           className="fixed top-1/2 left-1/2 z-50 max-h-[85dvh] w-[calc(100%_-_2rem)] max-w-lg -translate-x-1/2 -translate-y-1/2 overflow-y-auto rounded-2xl bg-card shadow-xl outline-none"
+          onOpenAutoFocus={(event) => {
+            const content = event.currentTarget;
+            const heading =
+              content instanceof HTMLElement
+                ? content.querySelector<HTMLElement>("aside h2")
+                : null;
+            if (heading) {
+              // Radix must observe the initial focus after its trap mounts.
+              event.preventDefault();
+              heading.focus({ preventScroll: true });
+            }
+          }}
           onCloseAutoFocus={(event) => {
             if (returnFocus?.isConnected) {
               event.preventDefault();
@@ -33,13 +45,7 @@ export default function EvidenceDialog({
           }}
         >
           <Dialog.Title className="sr-only">Source details</Dialog.Title>
-          {evidence && (
-            <EvidencePanel
-              evidence={evidence}
-              onClose={onClose}
-              focusRequest={1}
-            />
-          )}
+          {evidence && <EvidencePanel evidence={evidence} onClose={onClose} />}
         </Dialog.Content>
       </Dialog.Portal>
     </Dialog.Root>

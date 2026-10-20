@@ -70,7 +70,7 @@ export default function PlaygroundDetails({
           <summary className="w-fit cursor-pointer rounded-lg py-3 outline-none focus-visible:ring-2 focus-visible:ring-ring">
             Plain-text data
           </summary>
-          <p className="mt-2 whitespace-pre-wrap text-sm leading-7 text-foreground">
+          <p className="mt-2 whitespace-pre-wrap text-sm leading-7 text-foreground [overflow-wrap:anywhere]">
             {getAnswerText(surface)}
           </p>
         </details>

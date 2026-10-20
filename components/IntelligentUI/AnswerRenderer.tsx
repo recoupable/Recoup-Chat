@@ -24,12 +24,15 @@ export default function AnswerRenderer({
   const scope = `${surface.context.workspaceId}:${surface.context.subject.kind}:${surface.context.subject.id}`;
   if (!surface.answer)
     return (
-      <p className="whitespace-pre-wrap text-base leading-7">
+      <p className="whitespace-pre-wrap text-base leading-7 [overflow-wrap:anywhere]">
         {surface.fallbackText}
       </p>
     );
   return (
-    <article aria-label="Recoup response" className="space-y-7 sm:space-y-8">
+    <article
+      aria-label="Recoup response"
+      className="space-y-7 [overflow-wrap:anywhere] sm:space-y-8"
+    >
       {surface.answer.parts.map((part) => {
         if (part.type === "markdown")
           return <MarkdownPart key={part.id} text={part.text} />;
