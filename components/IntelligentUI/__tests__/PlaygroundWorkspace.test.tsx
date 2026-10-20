@@ -182,6 +182,46 @@ describe("composed responses", () => {
     ).toBeTruthy();
   });
 
+  it.each([true, false])(
+    "replaces empty bars with exact zero values and their %s completeness basis",
+    (complete) => {
+      const surface = structuredClone(
+        getCompletedExample(scenario("listening")),
+      );
+      const component = surface.components[0];
+      if (component.type !== "distribution")
+        throw new Error("Expected distribution");
+      component.items.forEach((item) => (item.value = 0));
+      component.complete = complete;
+      component.totalCount = complete ? 8 : 32;
+      surface.evidence[0].status = complete ? "current" : "partial";
+      surface.evidence[0].text =
+        "Synthetic conformance fixture: eight supplied records have measured zero values. No values are inferred for records outside this selection.";
+      render(<AnswerRenderer surface={surface} onInspectEvidence={vi.fn()} />);
+      const answer = screen.getByRole("article", { name: "Recoup response" });
+      expect(within(answer).queryByRole("figure")).toBeNull();
+      expect(
+        within(answer).getByText(/The supplied records contain no plays/),
+      ).toBeTruthy();
+      const data = within(answer).getByText(/Total supplied: 0 plays/);
+      for (const item of component.items)
+        expect(data.textContent).toContain(`${item.label}: 0 plays`);
+      expect(data.textContent).toContain("2026-09-01 to 2026-09-30");
+      expect(data.textContent).toContain(
+        complete
+          ? "Complete supplied selection"
+          : "Partial selection: 8 of 32 records",
+      );
+      expect(
+        within(answer).getByRole("button", {
+          name: complete
+            ? "September play observations"
+            : "September play observations · partial",
+        }),
+      ).toBeTruthy();
+    },
+  );
+
   it("opens evidence only on request and restores focus after closing", async () => {
     mount("listening");
     expect(screen.queryByRole("dialog")).toBeNull();
