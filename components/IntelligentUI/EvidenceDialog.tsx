@@ -24,7 +24,16 @@ export default function EvidenceDialog({
         <Dialog.Overlay className="fixed inset-0 z-50 bg-black/25" />
         <Dialog.Content
           aria-describedby={undefined}
-          className="fixed top-1/2 left-1/2 z-50 max-h-[85dvh] w-[calc(100%_-_2rem)] max-w-lg -translate-x-1/2 -translate-y-1/2 overflow-y-auto rounded-2xl bg-card shadow-xl outline-none"
+          className="fixed top-1/2 left-1/2 z-50 max-h-[85dvh] w-[calc(100%_-_2rem)] max-w-lg -translate-x-1/2 -translate-y-1/2 scroll-p-3 overflow-y-auto rounded-2xl bg-card shadow-xl outline-none"
+          onFocusCapture={(event) => {
+            if (event.target instanceof HTMLElement) {
+              // Radix wraps focus without scrolling long source content.
+              event.target.scrollIntoView?.({
+                block: "nearest",
+                inline: "nearest",
+              });
+            }
+          }}
           onOpenAutoFocus={(event) => {
             const content = event.currentTarget;
             const heading =

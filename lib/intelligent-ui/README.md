@@ -119,6 +119,8 @@ HTTPS. All chart values are labeled in the DOM; unsupported rich representations
 fall back to their supplied values, basis or ordered section notes. Timeline
 buttons reflow in narrow containers, and native playback retains familiar
 keyboard controls. Source dialogs restore the triggering control's focus.
+Keyboard focus also reveals the focused content inside a long source dialog;
+scroll padding keeps its focus ring visible when Tab wraps between controls.
 
 Bounds include 256 KiB per line, 2 MiB per stream and 256 events, plus limits on
 answer parts, records and annotations. These limits do not provide tenant
