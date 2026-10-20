@@ -1,4 +1,5 @@
 import type { Surface } from "../schema";
+import { computeDistribution } from "../representations/computeDistribution";
 import type {
   PresentationDecision,
   PresentationIntent,
@@ -36,6 +37,11 @@ export function selectPresentation(
     return { mode: "text", reason: "benefit-mismatch" };
   if (!host[component.type])
     return { mode: "text", reason: "unsupported-host" };
+  if (
+    component.type === "distribution" &&
+    computeDistribution(component).total === 0
+  )
+    return { mode: "text", reason: "zero-total" };
   return component.type === "distribution"
     ? { mode: "visual", component, reason: "show-distribution" }
     : { mode: "visual", component, reason: "navigate-time" };

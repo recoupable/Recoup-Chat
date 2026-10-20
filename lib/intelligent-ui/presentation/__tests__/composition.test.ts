@@ -42,6 +42,45 @@ describe("presentation by declared task benefit", () => {
     expect(result.reason).toBe("show-distribution");
   });
 
+  it("uses text when all supplied values are measured zeros", () => {
+    const surface = structuredClone(listening);
+    const component = surface.components[0];
+    if (component.type !== "distribution")
+      throw new Error("Expected distribution");
+    component.items.forEach((item) => (item.value = 0));
+    expect(
+      selectPresentation(
+        surface,
+        {
+          kind: "representation",
+          componentId: component.id,
+          benefit: "show-distribution",
+        },
+        host,
+      ),
+    ).toEqual({ mode: "text", reason: "zero-total" });
+  });
+
+  it("retains the visual for a positive total without a minimum-value threshold", () => {
+    const surface = structuredClone(listening);
+    const component = surface.components[0];
+    if (component.type !== "distribution")
+      throw new Error("Expected distribution");
+    component.items.forEach((item) => (item.value = 0));
+    component.items[0].value = 0.001;
+    expect(
+      selectPresentation(
+        surface,
+        {
+          kind: "representation",
+          componentId: component.id,
+          benefit: "show-distribution",
+        },
+        host,
+      ).mode,
+    ).toBe("visual");
+  });
+
   it("falls back when the requested representation or host support is absent", () => {
     expect(
       selectPresentation(

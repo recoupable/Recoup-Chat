@@ -58,6 +58,13 @@ an AI trained to judge usefulness. It does not infer user benefit from row count
 numeric variation, control count or a confidence score. A future model producer
 and its selection evaluations remain separate work.
 
+An all-zero distribution uses the existing text alternative because there is no
+relative spread to show. This retains the measured zeros, reporting window,
+population, supplied/expected record coverage and source disclosure. It neither
+infers missing values nor treats an incomplete supplied subset as the whole
+collection. Any positive total remains eligible for the declared chart benefit;
+there is no minimum-value heuristic.
+
 ## Coherent responses and replay
 
 An optional `answer` travels inside the validated surface. Its ordered parts are
