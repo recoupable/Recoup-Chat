@@ -94,20 +94,31 @@ it("allows denial without entering a code", async () => {
   expect(decide).toHaveBeenCalledWith("session", "nonce", "deny", undefined);
 });
 
-it("hides old consent immediately when the signed-in account or attempt changes", async () => {
-  const view = render(<AgentClaim {...props} />);
-  await screen.findByLabelText("Code from your agent");
-  load.mockImplementation(() => new Promise(() => {}));
-  auth.user.id = "bob";
-  view.rerender(<AgentClaim {...props} />);
-  expect(
-    screen.queryByRole("button", { name: "Allow read access" }),
-  ).toBeNull();
-  await waitFor(() => expect(load).toHaveBeenCalledTimes(2));
-});
+it.each(["account", "attempt"])(
+  "hides old consent immediately when the %s changes",
+  async (change) => {
+    const view = render(<AgentClaim {...props} />);
+    await screen.findByLabelText("Code from your agent");
+    load.mockImplementation(() => new Promise(() => {}));
+    if (change === "account") auth.user.id = "bob";
+    view.rerender(
+      <AgentClaim
+        {...props}
+        attempt={change === "attempt" ? `cla_${"c".repeat(43)}` : props.attempt}
+      />,
+    );
+    expect(
+      screen.queryByRole("button", { name: "Allow read access" }),
+    ).toBeNull();
+    await waitFor(() => expect(load).toHaveBeenCalledTimes(2));
+  },
+);
 
 it("reloads a fresh approval ticket after an incorrect code without claiming success", async () => {
-  decide.mockRejectedValue(new Error("That code did not match."));
+  decide.mockRejectedValueOnce(new Error("That code did not match."));
+  load
+    .mockResolvedValueOnce(metadata)
+    .mockResolvedValue({ ...metadata, csrf: "fresh-nonce" });
   render(<AgentClaim {...props} />);
   fireEvent.change(await screen.findByLabelText("Code from your agent"), {
     target: { value: "111111" },
@@ -116,4 +127,16 @@ it("reloads a fresh approval ticket after an incorrect code without claiming suc
   await screen.findByRole("alert");
   await waitFor(() => expect(load).toHaveBeenCalledTimes(2));
   expect(screen.queryByText("Read access connected")).toBeNull();
+  fireEvent.change(await screen.findByLabelText("Code from your agent"), {
+    target: { value: "123456" },
+  });
+  fireEvent.click(screen.getByRole("button", { name: "Allow read access" }));
+  await screen.findByText("Read access connected");
+  expect(decide).toHaveBeenNthCalledWith(
+    2,
+    "session",
+    "fresh-nonce",
+    "approve",
+    "123456",
+  );
 });

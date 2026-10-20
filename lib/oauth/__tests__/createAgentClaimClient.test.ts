@@ -38,6 +38,8 @@ it("sends the session only to the configured issuer and requires the fixed perso
   for (const invalid of [
     { ...metadata, context: "organization" },
     { ...metadata, accessDurationSeconds: null },
+    { ...metadata, organizationId: "unexpected entitlement" },
+    { ...metadata, permissions: [{ ...metadata.permissions[0], write: true }] },
     {
       ...metadata,
       permissions: [{ scope: "mcp:tools", description: "Everything" }],
@@ -63,6 +65,14 @@ it("submits only an explicit decision, typed code, and one-use approval ticket",
     decision: "approve",
     user_code: "123456",
   });
+  expect(request).toHaveBeenCalledWith(
+    `${issuer}/agent/identity/claim/complete`,
+    expect.objectContaining({
+      method: "POST",
+      redirect: "error",
+      credentials: "omit",
+    }),
+  );
   await expect(
     client.decide("session", metadata.csrf, "approve", "123"),
   ).rejects.toThrow();
@@ -92,7 +102,10 @@ it("returns useful errors without exposing server diagnostics", async () => {
   );
   await expect(
     createAgentClaimClient(issuer, attempt).load("session"),
-  ).rejects.toThrow("verified email");
+  ).rejects.toHaveProperty(
+    "message",
+    "Sign in with the verified email used to start this connection.",
+  );
 });
 
 it("uses a readable error for invalid policies, response JSON, and error bodies", async () => {

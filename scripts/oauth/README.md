@@ -18,16 +18,18 @@ The Chromium suite uses the real React component with synthetic Privy/API fixtur
 
 ## User-verified read-only registration
 
-`/oauth/claim?claim_attempt_token=…` is additionally gated by
-`OAUTH_AGENT_REGISTRATION_ENABLED=true`. It uses the existing Privy-only OAuth
+`/oauth/claim?claim_attempt_token=…` requires `OAUTH_CONSENT_ENABLED=true`,
+`OAUTH_AGENT_REGISTRATION_ENABLED=true`, and the configured `OAUTH_ISSUER`.
+It uses the existing Privy-only OAuth
 layout. The account holder must sign in, enter the six-digit code shown by their
 agent, and approve personal read access for one hour. Decline needs no code.
 The API requires a matching verified email and a one-use approval ticket.
 
 The client sends no account ID, scopes, or lifetime. It validates the server's
 personal `mcp:read` policy before rendering consent, binds displayed metadata and
-typed codes to the current account/issuer/attempt, rejects redirects, and never
-receives the agent's claim token or resulting API credential. Failed submissions
+typed codes to the current account/issuer/attempt, and rejects redirects. The browser
+carries the opaque `claim_attempt_token` from the URL; it never receives the agent's
+polling `claim_token` or resulting API credential. Failed submissions
 reload a fresh ticket before retrying. Locked or expired claims require a new
 request in the agent.
 

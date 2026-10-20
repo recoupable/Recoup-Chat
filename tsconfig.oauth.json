@@ -3,6 +3,7 @@
   "compilerOptions": { "incremental": false },
   "include": [
     "next-env.d.ts",
+    "app/layout.tsx",
     "app/oauth/**/*.tsx",
     "components/OAuth/**/*.tsx",
     "components/Analytics/**/*.tsx",
