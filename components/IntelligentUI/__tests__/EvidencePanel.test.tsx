@@ -19,6 +19,28 @@ const evidence: Evidence = {
 };
 
 describe("EvidencePanel", () => {
+  it.each([undefined, evidence.href])(
+    "places the dismiss action after the initial reading focus, with source link %s",
+    (href) => {
+      render(
+        <EvidencePanel
+          evidence={{ ...evidence, href }}
+          onClose={vi.fn()}
+          focusRequest={1}
+        />,
+      );
+      const heading = screen.getByRole("heading", { name: evidence.label });
+      const close = screen.getByRole("button", {
+        name: "Close evidence inspector",
+      });
+      expect(document.activeElement).toBe(heading);
+      expect(
+        heading.compareDocumentPosition(close) &
+          Node.DOCUMENT_POSITION_FOLLOWING,
+      ).not.toBe(0);
+    },
+  );
+
   it("provides a useful empty state and source, time, kind, and completeness metadata", () => {
     const { rerender } = render(
       <EvidencePanel evidence={null} onClose={vi.fn()} />,

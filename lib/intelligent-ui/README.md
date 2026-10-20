@@ -137,12 +137,12 @@ source safety, interval bounds, native-media events, position restoration,
 non-autoplay, missing-media fallback, WAV/range correctness, and environment/
 provider/cache isolation.
 
-The [latest review-fix handoff](REVIEW-FINAL-2026-10-19.md) records 193 passing tests
-and a production build for the media-duration boundary correction. A new native
-reload was rejected by Browser Use's URL protocol policy, so that correction is
-regression-test verified and still lacks a native smoke check. The [earlier native
-validation](REVIEW-2026-10-19.md) records readiness, paused/playing selection, reload
-restoration and failure-note recovery at b3c277c4f, before the boundary correction.
+The [October 20 conformance review](REVIEW-2026-10-20.md) records native keyboard,
+responsive value/label checks and the subsequent successful media-duration boundary
+check. The earlier unavailable-browser condition is historical, not a current
+failure of that check. The [review-fix handoff](REVIEW-FINAL-2026-10-19.md) and
+[earlier native validation](REVIEW-2026-10-19.md) retain their original source and
+test scope.
 Forced canplay-before-seekable/progress ordering is deterministic-test coverage.
 The [earlier review](REVIEW-2026-10-18.md)
 preserves the baseline dispositions and desktop/390px/320px evidence. Physical

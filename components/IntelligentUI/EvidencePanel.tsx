@@ -73,20 +73,28 @@ const EvidencePanel = ({
       aria-labelledby={headingId}
       className="min-w-0 rounded-2xl bg-card p-5 shadow-[0_0_0_1px_var(--border)] sm:p-6"
     >
-      <div className="mb-6 flex items-center justify-between gap-3">
-        <div className="flex items-center gap-2 text-muted-foreground">
-          <FileSearch aria-hidden="true" className="size-4" strokeWidth={1.5} />
-          <p className="font-mono text-[10px] uppercase tracking-wider">
-            Evidence inspector
-          </p>
-        </div>
+      <div className="mb-3 flex items-center gap-2 text-muted-foreground">
+        <FileSearch aria-hidden="true" className="size-4" strokeWidth={1.5} />
+        <p className="font-mono text-[10px] uppercase tracking-wider">
+          Evidence inspector
+        </p>
+      </div>
+      <div className="flex items-start justify-between gap-3">
+        <h2
+          ref={heading}
+          id={headingId}
+          tabIndex={-1}
+          className="min-w-0 break-words rounded-sm text-lg font-medium leading-snug tracking-tight focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
+          {evidence?.label ?? "Follow the evidence."}
+        </h2>
         {evidence && (
           <Button
             type="button"
             variant="ghost"
             size="icon"
             aria-label="Close evidence inspector"
-            className="-mr-2 min-h-11 min-w-11 focus-visible:ring-2"
+            className="-mt-2 -mr-2 min-h-11 min-w-11 shrink-0 focus-visible:ring-2"
             onClick={() => {
               focusEmpty.current =
                 !returnFocus.current?.isConnected &&
@@ -102,14 +110,6 @@ const EvidencePanel = ({
 
       {evidence ? (
         <>
-          <h2
-            ref={heading}
-            id={headingId}
-            tabIndex={-1}
-            className="break-words rounded-sm text-lg font-medium leading-snug tracking-tight focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-          >
-            {evidence.label}
-          </h2>
           <div className="mt-4 flex flex-wrap gap-2">
             <span className="rounded-full bg-secondary px-2.5 py-1 text-xs text-secondary-foreground">
               {kinds[evidence.kind]}
@@ -172,14 +172,6 @@ const EvidencePanel = ({
         </>
       ) : (
         <>
-          <h2
-            ref={heading}
-            id={headingId}
-            tabIndex={-1}
-            className="rounded-sm text-lg font-medium tracking-tight focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-          >
-            Follow the evidence.
-          </h2>
           <p className="mt-3 text-sm leading-7 text-muted-foreground">
             Choose a source beside a summary, metric, or record to see where it
             came from and what it supports.

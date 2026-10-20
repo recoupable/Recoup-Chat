@@ -32,10 +32,13 @@ export default function DistributionView({
         {ranked.map((item) => (
           <li
             key={item.id}
-            className="grid grid-cols-[minmax(0,6.5rem)_minmax(0,1fr)_4.5rem] items-center gap-3 sm:grid-cols-[9rem_minmax(0,1fr)_5rem]"
+            className="grid grid-cols-[minmax(0,1fr)_max-content] items-center gap-x-3 gap-y-1.5 sm:grid-cols-[9rem_minmax(0,1fr)_max-content]"
           >
             <span className="text-sm leading-5 break-words">{item.label}</span>
-            <div className="h-6" aria-hidden="true">
+            <div
+              className="col-span-2 row-start-2 h-2 sm:col-span-1 sm:col-start-2 sm:row-start-1 sm:h-6"
+              aria-hidden="true"
+            >
               <div
                 className="h-full rounded-r-[3px] bg-brand-link"
                 style={{
@@ -43,7 +46,7 @@ export default function DistributionView({
                 }}
               />
             </div>
-            <span className="text-right font-mono text-xs tabular-nums">
+            <span className="col-start-2 row-start-1 text-right font-mono text-xs tabular-nums sm:col-start-3">
               {number.format(item.value)}
               <span className="sr-only"> {component.measure.unit}</span>
             </span>
