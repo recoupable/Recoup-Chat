@@ -1,5 +1,5 @@
 import { afterEach, expect, it, vi } from "vitest";
-import { acceptSurfaceSnapshotPart } from "../acceptSurfaceSnapshotPart";
+import { surfaceSchema } from "../../schema";
 import type { UIMessage } from "ai";
 import { scope, snapshotPart } from "./snapshotPart";
 import { workflowResponse } from "./workflowResponse";
@@ -62,14 +62,15 @@ it.each([1, 2, 3])(
   },
 );
 
-it("reloads an accepted message and resumes from chunk zero without rolling accepted state back", async () => {
-  let accepted: UIMessage = JSON.parse(
+it("reloads a serialized SDK message and replaces its stable data ID after a replay", async () => {
+  const saved: UIMessage = JSON.parse(
     JSON.stringify({
       id: scope.messageId,
       role: "assistant",
       parts: [snapshotPart(2, "Saved version")],
     }),
   );
+  const received: unknown[] = [];
   const fetch = vi
     .fn()
     .mockResolvedValueOnce(
@@ -83,16 +84,22 @@ it("reloads an accepted message and resumes from chunk zero without rolling acce
     );
   vi.stubGlobal("fetch", fetch);
   const chat = syntheticChat({
-    messages: [structuredClone(accepted)],
+    messages: [saved],
     onData: (part) => {
-      accepted = acceptSurfaceSnapshotPart(accepted, part, scope).message;
+      received.push(structuredClone(part));
     },
   });
   await chat.resumeStream();
   expect(chat.error).toBeUndefined();
   expect(chat.messages).toHaveLength(1);
-  expect(accepted.parts).toEqual([snapshotPart(5, "Recovered version")]);
-  expect(chat.messages[0].parts).toEqual(accepted.parts);
+  expect(received).toEqual([
+    snapshotPart(1, "Old version"),
+    snapshotPart(2, "Saved version"),
+    snapshotPart(5, "Recovered version"),
+  ]);
+  expect(chat.messages[0].parts).toEqual([
+    snapshotPart(5, "Recovered version"),
+  ]);
   expect(fetch.mock.calls[0][0]).toBe(
     "https://recoup.invalid/api/chat/synthetic-chat/stream?startIndex=0",
   );
@@ -193,12 +200,8 @@ it("preserves reasoning, files and tool outcomes beside a snapshot on the existi
   );
 });
 
-it("keeps the accepted revision when real SDK data callbacks replay older or malformed parts", async () => {
-  let accepted: UIMessage = {
-    id: scope.messageId,
-    role: "assistant",
-    parts: [],
-  };
+it("treats snapshot data as opaque while preserving ordinary text and callback arrival order", async () => {
+  const received: unknown[] = [];
   const invalid = snapshotPart(8, "Invalid answer");
   invalid.data.answer!.revision = 7;
   const fetch = vi
@@ -206,6 +209,9 @@ it("keeps the accepted revision when real SDK data callbacks replay older or mal
     .mockResolvedValueOnce(
       workflowResponse([
         { type: "start", messageId: scope.messageId },
+        { type: "text-start", id: "intro" },
+        { type: "text-delta", id: "intro", delta: "A useful explanation." },
+        { type: "text-end", id: "intro" },
         snapshotPart(2, "Accepted version"),
         snapshotPart(1, "Old version"),
         invalid,
@@ -214,14 +220,22 @@ it("keeps the accepted revision when real SDK data callbacks replay older or mal
     );
   vi.stubGlobal("fetch", fetch);
   const chat = syntheticChat({
+    // Later stable-ID replacements can mutate a part already held by SDK state.
     onData: (part) => {
-      accepted = acceptSurfaceSnapshotPart(accepted, part, scope).message;
+      received.push(structuredClone(part));
     },
   });
   await chat.sendMessage({ text: "A synthetic question" });
   expect(chat.status).toBe("ready");
   expect(chat.error).toBeUndefined();
-  expect(accepted.parts).toEqual([snapshotPart(2, "Accepted version")]);
-  // The SDK's raw message is not an accepted-snapshot store.
-  expect(chat.messages.at(-1)?.parts).toEqual([invalid]);
+  expect(surfaceSchema.safeParse(invalid.data).success).toBe(false);
+  expect(received).toEqual([
+    snapshotPart(2, "Accepted version"),
+    snapshotPart(1, "Old version"),
+    invalid,
+  ]);
+  expect(chat.messages.at(-1)?.parts).toEqual([
+    { type: "text", text: "A useful explanation.", state: "done" },
+    invalid,
+  ]);
 });
