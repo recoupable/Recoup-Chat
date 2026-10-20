@@ -12,6 +12,16 @@ const metadataSchema = z.object({
   ]),
 });
 export type AgentClaimMetadata = z.infer<typeof metadataSchema>;
+const unverifiedMessage =
+  "This request expired or could not be verified. Start a new connection in your agent.";
+const errorSchema = z.object({
+  error: z.enum([
+    "account_mismatch",
+    "login_required",
+    "invalid_user_code",
+    "temporarily_unavailable",
+  ]),
+});
 
 /** Keep sign-in credentials on the configured issuer and reject a widened consent policy. */
 export function createAgentClaimClient(issuer: string, attempt: string) {
@@ -32,9 +42,9 @@ export function createAgentClaimClient(issuer: string, attempt: string) {
   const request = async (
     path: string,
     token: string,
-    body: unknown,
+    body: Record<string, unknown>,
     signal?: AbortSignal,
-  ) => {
+  ): Promise<unknown> => {
     const response = await fetch(`${issuer}/agent/identity/claim${path}`, {
       method: "POST",
       credentials: "omit",
@@ -47,11 +57,12 @@ export function createAgentClaimClient(issuer: string, attempt: string) {
       },
       body: JSON.stringify({
         claim_attempt_token: attempt,
-        ...(body as object),
+        ...body,
       }),
     });
+    const data: unknown = await response.json().catch(() => undefined);
     if (!response.ok) {
-      const error = await response.json().catch(() => ({}));
+      const error = errorSchema.safeParse(data);
       const messages: Record<string, string> = {
         account_mismatch:
           "Sign in with the verified email used to start this connection.",
@@ -62,18 +73,21 @@ export function createAgentClaimClient(issuer: string, attempt: string) {
           "Recoup could not verify this request. Try again shortly.",
       };
       throw new Error(
-        messages[error.error] ??
-          "This request expired or could not be verified. Start a new connection in your agent.",
+        error.success ? messages[error.data.error] : unverifiedMessage,
       );
     }
-    return response.json();
+    return data;
   };
   return {
     async load(
       token: string,
       signal?: AbortSignal,
     ): Promise<AgentClaimMetadata> {
-      return metadataSchema.parse(await request("", token, {}, signal));
+      const result = metadataSchema.safeParse(
+        await request("", token, {}, signal),
+      );
+      if (!result.success) throw new Error(unverifiedMessage);
+      return result.data;
     },
     async decide(
       token: string,
@@ -83,18 +97,23 @@ export function createAgentClaimClient(issuer: string, attempt: string) {
     ) {
       if (decision === "approve" && !/^\d{6}$/.test(code ?? ""))
         throw new Error("Enter the six-digit code shown by your agent.");
-      const result = z.object({ status: z.enum(["approved", "denied"]) }).parse(
-        await request("/complete", token, {
-          csrf,
-          decision,
-          ...(decision === "approve" ? { user_code: code } : {}),
-        }),
-      );
-      if (result.status !== (decision === "approve" ? "approved" : "denied"))
+      const result = z
+        .object({ status: z.enum(["approved", "denied"]) })
+        .safeParse(
+          await request("/complete", token, {
+            csrf,
+            decision,
+            ...(decision === "approve" ? { user_code: code } : {}),
+          }),
+        );
+      if (!result.success) throw new Error(unverifiedMessage);
+      if (
+        result.data.status !== (decision === "approve" ? "approved" : "denied")
+      )
         throw new Error(
           "Unable to confirm the connection. Check Connected agents.",
         );
-      return result.status;
+      return result.data.status;
     },
   };
 }

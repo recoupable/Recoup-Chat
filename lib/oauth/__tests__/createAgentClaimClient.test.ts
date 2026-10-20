@@ -94,3 +94,28 @@ it("returns useful errors without exposing server diagnostics", async () => {
     createAgentClaimClient(issuer, attempt).load("session"),
   ).rejects.toThrow("verified email");
 });
+
+it("uses a readable error for invalid policies, response JSON, and error bodies", async () => {
+  const request = vi.fn();
+  vi.stubGlobal("fetch", request);
+  const client = createAgentClaimClient(issuer, attempt);
+  const message =
+    "This request expired or could not be verified. Start a new connection in your agent.";
+  for (const response of [
+    new Response(JSON.stringify({ ...metadata, accessDurationSeconds: 7200 })),
+    new Response("<html>proxy error</html>"),
+    new Response("null", { status: 400 }),
+    new Response('{"error":"unrecognized","debug":"secret"}', { status: 400 }),
+    new Response('{"error":"constructor"}', { status: 400 }),
+  ]) {
+    request.mockResolvedValue(response);
+    await expect(client.load("session")).rejects.toHaveProperty(
+      "message",
+      message,
+    );
+  }
+  request.mockResolvedValue(new Response('{"status":"unknown"}'));
+  await expect(
+    client.decide("session", metadata.csrf, "approve", "123456"),
+  ).rejects.toHaveProperty("message", message);
+});
