@@ -19,7 +19,8 @@ export type PresentationDecision =
         | "unsupported-intent"
         | "representation-unavailable"
         | "benefit-mismatch"
-        | "unsupported-host";
+        | "unsupported-host"
+        | "zero-total";
     }
   | {
       mode: "visual";
