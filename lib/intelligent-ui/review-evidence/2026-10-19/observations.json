@@ -1,0 +1,82 @@
+{
+  "review_date": "2026-10-19",
+  "source_commit": "b3c277c4fc453ce3836ba47b27fc6d5a0a521edc",
+  "url": "http://localhost:3217/labs/intelligent-ui",
+  "host": "Codex in-app Chromium on macOS",
+  "viewport": {
+    "height": 654,
+    "scrollWidth": 1163,
+    "width": 1163
+  },
+  "observations": [
+    {
+      "case": "cold readiness/restoration",
+      "result": "Initially showed Audio preview is not ready with restored Chorus notes; then native controls appeared at 28 seconds, paused, seekable 0–48 seconds."
+    },
+    {
+      "case": "paused click",
+      "currentTime": 0,
+      "paused": true,
+      "section": "Intro"
+    },
+    {
+      "case": "paused keyboard Enter",
+      "currentTime": 28,
+      "paused": true,
+      "section": "Chorus"
+    },
+    {
+      "case": "explicit native play",
+      "currentTime": 28.104572,
+      "paused": false
+    },
+    {
+      "case": "select Verse during playback",
+      "currentTime": 8.109188,
+      "paused": false,
+      "section": "Verse"
+    },
+    {
+      "case": "native pause",
+      "currentTime": 8.123261,
+      "paused": true
+    },
+    {
+      "case": "reload then reopen song",
+      "currentTime": 28,
+      "paused": true,
+      "section": "Chorus",
+      "note": "Reload resets the example picker to Listening patterns; the timeline position is restored when Explore a song is reopened."
+    },
+    {
+      "case": "temporary missing local asset binding",
+      "audioPresent": false,
+      "section": "Chorus",
+      "notesNavigable": true,
+      "nativeFailureStatus": "Audio is unavailable here. You can still explore the supplied section notes.",
+      "httpStatus": "not captured",
+      "note": "Local resolver was temporarily changed; playback/section component source remained unchanged. Original resolver was restored byte-for-byte."
+    }
+  ],
+  "final_restored_state": {
+    "currentTime": 28,
+    "duration": 48,
+    "error": null,
+    "hidden": false,
+    "paused": true,
+    "ranges": [[0, 48]],
+    "readyState": 4,
+    "section": "Chorus",
+    "sectionControls": [
+      {
+        "current": "true",
+        "name": "Chorus, 0:28 to 0:40"
+      }
+    ]
+  },
+  "post_restore_browser_errors": [],
+  "limitations": [
+    "Did not force the canplay-before-seekable or progress event ordering in native Chromium; deterministic regression tests cover those orderings.",
+    "No physical mobile/Safari, native screen reader, audible-quality review or participant study."
+  ]
+}

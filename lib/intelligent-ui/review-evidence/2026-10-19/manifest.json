@@ -1,0 +1,35 @@
+{
+  "review_date": "2026-10-19",
+  "reviewed_source_commit": "b3c277c4fc453ce3836ba47b27fc6d5a0a521edc",
+  "runtime_verification_commit": "133b14470fd9e351934f9b822693a3c656d21320",
+  "host": "Codex in-app Chromium on macOS",
+  "url": "http://localhost:3217/labs/intelligent-ui",
+  "scope": "Synthetic local fixtures; 1163x654 CSS viewport",
+  "temporary_fault": "Only resolvePlaygroundAsset media URL changed to a missing local route; original restored byte-for-byte and Git diff verified empty. HTTP status not captured.",
+  "native_recovery": "Natural unready-to-ready transition and restored original media verified; forced canplay-before-seekable/progress ordering remains regression-test coverage.",
+  "merge_recommendation": "Merge bounded fixture PR subject to owner approval and current checks; no merge/deploy invoked.",
+  "files": [
+    {
+      "name": "native-failure-notes.png",
+      "bytes": 48751,
+      "sha256": "77ffcd5e52bab6bfbd44607d65d163dc90831a673e343f17f700795d9379c219"
+    },
+    {
+      "name": "native-ready-paused.png",
+      "bytes": 44052,
+      "sha256": "2f03c5e2800a6bda5963d0063c9b76a809509d1a274545c3a46056f234938a7d"
+    },
+    {
+      "name": "native-restored-after-failure.png",
+      "bytes": 39230,
+      "sha256": "66399cec681308f9481db7e06c9733d70843f1dde359f91c27c4e81ab6264ea9"
+    },
+    {
+      "name": "observations.json",
+      "bytes": 2457,
+      "sha256": "4bee28354ff1048420d3161116e92b02dc96886f9e22e634c252d2dff3f7bec4"
+    }
+  ],
+  "status_scope": "Historical source-specific validation; see superseding manifest for latest runtime and merge gate.",
+  "superseded_by": "../2026-10-19-final/manifest.json"
+}
