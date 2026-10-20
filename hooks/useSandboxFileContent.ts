@@ -1,11 +1,11 @@
 import { useCallback, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { usePrivy } from "@privy-io/react-auth";
-import { getFileContents } from "@/lib/sandboxes/getFileContents";
+import { useSandboxFileQuery } from "./useSandboxFileQuery";
+import type { OpenedFileRevision } from "@/lib/sandboxes/guardedFileTypes";
 
 interface UseSandboxFileContentOptions {
   path?: string;
   enabled?: boolean;
+  includeRevision?: boolean;
 }
 
 interface UseSandboxFileContentReturn {
@@ -15,46 +15,44 @@ interface UseSandboxFileContentReturn {
   loading: boolean;
   error: string | null;
   select: (path: string) => void;
+  openedRevision?: OpenedFileRevision;
+  scopeKey: string;
+  reopen: (path: string) => void;
 }
 
 export default function useSandboxFileContent(
   options?: UseSandboxFileContentOptions,
 ): UseSandboxFileContentReturn {
-  const { getAccessToken } = usePrivy();
   const [selectedPath, setSelectedPath] = useState<string | undefined>(
     options?.path,
   );
   const effectivePath = options?.path ?? selectedPath;
   const enabled = options?.enabled ?? true;
 
-  const query = useQuery({
-    queryKey: ["sandbox-file-content", effectivePath],
-    enabled: Boolean(enabled && effectivePath),
-    queryFn: async () => {
-      if (!effectivePath) {
-        return { content: null, imageUrl: null };
-      }
-      const accessToken = await getAccessToken();
-      if (!accessToken) {
-        throw new Error("Please sign in to view file contents");
-      }
-      return getFileContents(accessToken, effectivePath);
-    },
-  });
+  const { query, scopeKey, reopen } = useSandboxFileQuery(
+    effectivePath,
+    enabled,
+    options?.includeRevision ?? false,
+  );
 
   const select = useCallback(
     (path: string) => {
       setSelectedPath(path);
+      reopen(path);
     },
-    [],
+    [reopen],
   );
 
   return {
     selectedPath: effectivePath,
-    content: query.data?.content ?? null,
-    imageUrl: query.data?.imageUrl ?? null,
+    content: query.error ? null : (query.data?.content ?? null),
+    imageUrl: query.error ? null : (query.data?.imageUrl ?? null),
     loading: query.isLoading || query.isFetching,
     error: query.error?.message ?? null,
     select,
+    openedRevision:
+      query.error || query.isFetching ? undefined : query.data?.openedRevision,
+    scopeKey,
+    reopen: select,
   };
 }
