@@ -79,6 +79,24 @@ describe("TaskArtistImage resource lifecycle", () => {
     expectFallback(container, "Artist avatar");
   });
 
+  it.each(["", " \n "])(
+    "names the fallback when the artist name is blank %j",
+    (artistName) => {
+      vi.mocked(useArtistImage).mockReturnValue({ imageUrl: null, artistName });
+      const { container } = render(<TaskArtistImage />);
+      expectFallback(container, "Artist avatar");
+    },
+  );
+
+  it("names a loaded image when the artist name is blank", () => {
+    vi.mocked(useArtistImage).mockReturnValue({ ...artist, artistName: " " });
+    const { container } = render(<TaskArtistImage />);
+    settleImage(container, "load");
+    expect(
+      screen.getByRole("img", { name: "Artist avatar" }).getAttribute("src"),
+    ).toBe(artist.imageUrl);
+  });
+
   it("shows the named fallback while an image is pending", () => {
     const { container } = render(
       <TaskArtistImage artistAccountId="artist-a" />,
