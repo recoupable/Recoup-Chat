@@ -16,7 +16,7 @@ export interface UpdateAccountInfoResult {
   error?: string;
 }
 
-interface UpdateArtistInfoSuccessProps {
+export interface UpdateArtistInfoSuccessProps {
   result: UpdateAccountInfoResult;
 }
 
@@ -29,6 +29,14 @@ const UpdateArtistInfoSuccess: React.FC<UpdateArtistInfoSuccessProps> = ({
   useEffect(() => {
     getArtists();
   }, []);
+
+  if (result.success === false) {
+    return (
+      <p className="my-2 text-sm text-destructive">
+        {message?.trim() ? message : "Failed to update artist info."}
+      </p>
+    );
+  }
 
   if (!artistProfile) {
     return (
