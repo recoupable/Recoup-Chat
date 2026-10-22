@@ -81,7 +81,10 @@ export default function CatalogSongsResult({
 
       {isSuccess && (
         <div className="max-h-[60vh] overflow-y-auto">
-          <InsertCatalogSongsList songs={filteredSongs} />
+          <InsertCatalogSongsList
+            songs={filteredSongs}
+            unfilteredCount={displayResult.songs?.length}
+          />
         </div>
       )}
 

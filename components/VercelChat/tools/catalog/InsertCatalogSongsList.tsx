@@ -1,8 +1,9 @@
-import { CatalogSongsResponse } from "@/lib/catalog/getCatalogSongs";
+import type { CatalogSongsResponse } from "@/lib/catalog/getCatalogSongs";
 import CatalogSongRow from "./CatalogSongRow";
 
 interface InsertCatalogSongsListProps {
   songs: CatalogSongsResponse["songs"];
+  unfilteredCount?: number;
 }
 
 /**
@@ -11,8 +12,20 @@ interface InsertCatalogSongsListProps {
  */
 export default function InsertCatalogSongsList({
   songs,
+  unfilteredCount,
 }: InsertCatalogSongsListProps) {
-  if (!songs || songs.length === 0) return null;
+  const total = unfilteredCount ?? songs?.length ?? 0;
+  const hiddenCount = Math.max(0, total - (songs?.length ?? 0));
+
+  if (!songs || songs.length === 0) {
+    return (
+      <p className="mt-2 text-sm text-muted-foreground">
+        {hiddenCount > 0
+          ? "No songs match this filter. Turn it off to show all returned songs."
+          : "No songs returned."}
+      </p>
+    );
+  }
 
   return (
     <div className="mt-2 overflow-x-auto">
@@ -44,7 +57,9 @@ export default function InsertCatalogSongsList({
       </table>
       {songs.length > 0 && (
         <div className="text-xs text-muted-foreground mt-2 px-3">
-          Showing {songs.length} song{songs.length !== 1 ? "s" : ""}
+          {hiddenCount > 0
+            ? `Showing ${songs.length} of ${total} returned songs (${hiddenCount} hidden)`
+            : `Showing ${songs.length} song${songs.length !== 1 ? "s" : ""}`}
         </div>
       )}
     </div>
