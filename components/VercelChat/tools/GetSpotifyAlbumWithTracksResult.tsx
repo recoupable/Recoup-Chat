@@ -1,6 +1,5 @@
 import React from "react";
 import { SpotifyAlbum } from "@/types/spotify";
-import { formatDuration } from "@/lib/spotify/formatDuration";
 import SpotifyAlbumTrackRow from "./SpotifyAlbumTrackRow";
 import SpotifyAlbumWithTracksHero from "./SpotifyAlbumWithTracksHero";
 
@@ -11,7 +10,17 @@ interface GetSpotifyAlbumWithTracksResultProps {
 const GetSpotifyAlbumWithTracksResult: React.FC<
   GetSpotifyAlbumWithTracksResultProps
 > = ({ result }) => {
-  const totalDuration = result.tracks.items.reduce(
+  const tracks = result.tracks?.items ?? [];
+
+  if (tracks.length === 0) {
+    return (
+      <p className="break-words text-sm text-muted-foreground">
+        No tracks returned for {result.name || "this Spotify album"}.
+      </p>
+    );
+  }
+
+  const totalDuration = tracks.reduce(
     (acc, track) => acc + track.duration_ms,
     0,
   );
@@ -28,7 +37,7 @@ const GetSpotifyAlbumWithTracksResult: React.FC<
       <div className="bg-black/40 backdrop-blur-sm rounded-b-2xl opacity-[0.999]">
         <div className="p-3 sm:p-4">
           <div className="space-y-0.5">
-            {result.tracks.items.map((track) => (
+            {tracks.map((track) => (
               <SpotifyAlbumTrackRow key={track.id} track={track} />
             ))}
           </div>
