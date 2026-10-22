@@ -19,11 +19,11 @@ export interface SearchApiErrorResult {
   message: string;
 }
 
-const SearchApiResult = ({
-  result,
-}: {
+interface SearchApiResultProps {
   result: SearchApiResultType | SearchApiErrorResult;
-}) => {
+}
+
+const SearchApiResult = ({ result }: SearchApiResultProps) => {
   if (!result || ("success" in result && result.success === false)) {
     const message = result && "success" in result ? result.message : undefined;
     return (
