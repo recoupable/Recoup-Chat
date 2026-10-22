@@ -7,6 +7,8 @@ import type {
   SpotifyArtistSearchResult,
   SpotifyAlbumSearchResult,
   SpotifyTrackSearchResult,
+  SpotifyAlbum,
+  SpotifyTrack,
 } from "@/types/spotify";
 import { MessageParts } from "../MessageParts";
 
@@ -99,6 +101,10 @@ function renderResult(
     get_spotify_artist_albums: { items: [content], total: 2 },
     get_spotify_artist_top_tracks: { tracks: [content] },
   };
+  return renderSpotifyResult(results[route.tool], route.tool);
+}
+
+function renderSpotifyResult(result: unknown, toolName: string) {
   const message = {
     id: "spotify-card-boundary",
     role: "assistant",
@@ -106,14 +112,12 @@ function renderResult(
       { type: "text", text: "Here is the supplied Spotify result." },
       {
         type: "dynamic-tool",
-        toolName: route.tool,
+        toolName,
         toolCallId: "spotify-call",
         state: "output-available",
         input: {},
         output: {
-          content: [
-            { type: "text", text: JSON.stringify(results[route.tool]) },
-          ],
+          content: [{ type: "text", text: JSON.stringify(result) }],
         },
       },
       { type: "text", text: "The conversation stays here." },
@@ -130,23 +134,25 @@ function renderResult(
   );
 }
 
+const unusableSpotifyUrls = [
+  "http://open.spotify.com/artist/synthetic",
+  "https://open.spotify.com.evil.test/artist/synthetic",
+  "https://open.spotify.com@evil.test/artist/synthetic",
+  "javascript:void(0)",
+  "data:text/html,synthetic",
+  "//open.spotify.com/artist/synthetic",
+  "/artist/synthetic",
+  "not a URL",
+  "#",
+  "",
+  null,
+  undefined,
+  42,
+  {},
+];
+
 describe.each(routes)("Spotify links through $tool", (route) => {
-  it.each([
-    "http://open.spotify.com/artist/synthetic",
-    "https://open.spotify.com.evil.test/artist/synthetic",
-    "https://open.spotify.com@evil.test/artist/synthetic",
-    "javascript:void(0)",
-    "data:text/html,synthetic",
-    "//open.spotify.com/artist/synthetic",
-    "/artist/synthetic",
-    "not a URL",
-    "#",
-    "",
-    null,
-    undefined,
-    42,
-    {},
-  ])(
+  it.each(unusableSpotifyUrls)(
     "keeps unusable destination %j static without losing content or prose",
     (url) => {
       const { container } = renderResult(route, url);
@@ -211,4 +217,170 @@ it("retains supplied cover and title when search has no usable link", () => {
   expect(image.getAttribute("src")).toBe("/synthetic-cover.png");
   expect(screen.queryByRole("link")).toBeNull();
   expect(screen.getByText("Ambient")).toBeTruthy();
+});
+
+const detailArtist = {
+  ...artist,
+  href: "https://api.spotify.com/v1/artists/synthetic",
+};
+const detailTrack: SpotifyTrack = {
+  ...track,
+  artists: [detailArtist],
+  available_markets: [],
+  disc_number: 1,
+  href: "https://api.spotify.com/v1/tracks/synthetic",
+  is_playable: true,
+  track_number: 1,
+  is_local: false,
+  preview_url: null,
+  explicit: true,
+};
+const albumDetail: SpotifyAlbum = {
+  ...album,
+  artists: [detailArtist],
+  album_type: "album",
+  total_tracks: 2,
+  available_markets: [],
+  href: "https://api.spotify.com/v1/albums/synthetic",
+  release_date: "2026-10-01",
+  release_date_precision: "day",
+  tracks: {
+    href: "https://api.spotify.com/v1/albums/synthetic/tracks",
+    limit: 2,
+    next: null,
+    previous: null,
+    total: 2,
+    offset: 0,
+    items: [
+      detailTrack,
+      {
+        ...detailTrack,
+        id: "second-track",
+        name: "Second track",
+        track_number: 2,
+        duration_ms: 90000,
+        explicit: false,
+      },
+    ],
+  },
+  copyrights: [],
+  external_ids: {},
+  genres: ["Ambient"],
+  label: "Synthetic Label",
+  popularity: 0,
+};
+
+function renderAlbum(albumUrl: unknown, trackUrl: unknown) {
+  return renderSpotifyResult(
+    {
+      ...albumDetail,
+      external_urls: { spotify: albumUrl },
+      tracks: {
+        ...albumDetail.tracks,
+        items: [
+          { ...detailTrack, external_urls: { spotify: trackUrl } },
+          albumDetail.tracks.items[1],
+        ],
+      },
+    },
+    "get_spotify_album",
+  );
+}
+
+describe("Album detail navigation through get_spotify_album", () => {
+  it.each(unusableSpotifyUrls)(
+    "keeps unusable album destination %j static with valid tracks and prose",
+    (url) => {
+      renderAlbum(url, detailTrack.external_urls.spotify);
+      expect(screen.queryByRole("link", { name: /Listen/ })).toBeNull();
+      expect(
+        screen.getByRole("heading", { name: albumDetail.name }),
+      ).toBeTruthy();
+      expect(screen.getByText(detailTrack.name).closest("a")).toBeTruthy();
+      expect(screen.getByText("Second track").closest("a")).toBeTruthy();
+      expect(screen.getByText("2 songs")).toBeTruthy();
+      expect(screen.getByText("2:30")).toBeTruthy();
+      expect(screen.getByText("2026")).toBeTruthy();
+      expect(screen.getByText("Synthetic Label")).toBeTruthy();
+      expect(screen.getByText("Ambient")).toBeTruthy();
+      expect(
+        screen.getByText("Here is the supplied Spotify result."),
+      ).toBeTruthy();
+      expect(screen.getByText("The conversation stays here.")).toBeTruthy();
+    },
+  );
+
+  it.each(unusableSpotifyUrls)(
+    "keeps unusable track destination %j static with its metadata and valid siblings",
+    (url) => {
+      renderAlbum(albumDetail.external_urls.spotify, url);
+      const title = screen.getByText(detailTrack.name);
+      expect(title.closest("a")).toBeNull();
+      const row = screen.getByRole("group", { name: detailTrack.name });
+      expect(
+        row.querySelector(".lucide-play, .lucide-external-link"),
+      ).toBeNull();
+      expect(row.className).not.toContain("hover:");
+      expect(screen.getByText("1")).toBeTruthy();
+      expect(screen.getByText("E")).toBeTruthy();
+      expect(screen.getByText("1:00")).toBeTruthy();
+      expect(screen.getAllByText(artist.name).length).toBe(3);
+      expect(screen.getByText("Second track").closest("a")).toBeTruthy();
+      expect(screen.getByRole("link", { name: /Listen/ })).toBeTruthy();
+      expect(screen.getByText("The conversation stays here.")).toBeTruthy();
+    },
+  );
+
+  it("keeps the explicit marker visible on small screens", () => {
+    renderAlbum(albumDetail.external_urls.spotify, "");
+    const marker = screen.getByText("E");
+    expect(marker.classList.contains("hidden")).toBe(false);
+    expect(marker.classList.contains("inline-flex")).toBe(true);
+  });
+
+  it("renders canonical album and track destinations with focus and new-tab protection", () => {
+    const { container } = renderAlbum(
+      "HTTPS://OPEN.SPOTIFY.COM/album/synthetic?si=x%2By",
+      "https:open.spotify.com/track/synthetic?si=a%2Bb",
+    );
+    const albumLink = screen.getByRole("link", { name: /Listen/ });
+    const trackLink = screen.getByText(detailTrack.name).closest("a")!;
+    expect(albumLink.getAttribute("href")).toBe(
+      "https://open.spotify.com/album/synthetic?si=x%2By",
+    );
+    expect(trackLink.getAttribute("href")).toBe(
+      "https://open.spotify.com/track/synthetic?si=a%2Bb",
+    );
+    for (const link of [albumLink, trackLink]) {
+      expect(link.getAttribute("target")).toBe("_blank");
+      expect(link.getAttribute("rel")?.split(" ")).toEqual(
+        expect.arrayContaining(["noopener", "noreferrer"]),
+      );
+      expect(link.className).toContain("focus-visible:ring-ring");
+      expect(link.querySelector("button, a, input, [tabindex]")).toBeNull();
+    }
+    expect(albumLink.className).toContain("min-h-11");
+    expect(container.querySelector("a a")).toBeNull();
+    expect(screen.getByText("1:30")).toBeTruthy();
+    expect(screen.getByText("2:30")).toBeTruthy();
+  });
+
+  it("preserves a track without an external_urls object as static content", () => {
+    renderSpotifyResult(
+      {
+        ...albumDetail,
+        tracks: {
+          ...albumDetail.tracks,
+          items: [
+            { ...detailTrack, external_urls: undefined },
+            albumDetail.tracks.items[1],
+          ],
+        },
+      },
+      "get_spotify_album",
+    );
+    expect(screen.getByText(detailTrack.name).closest("a")).toBeNull();
+    expect(screen.getByText("Second track").closest("a")).toBeTruthy();
+    expect(screen.getByText("The conversation stays here.")).toBeTruthy();
+  });
 });
