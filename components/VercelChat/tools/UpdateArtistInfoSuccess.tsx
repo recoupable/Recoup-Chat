@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import ArtistHeroSection from "./ArtistHeroSection";
 import KnowledgeBaseSection from "./KnowledgeBaseSection";
-import { Knowledge } from "@/types/knowledge";
+import { isKnowledge } from "@/lib/knowledge/isKnowledge";
 import { CheckCircle, FileText } from "lucide-react";
 import { useArtistProvider } from "@/providers/ArtistProvider";
 import { ArtistProfile } from "@/lib/supabase/artist/updateArtistProfile";
@@ -41,10 +41,11 @@ const UpdateArtistInfoSuccess: React.FC<UpdateArtistInfoSuccessProps> = ({
     );
   }
 
-  // Type guard for knowledges
-  const knowledges = Array.isArray(artistProfile.knowledges)
-    ? (artistProfile.knowledges as unknown as Knowledge[])
+  const knowledgeEntries = Array.isArray(artistProfile.knowledges)
+    ? artistProfile.knowledges
     : [];
+  const knowledges = knowledgeEntries.filter(isKnowledge);
+  const unreadableCount = knowledgeEntries.length - knowledges.length;
 
   return (
     <div className="bg-gradient-to-b from-gray-900 to-black rounded-2xl overflow-hidden max-w-2xl w-full my-4">
@@ -69,6 +70,13 @@ const UpdateArtistInfoSuccess: React.FC<UpdateArtistInfoSuccessProps> = ({
           {/* Knowledge base */}
           {knowledges.length > 0 && (
             <KnowledgeBaseSection knowledges={knowledges} />
+          )}
+          {unreadableCount > 0 && (
+            <p className="text-sm text-muted-foreground">
+              {unreadableCount} knowledge{" "}
+              {unreadableCount === 1 ? "entry" : "entries"} could not be
+              displayed.
+            </p>
           )}
 
           {/* Organization */}
