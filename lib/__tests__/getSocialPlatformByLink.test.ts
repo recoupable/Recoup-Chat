@@ -47,6 +47,17 @@ describe("getSocialPlatformByLink", () => {
   );
 
   it.each([
+    ["instagram.com/artist?redirect=https://example.test", "INSTAGRAM"],
+    ["open.spotify.com/artist/synthetic#https://example.test", "SPOTIFY"],
+    ["x.com/artist?next=ftp://example.test", "TWITTER"],
+  ])(
+    "recognizes a bare hostname when %s mentions a protocol later",
+    (url, platform) => {
+      expect(getSocialPlatformByLink(url)).toBe(platform);
+    },
+  );
+
+  it.each([
     "https://box.com/artist",
     "",
     "   ",

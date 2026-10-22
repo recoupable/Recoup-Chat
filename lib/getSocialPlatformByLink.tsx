@@ -15,10 +15,11 @@ const SOCIAL_DOMAINS = [
 
 const getSocialPlatformByLink = (link: string) => {
   if (!link) return "NONE";
+  const value = link.trim();
   let hostname: string;
   try {
     hostname = new URL(
-      link.includes("://") ? link : `https://${link}`,
+      /^[a-z][a-z\d+.-]*:\/\//i.test(value) ? value : `https://${value}`,
     ).hostname.toLowerCase();
   } catch {
     return "NONE";

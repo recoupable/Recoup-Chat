@@ -35,6 +35,11 @@ describe("Artist social result platform labels", () => {
       "@synthetic_artist",
     ],
     ["youtu.be/synthetic", "YouTube", "@synthetic"],
+    [
+      "open.spotify.com/artist/synthetic?redirect=https://example.test",
+      "Spotify",
+      "open.spotify.com/artist/synthetic?redirect=https://example.test",
+    ],
     ["box.com/synthetic_artist", "box", "@synthetic_artist"],
     [
       "example.test/instagram.com/synthetic_artist",

@@ -45,6 +45,14 @@ describe("buildSocialFixPayload", () => {
     expect(buildSocialFixPayload(url)).toBeNull();
   });
 
+  it("preserves a bare profile URL with an absolute URL in its query", () => {
+    const url = "instagram.com/artist?redirect=https://example.test";
+    expect(buildSocialFixPayload(url)).toEqual({
+      platform: "INSTAGRAM",
+      profileUrls: { INSTAGRAM: url },
+    });
+  });
+
   it("returns null for empty input", () => {
     expect(buildSocialFixPayload("   ")).toBeNull();
   });
