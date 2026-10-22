@@ -71,17 +71,21 @@ function expectQuietError(container: HTMLElement, message: string) {
 
 describe("terminal search result outcomes", () => {
   it.each([
-    "Search failed: provider unavailable.",
-    "",
-    " <script>literal error</script> ",
+    [
+      "Search failed: provider unavailable.",
+      "Search failed: provider unavailable.",
+    ],
+    ["", "Error retrieving search results"],
+    [" \t\n ", "Error retrieving search results"],
+    [" <script>literal error</script> ", " <script>literal error</script> "],
   ])(
     "shows the declared failure message %j without treating it as no results",
-    (message) => {
+    (message, expected) => {
       const { container } = show({
         success: false,
         message,
       });
-      expectQuietError(container, message || "Error retrieving search results");
+      expectQuietError(container, expected);
       expect(container.querySelector(".text-destructive")).toBeTruthy();
     },
   );
