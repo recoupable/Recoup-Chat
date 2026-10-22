@@ -111,10 +111,11 @@ describe("task card menu ownership", () => {
   );
 
   it("keeps deleted results static with no menu or route", () => {
-    render(<TaskCard task={task} isDeleted />);
+    const { container } = render(<TaskCard task={task} isDeleted />);
     expect(screen.getByText("Deleted")).toBeTruthy();
     expect(screen.queryByRole("link")).toBeNull();
-    expect(screen.queryByRole("button", { name: /Task options/ })).toBeNull();
+    expect(screen.queryByRole("button")).toBeNull();
+    expect(container.querySelector("[aria-haspopup='menu']")).toBeNull();
   });
 
   it("disables redundant Pause for an already paused task", async () => {
