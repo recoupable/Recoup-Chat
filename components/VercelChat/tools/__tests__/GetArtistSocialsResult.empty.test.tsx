@@ -67,6 +67,26 @@ describe("Successful social searches with no returned profiles", () => {
     expect(screen.queryByText("Custom icon")).toBeNull();
   });
 
+  it.each([
+    ["null", { ...empty, socials: null }],
+    [
+      "omitted",
+      { status: "success", success: true, pagination: empty.pagination },
+    ],
+  ])(
+    "handles a %s profile list supplied through the wire cast",
+    (_name, result) => {
+      render(
+        <GetArtistSocialsResult
+          result={result as unknown as SocialsResponse}
+        />,
+      );
+      expect(screen.getByText("No social profiles returned.")).toBeTruthy();
+      expect(screen.queryByRole("heading")).toBeNull();
+      expect(screen.queryByRole("link")).toBeNull();
+    },
+  );
+
   it.each([1, 2])(
     "preserves the existing populated result for %i profiles",
     (count) => {
@@ -205,6 +225,54 @@ describe("Successful social searches with no returned profiles", () => {
           .getByRole("link", { name: "Synthetic saved chat" })
           .getAttribute("href"),
       ).toBe("/sessions/synthetic-session/chats/synthetic-chat");
+      expect(reload).not.toHaveBeenCalled();
+    },
+  );
+
+  it.each([
+    ["null", { ...empty, socials: null }],
+    [
+      "omitted",
+      { status: "success", success: true, pagination: empty.pagination },
+    ],
+  ])(
+    "handles a %s profile list through the actual MCP result parser",
+    (_name, result) => {
+      const message = {
+        id: "synthetic-nullish-socials",
+        role: "assistant",
+        parts: [
+          {
+            type: "text",
+            text: "I checked the supplied artist.",
+            state: "done",
+          },
+          {
+            type: "dynamic-tool",
+            toolName: "get_artist_socials",
+            toolCallId: "synthetic-nullish",
+            state: "output-available",
+            input: {},
+            output: {
+              content: [{ type: "text", text: JSON.stringify(result) }],
+            },
+          },
+          { type: "text", text: "The conversation continues.", state: "done" },
+        ],
+      } as unknown as UIMessage;
+      const reload = vi.fn();
+      render(
+        <MessageParts
+          message={message}
+          mode="view"
+          setMode={() => {}}
+          status="ready"
+          reload={reload}
+        />,
+      );
+      expect(screen.getByText("No social profiles returned.")).toBeTruthy();
+      expect(screen.getByText("I checked the supplied artist.")).toBeTruthy();
+      expect(screen.getByText("The conversation continues.")).toBeTruthy();
       expect(reload).not.toHaveBeenCalled();
     },
   );

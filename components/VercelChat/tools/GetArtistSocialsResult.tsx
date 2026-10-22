@@ -24,7 +24,7 @@ export default function GetArtistSocialsResult({
     );
   }
 
-  const socials = result.socials;
+  const socials = result.socials ?? [];
   if (socials.length === 0) {
     return (
       <p className="text-sm text-muted-foreground">
