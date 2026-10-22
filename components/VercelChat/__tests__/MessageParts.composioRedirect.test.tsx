@@ -10,7 +10,11 @@ afterEach(cleanup);
 const redirect =
   "https://connect.example.test/authorize?state=synthetic%2Bstate&return_to=%2Fnotes";
 
-const renderConnection = (redirectUrl: unknown, status = "initiated") => {
+const renderConnection = (
+  redirectUrl: unknown,
+  status = "initiated",
+  sibling?: Record<string, unknown>,
+) => {
   const message = {
     id: "connection-redirect",
     role: "assistant",
@@ -34,6 +38,7 @@ const renderConnection = (redirectUrl: unknown, status = "initiated") => {
                       status,
                       redirect_url: redirectUrl,
                     },
+                    ...(sibling ? { googlesheets: sibling } : {}),
                   },
                 },
               }),
@@ -111,6 +116,79 @@ describe("MessageParts — connector redirect actions", () => {
     expect(
       screen.getByText("The conversation can continue here."),
     ).toBeTruthy();
+  });
+
+  it.each(["", null, false, 0])(
+    "keeps an active sibling ahead of an unusable redirect: %s",
+    (url) => {
+      renderConnection(url, "initiated", {
+        toolkit: "googlesheets",
+        status: "active",
+      });
+      expect(screen.getByText("Google Sheets Connected")).toBeTruthy();
+      expect(screen.queryByText(/Google Drive Access Required/)).toBeNull();
+      expect(
+        screen.queryByText(/This connection link is unavailable/),
+      ).toBeNull();
+      expect(
+        screen.getByText("The conversation can continue here."),
+      ).toBeTruthy();
+    },
+  );
+
+  it.each(["", null, false, 0])(
+    "keeps an actionable sibling ahead of an unusable redirect: %s",
+    (url) => {
+      renderConnection(url, "initiated", {
+        toolkit: "googlesheets",
+        redirect_url: redirect,
+      });
+      expect(
+        screen
+          .getByRole("link", { name: "Connect Google Sheets" })
+          .getAttribute("href"),
+      ).toBe(redirect);
+      expect(screen.queryByText(/Google Drive Access Required/)).toBeNull();
+      expect(
+        screen.queryByText(/This connection link is unavailable/),
+      ).toBeNull();
+    },
+  );
+
+  it("keeps the first redirect ahead of an active sibling", () => {
+    renderConnection(redirect, "initiated", {
+      toolkit: "googlesheets",
+      status: "active",
+    });
+    expect(
+      screen.getByRole("link", { name: "Connect Google Drive" }),
+    ).toBeTruthy();
+    expect(screen.queryByText("Google Sheets Connected")).toBeNull();
+  });
+
+  it("keeps the first active result ahead of an actionable sibling", () => {
+    renderConnection(undefined, "active", {
+      toolkit: "googlesheets",
+      redirect_url: redirect,
+    });
+    expect(screen.getByText("Google Drive Connected")).toBeTruthy();
+    expect(
+      screen.queryByRole("link", { name: "Connect Google Sheets" }),
+    ).toBeNull();
+  });
+
+  it("keeps a truthy invalid redirect ahead of an active sibling", () => {
+    renderConnection("http://connect.example.test", "initiated", {
+      toolkit: "googlesheets",
+      status: "active",
+    });
+    expect(screen.getByText("Google Drive Access Required")).toBeTruthy();
+    expect(
+      screen.getByText(
+        "This connection link is unavailable. Ask for a new link.",
+      ),
+    ).toBeTruthy();
+    expect(screen.queryByText("Google Sheets Connected")).toBeNull();
   });
 
   it("preserves the active connection confirmation", () => {

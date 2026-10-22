@@ -1,8 +1,8 @@
 import { ComposioResultEntry } from "./types";
 
 /**
- * Find the auth result entry that has redirect_url or active status.
- * Returns null if no valid auth result is found.
+ * Preserve the established first redirect/active result before falling back to
+ * a supplied unusable redirect, so it can receive connection-link feedback.
  */
 export function findAuthResult(
   results: Record<string, ComposioResultEntry> | undefined,
@@ -12,9 +12,11 @@ export function findAuthResult(
   const entries = Object.values(results);
   return (
     entries.find(
-      (r) =>
-        Object.prototype.hasOwnProperty.call(r, "redirect_url") ||
-        r.status?.toLowerCase() === "active",
-    ) || null
+      (r) => r.redirect_url || r.status?.toLowerCase() === "active",
+    ) ??
+    entries.find((r) =>
+      Object.prototype.hasOwnProperty.call(r, "redirect_url"),
+    ) ??
+    null
   );
 }
