@@ -4,6 +4,7 @@ import { type ReactNode, useState } from "react";
 import { CircleX, Loader2, Minus, OctagonPause, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { ToolRenderState } from "@/lib/chat/extractToolRenderState";
+import { ToolErrorDetails } from "./ToolErrorDetails";
 
 export interface ToolLayoutProps {
   /** Tool label, e.g. "Bash". */
@@ -110,10 +111,8 @@ export function ToolLayout({
 
       {isExpanded && canExpand && (
         <div className="mt-1.5 space-y-2 pb-1">
-          {hasError && !expandedContent && (
-            <pre className="max-h-48 overflow-auto whitespace-pre-wrap break-words rounded-md border border-destructive/20 bg-destructive/5 px-3 py-2 font-mono text-xs leading-relaxed text-destructive-text">
-              {state.error}
-            </pre>
+          {state.error && !expandedContent && (
+            <ToolErrorDetails error={state.error} />
           )}
           {expandedContent}
         </div>
