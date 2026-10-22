@@ -1,14 +1,9 @@
 // @vitest-environment jsdom
 import React from "react";
-import {
-  cleanup,
-  fireEvent,
-  render,
-  screen,
-  waitFor,
-} from "@testing-library/react";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import TaskCard, { type TaskCardProps } from "../TaskCard";
+import { forbidTaskNetwork } from "./forbidTaskNetwork";
 
 const actions = vi.hoisted(() => ({
   update: vi.fn(),
@@ -52,20 +47,11 @@ const task = {
   prompt: "Synthetic report instructions",
   trigger_schedule_id: null,
 } satisfies TaskCardProps["task"];
-afterEach(() => {
-  cleanup();
-  vi.unstubAllGlobals();
-});
+forbidTaskNetwork();
 beforeEach(() => {
   actions.update.mockReset().mockResolvedValue(undefined);
   actions.remove.mockReset().mockResolvedValue(undefined);
   actions.updating = actions.deleting = false;
-  vi.stubGlobal(
-    "fetch",
-    vi.fn(() => {
-      throw new Error("Task UI tests forbid network");
-    }),
-  );
 });
 
 describe("task card menu ownership", () => {

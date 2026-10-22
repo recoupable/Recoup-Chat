@@ -1,12 +1,13 @@
 // @vitest-environment jsdom
 import React from "react";
-import { cleanup, render, screen } from "@testing-library/react";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { render, screen } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
 import GetTasksSuccess from "@/components/VercelChat/tools/tasks/GetTasksSuccess";
 import CreateTaskSuccess from "@/components/VercelChat/tools/tasks/CreateTaskSuccess";
 import UpdateTaskSuccess from "@/components/VercelChat/tools/tasks/UpdateTaskSuccess";
 import DeleteTaskSuccess from "@/components/VercelChat/tools/tasks/DeleteTaskSuccess";
 import type { ScheduledAction } from "@/components/VercelChat/types";
+import { forbidTaskNetwork } from "./forbidTaskNetwork";
 
 vi.mock("next/link", () => ({
   default: ({
@@ -44,20 +45,7 @@ const task = {
   trigger_schedule_id: null,
 } satisfies ScheduledAction;
 
-const denyNetwork = vi.fn(() => {
-  throw new Error("Task caller tests forbid network");
-});
-beforeEach(() => {
-  denyNetwork.mockClear();
-  for (const name of ["fetch", "XMLHttpRequest", "WebSocket"]) {
-    vi.stubGlobal(name, denyNetwork);
-  }
-});
-afterEach(() => {
-  cleanup();
-  vi.unstubAllGlobals();
-  expect(denyNetwork).not.toHaveBeenCalled();
-});
+forbidTaskNetwork();
 
 describe("task tool cards (chat#2006 item 8)", () => {
   it.each([

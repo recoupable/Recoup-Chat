@@ -1,9 +1,10 @@
 // @vitest-environment jsdom
 import React from "react";
-import { cleanup, render, screen } from "@testing-library/react";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { render, screen } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
 import TasksList from "@/components/TasksPage/TasksList";
 import type { Task } from "@/lib/tasks/getTasks";
+import { forbidTaskNetwork } from "@/components/VercelChat/tools/tasks/__tests__/forbidTaskNetwork";
 
 vi.mock("next/link", () => ({
   default: ({
@@ -47,20 +48,7 @@ const task = (id: string, title: string): Task => ({
   artist_name: `Artist for ${title}`,
 });
 
-const denyNetwork = vi.fn(() => {
-  throw new Error("Task caller tests forbid network");
-});
-beforeEach(() => {
-  denyNetwork.mockClear();
-  for (const name of ["fetch", "XMLHttpRequest", "WebSocket"]) {
-    vi.stubGlobal(name, denyNetwork);
-  }
-});
-afterEach(() => {
-  cleanup();
-  vi.unstubAllGlobals();
-  expect(denyNetwork).not.toHaveBeenCalled();
-});
+forbidTaskNetwork();
 
 describe("TasksList", () => {
   it("links every row to its task page instead of opening a popup", () => {
