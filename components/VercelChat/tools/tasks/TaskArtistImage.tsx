@@ -1,4 +1,5 @@
 import { Clock } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import useArtistImage from "@/hooks/useArtistImage";
 
 interface TaskArtistImageProps {
@@ -11,18 +12,16 @@ const TaskArtistImage: React.FC<TaskArtistImageProps> = ({
   const { imageUrl, artistName } = useArtistImage(artistAccountId);
 
   return (
-    <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-muted">
-      {imageUrl ? (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          src={imageUrl}
-          alt={artistName ?? "Artist avatar"}
-          className="h-full w-full object-cover"
-        />
-      ) : (
-        <Clock className="h-5 w-5 text-muted-foreground" />
-      )}
-    </div>
+    <Avatar className="items-center justify-center bg-muted">
+      <AvatarImage
+        src={imageUrl ?? undefined}
+        alt={artistName ?? "Artist avatar"}
+        className="object-cover"
+      />
+      <AvatarFallback role="img" aria-label={artistName ?? "Artist avatar"}>
+        <Clock className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
+      </AvatarFallback>
+    </Avatar>
   );
 };
 
