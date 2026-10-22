@@ -21,8 +21,14 @@ vi.mock("@/providers/UserProvder", () => ({
   useUserProvider: () => ({ userData: { account_id: "acct-test" } }),
 }));
 
-vi.mock("@/components/VercelChat/tools/tasks/TaskCard", () => ({
-  default: ({ task }: { task: Task }) => <div>{task.title}</div>,
+vi.mock("@/hooks/useArtistImage", () => ({
+  default: () => ({ imageUrl: null, artistName: null }),
+}));
+vi.mock("@/hooks/useUpdateScheduledAction", () => ({
+  useUpdateScheduledAction: () => ({ updateAction: vi.fn(), isLoading: false }),
+}));
+vi.mock("@/hooks/useDeleteScheduledAction", () => ({
+  useDeleteScheduledAction: () => ({ deleteAction: vi.fn(), isLoading: false }),
 }));
 
 const task = (id: string, title: string) =>
@@ -44,5 +50,10 @@ describe("TasksList", () => {
       "/tasks/task-b",
     ]);
     expect(screen.queryByRole("dialog")).toBeNull();
+    expect(
+      screen
+        .getAllByRole("button", { name: /Task options for/ })
+        .every((button) => button.closest("a") === null),
+    ).toBe(true);
   });
 });

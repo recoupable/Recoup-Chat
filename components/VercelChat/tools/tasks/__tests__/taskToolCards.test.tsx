@@ -20,8 +20,14 @@ vi.mock("next/link", () => ({
   ),
 }));
 
-vi.mock("@/components/VercelChat/tools/tasks/TaskCard", () => ({
-  default: ({ task }: { task: ScheduledAction }) => <div>{task.title}</div>,
+vi.mock("@/hooks/useArtistImage", () => ({
+  default: () => ({ imageUrl: null, artistName: null }),
+}));
+vi.mock("@/hooks/useUpdateScheduledAction", () => ({
+  useUpdateScheduledAction: () => ({ updateAction: vi.fn(), isLoading: false }),
+}));
+vi.mock("@/hooks/useDeleteScheduledAction", () => ({
+  useDeleteScheduledAction: () => ({ deleteAction: vi.fn(), isLoading: false }),
 }));
 
 const task = {
@@ -35,6 +41,11 @@ describe("task tool cards (chat#2006 item 8)", () => {
   it("get_tasks cards link to the task page", () => {
     render(<GetTasksSuccess result={[task]} />);
     expect(screen.getByRole("link").getAttribute("href")).toBe("/tasks/task-a");
+    expect(
+      screen
+        .getByRole("button", { name: "Task options for Weekly report" })
+        .closest("a"),
+    ).toBeNull();
   });
 
   it("create_task and update_task cards link to the task page", () => {
@@ -49,5 +60,6 @@ describe("task tool cards (chat#2006 item 8)", () => {
     render(<DeleteTaskSuccess result={task} />);
     expect(screen.getByText("Weekly report")).toBeTruthy();
     expect(screen.queryByRole("link")).toBeNull();
+    expect(screen.queryByRole("button", { name: /Task options/ })).toBeNull();
   });
 });
