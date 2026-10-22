@@ -84,7 +84,7 @@ function StatusIcon({ status }: { status?: string }) {
  * Ported from `open-agents` (`renderers/todo-renderer.tsx`).
  */
 export function TodoRenderer({ input, state }: TodoRendererProps) {
-  const todos = input?.todos ?? [];
+  const todos = (input?.todos ?? []).filter((todo) => todo != null);
   const { completed, total, current } = summarizeTodos(todos);
 
   return (
