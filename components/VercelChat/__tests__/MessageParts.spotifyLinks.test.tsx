@@ -316,11 +316,11 @@ describe("Album detail navigation through get_spotify_album", () => {
       renderAlbum(albumDetail.external_urls.spotify, url);
       const title = screen.getByText(detailTrack.name);
       expect(title.closest("a")).toBeNull();
-      const row = title.parentElement?.parentElement?.parentElement;
+      const row = screen.getByRole("group", { name: detailTrack.name });
       expect(
-        row?.querySelector(".lucide-play, .lucide-external-link"),
+        row.querySelector(".lucide-play, .lucide-external-link"),
       ).toBeNull();
-      expect(row?.className).not.toContain("hover:");
+      expect(row.className).not.toContain("hover:");
       expect(screen.getByText("1")).toBeTruthy();
       expect(screen.getByText("E")).toBeTruthy();
       expect(screen.getByText("1:00")).toBeTruthy();
@@ -330,6 +330,13 @@ describe("Album detail navigation through get_spotify_album", () => {
       expect(screen.getByText("The conversation stays here.")).toBeTruthy();
     },
   );
+
+  it("keeps the explicit marker visible on small screens", () => {
+    renderAlbum(albumDetail.external_urls.spotify, "");
+    const marker = screen.getByText("E");
+    expect(marker.classList.contains("hidden")).toBe(false);
+    expect(marker.classList.contains("inline-flex")).toBe(true);
+  });
 
   it("renders canonical album and track destinations with focus and new-tab protection", () => {
     const { container } = renderAlbum(

@@ -16,6 +16,8 @@ export default function SpotifyAlbumTrackRow({
   const spotifyUrl = getSafeSpotifyUrl(track.external_urls?.spotify);
   const content = (
     <div
+      role="group"
+      aria-label={track.name}
       className={cn(
         "flex min-h-11 items-center gap-2 sm:gap-3 px-2 sm:px-3 py-2 rounded-xl transition-colors",
         spotifyUrl && "hover:bg-white/10",
@@ -42,7 +44,7 @@ export default function SpotifyAlbumTrackRow({
           {track.explicit && (
             <Badge
               variant="secondary"
-              className="bg-muted text-muted-foreground text-xs px-1 py-0 hidden sm:inline-flex"
+              className="bg-muted text-muted-foreground text-xs px-1 py-0 inline-flex"
             >
               E
             </Badge>
