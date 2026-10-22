@@ -1,16 +1,17 @@
 type ParsedMcpToolOutput =
   | { kind: "data"; value: object }
   | { kind: "text"; text: string }
+  | { kind: "error"; text: string }
   | { kind: "unavailable" };
 
 /** Only structured JSON can enter a specialized result renderer. */
 export function parseMcpToolOutput(output: unknown): ParsedMcpToolOutput {
-  if (!output || typeof output !== "object" || !("content" in output)) {
+  if (!output || typeof output !== "object") {
     return { kind: "unavailable" };
   }
-  if (!Array.isArray(output.content)) return { kind: "unavailable" };
 
-  const content: unknown[] = output.content;
+  const content: unknown[] =
+    "content" in output && Array.isArray(output.content) ? output.content : [];
   const blocks = content.filter(
     (block): block is { type: "text"; text: string } =>
       block !== null &&
@@ -21,6 +22,14 @@ export function parseMcpToolOutput(output: unknown): ParsedMcpToolOutput {
       typeof block.text === "string",
   );
   const text = blocks.map((block) => block.text).join("\n\n");
+  if ("isError" in output && output.isError === true) {
+    return {
+      kind: "error",
+      text: text.trim()
+        ? text
+        : "The tool reported an error without text details.",
+    };
+  }
   if (!text.trim()) return { kind: "unavailable" };
   if (blocks.length > 1) return { kind: "text", text };
 

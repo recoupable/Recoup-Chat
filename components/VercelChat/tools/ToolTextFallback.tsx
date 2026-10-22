@@ -5,26 +5,31 @@ import { ToolLayout } from "./agent/ToolLayout";
 export default function ToolTextFallback({
   name,
   text,
+  error,
 }: {
   name: string;
   text?: string;
+  error?: string;
 }) {
+  const responseText = error ?? text;
   return (
     <div role="group" aria-label={`Response from ${name}`}>
       <ToolLayout
-        name="Tool response"
-        summary={text === undefined ? "No text response available" : name}
-        state={{ running: false, interrupted: false }}
+        name={error ? "Tool failed" : "Tool response"}
+        summary={
+          responseText === undefined ? "No text response available" : name
+        }
+        state={{ running: false, interrupted: false, error }}
         icon={<FileText className="h-3.5 w-3.5" />}
         expandedContent={
-          text === undefined ? undefined : (
+          responseText === undefined ? undefined : (
             <pre
               role="region"
               aria-label="Tool response text"
               tabIndex={0}
               className="max-h-48 overflow-auto whitespace-pre-wrap break-words rounded-lg bg-muted/40 px-3 py-2 font-mono text-xs leading-5 [overflow-wrap:anywhere] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
-              {text}
+              {responseText}
             </pre>
           )
         }

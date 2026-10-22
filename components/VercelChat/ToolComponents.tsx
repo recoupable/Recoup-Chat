@@ -298,6 +298,7 @@ export function getToolResultComponent(
           key={toolCallId}
           name={toolNameEarly}
           text={parsed.kind === "text" ? parsed.text : undefined}
+          error={parsed.kind === "error" ? parsed.text : undefined}
         />
       );
     }

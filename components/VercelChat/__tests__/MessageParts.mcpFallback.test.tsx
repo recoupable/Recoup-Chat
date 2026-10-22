@@ -150,6 +150,71 @@ describe("MCP result fallbacks in a composed assistant message", () => {
     expect(screen.queryByRole("button", { name: /Tool response/ })).toBeNull();
   });
 
+  it.each([
+    [
+      textOutput("The supplied query was rejected."),
+      "The supplied query was rejected.",
+    ],
+    [
+      textOutput('{"chats":[],"message":"Access denied"}'),
+      '{"chats":[],"message":"Access denied"}',
+    ],
+    [
+      {
+        content: [
+          { type: "image", data: "synthetic", mimeType: "image/png" },
+          { type: "text", text: "First error." },
+          { type: "text", text: "Second error." },
+        ],
+      },
+      "First error.\n\nSecond error.",
+    ],
+  ])(
+    "preserves explicit MCP failure details instead of showing a typed success (%j)",
+    (output, details) => {
+      const { reload } = renderResult(
+        { ...output, isError: true },
+        "get_chats",
+      );
+      expect(screen.getByText("Here is the supplied result.")).toBeTruthy();
+      expect(screen.getByText("I can help interpret it.")).toBeTruthy();
+      expect(screen.queryByRole("heading", { name: "Chats" })).toBeNull();
+      expect(screen.queryByText("Data processed")).toBeNull();
+      fireEvent.click(
+        screen.getByRole("button", { name: /Tool failed.*get_chats/ }),
+      );
+      expect(
+        screen.getByRole("region", { name: "Tool response text" }).textContent,
+      ).toBe(details);
+      expect(reload).not.toHaveBeenCalled();
+    },
+  );
+
+  it.each([{}, { content: [] }, textOutput("   ")])(
+    "makes explicit MCP failure clear when details are absent (%j)",
+    (output) => {
+      renderResult({ ...output, isError: true });
+      fireEvent.click(
+        screen.getByRole("button", { name: /Tool failed.*lookup_records/ }),
+      );
+      expect(
+        screen.getByRole("region", { name: "Tool response text" }).textContent,
+      ).toBe("The tool reported an error without text details.");
+      expect(screen.queryByText("No text response available")).toBeNull();
+    },
+  );
+
+  it.each([false, "true"])(
+    "only treats a boolean true isError flag as failure (%j)",
+    (isError) => {
+      renderResult({ ...textOutput("Ordinary response."), isError });
+      expect(
+        screen.getByRole("button", { name: /Tool response.*lookup_records/ }),
+      ).toBeTruthy();
+      expect(screen.queryByText("Tool failed")).toBeNull();
+    },
+  );
+
   it("does not render a non-string generic message as a React child", () => {
     renderResult(textOutput(JSON.stringify({ message: { unexpected: true } })));
     expect(screen.getByText("Data processed")).toBeTruthy();
