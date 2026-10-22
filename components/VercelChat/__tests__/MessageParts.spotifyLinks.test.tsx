@@ -187,6 +187,20 @@ describe.each(routes)("Spotify links through $tool", (route) => {
   });
 });
 
+it.each(routes)(
+  "canonicalizes an ambiguous URL before rendering through $tool",
+  (route) => {
+    renderResult(route, "https:open.spotify.com/artist/synthetic?si=a%2Bb");
+    const link = screen.getByRole("link", { name: new RegExp(route.title) });
+    const expected = "https://open.spotify.com/artist/synthetic?si=a%2Bb";
+    expect(link.getAttribute("href")).toBe(expected);
+    expect(
+      new URL(link.getAttribute("href")!, "https://app.recoupable.dev/chat")
+        .href,
+    ).toBe(expected);
+  },
+);
+
 it("retains supplied cover and title when search has no usable link", () => {
   renderResult(
     routes[0],

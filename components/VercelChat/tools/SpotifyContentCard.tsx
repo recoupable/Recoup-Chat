@@ -3,7 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ExternalLink } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { isSafeSpotifyUrl } from "@/lib/spotify/isSafeSpotifyUrl";
+import { getSafeSpotifyUrl } from "@/lib/spotify/getSafeSpotifyUrl";
 import { getSpotifyImage } from "@/lib/spotify/getSpotifyImage";
 import {
   getSpotifySubtitle,
@@ -17,8 +17,7 @@ interface SpotifyContentCardProps {
 const SpotifyContentCard = ({ content }: SpotifyContentCardProps) => {
   const imageUrl = getSpotifyImage(content);
   const subtitle = getSpotifySubtitle(content);
-  const spotifyUrl = content.external_urls?.spotify;
-  const safeSpotifyUrl = isSafeSpotifyUrl(spotifyUrl) ? spotifyUrl : undefined;
+  const safeSpotifyUrl = getSafeSpotifyUrl(content.external_urls?.spotify);
 
   const cardContent = (
     <Card
