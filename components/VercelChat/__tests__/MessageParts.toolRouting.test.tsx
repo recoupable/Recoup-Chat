@@ -91,6 +91,61 @@ describe("MessageParts — sandbox tool routing (app#2052)", () => {
     expect(screen.getByText("pnpm exec tsc --noEmit")).toBeTruthy();
   });
 
+  it.each([
+    [
+      "stdout indentation and final newlines",
+      "\n  indented output\n\n",
+      "",
+      "\n  indented output\n\n",
+    ],
+    [
+      "stderr indentation and final newlines",
+      "",
+      "\n\tindented error\n\n",
+      "\n\tindented error\n\n",
+    ],
+    [
+      "both streams",
+      "\n  stdout\n",
+      "\n\tstderr\n\n",
+      "\n  stdout\n\n\n\tstderr\n\n",
+    ],
+    ["whitespace-only stdout", " \t\n", "", " \t\n"],
+    ["whitespace-only stderr", "", "\n\t ", "\n\t "],
+  ])("preserves %s in expanded Bash details", (_, stdout, stderr, expected) => {
+    const { container } = renderParts(
+      message("output-available", {
+        output: { success: true, exitCode: 0, stdout, stderr },
+      }),
+    );
+    fireEvent.click(container.querySelector('[role="button"]')!);
+    expect(container.querySelector("pre")?.textContent).toBe(expected);
+  });
+
+  it("preserves failed command details before the truncation notice", () => {
+    const stderr = "\n  <script>literal output</script>\n\n";
+    const { container } = renderParts(
+      message("output-available", {
+        output: { success: false, exitCode: 2, stderr, truncated: true },
+      }),
+    );
+    fireEvent.click(container.querySelector('[role="button"]')!);
+    const details = container.querySelector("pre");
+    expect(details?.textContent).toBe(`${stderr}\n…output truncated`);
+    expect(details?.children.length).toBe(0);
+    expect(screen.getByText("exit 2")).toBeTruthy();
+  });
+
+  it("keeps the empty command-output fallback", () => {
+    const { container } = renderParts(
+      message("output-available", {
+        output: { success: true, exitCode: 0, stdout: "", stderr: "" },
+      }),
+    );
+    fireEvent.click(container.querySelector('[role="button"]')!);
+    expect(container.querySelector("pre")?.textContent).toBe("(No output)");
+  });
+
   it("does not spin an abandoned command from an earlier turn while a later turn streams", () => {
     const abandoned = message(
       "input-available",
