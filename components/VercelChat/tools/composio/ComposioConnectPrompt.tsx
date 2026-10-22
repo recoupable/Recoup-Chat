@@ -4,7 +4,7 @@ import { getHttpsRedirectUrl } from "@/lib/composio/getHttpsRedirectUrl";
 
 interface ComposioConnectPromptProps {
   displayName: string;
-  redirectUrl: string;
+  redirectUrl: unknown;
   connector: string;
 }
 

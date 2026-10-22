@@ -10,7 +10,7 @@ afterEach(cleanup);
 const redirect =
   "https://connect.example.test/authorize?state=synthetic%2Bstate&return_to=%2Fnotes";
 
-const renderConnection = (redirectUrl: string, status = "initiated") => {
+const renderConnection = (redirectUrl: unknown, status = "initiated") => {
   const message = {
     id: "connection-redirect",
     role: "assistant",
@@ -61,6 +61,10 @@ describe("MessageParts — connector redirect actions", () => {
     "javascript:void(0)",
     "//connect.example.test/authorize",
     "not a connection URL",
+    "",
+    null,
+    false,
+    0,
   ])(
     "keeps an unusable redirect from becoming a connection action: %s",
     (url) => {
@@ -90,6 +94,17 @@ describe("MessageParts — connector redirect actions", () => {
     expect(link.getAttribute("rel")?.split(" ")).toEqual(
       expect.arrayContaining(["noopener", "noreferrer"]),
     );
+    expect(
+      screen.queryByText(/This connection link is unavailable/),
+    ).toBeNull();
+    expect(
+      screen.getByText("The conversation can continue here."),
+    ).toBeTruthy();
+  });
+
+  it("preserves the absent-result behavior", () => {
+    renderConnection(undefined);
+    expect(screen.queryByText(/Google Drive Access Required/)).toBeNull();
     expect(
       screen.queryByText(/This connection link is unavailable/),
     ).toBeNull();
