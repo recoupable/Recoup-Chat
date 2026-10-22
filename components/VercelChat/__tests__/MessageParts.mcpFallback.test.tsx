@@ -44,6 +44,27 @@ function textOutput(text: string) {
 }
 
 describe("MCP result fallbacks in a composed assistant message", () => {
+  it.each([{ chats: [] }, { chats: null }, {}])(
+    "keeps an empty chat lookup quiet within the answer (%j)",
+    (result) => {
+      const { reload } = renderResult(
+        textOutput(JSON.stringify(result)),
+        "get_chats",
+      );
+      expect(screen.getByText("Here is the supplied result.")).toBeTruthy();
+      expect(screen.getByText("I can help interpret it.")).toBeTruthy();
+      expect(screen.getByText("No chats returned.").tagName).toBe("P");
+      expect(screen.queryByRole("heading", { name: "Chats" })).toBeNull();
+      expect(
+        screen.queryByRole("button", { name: /Tool response|Tool failed/ }),
+      ).toBeNull();
+      expect(
+        screen.getAllByRole("button", { name: "Copy response" }),
+      ).toHaveLength(2);
+      expect(reload).not.toHaveBeenCalled();
+    },
+  );
+
   it.each(["lookup_records", "search_web"])(
     "keeps prose and plain text readable for %s without retrying",
     (toolName) => {
