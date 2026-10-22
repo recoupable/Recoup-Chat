@@ -29,7 +29,7 @@ const GetTasksSuccess: React.FC<GetTasksSuccessProps> = ({ result: tasks }) => {
             <p className="text-sm text-muted-foreground">No tasks found</p>
           </div>
         ) : (
-          <div className="space-y-3 max-h-80 overflow-y-auto">
+          <div className="-mx-4 space-y-3 max-h-80 overflow-y-auto px-4">
             {tasks.map((task) => (
               <TaskCard key={task.id} task={task} />
             ))}
