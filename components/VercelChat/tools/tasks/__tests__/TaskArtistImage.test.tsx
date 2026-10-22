@@ -30,9 +30,28 @@ beforeEach(() => {
     "Image",
     vi.fn(function () {
       const image = document.createElement("img");
-      Object.defineProperty(image, "complete", { get: () => cached });
-      Object.defineProperty(image, "naturalWidth", {
-        get: () => (cached ? 100 : 0),
+      let src = "";
+      let complete = cached;
+      let naturalWidth = cached ? 100 : 0;
+      Object.defineProperties(image, {
+        src: {
+          get: () => src,
+          set: (value: string) => {
+            src = value;
+            complete = cached;
+            naturalWidth = cached ? 100 : 0;
+          },
+        },
+        complete: { get: () => complete },
+        naturalWidth: { get: () => naturalWidth },
+      });
+      image.addEventListener("load", () => {
+        complete = true;
+        naturalWidth = 100;
+      });
+      image.addEventListener("error", () => {
+        complete = true;
+        naturalWidth = 0;
       });
       loaders.push(image);
       return image;
@@ -43,10 +62,14 @@ beforeEach(() => {
 function settleImage(
   container: HTMLElement,
   status: "load" | "error",
-  index = 0,
+  src = artist.imageUrl,
 ) {
-  const image = loaders[index] ?? container.querySelectorAll("img")[index];
-  expect(image).toBeTruthy();
+  const image =
+    loaders.filter((loader) => loader.src === src).at(-1) ??
+    Array.from(container.querySelectorAll("img")).find(
+      (image) => image.src === src,
+    );
+  if (!image) throw new Error(`No image request for ${src}`);
   fireEvent[status](image);
 }
 
@@ -132,7 +155,7 @@ describe("TaskArtistImage resource lifecycle", () => {
     vi.mocked(useArtistImage).mockReturnValue(replacement);
     rerender(<TaskArtistImage artistAccountId="artist-b" />);
     expectFallback(container, "Artist B");
-    settleImage(container, "load");
+    settleImage(container, "load", replacement.imageUrl);
     expect(
       screen.getByRole("img", { name: "Artist B" }).getAttribute("src"),
     ).toBe(replacement.imageUrl);
@@ -147,7 +170,7 @@ describe("TaskArtistImage resource lifecycle", () => {
     vi.mocked(useArtistImage).mockReturnValue(replacement);
     rerender(<TaskArtistImage artistAccountId="artist-b" />);
     expectFallback(container, "Artist B");
-    settleImage(container, "load");
+    settleImage(container, "load", replacement.imageUrl);
     expect(
       screen.getByRole("img", { name: "Artist B" }).getAttribute("src"),
     ).toBe(replacement.imageUrl);
@@ -163,7 +186,7 @@ describe("TaskArtistImage resource lifecycle", () => {
         <TaskArtistImage artistAccountId="artist-b" />
       </>,
     );
-    settleImage(container, "load", 1);
+    settleImage(container, "load", replacement.imageUrl);
     settleImage(container, "error");
     expect(screen.getByRole("img", { name: "Artist A" })).toBeTruthy();
     expect(
