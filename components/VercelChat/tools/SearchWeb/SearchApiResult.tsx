@@ -19,7 +19,7 @@ export interface SearchApiErrorResult {
   message: string;
 }
 
-interface SearchApiResultProps {
+export interface SearchApiResultProps {
   result: SearchApiResultType | SearchApiErrorResult;
 }
 
