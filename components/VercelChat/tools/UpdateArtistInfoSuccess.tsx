@@ -32,7 +32,7 @@ const UpdateArtistInfoSuccess: React.FC<UpdateArtistInfoSuccessProps> = ({
 
   if (result.success === false) {
     return (
-      <p className="my-2 text-sm text-destructive">
+      <p className="my-2 text-sm text-destructive-text">
         {message?.trim() ? message : "Failed to update artist info."}
       </p>
     );
