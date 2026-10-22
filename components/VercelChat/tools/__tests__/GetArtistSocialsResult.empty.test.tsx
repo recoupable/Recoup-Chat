@@ -26,6 +26,77 @@ const social: Social = {
   updated_at: "2026-10-22T00:00:00Z",
 };
 
+const nullishCases = [
+  ["null", { ...empty, socials: null }],
+  [
+    "omitted",
+    { status: "success", success: true, pagination: empty.pagination },
+  ],
+] as const;
+
+function renderChatResult(
+  result: unknown,
+  type: "dynamic-tool" | "tool-get_artist_socials" = "dynamic-tool",
+) {
+  const reload = vi.fn();
+  const message = {
+    id: "synthetic-socials",
+    role: "assistant",
+    parts: [
+      { type: "text", text: "I checked the supplied artist.", state: "done" },
+      {
+        type,
+        toolName: "get_artist_socials",
+        toolCallId: "synthetic-socials",
+        state: "output-available",
+        input: {},
+        output:
+          type === "dynamic-tool"
+            ? { content: [{ type: "text", text: JSON.stringify(result) }] }
+            : result,
+      },
+      {
+        type: "dynamic-tool",
+        toolName: "get_chats",
+        toolCallId: "synthetic-chats",
+        state: "output-available",
+        input: {},
+        output: {
+          content: [
+            {
+              type: "text",
+              text: JSON.stringify({
+                chats: [
+                  {
+                    id: "synthetic-chat",
+                    title: "Synthetic saved chat",
+                    accountId: "synthetic-account",
+                    sessionId: "synthetic-session",
+                    updatedAt: "2026-10-01T00:00:00Z",
+                  },
+                ],
+              }),
+            },
+          ],
+        },
+      },
+      { type: "text", text: "The conversation continues.", state: "done" },
+    ],
+  } as unknown as UIMessage;
+  return {
+    ...render(
+      <MessageParts
+        message={message}
+        mode="view"
+        setMode={() => {}}
+        status="ready"
+        reload={reload}
+      />,
+    ),
+    reload,
+  };
+}
+
 afterEach(cleanup);
 
 describe("Successful social searches with no returned profiles", () => {
@@ -67,13 +138,7 @@ describe("Successful social searches with no returned profiles", () => {
     expect(screen.queryByText("Custom icon")).toBeNull();
   });
 
-  it.each([
-    ["null", { ...empty, socials: null }],
-    [
-      "omitted",
-      { status: "success", success: true, pagination: empty.pagination },
-    ],
-  ])(
+  it.each(nullishCases)(
     "handles a %s profile list supplied through the wire cast",
     (_name, result) => {
       render(
@@ -153,67 +218,10 @@ describe("Successful social searches with no returned profiles", () => {
     },
   );
 
-  it.each(["dynamic-tool", "tool-get_artist_socials"])(
+  it.each(["dynamic-tool", "tool-get_artist_socials"] as const)(
     "keeps empty %s output alongside prose and a typed result",
     (type) => {
-      const reload = vi.fn();
-      const message = {
-        id: "synthetic-empty-socials",
-        role: "assistant",
-        parts: [
-          {
-            type: "text",
-            text: "I checked the supplied artist.",
-            state: "done",
-          },
-          {
-            type,
-            toolName: "get_artist_socials",
-            toolCallId: "synthetic-socials",
-            state: "output-available",
-            input: {},
-            output:
-              type === "dynamic-tool"
-                ? { content: [{ type: "text", text: JSON.stringify(empty) }] }
-                : empty,
-          },
-          {
-            type: "dynamic-tool",
-            toolName: "get_chats",
-            toolCallId: "synthetic-chats",
-            state: "output-available",
-            input: {},
-            output: {
-              content: [
-                {
-                  type: "text",
-                  text: JSON.stringify({
-                    chats: [
-                      {
-                        id: "synthetic-chat",
-                        title: "Synthetic saved chat",
-                        accountId: "synthetic-account",
-                        sessionId: "synthetic-session",
-                        updatedAt: "2026-10-01T00:00:00Z",
-                      },
-                    ],
-                  }),
-                },
-              ],
-            },
-          },
-          { type: "text", text: "The conversation continues.", state: "done" },
-        ],
-      } as unknown as UIMessage;
-      render(
-        <MessageParts
-          message={message}
-          mode="view"
-          setMode={() => {}}
-          status="ready"
-          reload={reload}
-        />,
-      );
+      const { reload } = renderChatResult(empty, type);
       expect(screen.getByText("No social profiles returned.")).toBeTruthy();
       expect(
         screen.queryByRole("heading", { name: "Artist Socials Found" }),
@@ -229,50 +237,16 @@ describe("Successful social searches with no returned profiles", () => {
     },
   );
 
-  it.each([
-    ["null", { ...empty, socials: null }],
-    [
-      "omitted",
-      { status: "success", success: true, pagination: empty.pagination },
-    ],
-  ])(
+  it.each(nullishCases)(
     "handles a %s profile list through the actual MCP result parser",
     (_name, result) => {
-      const message = {
-        id: "synthetic-nullish-socials",
-        role: "assistant",
-        parts: [
-          {
-            type: "text",
-            text: "I checked the supplied artist.",
-            state: "done",
-          },
-          {
-            type: "dynamic-tool",
-            toolName: "get_artist_socials",
-            toolCallId: "synthetic-nullish",
-            state: "output-available",
-            input: {},
-            output: {
-              content: [{ type: "text", text: JSON.stringify(result) }],
-            },
-          },
-          { type: "text", text: "The conversation continues.", state: "done" },
-        ],
-      } as unknown as UIMessage;
-      const reload = vi.fn();
-      render(
-        <MessageParts
-          message={message}
-          mode="view"
-          setMode={() => {}}
-          status="ready"
-          reload={reload}
-        />,
-      );
+      const { reload } = renderChatResult(result);
       expect(screen.getByText("No social profiles returned.")).toBeTruthy();
       expect(screen.getByText("I checked the supplied artist.")).toBeTruthy();
       expect(screen.getByText("The conversation continues.")).toBeTruthy();
+      expect(
+        screen.getByRole("link", { name: "Synthetic saved chat" }),
+      ).toBeTruthy();
       expect(reload).not.toHaveBeenCalled();
     },
   );
