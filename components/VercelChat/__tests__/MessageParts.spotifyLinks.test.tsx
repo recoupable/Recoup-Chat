@@ -134,6 +134,34 @@ function renderSpotifyResult(result: unknown, toolName: string) {
   );
 }
 
+it.each([
+  { items: [], total: 12, offset: 4 },
+  { items: null, total: 12, offset: 4 },
+  { total: 12, offset: 4 },
+])(
+  "keeps an empty artist-album page quiet within the answer (%j)",
+  (result) => {
+    const { container } = renderSpotifyResult(
+      result,
+      "get_spotify_artist_albums",
+    );
+    expect(
+      screen.getByText("Here is the supplied Spotify result."),
+    ).toBeTruthy();
+    expect(screen.getByText("The conversation stays here.")).toBeTruthy();
+    expect(screen.getByText("No albums returned from Spotify.").tagName).toBe(
+      "P",
+    );
+    expect(
+      screen.getAllByRole("button", { name: "Copy response" }),
+    ).toHaveLength(2);
+    expect(screen.queryByRole("link")).toBeNull();
+    expect(screen.queryByText("Artist Albums")).toBeNull();
+    expect(screen.queryByText(/Showing/)).toBeNull();
+    expect(container.querySelector("img")).toBeNull();
+  },
+);
+
 const unusableSpotifyUrls = [
   "http://open.spotify.com/artist/synthetic",
   "https://open.spotify.com.evil.test/artist/synthetic",
