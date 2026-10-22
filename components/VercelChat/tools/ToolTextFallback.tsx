@@ -1,16 +1,18 @@
 import { FileText } from "lucide-react";
 import { ToolLayout } from "./agent/ToolLayout";
 
+interface ToolTextFallbackProps {
+  name: string;
+  text?: string;
+  error?: string;
+}
+
 /** A display fallback describes the response, not whether the operation succeeded. */
 export default function ToolTextFallback({
   name,
   text,
   error,
-}: {
-  name: string;
-  text?: string;
-  error?: string;
-}) {
+}: ToolTextFallbackProps) {
   const responseText = error ?? text;
   return (
     <div role="group" aria-label={`Response from ${name}`}>
