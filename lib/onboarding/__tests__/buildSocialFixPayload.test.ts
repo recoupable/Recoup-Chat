@@ -37,6 +37,14 @@ describe("buildSocialFixPayload", () => {
     expect(buildSocialFixPayload("https://example.com/artist")).toBeNull();
   });
 
+  it.each([
+    "https://instagram.com.example.test/artist",
+    "https://example.test/?profile=https://instagram.com/artist",
+    "https://box.com/artist",
+  ])("does not create a repair payload for an unrelated host %s", (url) => {
+    expect(buildSocialFixPayload(url)).toBeNull();
+  });
+
   it("returns null for empty input", () => {
     expect(buildSocialFixPayload("   ")).toBeNull();
   });
