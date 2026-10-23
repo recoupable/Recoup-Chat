@@ -40,6 +40,103 @@ const renderParts = (m: UIMessage) =>
     />,
   );
 
+function chatMessageWithProse(output: Record<string, unknown>): UIMessage {
+  const response = message(
+    "output-available",
+    { output },
+    { tool: "get_chats", input: {} },
+  );
+  return {
+    ...response,
+    parts: [
+      { type: "text", text: "Here are the supplied chats.", state: "done" },
+      ...response.parts,
+      { type: "text", text: "The answer continues.", state: "done" },
+    ],
+  };
+}
+
+describe("MessageParts — empty SDK chat lookup", () => {
+  it.each([
+    ["Failed to retrieve chats", "Failed to retrieve chats"],
+    ["", "Could not retrieve chats."],
+    ["   ", "Could not retrieve chats."],
+    ["\n <script>synthetic()</script>\n", "\n <script>synthetic()</script>\n"],
+  ])("preserves a producer-declared failure (%j)", (reason, expected) => {
+    const response = chatMessageWithProse({ success: false, message: reason });
+    const { container } = renderParts(response);
+    expect(screen.getByText("Here are the supplied chats.")).toBeTruthy();
+    expect(screen.getByText("The answer continues.")).toBeTruthy();
+    expect(screen.queryByText("No chats returned.")).toBeNull();
+    expect(screen.queryByRole("heading", { name: "Chats" })).toBeNull();
+    fireEvent.click(
+      screen.getByRole("button", { name: /Tool failed.*Chat lookup/ }),
+    );
+    expect(
+      screen.getByRole("region", { name: "Tool response text" }).textContent,
+    ).toBe(expected);
+    expect(container.querySelector("script")).toBeNull();
+  });
+
+  it.each([{ chats: [] }, { chats: null }, {}])(
+    "preserves surrounding prose with quiet empty feedback (%j)",
+    (output) => {
+      const response = chatMessageWithProse(output);
+      renderParts(response);
+      expect(screen.getByText("Here are the supplied chats.")).toBeTruthy();
+      expect(screen.getByText("The answer continues.")).toBeTruthy();
+      expect(screen.getByText("No chats returned.").tagName).toBe("P");
+      expect(screen.queryByRole("heading", { name: "Chats" })).toBeNull();
+      expect(
+        screen.queryByRole("button", { name: /Tool response|Tool failed/ }),
+      ).toBeNull();
+      expect(
+        screen.getAllByRole("button", { name: "Copy response" }),
+      ).toHaveLength(2);
+    },
+  );
+
+  it("retains the populated single-chat link and count", () => {
+    renderParts(
+      message(
+        "output-available",
+        {
+          output: {
+            chats: [
+              {
+                id: "synthetic-chat",
+                title: "Saved research",
+                sessionId: "synthetic-session",
+                accountId: "synthetic-account",
+                updatedAt: "2026-10-22T00:00:00Z",
+              },
+            ],
+          },
+        },
+        { tool: "get_chats", input: {} },
+      ),
+    );
+    expect(screen.getByText("Found 1 chat")).toBeTruthy();
+    expect(
+      screen.getByRole("link", { name: "Saved research" }).getAttribute("href"),
+    ).toBe("/sessions/synthetic-session/chats/synthetic-chat");
+    expect(screen.queryByText("No chats returned.")).toBeNull();
+  });
+
+  it("retains explicit SDK error disclosure instead of claiming an empty result", () => {
+    renderParts(
+      message(
+        "output-error",
+        { errorText: "Synthetic chat lookup failed" },
+        { tool: "get_chats", input: {} },
+      ),
+    );
+    expect(screen.queryByText("No chats returned.")).toBeNull();
+    fireEvent.click(screen.getByRole("button"));
+    expect(screen.getByText("Synthetic chat lookup failed")).toBeTruthy();
+  });
+});
+
 describe("MessageParts — sandbox tool routing (app#2052)", () => {
   it("renders a non-bash output-error as an error row instead of crashing on a missing output", () => {
     // Before app#2055, output-error went to the loading branch (a skeleton that
