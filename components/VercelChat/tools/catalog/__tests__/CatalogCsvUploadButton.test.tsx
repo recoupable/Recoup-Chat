@@ -3,11 +3,31 @@ import React from "react";
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import CatalogCsvUploadButton from "../CatalogCsvUploadButton";
+import CatalogSongsResult from "../CatalogSongsResult";
+
+const selections = vi.hoisted(
+  () => new Map<string | undefined, ReturnType<typeof vi.fn>>(),
+);
+vi.mock("@/hooks/useCatalogSongsFileSelect", () => ({
+  useCatalogSongsFileSelect: (catalogId?: string) => {
+    if (!selections.has(catalogId)) selections.set(catalogId, vi.fn());
+    return {
+      isUploading: false,
+      uploadResult: null,
+      uploadError: null,
+      uploadProgress: { current: 0, total: 0 },
+      handleFileSelect: selections.get(catalogId),
+    };
+  },
+}));
 
 const network = vi.fn(() => {
   throw new Error("Upload-control tests must not request the network");
 });
-beforeEach(() => vi.stubGlobal("fetch", network));
+beforeEach(() => {
+  selections.clear();
+  vi.stubGlobal("fetch", network);
+});
 afterEach(() => {
   try {
     cleanup();
@@ -192,4 +212,68 @@ describe("catalog upload controls in repeated results", () => {
     expect(container.querySelector('input[type="file"]')).toBe(input);
     expect(input.id).toBe(originalId);
   });
+
+  it.each([true, false])(
+    "delivers a file through the owning catalog parent with firstSelected=%s",
+    (firstSelected) => {
+      const first = (
+        <CatalogSongsResult
+          key="first"
+          result={{ success: true, songs: [] }}
+          catalogId={firstSelected ? "first-catalog" : undefined}
+        />
+      );
+      const second = (
+        <CatalogSongsResult
+          key="second"
+          result={{ success: true, songs: [] }}
+          catalogId="second-catalog"
+        />
+      );
+      const view = render(
+        <>
+          {first}
+          {second}
+        </>,
+      );
+      const inputs = Array.from(
+        view.container.querySelectorAll<HTMLInputElement>('input[type="file"]'),
+      );
+      let activated: HTMLInputElement | undefined;
+      for (const input of inputs) {
+        vi.spyOn(input, "click").mockImplementation(() => {
+          activated = input;
+        });
+      }
+      const selectSecond = () => {
+        fireEvent.click(
+          screen.getAllByRole("button", { name: "Upload CSV File" })[
+            Array.from(
+              view.container.querySelectorAll('input[type="file"]'),
+            ).indexOf(inputs[1])
+          ],
+        );
+        expect(activated).toBe(inputs[1]);
+        const file = new File(["isrc\nSYNTHETIC002"], "second.csv", {
+          type: "text/csv",
+        });
+        fireEvent.change(activated!, { target: { files: [file] } });
+        expect(
+          selections.get("second-catalog")!.mock.lastCall![0].target.files[0],
+        ).toBe(file);
+      };
+      selectSecond();
+      view.rerender(
+        <>
+          {second}
+          {first}
+        </>,
+      );
+      selectSecond();
+      expect(selections.get("second-catalog")).toHaveBeenCalledTimes(2);
+      expect(
+        selections.get(firstSelected ? "first-catalog" : undefined),
+      ).not.toHaveBeenCalled();
+    },
+  );
 });
