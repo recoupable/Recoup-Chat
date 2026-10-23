@@ -153,6 +153,35 @@ describe("Spotify albums with no returned tracks", () => {
   );
 
   describe.each([true, false])("chat output with dynamic=%s", (dynamic) => {
+    it.each([
+      [
+        "Failed to generate Spotify access token",
+        "Failed to generate Spotify access token",
+      ],
+      ["", "Could not retrieve this Spotify album."],
+      [" \t\n ", "Could not retrieve this Spotify album."],
+      [
+        "<script>literal provider failure</script>",
+        "<script>literal provider failure</script>",
+      ],
+    ])("preserves a declared producer failure: %s", (message, expected) => {
+      const reload = renderSpotifyChatResult({
+        ...chatContext,
+        result: { success: false, message },
+        dynamic,
+      });
+      expect(screen.queryByText(/No tracks returned/)).toBeNull();
+      expect(screen.queryByRole("heading", { name: album.name })).toBeNull();
+      const error = screen.getByRole("button", { name: /Tool failed/ });
+      expect(error.getAttribute("aria-expanded")).toBe("false");
+      fireEvent.click(error);
+      expect(
+        screen.getByRole("region", { name: "Tool response text" }).textContent,
+      ).toBe(expected);
+      expect(document.querySelector("script")).toBeNull();
+      expect(reload).not.toHaveBeenCalled();
+    });
+
     it.each(emptyCases)(
       "keeps %s alongside prose and chat",
       (_label, result) => {

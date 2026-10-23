@@ -35,7 +35,7 @@ export function renderSpotifyChatResult({
         input: {},
         output: dynamic
           ? {
-              isError: failed,
+              ...(failed ? { isError: true } : {}),
               content: [{ type: "text", text: JSON.stringify(result) }],
             }
           : result,
