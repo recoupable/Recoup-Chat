@@ -40,6 +40,22 @@ const renderParts = (m: UIMessage) =>
     />,
   );
 
+function chatMessageWithProse(output: Record<string, unknown>): UIMessage {
+  const response = message(
+    "output-available",
+    { output },
+    { tool: "get_chats", input: {} },
+  );
+  return {
+    ...response,
+    parts: [
+      { type: "text", text: "Here are the supplied chats.", state: "done" },
+      ...response.parts,
+      { type: "text", text: "The answer continues.", state: "done" },
+    ],
+  };
+}
+
 describe("MessageParts — empty SDK chat lookup", () => {
   it.each([
     ["Failed to retrieve chats", "Failed to retrieve chats"],
@@ -47,16 +63,7 @@ describe("MessageParts — empty SDK chat lookup", () => {
     ["   ", "Could not retrieve chats."],
     ["\n <script>synthetic()</script>\n", "\n <script>synthetic()</script>\n"],
   ])("preserves a producer-declared failure (%j)", (reason, expected) => {
-    const response = message(
-      "output-available",
-      { output: { success: false, message: reason } },
-      { tool: "get_chats", input: {} },
-    );
-    response.parts = [
-      { type: "text", text: "Here are the supplied chats.", state: "done" },
-      ...response.parts,
-      { type: "text", text: "The answer continues.", state: "done" },
-    ];
+    const response = chatMessageWithProse({ success: false, message: reason });
     const { container } = renderParts(response);
     expect(screen.getByText("Here are the supplied chats.")).toBeTruthy();
     expect(screen.getByText("The answer continues.")).toBeTruthy();
@@ -74,16 +81,7 @@ describe("MessageParts — empty SDK chat lookup", () => {
   it.each([{ chats: [] }, { chats: null }, {}])(
     "preserves surrounding prose with quiet empty feedback (%j)",
     (output) => {
-      const response = message(
-        "output-available",
-        { output },
-        { tool: "get_chats", input: {} },
-      );
-      response.parts = [
-        { type: "text", text: "Here are the supplied chats.", state: "done" },
-        ...response.parts,
-        { type: "text", text: "The answer continues.", state: "done" },
-      ];
+      const response = chatMessageWithProse(output);
       renderParts(response);
       expect(screen.getByText("Here are the supplied chats.")).toBeTruthy();
       expect(screen.getByText("The answer continues.")).toBeTruthy();
