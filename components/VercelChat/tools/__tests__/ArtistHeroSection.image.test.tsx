@@ -1,5 +1,6 @@
 // @vitest-environment jsdom
 import React from "react";
+import { createControlledImage } from "./createControlledImage";
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { ArtistProfile } from "@/lib/supabase/artist/updateArtistProfile";
@@ -59,37 +60,7 @@ beforeEach(() => {
   for (const name of ["fetch", "XMLHttpRequest", "WebSocket"])
     vi.stubGlobal(name, denyNetwork);
   // Keep the real primitive while controlling pending, failure and cache hits.
-  vi.stubGlobal(
-    "Image",
-    vi.fn(function () {
-      const image = document.createElement("img");
-      let src = "";
-      let complete = cached;
-      let naturalWidth = cached ? 100 : 0;
-      Object.defineProperties(image, {
-        src: {
-          get: () => src,
-          set: (value: string) => {
-            src = value;
-            complete = cached;
-            naturalWidth = cached ? 100 : 0;
-          },
-        },
-        complete: { get: () => complete },
-        naturalWidth: { get: () => naturalWidth },
-      });
-      image.addEventListener("load", () => {
-        complete = true;
-        naturalWidth = 100;
-      });
-      image.addEventListener("error", () => {
-        complete = true;
-        naturalWidth = 0;
-      });
-      loaders.push(image);
-      return image;
-    }),
-  );
+  vi.stubGlobal("Image", vi.fn(createControlledImage(loaders, () => cached)));
 });
 afterEach(() => {
   try {
