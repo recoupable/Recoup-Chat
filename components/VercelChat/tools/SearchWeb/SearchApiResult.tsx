@@ -28,7 +28,7 @@ const SearchApiResult = ({ result }: SearchApiResultProps) => {
     const message = result && "success" in result ? result.message : undefined;
     return (
       <div className="py-3 px-4 bg-destructive/10 border border-destructive/30 rounded-lg">
-        <p className="text-sm text-destructive font-medium">
+        <p className="text-sm text-destructive-text font-medium">
           {message?.trim() ? message : "Error retrieving search results"}
         </p>
       </div>

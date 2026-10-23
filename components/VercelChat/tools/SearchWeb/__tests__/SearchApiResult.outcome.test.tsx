@@ -86,7 +86,7 @@ describe("terminal search result outcomes", () => {
         message,
       });
       expectQuietError(container, expected);
-      expect(container.querySelector(".text-destructive")).toBeTruthy();
+      expect(container.querySelector(".text-destructive-text")).toBeTruthy();
     },
   );
   it.each([1, 3])(
@@ -127,7 +127,9 @@ describe("terminal search result outcomes", () => {
       formatted: "No search results found.",
     });
     expect(screen.getAllByText("No search results found.")).toHaveLength(1);
-    expect(container.querySelector(".text-destructive,a,button")).toBeNull();
+    expect(
+      container.querySelector(".text-destructive-text,a,button"),
+    ).toBeNull();
     expectProse();
   });
   it("retains the existing null-result error control", () => {
