@@ -105,6 +105,7 @@ describe("Pulse result state indicator", () => {
     });
     const { container } = render(<PulseToolResult result={result} />);
     const indicator = container.querySelector("svg");
+    expect(indicator?.getAttribute("aria-hidden")).toBe("true");
 
     if (value.indicator === "active") {
       expect(indicator?.classList.contains("text-green-500")).toBe(true);

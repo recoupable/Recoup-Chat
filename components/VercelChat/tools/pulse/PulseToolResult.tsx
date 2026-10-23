@@ -44,9 +44,15 @@ export default function PulseToolResult({
     <div className="bg-card border border-border rounded-xl p-4 max-w-sm shadow-sm">
       <div className="flex items-start space-x-3 mb-3">
         {active && !isInitialLoading && !isToggling ? (
-          <CheckCircle className="h-5 w-5 text-green-500 flex-shrink-0" />
+          <CheckCircle
+            className="h-5 w-5 text-green-500 flex-shrink-0"
+            aria-hidden="true"
+          />
         ) : (
-          <Activity className="h-5 w-5 text-muted-foreground flex-shrink-0" />
+          <Activity
+            className="h-5 w-5 text-muted-foreground flex-shrink-0"
+            aria-hidden="true"
+          />
         )}
         <div className="flex-1">
           <a
