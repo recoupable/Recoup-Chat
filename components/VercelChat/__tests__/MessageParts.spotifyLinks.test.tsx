@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import React from "react";
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { UIMessage } from "ai";
 import type {
@@ -104,21 +104,26 @@ function renderResult(
   return renderSpotifyResult(results[route.tool], route.tool);
 }
 
-function renderSpotifyResult(result: unknown, toolName: string) {
+function renderSpotifyResult(
+  result: unknown,
+  toolName: string,
+  mode: "MCP" | "SDK" = "MCP",
+) {
   const message = {
     id: "spotify-card-boundary",
     role: "assistant",
     parts: [
       { type: "text", text: "Here is the supplied Spotify result." },
       {
-        type: "dynamic-tool",
-        toolName,
+        type: mode === "MCP" ? "dynamic-tool" : `tool-${toolName}`,
+        ...(mode === "MCP" ? { toolName } : {}),
         toolCallId: "spotify-call",
         state: "output-available",
         input: {},
-        output: {
-          content: [{ type: "text", text: JSON.stringify(result) }],
-        },
+        output:
+          mode === "MCP"
+            ? { content: [{ type: "text", text: JSON.stringify(result) }] }
+            : result,
       },
       { type: "text", text: "The conversation stays here." },
     ],
@@ -134,31 +139,109 @@ function renderSpotifyResult(result: unknown, toolName: string) {
   );
 }
 
-it.each([
-  { items: [], total: 12, offset: 4 },
-  { items: null, total: 12, offset: 4 },
-  { total: 12, offset: 4 },
-])(
-  "keeps an empty artist-album page quiet within the answer (%j)",
-  (result) => {
-    const { container } = renderSpotifyResult(
-      result,
-      "get_spotify_artist_albums",
+describe.each(["MCP", "SDK"] as const)(
+  "%s artist-album composition",
+  (mode) => {
+    it.each([
+      [
+        "Failed to fetch Spotify artist albums",
+        "Failed to fetch Spotify artist albums",
+      ],
+      ["", "Could not retrieve Spotify albums."],
+      ["   ", "Could not retrieve Spotify albums."],
+      [
+        "\n <script>synthetic()</script>\n",
+        "\n <script>synthetic()</script>\n",
+      ],
+    ])("preserves a producer-declared failure (%j)", (message, expected) => {
+      const { container } = renderSpotifyResult(
+        { success: false, message },
+        "get_spotify_artist_albums",
+        mode,
+      );
+      expect(
+        screen.getByText("Here is the supplied Spotify result."),
+      ).toBeTruthy();
+      expect(screen.getByText("The conversation stays here.")).toBeTruthy();
+      expect(screen.queryByText("No albums returned from Spotify.")).toBeNull();
+      expect(screen.queryByText("Artist Albums")).toBeNull();
+      fireEvent.click(
+        screen.getByRole("button", {
+          name: /Tool failed.*Spotify artist albums/,
+        }),
+      );
+      expect(
+        screen.getByRole("region", { name: "Tool response text" }).textContent,
+      ).toBe(expected);
+      expect(container.querySelector("script")).toBeNull();
+    });
+
+    it.each([
+      { items: [], total: 12, offset: 4 },
+      { items: null, total: 12, offset: 4 },
+      { total: 12, offset: 4 },
+    ])(
+      "keeps an empty artist-album page quiet within the answer (%j)",
+      (result) => {
+        const { container } = renderSpotifyResult(
+          result,
+          "get_spotify_artist_albums",
+          mode,
+        );
+        expect(
+          screen.getByText("Here is the supplied Spotify result."),
+        ).toBeTruthy();
+        expect(screen.getByText("The conversation stays here.")).toBeTruthy();
+        expect(
+          screen.getByText("No albums returned from Spotify.").tagName,
+        ).toBe("P");
+        expect(
+          screen.getAllByRole("button", { name: "Copy response" }),
+        ).toHaveLength(2);
+        expect(screen.queryByRole("link")).toBeNull();
+        expect(screen.queryByText("Artist Albums")).toBeNull();
+        expect(screen.queryByText(/Showing/)).toBeNull();
+        expect(container.querySelector("img")).toBeNull();
+      },
     );
-    expect(
-      screen.getByText("Here is the supplied Spotify result."),
-    ).toBeTruthy();
-    expect(screen.getByText("The conversation stays here.")).toBeTruthy();
-    expect(screen.getByText("No albums returned from Spotify.").tagName).toBe(
-      "P",
-    );
-    expect(
-      screen.getAllByRole("button", { name: "Copy response" }),
-    ).toHaveLength(2);
-    expect(screen.queryByRole("link")).toBeNull();
-    expect(screen.queryByText("Artist Albums")).toBeNull();
-    expect(screen.queryByText(/Showing/)).toBeNull();
-    expect(container.querySelector("img")).toBeNull();
+
+    it("preserves the populated page alongside prose", () => {
+      const result = {
+        items: [
+          album,
+          {
+            ...album,
+            id: "second-release",
+            name: "Second supplied release",
+            release_date: "",
+            artists: [{ ...artist, name: "Supplied artist" }],
+            external_urls: { spotify: "javascript:synthetic()" },
+          },
+        ],
+        total: 12,
+        offset: 4,
+      };
+      const original = JSON.stringify(result);
+      renderSpotifyResult(result, "get_spotify_artist_albums", mode);
+      expect(
+        screen.getByText("Here is the supplied Spotify result."),
+      ).toBeTruthy();
+      expect(screen.getByText("The conversation stays here.")).toBeTruthy();
+      expect(
+        screen.getAllByRole("heading", { level: 4 }).map((h) => h.textContent),
+      ).toEqual(["Synthetic album", "Second supplied release"]);
+      expect(screen.getByText("2026")).toBeTruthy();
+      expect(screen.getByText("Supplied artist")).toBeTruthy();
+      expect(screen.getByText("Showing 2 of 12 albums")).toBeTruthy();
+      expect(screen.getAllByRole("link")).toHaveLength(1);
+      expect(
+        screen
+          .getByRole("link", { name: /Synthetic album/ })
+          .getAttribute("href"),
+      ).toBe(album.external_urls.spotify);
+      expect(JSON.stringify(result)).toBe(original);
+      expect(screen.queryByText("No albums returned from Spotify.")).toBeNull();
+    });
   },
 );
 

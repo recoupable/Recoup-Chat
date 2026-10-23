@@ -2,15 +2,35 @@ import React from "react";
 import { SpotifyArtistAlbumsResultUIType } from "@/types/spotify";
 import SpotifyContentCard from "./SpotifyContentCard";
 import Image from "next/image";
+import ToolTextFallback from "./ToolTextFallback";
 
-interface GetSpotifyArtistAlbumsResultProps {
-  result: SpotifyArtistAlbumsResultUIType;
+export interface SpotifyArtistAlbumsErrorResult {
+  success: false;
+  message: string;
+}
+
+export interface GetSpotifyArtistAlbumsResultProps {
+  result: SpotifyArtistAlbumsResultUIType | SpotifyArtistAlbumsErrorResult;
 }
 
 const GetSpotifyArtistAlbumsResult: React.FC<
   GetSpotifyArtistAlbumsResultProps
 > = ({ result }) => {
-  if (!result.items || result.items.length === 0) {
+  if ("success" in result && result.success === false) {
+    return (
+      <ToolTextFallback
+        name="Spotify artist albums"
+        error={
+          result.message?.trim()
+            ? result.message
+            : "Could not retrieve Spotify albums."
+        }
+      />
+    );
+  }
+
+  const page = result as SpotifyArtistAlbumsResultUIType;
+  if (!page.items || page.items.length === 0) {
     return (
       <p className="text-sm text-muted-foreground">
         No albums returned from Spotify.
@@ -31,7 +51,7 @@ const GetSpotifyArtistAlbumsResult: React.FC<
         <div className="font-semibold text-lg">Artist Albums</div>
       </div>
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-        {result.items.map((album) => {
+        {page.items.map((album) => {
           const releaseYear = album.release_date
             ? new Date(album.release_date).getFullYear()
             : null;
@@ -45,9 +65,9 @@ const GetSpotifyArtistAlbumsResult: React.FC<
           return <SpotifyContentCard key={album.id} content={album} />;
         })}
       </div>
-      {result.total > result.items.length && (
+      {page.total > page.items.length && (
         <div className="mt-4 text-center text-sm text-muted-foreground">
-          Showing {result.items.length} of {result.total} albums
+          Showing {page.items.length} of {page.total} albums
         </div>
       )}
     </div>
