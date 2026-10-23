@@ -55,7 +55,7 @@ const UpdateArtistInfoSuccess: React.FC<UpdateArtistInfoSuccessProps> = ({
     : [];
 
   return (
-    <div className="dark bg-gradient-to-b from-gray-900 to-black rounded-2xl overflow-hidden max-w-2xl w-full my-4">
+    <div className="dark [--color-card:var(--card)] [--color-muted-foreground:var(--muted-foreground)] [--color-border:var(--border)] bg-gradient-to-b from-gray-900 to-black rounded-2xl overflow-hidden max-w-2xl w-full my-4">
       <ArtistHeroSection artistProfile={artistProfile} />
 
       <div className="bg-black/40 backdrop-blur-sm rounded-b-xl overflow-hidden">
