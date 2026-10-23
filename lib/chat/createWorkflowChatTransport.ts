@@ -1,5 +1,6 @@
-import type { UIMessage } from "ai";
+import type { UIMessage, UIMessageChunk } from "ai";
 import { WorkflowChatTransport } from "@workflow/ai";
+import type { createSnapshotConsumer } from "@/lib/intelligent-ui/chat/createSnapshotConsumer";
 
 interface CreateWorkflowChatTransportOptions {
   /** recoup-api origin, e.g. `https://api.recoupable.dev`. */
@@ -14,6 +15,9 @@ interface CreateWorkflowChatTransportOptions {
    * first frame, and the request itself waits here (app#2052).
    */
   waitForWorkspace?: () => Promise<void>;
+  /** Development-only experimental consumer; absent on the default production path. */
+  snapshotConsumer?: ReturnType<typeof createSnapshotConsumer>;
+  getMessages?: () => UIMessage[];
 }
 
 /**
@@ -40,6 +44,8 @@ export function createWorkflowChatTransport<UI_MESSAGE extends UIMessage>({
   getIds,
   getAccessToken,
   waitForWorkspace,
+  snapshotConsumer,
+  getMessages,
 }: CreateWorkflowChatTransportOptions): WorkflowChatTransport<UI_MESSAGE> {
   const authHeaders = async (): Promise<Record<string, string>> => {
     const token = await getAccessToken().catch(() => null);
@@ -48,8 +54,33 @@ export function createWorkflowChatTransport<UI_MESSAGE extends UIMessage>({
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
     };
   };
+  const filterStream = (
+    stream: ReadableStream<UIMessageChunk> | null,
+    filter?: (chunk: UIMessageChunk) => UIMessageChunk | undefined,
+  ) =>
+    stream && filter
+      ? stream.pipeThrough(
+          new TransformStream<UIMessageChunk, UIMessageChunk>({
+            transform(chunk, controller) {
+              const accepted = filter(chunk);
+              if (accepted) controller.enqueue(accepted);
+            },
+          }),
+        )
+      : stream;
 
   class RecoupChatTransport extends WorkflowChatTransport<UI_MESSAGE> {
+    override async sendMessages(
+      options: Parameters<WorkflowChatTransport<UI_MESSAGE>["sendMessages"]>[0],
+    ) {
+      const filter = snapshotConsumer?.beginStream({
+        signal: options.abortSignal,
+        getMessages,
+      });
+      const stream = await super.sendMessages(options);
+      return filterStream(stream, filter)!;
+    }
+
     /**
      * `204` is our api's "nothing to resume" answer, and it has no body — which
      * the transport surfaces as `Failed to fetch chat: 204` and counts toward
@@ -62,7 +93,15 @@ export function createWorkflowChatTransport<UI_MESSAGE extends UIMessage>({
       >[0],
     ) {
       try {
-        return await super.reconnectToStream(options);
+        const lastMessage = getMessages?.().at(-1);
+        const filter = snapshotConsumer?.beginStream({
+          signal: options.abortSignal,
+          getMessages,
+          messageId:
+            lastMessage?.role === "assistant" ? lastMessage.id : undefined,
+        });
+        const stream = await super.reconnectToStream(options);
+        return filterStream(stream, filter);
       } catch (error) {
         if (
           error instanceof Error &&

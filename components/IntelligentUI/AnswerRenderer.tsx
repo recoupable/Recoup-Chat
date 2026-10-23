@@ -15,13 +15,18 @@ export default function AnswerRenderer({
   onInspectEvidence,
   capabilities = { distribution: true, timeline: true },
   resolveAudioAsset,
+  stateScope,
 }: {
   surface: Surface;
   onInspectEvidence: (id: string, trigger: HTMLElement) => void;
   capabilities?: RepresentationCapabilities;
   resolveAudioAsset?: (assetId: string) => string | undefined;
+  /** Host-bound cache identity when embedded in an authenticated chat. */
+  stateScope?: string;
 }) {
-  const scope = `${surface.context.workspaceId}:${surface.context.subject.kind}:${surface.context.subject.id}`;
+  const scope =
+    stateScope ??
+    `${surface.context.workspaceId}:${surface.context.subject.kind}:${surface.context.subject.id}`;
   if (!surface.answer)
     return (
       <p className="whitespace-pre-wrap text-base leading-7 [overflow-wrap:anywhere]">

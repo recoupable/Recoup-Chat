@@ -6,7 +6,14 @@ import { useArtistProvider } from "@/providers/ArtistProvider";
 import { useOrganization } from "@/providers/OrganizationProvider";
 import { useParams } from "next/navigation";
 import { toast } from "react-toastify";
-import { useEffect, useState, useRef, useMemo, useCallback } from "react";
+import {
+  useEffect,
+  useLayoutEffect,
+  useState,
+  useRef,
+  useMemo,
+  useCallback,
+} from "react";
 import getEarliestFailedUserMessageId from "@/lib/messages/getEarliestFailedUserMessageId";
 import { generateUUID } from "@/lib/generateUUID";
 import { useConversationsProvider } from "@/providers/ConversationsProvider";
@@ -71,6 +78,9 @@ export function useVercelChat({
 
   const userId = userData?.account_id || userData?.id; // Use account_id if available, fallback to id
   const artistId = selectedArtist?.account_id;
+  const { accountIdOverride } = useAccountOverride();
+  const { authenticated, getAccessToken, user: authenticatedUser } = usePrivy();
+  const messagesRef = useRef<UIMessage[]>([]);
   const messagesLengthRef = useRef<number | undefined>(undefined);
   const { addOptimisticConversation } = useConversationsProvider();
   const { data: availableModels = [] } = useAvailableModels();
@@ -83,12 +93,29 @@ export function useVercelChat({
   // client placeholder. Drives the transport, message load, and URL so
   // sends/persistence target the row recoup-api actually created.
   const transportChatId = workflowChatId ?? id;
-  const { transport, getHeaders } = useChatTransport({
-    chatId: transportChatId,
-    sessionId,
-    workspaceStatus,
-  });
-  const { authenticated, getAccessToken } = usePrivy();
+  const { transport, getHeaders, intelligentUI, snapshotConsumer } =
+    useChatTransport({
+      chatId: transportChatId,
+      sessionId,
+      workspaceStatus,
+      snapshotScope:
+        authenticated &&
+        authenticatedUser?.id &&
+        userId &&
+        organizationId &&
+        artistId &&
+        sessionId
+          ? {
+              actorId: authenticatedUser.id,
+              accountId: accountIdOverride ?? userId,
+              workspaceId: organizationId,
+              sessionId,
+              chatId: transportChatId,
+              subject: { kind: "artist", id: artistId },
+            }
+          : undefined,
+      getMessages: () => messagesRef.current,
+    });
 
   // Persists the picker's selected model to chats.model_id; awaited before
   // send so the workflow bills the selected model (it reads chats.model_id
@@ -207,8 +234,6 @@ export function useVercelChat({
     };
   }, [selectedFileIds, allArtistFiles, getAccessToken]);
 
-  const { accountIdOverride } = useAccountOverride();
-
   const chatRequestBody = useMemo(
     () => ({
       roomId: id,
@@ -224,7 +249,7 @@ export function useVercelChat({
   const {
     messages,
     status,
-    stop,
+    stop: stopChat,
     sendMessage,
     setMessages,
     regenerate,
@@ -249,6 +274,26 @@ export function useVercelChat({
       await refetchCredits();
     },
   });
+  useLayoutEffect(() => {
+    messagesRef.current = messages;
+    if (intelligentUI)
+      snapshotConsumer.observeMessages(messages, intelligentUI.scopeKey);
+  }, [messages, intelligentUI, snapshotConsumer]);
+  const stop = useCallback(async () => {
+    snapshotConsumer.cancel();
+    await stopChat();
+  }, [snapshotConsumer, stopChat]);
+  const historyScopeKey = intelligentUI?.scopeKey;
+  const setHistoryMessages = useCallback(
+    (loaded: UIMessage[]) => {
+      setMessages(
+        historyScopeKey
+          ? snapshotConsumer.hydrate(loaded, historyScopeKey)
+          : loaded,
+      );
+    },
+    [historyScopeKey, snapshotConsumer, setMessages],
+  );
 
   // Reconnection through a dropped stream is the transport's job now — see
   // `createWorkflowChatTransport`. A long turn's stream ends at the ~120s
@@ -357,7 +402,7 @@ export function useVercelChat({
     sessionId,
     messages.length === 0 && chatId ? transportChatId : undefined,
     userId,
-    setMessages,
+    setHistoryMessages,
   );
 
   // Only show loading state when fetching persisted history for an existing chat.
@@ -446,6 +491,7 @@ export function useVercelChat({
     isGeneratingResponse,
     model,
     isLoadingSignedUrls,
+    intelligentUI,
 
     // Actions
     handleSendMessage,
