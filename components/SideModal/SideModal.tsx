@@ -42,10 +42,10 @@ const SideModal = ({
         tabIndex={0}
         aria-label="Close modal"
       />
-      
+
       {/* Modal */}
       <div
-        className={`fixed right-0 top-0 z-[200] flex h-screen w-screen overflow-hidden ${
+        className={`fixed ${direction === "left" ? "left-0" : "right-0"} top-0 z-[200] flex h-screen w-screen overflow-hidden ${
           isVisible ? "block" : "hidden"
         } ${containerClasses}`}
         onClick={(e: MouseEvent<HTMLDivElement>) => {
@@ -56,7 +56,7 @@ const SideModal = ({
         aria-modal="true"
       >
         <motion.div
-          className={`ml-auto flex h-full w-full flex-col bg-card max-w-[300px] px-4 py-4 md:py-8 ${className}`}
+          className={`${direction === "left" ? "mr-auto" : "ml-auto"} flex h-full w-full flex-col bg-card max-w-[300px] px-4 py-4 md:py-8 ${className}`}
           animate={animate}
           initial={initial}
           transition={{ duration: 0.2 }}
