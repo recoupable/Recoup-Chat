@@ -38,7 +38,7 @@ const ArtistHeroSection = ({
                   className="object-cover"
                 />
                 <AvatarFallback
-                  className="rounded-lg"
+                  className="rounded-lg bg-[var(--muted)]"
                   role="img"
                   aria-label={artistProfile.name || "Artist"}
                 >
