@@ -28,12 +28,22 @@ const UpdateArtistSocialsSuccess: React.FC<UpdateArtistSocialsSuccessProps> = ({
     getArtists();
   }, []);
 
+  const message =
+    result.message ||
+    (result.success
+      ? "Artist socials updated successfully."
+      : "Failed to update artist socials.");
+
   return (
     <div className="bg-gradient-to-b from-gray-900 to-black rounded-2xl overflow-hidden max-w-2xl w-full my-4">
-      <ArtistHeroSection
-        artistProfile={selectedArtist as ArtistProfile}
-        message={result.message || "Artist socials updated successfully."}
-      />
+      {result.success && selectedArtist ? (
+        <ArtistHeroSection
+          artistProfile={selectedArtist as ArtistProfile}
+          message={message}
+        />
+      ) : (
+        <p className="p-6 sm:p-8 text-sm text-white break-words">{message}</p>
+      )}
       <div className="bg-black/40 backdrop-blur-sm rounded-b-xl overflow-hidden">
         <div className="p-4 sm:p-6 space-y-2">
           {result.socials?.map((social) => (
