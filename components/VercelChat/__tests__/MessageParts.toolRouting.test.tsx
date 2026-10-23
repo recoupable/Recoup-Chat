@@ -41,6 +41,36 @@ const renderParts = (m: UIMessage) =>
   );
 
 describe("MessageParts — empty SDK chat lookup", () => {
+  it.each([
+    ["Failed to retrieve chats", "Failed to retrieve chats"],
+    ["", "Could not retrieve chats."],
+    ["   ", "Could not retrieve chats."],
+    ["\n <script>synthetic()</script>\n", "\n <script>synthetic()</script>\n"],
+  ])("preserves a producer-declared failure (%j)", (reason, expected) => {
+    const response = message(
+      "output-available",
+      { output: { success: false, message: reason } },
+      { tool: "get_chats", input: {} },
+    );
+    response.parts = [
+      { type: "text", text: "Here are the supplied chats.", state: "done" },
+      ...response.parts,
+      { type: "text", text: "The answer continues.", state: "done" },
+    ];
+    const { container } = renderParts(response);
+    expect(screen.getByText("Here are the supplied chats.")).toBeTruthy();
+    expect(screen.getByText("The answer continues.")).toBeTruthy();
+    expect(screen.queryByText("No chats returned.")).toBeNull();
+    expect(screen.queryByRole("heading", { name: "Chats" })).toBeNull();
+    fireEvent.click(
+      screen.getByRole("button", { name: /Tool failed.*Chat lookup/ }),
+    );
+    expect(
+      screen.getByRole("region", { name: "Tool response text" }).textContent,
+    ).toBe(expected);
+    expect(container.querySelector("script")).toBeNull();
+  });
+
   it.each([{ chats: [] }, { chats: null }, {}])(
     "preserves surrounding prose with quiet empty feedback (%j)",
     (output) => {

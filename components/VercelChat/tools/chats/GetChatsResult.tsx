@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { MessageSquare, CheckCircle2, ChevronRight } from "lucide-react";
+import ToolTextFallback from "../ToolTextFallback";
 
 /**
  * Row shape returned by the `get_chats` MCP tool — the session-scoped
@@ -15,15 +16,27 @@ interface GetChatsResultRow {
 
 export interface GetChatsResultType {
   chats?: GetChatsResultRow[];
+  success?: boolean;
   status?: string;
   message?: string;
 }
 
-interface GetChatsResultProps {
+export interface GetChatsResultProps {
   result: GetChatsResultType;
 }
 
 const GetChatsResult = ({ result }: GetChatsResultProps) => {
+  if (result?.success === false) {
+    return (
+      <ToolTextFallback
+        name="Chat lookup"
+        error={
+          result.message?.trim() ? result.message : "Could not retrieve chats."
+        }
+      />
+    );
+  }
+
   const chats = result?.chats ?? [];
 
   if (chats.length === 0) {
