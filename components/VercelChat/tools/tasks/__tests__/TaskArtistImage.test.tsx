@@ -1,5 +1,6 @@
 // @vitest-environment jsdom
 import React from "react";
+import { createControlledImage } from "../../__tests__/createControlledImage";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { fireEvent, render, screen } from "@testing-library/react";
 import TaskArtistImage from "../TaskArtistImage";
@@ -26,37 +27,7 @@ beforeEach(() => {
   loaders.length = 0;
   vi.mocked(useArtistImage).mockReset().mockReturnValue(artist);
   // Exercise the real avatar with inert image requests, including cache hits.
-  vi.stubGlobal(
-    "Image",
-    vi.fn(function () {
-      const image = document.createElement("img");
-      let src = "";
-      let complete = cached;
-      let naturalWidth = cached ? 100 : 0;
-      Object.defineProperties(image, {
-        src: {
-          get: () => src,
-          set: (value: string) => {
-            src = value;
-            complete = cached;
-            naturalWidth = cached ? 100 : 0;
-          },
-        },
-        complete: { get: () => complete },
-        naturalWidth: { get: () => naturalWidth },
-      });
-      image.addEventListener("load", () => {
-        complete = true;
-        naturalWidth = 100;
-      });
-      image.addEventListener("error", () => {
-        complete = true;
-        naturalWidth = 0;
-      });
-      loaders.push(image);
-      return image;
-    }),
-  );
+  vi.stubGlobal("Image", vi.fn(createControlledImage(loaders, () => cached)));
 });
 
 function settleImage(
