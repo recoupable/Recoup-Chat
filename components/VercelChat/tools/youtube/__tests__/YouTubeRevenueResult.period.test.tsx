@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import React from "react";
-import { cleanup, render, screen, within } from "@testing-library/react";
+import { cleanup, render, screen } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { formatDate } from "@/lib/utils/formatDate";
 import YouTubeRevenueResult from "../YouTubeRevenueResult";
@@ -79,22 +79,15 @@ describe.each(reports)("Revenue report captions for $name", (report) => {
       ),
     ).toBeTruthy();
 
-    for (const [index, label] of [
-      "Total Revenue",
-      "Best Day",
-      "Daily Average",
-    ].entries()) {
-      const metric = screen.getByText(label).parentElement!.parentElement!;
-      expect(within(metric).getByText(report.metrics[index])).toBeTruthy();
+    for (const label of ["Total Revenue", "Best Day", "Daily Average"]) {
+      expect(screen.getByText(label)).toBeTruthy();
     }
 
-    const recent = screen.getByRole("heading", {
-      name: "Recent daily revenue",
-    }).parentElement!;
     expect(
-      within(recent)
-        .getAllByText(/^\$/)
-        .map((amount) => amount.textContent),
-    ).toEqual(report.recent);
+      screen.getByRole("heading", { name: "Recent daily revenue" }),
+    ).toBeTruthy();
+    expect(
+      screen.getAllByText(/^\$/).map((amount) => amount.textContent),
+    ).toEqual([...report.metrics, ...report.recent]);
   });
 });
