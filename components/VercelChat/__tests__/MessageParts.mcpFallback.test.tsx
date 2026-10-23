@@ -44,6 +44,57 @@ function textOutput(text: string) {
 }
 
 describe("MCP result fallbacks in a composed assistant message", () => {
+  it.each([
+    [
+      "Access denied to specified account_id",
+      "Access denied to specified account_id",
+    ],
+    ["", "Could not retrieve chats."],
+    ["   ", "Could not retrieve chats."],
+    ["\n <script>synthetic()</script>\n", "\n <script>synthetic()</script>\n"],
+  ])(
+    "preserves a producer-declared chat lookup failure (%j)",
+    (message, expected) => {
+      const { reload, container } = renderResult(
+        textOutput(JSON.stringify({ success: false, message })),
+        "get_chats",
+      );
+      expect(screen.getByText("Here is the supplied result.")).toBeTruthy();
+      expect(screen.getByText("I can help interpret it.")).toBeTruthy();
+      expect(screen.queryByText("No chats returned.")).toBeNull();
+      expect(screen.queryByRole("heading", { name: "Chats" })).toBeNull();
+      fireEvent.click(
+        screen.getByRole("button", { name: /Tool failed.*Chat lookup/ }),
+      );
+      expect(
+        screen.getByRole("region", { name: "Tool response text" }).textContent,
+      ).toBe(expected);
+      expect(container.querySelector("script")).toBeNull();
+      expect(reload).not.toHaveBeenCalled();
+    },
+  );
+
+  it.each([{ chats: [] }, { chats: null }, {}])(
+    "keeps an empty chat lookup quiet within the answer (%j)",
+    (result) => {
+      const { reload } = renderResult(
+        textOutput(JSON.stringify(result)),
+        "get_chats",
+      );
+      expect(screen.getByText("Here is the supplied result.")).toBeTruthy();
+      expect(screen.getByText("I can help interpret it.")).toBeTruthy();
+      expect(screen.getByText("No chats returned.").tagName).toBe("P");
+      expect(screen.queryByRole("heading", { name: "Chats" })).toBeNull();
+      expect(
+        screen.queryByRole("button", { name: /Tool response|Tool failed/ }),
+      ).toBeNull();
+      expect(
+        screen.getAllByRole("button", { name: "Copy response" }),
+      ).toHaveLength(2);
+      expect(reload).not.toHaveBeenCalled();
+    },
+  );
+
   it.each(["lookup_records", "search_web"])(
     "keeps prose and plain text readable for %s without retrying",
     (toolName) => {

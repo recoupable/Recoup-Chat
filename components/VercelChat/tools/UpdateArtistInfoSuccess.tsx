@@ -16,7 +16,7 @@ export interface UpdateAccountInfoResult {
   error?: string;
 }
 
-interface UpdateArtistInfoSuccessProps {
+export interface UpdateArtistInfoSuccessProps {
   result: UpdateAccountInfoResult;
 }
 
@@ -29,6 +29,14 @@ const UpdateArtistInfoSuccess: React.FC<UpdateArtistInfoSuccessProps> = ({
   useEffect(() => {
     getArtists();
   }, []);
+
+  if (result.success === false) {
+    return (
+      <p className="my-2 text-sm text-destructive-text">
+        {message?.trim() ? message : "Failed to update artist info."}
+      </p>
+    );
+  }
 
   if (!artistProfile) {
     return (
@@ -48,7 +56,7 @@ const UpdateArtistInfoSuccess: React.FC<UpdateArtistInfoSuccessProps> = ({
   const unreadableCount = knowledgeEntries.length - knowledges.length;
 
   return (
-    <div className="bg-gradient-to-b from-gray-900 to-black rounded-2xl overflow-hidden max-w-2xl w-full my-4">
+    <div className="dark [--color-card:var(--card)] [--color-muted-foreground:var(--muted-foreground)] [--color-border:var(--border)] bg-gradient-to-b from-gray-900 to-black rounded-2xl overflow-hidden max-w-2xl w-full my-4">
       <ArtistHeroSection artistProfile={artistProfile} />
 
       <div className="bg-black/40 backdrop-blur-sm rounded-b-xl overflow-hidden">
