@@ -441,6 +441,7 @@ export function useVercelChat({
   const handleSubmit = async (
     e: React.FormEvent<HTMLFormElement>,
     isCurrent: () => boolean,
+    onDispatch: () => void,
   ) => {
     e.preventDefault();
     cancelPendingResume(true);
@@ -493,6 +494,9 @@ export function useVercelChat({
     if (!isCurrent()) return false;
 
     const response = sendMessage(payload, { body: chatRequestBody, headers });
+    // Preparation can be cancelled. Publish the new chat only after the
+    // guarded SDK handoff, while its response is still streaming.
+    onDispatch();
     setInput("");
     await response;
     return isCurrent();
@@ -584,18 +588,17 @@ export function useVercelChat({
       if (!isCurrent()) return;
 
       const messageContent = input;
-      const submission = handleSubmit(event, isCurrent);
-
-      if (!chatId) {
-        addOptimisticConversation(
-          "New Chat",
-          transportChatId,
-          sessionId,
-          messageContent,
-        );
-        silentlyUpdateUrl();
-      }
-      didSend = await submission;
+      didSend = await handleSubmit(event, isCurrent, () => {
+        if (!chatId) {
+          addOptimisticConversation(
+            "New Chat",
+            transportChatId,
+            sessionId,
+            messageContent,
+          );
+          silentlyUpdateUrl();
+        }
+      });
     }, isCurrent);
     return didSend;
   };

@@ -52,6 +52,7 @@ const external = vi.hoisted(() => ({
   routeChat: true,
   getAccessToken: vi.fn(async (): Promise<string | null> => "synthetic-token"),
   refetchCredits: vi.fn(async () => {}),
+  addOptimisticConversation: vi.fn(),
   persistModel: vi.fn(async () => {}),
   deleteTrailing: vi.fn(async () => {}),
   editMessage: null as UIMessage | null,
@@ -90,7 +91,9 @@ vi.mock("@/providers/PaymentProvider", () => ({
   usePaymentProvider: () => ({ refetchCredits: external.refetchCredits }),
 }));
 vi.mock("@/providers/ConversationsProvider", () => ({
-  useConversationsProvider: () => ({ addOptimisticConversation: vi.fn() }),
+  useConversationsProvider: () => ({
+    addOptimisticConversation: external.addOptimisticConversation,
+  }),
 }));
 vi.mock("@/hooks/useAvailableModels", () => ({
   default: () => ({ data: [] }),
@@ -306,6 +309,7 @@ beforeEach(() => {
   external.persistModel.mockReset().mockResolvedValue(undefined);
   external.deleteTrailing.mockReset().mockResolvedValue(undefined);
   external.editMessage = null;
+  external.addOptimisticConversation.mockReset();
   suspendOnCatalog = undefined;
   suspendedRenders = 0;
   localStorage.clear();
@@ -1602,3 +1606,190 @@ it("does not expire a pending Send for a suspended and abandoned reporting-query
     select("28");
   });
 });
+
+function mountProvisionedComposer(catalogId: string | undefined) {
+  external.routeChat = false;
+  const composer = (query: RawCatalogQuery = reporting) => (
+    <Chat
+      id="client-placeholder"
+      workflowChatId={ids.chat}
+      sessionId={ids.session}
+      workspaceStatus="ready"
+      catalogId={catalogId}
+      catalogQuery={query}
+    />
+  );
+  const view = render(composer());
+  return {
+    ...view,
+    update: (query?: RawCatalogQuery) => view.rerender(composer(query)),
+  };
+}
+
+it.each([
+  ["headers", "query"],
+  ["headers", "catalog"],
+  ["headers", "workspace"],
+  ["headers", "stop"],
+  ["model", "query"],
+  ["model", "catalog"],
+  ["model", "workspace"],
+  ["model", "stop"],
+] as const)(
+  "does not publish an unsent provisioned new chat when %s preparation is cancelled by %s",
+  async (stage, change) => {
+    const fetch = mockFetch();
+    const replaceState = vi
+      .spyOn(window.history, "replaceState")
+      .mockImplementation(() => {});
+    const harness = mountProvisionedComposer(ids.catalog);
+    await act(async () => current.setInput(intentText));
+    const held = heldPreparation(stage);
+    let pending!: Promise<void>;
+    await act(async () => {
+      pending = current.handleSendMessage({
+        preventDefault: () => {},
+      } as React.FormEvent<HTMLFormElement>);
+    });
+    await waitFor(() => expect(held.requested()).toBe(true));
+    if (change === "stop")
+      await act(async () => {
+        await current.stop();
+      });
+    else if (change === "catalog")
+      harness.rerender(
+        <Chat
+          id="client-placeholder"
+          workflowChatId={ids.chat}
+          sessionId={ids.session}
+          workspaceStatus="ready"
+          catalogId={ids.otherCatalog}
+          catalogQuery={reporting}
+        />,
+      );
+    else {
+      if (change === "workspace") external.organization = ids.otherOrganization;
+      harness.update(
+        change === "query" ? { ...reporting, days: "14" } : reporting,
+      );
+    }
+    await act(async () => {
+      current.setInput("Current unsent draft.");
+      current.setTextAttachments([
+        {
+          filename: "current.txt",
+          content: "Current notes.",
+          lineCount: 1,
+          type: "md",
+        },
+      ]);
+    });
+    await act(async () => {
+      held.release();
+      await pending;
+    });
+    expect(fetch.mock.calls.filter(([url]) => url === postUrl)).toEqual([]);
+    expect(current.messages).toEqual([]);
+    expect(current.input).toBe("Current unsent draft.");
+    expect(current.textAttachments.map((value) => value.filename)).toEqual([
+      "current.txt",
+    ]);
+    expect(external.addOptimisticConversation).not.toHaveBeenCalled();
+    expect(replaceState).not.toHaveBeenCalled();
+  },
+);
+
+it.each(["catalog", "artist", "production"] as const)(
+  "publishes a valid %s new chat once at dispatch while the assistant stream remains open",
+  async (mode) => {
+    if (mode === "production") vi.stubEnv("NODE_ENV", "production");
+    if (mode !== "catalog") external.artist = ids.artist;
+    const replaceState = vi
+      .spyOn(window.history, "replaceState")
+      .mockImplementation(() => {});
+    let controller!: ReadableStreamDefaultController<UIMessageChunk>;
+    const stream = new ReadableStream<UIMessageChunk>({
+      start(value) {
+        controller = value;
+      },
+    });
+    const fetch = mockFetch({
+      send: createUIMessageStreamResponse({
+        stream,
+        headers: { "x-workflow-run-id": "synthetic-run" },
+      }),
+    });
+    mountProvisionedComposer(mode === "catalog" ? ids.catalog : undefined);
+    await act(async () => {
+      current.setInput(intentText);
+      current.setTextAttachments([
+        {
+          filename: "sent.txt",
+          content: "Sent notes.",
+          lineCount: 1,
+          type: "md",
+        },
+      ]);
+    });
+    const held = heldPreparation("model");
+    let completed = false;
+    let pending!: Promise<void>;
+    await act(async () => {
+      pending = current
+        .handleSendMessage({
+          preventDefault: () => {},
+        } as React.FormEvent<HTMLFormElement>)
+        .then(() => {
+          completed = true;
+        });
+    });
+    await waitFor(() => expect(held.requested()).toBe(true));
+    const rowsDuringPreparation =
+      external.addOptimisticConversation.mock.calls.length;
+    await act(async () => {
+      held.release();
+    });
+    await waitFor(() =>
+      expect(fetch.mock.calls.filter(([url]) => url === postUrl)).toHaveLength(
+        1,
+      ),
+    );
+    expect(completed).toBe(false);
+    expect(external.addOptimisticConversation).toHaveBeenCalledExactlyOnceWith(
+      "New Chat",
+      ids.chat,
+      ids.session,
+      intentText,
+    );
+    expect(current.input).toBe("");
+    expect(current.textAttachments.map((value) => value.filename)).toEqual([
+      "sent.txt",
+    ]);
+    const target = String(replaceState.mock.calls.at(-1)![2]);
+    expect(target).toContain(`/sessions/${ids.session}/chats/${ids.chat}`);
+    const body = JSON.parse(
+      fetch.mock.calls.find(([url]) => url === postUrl)![1]!.body as string,
+    );
+    expect(body.chatId).toBe(ids.chat);
+    expect(body.sessionId).toBe(ids.session);
+    expect(body.devCatalogSurface).toEqual(
+      mode === "catalog" ? context() : undefined,
+    );
+    expect(body.messages[0].parts[0].text).toContain(intentText);
+    await act(async () => {
+      await current.handleSendMessage({
+        preventDefault: () => {},
+      } as React.FormEvent<HTMLFormElement>);
+    });
+    await act(async () => {
+      controller.enqueue({ type: "finish" });
+      controller.close();
+      await pending;
+    });
+    expect(completed).toBe(true);
+    expect(current.textAttachments).toEqual([]);
+    expect(external.addOptimisticConversation).toHaveBeenCalledTimes(1);
+    expect(fetch.mock.calls.filter(([url]) => url === postUrl)).toHaveLength(1);
+    expect(rowsDuringPreparation).toBe(0);
+  },
+);
