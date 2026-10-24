@@ -26,6 +26,17 @@ interface VercelChatContextType {
   status: ChatStatus;
   isLoading: boolean;
   hasError: boolean;
+  sendError?: string;
+  failedDraftPreview?: string;
+  hasFailedSubmission?: boolean;
+  retrySendMessage?: (event: React.FormEvent<HTMLFormElement>) => Promise<void>;
+  discardFailedSubmission?: () => void;
+  stopState?: {
+    status: "idle" | "stopping" | "stopped" | "inactive" | "error";
+    message?: string;
+  };
+  editUnacceptedMessage?: (messageId: string, text: string) => boolean;
+  isMessagePendingAdmission?: (messageId: string) => boolean;
   isGeneratingResponse: boolean;
   isLoadingSignedUrls: boolean;
   handleSendMessage: (event: React.FormEvent<HTMLFormElement>) => Promise<void>;
@@ -132,6 +143,14 @@ export function VercelChatProvider({
     status,
     isLoading,
     hasError,
+    sendError,
+    failedDraftPreview,
+    hasFailedSubmission,
+    retrySendMessage,
+    discardFailedSubmission,
+    stopState,
+    editUnacceptedMessage,
+    isMessagePendingAdmission,
     isGeneratingResponse,
     isLoadingSignedUrls,
     handleSendMessage,
@@ -156,21 +175,19 @@ export function VercelChatProvider({
     attachments,
     textAttachments,
     workspaceStatus,
+    onDraftAccepted: () => {
+      setAttachments((previous) =>
+        previous.filter((part) => !attachments.includes(part)),
+      );
+      setTextAttachments((previous) =>
+        previous.filter((part) => !textAttachments.includes(part)),
+      );
+    },
   });
 
   const reload = useCallback(() => {
     return originalReload();
   }, [originalReload]);
-
-  // When a message is sent successfully, clear the attachments
-  const handleSendMessageWithClear = async (
-    event: React.FormEvent<HTMLFormElement>,
-  ) => {
-    const didSend = await handleSendMessage(event);
-
-    // Clear attachments after sending
-    if (didSend !== false) clearAttachments();
-  };
 
   // Create the context value object
   const contextValue: VercelChatContextType = {
@@ -182,9 +199,19 @@ export function VercelChatProvider({
     status,
     isLoading,
     hasError,
+    sendError,
+    failedDraftPreview,
+    hasFailedSubmission,
+    retrySendMessage,
+    discardFailedSubmission,
+    stopState,
+    editUnacceptedMessage,
+    isMessagePendingAdmission,
     isGeneratingResponse,
     isLoadingSignedUrls,
-    handleSendMessage: handleSendMessageWithClear,
+    handleSendMessage: async (event) => {
+      await handleSendMessage(event);
+    },
     stop,
     setInput,
     input,

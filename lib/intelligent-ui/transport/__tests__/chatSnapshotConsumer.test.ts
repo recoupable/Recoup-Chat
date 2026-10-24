@@ -141,7 +141,7 @@ it.each([1, 2, 3, 4])(
     expect(latestPart(chat)).toEqual(chatSnapshotPart(6));
     expect(received).toEqual([chatSnapshotPart(4), chatSnapshotPart(6)]);
     expect(fetch.mock.calls[1][0]).toBe(
-      `https://recoup.invalid/api/chat/synthetic-chat/stream?startIndex=${cut}`,
+      `https://recoup.invalid/api/chat/synthetic-chat/stream?startIndex=${cut}&streamLifecycle=explicit-stop-v1`,
     );
     expect(fetch.mock.calls[1][1].headers.Authorization).toBe(
       "Bearer synthetic-token",

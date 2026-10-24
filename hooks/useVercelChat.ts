@@ -1,3 +1,5 @@
+import { getClientApiBaseUrl } from "@/lib/api/getClientApiBaseUrl";
+import type { ChatAdmissionMetadata } from "@/lib/chat/createChatRequestLifecycle";
 import type { CatalogQueryInput } from "@/lib/intelligent-ui/chat/getChatCatalogHost";
 import { createChatSubmissionGuard } from "@/lib/chat/createChatSubmissionGuard";
 import { useChat } from "@ai-sdk/react";
@@ -60,6 +62,19 @@ interface UseVercelChatProps {
   initialMessages?: UIMessage[];
   attachments?: FileUIPart[];
   textAttachments?: TextAttachment[];
+  onDraftAccepted?: () => void;
+}
+
+interface SubmittedChatDraft {
+  message?: UIMessage;
+  regenerate?: boolean;
+  input: string;
+  revision: number;
+  attachments: FileUIPart[];
+  textAttachments: TextAttachment[];
+  mentionAttachments: FileUIPart[];
+  mentionTextContext: string;
+  onAccepted?: () => void;
 }
 
 /**
@@ -77,6 +92,7 @@ export function useVercelChat({
   initialMessages,
   attachments = [],
   textAttachments = [],
+  onDraftAccepted,
 }: UseVercelChatProps) {
   const submitOnce = useMemo(() => createChatSubmissionGuard(), []);
   const { userData } = useUserProvider();
@@ -103,7 +119,40 @@ export function useVercelChat({
   const supersededHistoryScopeRef = useRef<string | undefined>(undefined);
   const { addOptimisticConversation } = useConversationsProvider();
   const { data: availableModels = [] } = useAvailableModels();
-  const [input, setInput] = useState("");
+  const [input, updateInput] = useState("");
+  const inputRevision = useRef(0);
+  const setInput = useCallback(
+    (value: string) => {
+      inputRevision.current++;
+      updateInput(value);
+    },
+    [updateInput],
+  );
+  const [sendError, setSendError] = useState<string>();
+  const [failedDraft, updateFailedDraft] = useState<SubmittedChatDraft>();
+  const failedDraftRef = useRef<SubmittedChatDraft | undefined>(undefined);
+  const setFailedDraft = useCallback(
+    (draft?: SubmittedChatDraft) => {
+      failedDraftRef.current = draft;
+      updateFailedDraft(draft);
+    },
+    [updateFailedDraft],
+  );
+  const [preparing, setPreparing] = useState(false);
+  const [stopState, setStopState] = useState<{
+    status: "idle" | "stopping" | "stopped" | "inactive" | "error";
+    message?: string;
+  }>({ status: "idle" });
+  const intentEpoch = useRef(0);
+  const committedScope = useRef("");
+  const scopeGeneration = useRef(0);
+  const committedIds = useRef({ sessionId, workflowChatId });
+  const mounted = useRef(false);
+  const attemptRef = useRef<object | undefined>(undefined);
+  const stoppingRef = useRef<Promise<void> | undefined>(undefined);
+  const stopBlockedRef = useRef(false);
+  const unacceptedIds = useRef(new Set<string>());
+  const pendingAdmissionIds = useRef(new Set<string>());
   // Start existing browsers on Auto too; the legacy key stores a fixed model
   // from the removed composer picker and would otherwise bypass routing.
   const [model, setModel] = useLocalStorage("RECOUP_CHAT_MODEL_V2", "auto");
@@ -147,29 +196,101 @@ export function useVercelChat({
           subject: hostSubject,
         }
       : undefined;
-  const { transport, getHeaders, intelligentUI, snapshotConsumer } =
-    useChatTransport({
-      chatId: transportChatId,
-      sessionId,
-      workspaceStatus,
-      snapshotScope,
-      devCatalogSurface:
-        snapshotScope?.sessionId &&
-        catalogHost.kind === "catalog" &&
-        catalogHost.workspace &&
-        catalogHost.query
-          ? {
-              workspaceId: catalogHost.workspace.id,
-              query: catalogHost.query,
-            }
-          : undefined,
-      getMessages: () => messagesRef.current,
-    });
+  const requestScope = JSON.stringify([
+    authenticated,
+    id,
+    authenticatedUser?.id,
+    effectiveAccountId,
+    organizationId,
+    artistId,
+    catalogHost.kind === "catalog"
+      ? [
+          catalogHost.subject.id,
+          catalogHost.queryKey,
+          catalogHost.workspace?.kind,
+          catalogHost.workspace?.id,
+        ]
+      : catalogHost.kind,
+  ]);
+  useLayoutEffect(() => {
+    mounted.current = true;
+    committedScope.current = requestScope;
+    intentEpoch.current++;
+    scopeGeneration.current++;
+    attemptRef.current = undefined;
+    unacceptedIds.current.clear();
+    pendingAdmissionIds.current.clear();
+    stoppingRef.current = undefined;
+    stopBlockedRef.current = false;
+    // Scope-owned recovery resets only after commit; a suspended render must
+    // retain the current draft and server Stop state.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setPreparing(false);
+    setSendError(undefined);
+    setFailedDraft(undefined);
+    setStopState({ status: "idle" });
+    return () => {
+      mounted.current = false;
+    };
+  }, [requestScope, setFailedDraft]);
+  const {
+    transport,
+    getHeaders,
+    intelligentUI,
+    snapshotConsumer,
+    requestLifecycle,
+  } = useChatTransport({
+    chatId: transportChatId,
+    sessionId,
+    workspaceStatus,
+    requestScope,
+    snapshotScope,
+    devCatalogSurface:
+      snapshotScope?.sessionId &&
+      catalogHost.kind === "catalog" &&
+      catalogHost.workspace &&
+      catalogHost.query
+        ? {
+            workspaceId: catalogHost.workspace.id,
+            query: catalogHost.query,
+          }
+        : undefined,
+    getMessages: () => messagesRef.current,
+  });
+  useLayoutEffect(() => {
+    const previous = committedIds.current;
+    committedIds.current = { sessionId, workflowChatId };
+    // Bootstrap is allowed to fill absent IDs. Changing an established
+    // server identity is a different scope even if the client id is reused.
+    if (
+      (previous.sessionId && previous.sessionId !== sessionId) ||
+      (previous.workflowChatId && previous.workflowChatId !== workflowChatId)
+    ) {
+      intentEpoch.current++;
+      scopeGeneration.current++;
+      requestLifecycle.cancelAll();
+      attemptRef.current = undefined;
+      stoppingRef.current = undefined;
+      stopBlockedRef.current = false;
+      unacceptedIds.current.clear();
+      pendingAdmissionIds.current.clear();
+      setPreparing(false);
+      setSendError(undefined);
+      setFailedDraft(undefined);
+      setStopState({ status: "idle" });
+    }
+  }, [sessionId, workflowChatId, requestLifecycle, setFailedDraft]);
   const coordinateHistory = isChatIntelligentUIEnabled();
-  const captureSendIntent = useCallback(
-    () => snapshotConsumer.captureSendIntent(),
-    [snapshotConsumer],
-  );
+  const captureSendIntent = useCallback(() => {
+    const scope = committedScope.current;
+    const epoch = intentEpoch.current;
+    const snapshotCurrent = snapshotConsumer.captureSendIntent();
+    return () =>
+      mounted.current &&
+      scope === committedScope.current &&
+      epoch === intentEpoch.current &&
+      snapshotCurrent();
+  }, [snapshotConsumer]);
   const historyLoadScope = coordinateHistory
     ? JSON.stringify([
         authenticatedUser?.id,
@@ -222,7 +343,6 @@ export function useVercelChat({
     const ids = new Set<string>();
     const regex = /@\[[^\]]+\]\(([^)]+)\)/g;
     let match: RegExpExecArray | null;
-    // eslint-disable-next-line no-cond-assign
     while ((match = regex.exec(input))) {
       if (match[1]) ids.add(match[1]);
     }
@@ -340,7 +460,6 @@ export function useVercelChat({
     sendMessage,
     setMessages,
     regenerate,
-    resumeStream,
   } = useChat({
     id,
     transport,
@@ -370,11 +489,99 @@ export function useVercelChat({
     if (intelligentUI)
       snapshotConsumer.observeMessages(messages, intelligentUI.scopeKey);
   }, [messages, intelligentUI, snapshotConsumer]);
-  const stop = useCallback(async () => {
+  const stop = useCallback(() => {
+    if (stoppingRef.current) return stoppingRef.current;
+    const capturedChatId = transportChatId;
+    const scope = committedScope.current;
+    const generation = scopeGeneration.current;
+    const isCurrent = () =>
+      mounted.current &&
+      committedScope.current === scope &&
+      scopeGeneration.current === generation;
+    const capturedStopChat = stopChat;
+    const tokenGetter = getAccessToken;
+    intentEpoch.current++;
+    stopBlockedRef.current = true;
     cancelPendingResume();
-    snapshotConsumer.cancel();
-    await stopChat();
-  }, [cancelPendingResume, snapshotConsumer, stopChat]);
+    requestLifecycle.cancelPreparation();
+    setPreparing(false);
+    setStopState({ status: "stopping", message: "Stopping response…" });
+    const operation = (async () => {
+      try {
+        // A legacy server may clear a pending slot before its POST starts the
+        // run. Wait for dispatched admission before asking it to cancel.
+        await requestLifecycle.waitForAdmission();
+        if (!isCurrent()) return;
+        const accessToken = await tokenGetter();
+        if (!isCurrent()) return;
+        if (!accessToken)
+          throw new Error("Please sign in to stop this response");
+        const response = await fetch(
+          `${getClientApiBaseUrl()}/api/chat/${encodeURIComponent(capturedChatId)}/stop`,
+          {
+            method: "POST",
+            headers: { Authorization: `Bearer ${accessToken}` },
+          },
+        );
+        if (!response.ok)
+          throw new Error(
+            `Could not stop the response (${response.status}). Retry Stop.`,
+          );
+        const result: unknown = await response.json().catch(() => {
+          throw new Error("Could not confirm Stop. Retry Stop.");
+        });
+        if (
+          !result ||
+          typeof result !== "object" ||
+          !("success" in result) ||
+          result.success !== true ||
+          !("stopped" in result) ||
+          typeof result.stopped !== "boolean"
+        )
+          throw new Error("Could not confirm Stop. Retry Stop.");
+        if (!isCurrent()) return;
+        if (!result.stopped && requestLifecycle.hasUnknownAdmission())
+          throw new Error(
+            "No active response was found, but message admission is still unconfirmed. Retry Stop.",
+          );
+        if (result.stopped) requestLifecycle.confirmStopped();
+        snapshotConsumer.cancel();
+        await capturedStopChat();
+        if (!isCurrent()) return;
+        stopBlockedRef.current = false;
+        setStopState(
+          result.stopped
+            ? { status: "stopped", message: "Response stopped." }
+            : {
+                status: "inactive",
+                message: "No active response was found when Stop was checked.",
+              },
+        );
+      } catch (error) {
+        if (isCurrent())
+          setStopState({
+            status: "error",
+            message:
+              error instanceof Error
+                ? error.message
+                : "Could not confirm Stop. Retry Stop.",
+          });
+      } finally {
+        if (isCurrent()) stoppingRef.current = undefined;
+      }
+    })();
+    stoppingRef.current = operation;
+    return operation;
+  }, [
+    transportChatId,
+    cancelPendingResume,
+    requestLifecycle,
+    snapshotConsumer,
+    stopChat,
+    getAccessToken,
+    setPreparing,
+    setStopState,
+  ]);
   const historyScopeKey = intelligentUI?.scopeKey;
   const setHistoryMessages = useCallback(
     (loaded: UIMessage[]) => {
@@ -441,18 +648,22 @@ export function useVercelChat({
   const handleSubmit = async (
     e: React.FormEvent<HTMLFormElement>,
     isCurrent: () => boolean,
-    onDispatch: () => void,
+    onDispatch: (ids: { chatId: string; sessionId?: string }) => void,
+    draft: SubmittedChatDraft,
   ) => {
     e.preventDefault();
     cancelPendingResume(true);
 
     const headers = await getHeaders();
     if (!isCurrent()) return false;
+    if (!headers?.Authorization)
+      throw new Error("Please sign in to send this message");
 
     // Combine all attachments
     const combined: FileUIPart[] = [];
-    if (attachments && attachments.length > 0) combined.push(...attachments);
-    if (mentionAttachments.length > 0) combined.push(...mentionAttachments);
+    if (draft.attachments.length > 0) combined.push(...draft.attachments);
+    if (draft.mentionAttachments.length > 0)
+      combined.push(...draft.mentionAttachments);
 
     // Separate audio files (can't be sent to AI as file parts)
     const audioAttachments = combined.filter((f) =>
@@ -463,17 +674,17 @@ export function useVercelChat({
     );
 
     // Build message text with text file content and audio URLs prepended
-    let messageText = input;
+    let messageText = draft.input;
 
     // Prepend text file content (markdown, CSV)
-    const textContext = formatTextAttachments(textAttachments);
+    const textContext = formatTextAttachments(draft.textAttachments);
     if (textContext) {
       messageText = textContext + "\n\n" + messageText;
     }
 
     // Prepend mentioned sandbox file text content.
-    if (mentionTextContext) {
-      messageText = mentionTextContext + "\n\n" + messageText;
+    if (draft.mentionTextContext) {
+      messageText = draft.mentionTextContext + "\n\n" + messageText;
     }
 
     // Prepend audio URLs
@@ -493,46 +704,110 @@ export function useVercelChat({
     await persistSelectedModel(isCurrent);
     if (!isCurrent()) return false;
 
-    const response = sendMessage(payload, { body: chatRequestBody, headers });
-    // Preparation can be cancelled. Publish the new chat only after the
-    // guarded SDK handoff, while its response is still streaming.
-    onDispatch();
-    setInput("");
-    await response;
-    return isCurrent();
+    const messageId = draft.message?.id ?? generateUUID();
+    if (!draft.regenerate) {
+      unacceptedIds.current.add(messageId);
+      pendingAdmissionIds.current.add(messageId);
+    }
+    const scope = committedScope.current;
+    const generation = scopeGeneration.current;
+    const attempt = attemptRef.current;
+    const canPublish = () =>
+      mounted.current &&
+      committedScope.current === scope &&
+      scopeGeneration.current === generation &&
+      attemptRef.current === attempt;
+    let accepted = false;
+    const metadata: ChatAdmissionMetadata = {
+      isCurrent,
+      onAccepted: (acceptedIds) => {
+        accepted = true;
+        if (!canPublish()) return;
+        unacceptedIds.current.delete(messageId);
+        pendingAdmissionIds.current.delete(messageId);
+        if (inputRevision.current === draft.revision) updateInput("");
+        draft.onAccepted?.();
+        setFailedDraft(undefined);
+        setSendError(undefined);
+        setPreparing(false);
+        onDispatch(acceptedIds);
+      },
+      onRejected: (error) => {
+        if (!canPublish()) return;
+        pendingAdmissionIds.current.delete(messageId);
+        if (error.name !== "AbortError") {
+          setFailedDraft(draft);
+          setSendError(
+            error.message.startsWith("Message was not accepted")
+              ? `${error.message}. Your draft is ready to retry.`
+              : "Couldn’t confirm this message was sent. Your draft is ready to retry.",
+          );
+        }
+        if (!draft.regenerate)
+          setMessages((previous) =>
+            previous.filter((message) => message.id !== messageId),
+          );
+      },
+    };
+    const request = { body: chatRequestBody, headers, metadata };
+    if (draft.regenerate) await regenerate(request);
+    else
+      await sendMessage(
+        draft.message ?? {
+          id: messageId,
+          role: "user",
+          parts: [
+            ...(payload.files ?? []),
+            { type: "text", text: payload.text },
+          ],
+        },
+        request,
+      );
+    return accepted;
   };
 
-  const append = async (message: UIMessage) => {
-    const isCurrent = captureSendIntent();
-    cancelPendingResume(true);
-    const headers = await getHeaders();
-    if (!isCurrent()) return;
-    // Retry/Edit and programmatic sends bypass handleSubmit, so persist the
-    // selected model here too before the workflow reads chats.model_id.
-    await persistSelectedModel(isCurrent);
-    if (!isCurrent()) return;
-    sendMessage(message, { body: chatRequestBody, headers });
+  const append = (message: UIMessage) => {
+    void handleSendMessage(
+      { preventDefault() {} } as React.FormEvent<HTMLFormElement>,
+      {
+        message,
+        input: message.parts
+          .filter((part) => part.type === "text")
+          .map((part) => part.text)
+          .join("\n"),
+        revision: -1,
+        attachments: message.parts.filter(
+          (part): part is FileUIPart => part.type === "file",
+        ),
+        textAttachments: [],
+        mentionAttachments: [],
+        mentionTextContext: "",
+      },
+    );
   };
 
-  const handleReload = useCallback(async () => {
-    const isCurrent = captureSendIntent();
-    cancelPendingResume(true);
-    const headers = await getHeaders();
-    if (!isCurrent()) return;
-    // Retry/Edit (MessageParts + message-editor) call reload() → regenerate,
-    // bypassing handleSubmit; persist the selected model first so the
-    // regenerated turn bills it, not the previous/default model.
-    await persistSelectedModel(isCurrent);
-    if (!isCurrent()) return;
-    await regenerate({ body: chatRequestBody, headers });
-  }, [
-    captureSendIntent,
-    cancelPendingResume,
-    getHeaders,
-    regenerate,
-    chatRequestBody,
-    persistSelectedModel,
-  ]);
+  const handleReload = async () => {
+    const message =
+      messages.findLast((message) => message.role === "user") ??
+      messages.at(-1);
+    if (!message) return;
+    await handleSendMessage(
+      { preventDefault() {} } as React.FormEvent<HTMLFormElement>,
+      {
+        message,
+        regenerate: true,
+        input: message.parts
+          .filter((part) => part.type === "text")
+          .map((part) => part.text)
+          .join("\n"),
+        revision: -1,
+        attachments: [],
+        textAttachments: [],
+        mentionAttachments: [],
+        mentionTextContext: "",
+      },
+    );
+  };
 
   // Only load persisted history for an existing chat opened from a
   // canonical `/sessions/[sessionId]/chats/[chatId]` URL (route `chatId`
@@ -552,7 +827,10 @@ export function useVercelChat({
   // Only show loading state when fetching persisted history for an existing chat.
   const isLoading = isMessagesLoading && !!id && messages.length === 0;
 
-  const isGeneratingResponse = ["streaming", "submitted"].includes(status);
+  const isGeneratingResponse =
+    preparing ||
+    stopState.status === "stopping" ||
+    ["streaming", "submitted"].includes(status);
 
   const silentlyUpdateUrl = useCallback(() => {
     if (!sessionId) return;
@@ -566,64 +844,106 @@ export function useVercelChat({
   // On a cold start the ids land about a second after Send (app#2052), so
   // the URL update in handleSendMessage is a no-op then; this catches up.
   useEffect(() => {
-    if (!chatId && messages.length > 0) silentlyUpdateUrl();
-  }, [chatId, messages.length, silentlyUpdateUrl]);
+    if (!chatId && messages.some((message) => message.role === "assistant"))
+      silentlyUpdateUrl();
+  }, [chatId, messages, silentlyUpdateUrl]);
 
-  const handleSendMessage = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSendMessage = async (
+    event: React.FormEvent<HTMLFormElement>,
+    retryDraft?: SubmittedChatDraft,
+  ) => {
     event.preventDefault();
-    if (isGeneratingResponse) return false;
+    if (
+      (isGeneratingResponse && !retryDraft) ||
+      preparing ||
+      stopState.status === "stopping" ||
+      stoppingRef.current ||
+      stopBlockedRef.current ||
+      stopState.status === "error" ||
+      (failedDraftRef.current && retryDraft !== failedDraftRef.current)
+    )
+      return false;
     const isCurrent = captureSendIntent();
     cancelPendingResume(true);
     let didSend = false;
+    const submittedDraft = retryDraft ?? {
+      input,
+      revision: inputRevision.current,
+      attachments,
+      textAttachments,
+      mentionAttachments,
+      mentionTextContext,
+      onAccepted: onDraftAccepted,
+    };
 
     await submitOnce(async () => {
       if (!isCurrent()) return;
-      if (earliestFailedUserMessageId) {
-        await deleteTrailingMessages({
-          chatId: id,
-          fromMessageId: earliestFailedUserMessageId,
-          isCurrent,
-        });
-      }
-      if (!isCurrent()) return;
-
-      const messageContent = input;
-      didSend = await handleSubmit(event, isCurrent, () => {
-        if (!chatId) {
-          addOptimisticConversation(
-            "New Chat",
-            transportChatId,
-            sessionId,
-            messageContent,
-          );
-          silentlyUpdateUrl();
+      const messageContent = submittedDraft.input;
+      const attempt = {};
+      attemptRef.current = attempt;
+      setPreparing(true);
+      setSendError(undefined);
+      setStopState({ status: "idle" });
+      try {
+        if (
+          !submittedDraft.regenerate &&
+          earliestFailedUserMessageId &&
+          !unacceptedIds.current.has(earliestFailedUserMessageId)
+        ) {
+          await deleteTrailingMessages({
+            chatId: id,
+            fromMessageId: earliestFailedUserMessageId,
+            isCurrent,
+          });
         }
-      });
+        if (!isCurrent()) return;
+        didSend = await handleSubmit(
+          event,
+          isCurrent,
+          (acceptedIds) => {
+            if (!chatId) {
+              addOptimisticConversation(
+                "New Chat",
+                acceptedIds.chatId,
+                acceptedIds.sessionId,
+                messageContent,
+              );
+              if (acceptedIds.sessionId)
+                window.history.replaceState(
+                  {},
+                  "",
+                  getChatPath(
+                    acceptedIds.sessionId,
+                    acceptedIds.chatId,
+                    catalogId,
+                    catalogQuery,
+                  ),
+                );
+            }
+          },
+          submittedDraft,
+        );
+      } catch (error) {
+        if (isCurrent() && attemptRef.current === attempt) {
+          setFailedDraft(submittedDraft);
+          setSendError(
+            error instanceof Error
+              ? error.message
+              : "Couldn’t confirm this message was sent. Retry when ready.",
+          );
+        }
+      } finally {
+        if (isCurrent() && attemptRef.current === attempt) setPreparing(false);
+      }
     }, isCurrent);
     return didSend;
   };
 
-  const handleSendQueryMessages = useCallback(
-    async (initialMessage: UIMessage) => {
-      const isCurrent = captureSendIntent();
-      cancelPendingResume(true);
-      silentlyUpdateUrl();
-      const headers = await getHeaders();
-      if (!isCurrent()) return;
-      await persistSelectedModel(isCurrent);
-      if (!isCurrent()) return;
-      await sendMessage(initialMessage, { body: chatRequestBody, headers });
-    },
-    [
-      captureSendIntent,
-      silentlyUpdateUrl,
-      sendMessage,
-      chatRequestBody,
-      getHeaders,
-      persistSelectedModel,
-      cancelPendingResume,
-    ],
-  );
+  const handleSendQueryMessages = async () => {
+    await handleSendMessage({
+      preventDefault() {},
+    } as React.FormEvent<HTMLFormElement>);
+  };
 
   // The ?q= deep-link behavior (prefill + provisioning-gated auto-fire)
   // lives entirely in this hook — extend it there, not here (chat#1847).
@@ -644,6 +964,19 @@ export function useVercelChat({
     input,
     isLoading,
     hasError,
+    sendError,
+    failedDraftPreview:
+      failedDraft?.input || (failedDraft ? "Attached files" : undefined),
+    hasFailedSubmission: !!failedDraft,
+    retrySendMessage: async (event: React.FormEvent<HTMLFormElement>) => {
+      if (failedDraftRef.current)
+        await handleSendMessage(event, failedDraftRef.current);
+    },
+    discardFailedSubmission: () => {
+      setFailedDraft(undefined);
+      setSendError(undefined);
+    },
+    stopState,
     isGeneratingResponse,
     model,
     isLoadingSignedUrls,
@@ -651,6 +984,19 @@ export function useVercelChat({
     captureSendIntent,
 
     // Actions
+    isMessagePendingAdmission: (messageId: string) =>
+      pendingAdmissionIds.current.has(messageId),
+    editUnacceptedMessage: (messageId: string, text: string) => {
+      if (!unacceptedIds.current.has(messageId)) return false;
+      if (pendingAdmissionIds.current.has(messageId)) return true;
+      setInput(text);
+      setFailedDraft(undefined);
+      setSendError(undefined);
+      setMessages((previous) =>
+        previous.filter((message) => message.id !== messageId),
+      );
+      return true;
+    },
     handleSendMessage,
     setInput,
     setMessages,

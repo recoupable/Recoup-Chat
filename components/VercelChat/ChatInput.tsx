@@ -22,20 +22,30 @@ export function ChatInput({
     setInput,
     input,
     textAttachments,
+    attachments,
+    sendError,
+    failedDraftPreview,
+    hasFailedSubmission,
+    retrySendMessage,
+    discardFailedSubmission,
+    stopState,
   } = useVercelChatContext();
   // Allow typing regardless of artist selection
   const isDisabled = false;
   // A Send during provisioning goes through: the transport holds the request
   // until the sandbox is ready (app#2052). Only blockers that do not clear on
   // their own disable the button.
-  const hasContent = input.trim() !== "" || textAttachments.length > 0;
+  const hasContent =
+    input.trim() !== "" || textAttachments.length > 0 || attachments.length > 0;
   const isSendDisabled =
     !isGeneratingResponse &&
     (!hasContent ||
       isDisabled ||
       hasPendingUploads ||
       isLoadingSignedUrls ||
-      workspaceStatus === "off");
+      workspaceStatus === "off" ||
+      stopState?.status === "error" ||
+      !!hasFailedSubmission);
 
   const handleSend = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -71,13 +81,69 @@ export function ChatInput({
             />
           </div>
         )}
+        {(sendError || stopState?.message) && (
+          <div
+            className="mb-2 flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1 text-sm"
+            role={
+              sendError || stopState?.status === "error" ? "alert" : "status"
+            }
+          >
+            <span className="min-w-0 basis-full">
+              {stopState?.message || sendError}
+              {sendError && failedDraftPreview && (
+                <span className="block truncate text-muted-foreground">
+                  {failedDraftPreview}
+                </span>
+              )}
+            </span>
+            {stopState?.status === "error" ? (
+              <button
+                type="button"
+                className="underline underline-offset-4"
+                onClick={() => void stop()}
+              >
+                Retry Stop
+              </button>
+            ) : (
+              sendError &&
+              !isGeneratingResponse && (
+                <button
+                  type="button"
+                  className="underline underline-offset-4"
+                  onClick={() =>
+                    void retrySendMessage?.({
+                      preventDefault() {},
+                    } as React.FormEvent<HTMLFormElement>)
+                  }
+                >
+                  Retry
+                </button>
+              )
+            )}
+            {sendError &&
+              !isGeneratingResponse &&
+              stopState?.status !== "error" && (
+                <button
+                  type="button"
+                  className="underline underline-offset-4"
+                  onClick={discardFailedSubmission}
+                >
+                  Discard failed message
+                </button>
+              )}
+          </div>
+        )}
         <ChatComposer
           value={typeof input === "string" ? input : ""}
           onChange={setInput}
           onSubmit={handleSend}
           disabled={isDisabled || hasPendingUploads}
           sendDisabled={isSendDisabled}
-          status={status}
+          status={
+            isGeneratingResponse && status !== "streaming"
+              ? "submitted"
+              : status
+          }
           submitLabel={isGeneratingResponse ? "Stop response" : "Send message"}
           tools={
             <>

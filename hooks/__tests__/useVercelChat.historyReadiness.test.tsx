@@ -169,7 +169,7 @@ function mount() {
 }
 
 const historyUrl = `https://recoup.invalid/api/sessions/${hostScope.sessionId}/chats/${hostScope.chatId}`;
-const streamUrl = `https://recoup.invalid/api/chat/${hostScope.chatId}/stream?startIndex=0`;
+const streamUrl = `https://recoup.invalid/api/chat/${hostScope.chatId}/stream?startIndex=0&streamLifecycle=explicit-stop-v1`;
 const saved: UIMessage = {
   id: "saved-assistant",
   role: "assistant",
@@ -573,6 +573,8 @@ it.each(["stop", "unmount"])(
     const history = pendingResponse();
     const fetch = vi.fn().mockImplementation(async (url) => {
       if (url === historyUrl) return history.promise;
+      if (url === `https://recoup.invalid/api/chat/${hostScope.chatId}/stop`)
+        return Response.json({ success: true, stopped: false });
       throw new Error(`Unexpected resume after ${reason}: ${url}`);
     });
     vi.stubGlobal("fetch", fetch);
@@ -605,7 +607,10 @@ it.each(["send", "retry", "append"])(
     const history = pendingResponse();
     const fetch = vi.fn().mockImplementation(async (url) => {
       if (url === historyUrl) return history.promise;
-      if (url === "https://recoup.invalid/api/chat")
+      if (
+        url ===
+        "https://recoup.invalid/api/chat?streamLifecycle=explicit-stop-v1"
+      )
         return workflowResponse([
           { type: "start", messageId: "new-intent-assistant" },
           { type: "text-start", id: "intent" },

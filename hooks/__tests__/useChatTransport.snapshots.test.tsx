@@ -186,7 +186,11 @@ it.each(["production", "disabled"])(
     if (mode === "production") vi.stubEnv("NODE_ENV", "production");
     else vi.stubEnv("NEXT_PUBLIC_RECOUP_INTELLIGENT_UI_CHAT", "false");
     const fetch = vi.fn(async (url, init) => {
-      if (url !== "https://recoup.invalid/api/chat" || init.method !== "POST")
+      if (
+        url !==
+          "https://recoup.invalid/api/chat?streamLifecycle=explicit-stop-v1" ||
+        init.method !== "POST"
+      )
         throw new Error(`Unexpected synthetic request: ${url}`);
       return workflowResponse([{ type: "finish" }]);
     });

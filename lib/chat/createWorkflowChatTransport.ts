@@ -1,5 +1,10 @@
 import type { UIMessage, UIMessageChunk } from "ai";
 import {
+  createChatRequestLifecycle,
+  type ChatRequestLifecycle,
+  type ChatAdmissionMetadata,
+} from "./createChatRequestLifecycle";
+import {
   WorkflowChatTransport,
   type WorkflowChatTransportOptions,
 } from "@workflow/ai";
@@ -26,6 +31,7 @@ interface CreateWorkflowChatTransportOptions {
   getMessages?: () => UIMessage[];
   /** Optional committed host references, never an authorization grant. */
   getDevCatalogSurface?: () => CatalogSurfaceRequest | undefined;
+  requestLifecycle?: ChatRequestLifecycle;
 }
 
 /**
@@ -55,9 +61,11 @@ export function createWorkflowChatTransport<UI_MESSAGE extends UIMessage>({
   snapshotConsumer,
   getMessages,
   getDevCatalogSurface,
+  requestLifecycle = createChatRequestLifecycle(),
 }: CreateWorkflowChatTransportOptions): WorkflowChatTransport<UI_MESSAGE> {
   const authHeaders = async (): Promise<Record<string, string>> => {
-    const token = await getAccessToken().catch(() => null);
+    const token = await getAccessToken();
+    if (!token) throw new Error("Please sign in to resume this response");
     return {
       "Content-Type": "application/json",
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
@@ -79,77 +87,176 @@ export function createWorkflowChatTransport<UI_MESSAGE extends UIMessage>({
       : stream;
 
   const transportOptions = (
+    operation: ReturnType<ChatRequestLifecycle["begin"]>,
     bind?: (ids: { chatId: string; sessionId?: string }) => void,
     signal?: AbortSignal,
-  ): WorkflowChatTransportOptions<UI_MESSAGE> => ({
-    api: `${baseUrl}/api/chat`,
-    prepareSendMessagesRequest: async ({ messages, body }) => {
-      // The intent token already exists while provisioning; Stop invalidates
-      // it. Bind only once IDs settle, before async auth can change host scope.
-      await waitForWorkspace?.();
+    metadata?: ChatAdmissionMetadata,
+  ): WorkflowChatTransportOptions<UI_MESSAGE> => {
+    let ids: ReturnType<typeof getIds> | undefined;
+    let admitted = false;
+    const reject = (error: unknown) => {
+      if (!admitted && metadata)
+        metadata.onRejected(
+          error instanceof Error ? error : new Error(String(error)),
+        );
+      operation.settle();
+    };
+    const check = () => {
       signal?.throwIfAborted();
-      const ids = getIds();
-      bind?.(ids);
-      const devCatalogSurface = isChatIntelligentUIEnabled()
-        ? getDevCatalogSurface?.()
-        : undefined;
-      // This field belongs to the committed host, not per-message callers.
-      const requestBody = { ...body };
-      delete requestBody.intelligentUI;
-      delete requestBody.devCatalogSurface;
-      const recoupAccessToken = await getAccessToken().catch(() => null);
-      const headers = await authHeaders();
-      signal?.throwIfAborted();
-      return {
-        headers,
-        body: {
-          ...requestBody,
-          messages,
-          sessionId: ids.sessionId,
-          chatId: ids.chatId,
-          ...(recoupAccessToken ? { recoupAccessToken } : {}),
-          ...(devCatalogSurface ? { devCatalogSurface } : {}),
-        },
-      };
-    },
-    // Cursor counting and authenticated recovery remain owned by the SDK. A
-    // send's internal reconnect reuses its already-bound filter and identity.
-    prepareReconnectToStreamRequest: async () => {
-      const ids = getIds();
-      bind?.(ids);
-      const headers = await authHeaders();
-      signal?.throwIfAborted();
-      return {
-        api: `${baseUrl}/api/chat/${ids.chatId}/stream`,
-        headers,
-      };
-    },
-  });
+      if (metadata && !admitted && !metadata.isCurrent())
+        throw new DOMException("Cancelled", "AbortError");
+    };
+    return {
+      api: `${baseUrl}/api/chat`,
+      // The installed SDK appends ?startIndex itself. Add the lifecycle opt-in
+      // here so its absolute cursor and negative-tail handling stay untouched.
+      fetch: async (input, init) => {
+        const url = new URL(String(input));
+        url.searchParams.set("streamLifecycle", "explicit-stop-v1");
+        try {
+          check();
+          if (init?.method === "POST") operation.dispatched();
+          const response = await fetch(url.toString(), init);
+          if (
+            init?.method === "POST" &&
+            response.ok &&
+            (!response.body || !response.headers.get("x-workflow-run-id"))
+          )
+            operation.markUnknown();
+          if (
+            init?.method === "POST" &&
+            (!response.ok ||
+              !response.body ||
+              !response.headers.get("x-workflow-run-id"))
+          ) {
+            reject(
+              new Error(
+                response.ok
+                  ? "Could not confirm message admission"
+                  : `Message was not accepted (${response.status})`,
+              ),
+            );
+          }
+          return response;
+        } catch (error) {
+          if (
+            init?.method === "POST" &&
+            !(error instanceof DOMException && error.name === "AbortError")
+          )
+            operation.markUnknown();
+          reject(error);
+          throw error;
+        }
+      },
+      onChatSendMessage: () => {
+        admitted = true;
+        operation.settle();
+        if (ids) metadata?.onAccepted(ids);
+      },
+      prepareSendMessagesRequest: async ({ messages, body }) => {
+        try {
+          await waitForWorkspace?.();
+          check();
+          ids = getIds();
+          bind?.(ids);
+          const devCatalogSurface = isChatIntelligentUIEnabled()
+            ? getDevCatalogSurface?.()
+            : undefined;
+          const requestBody = { ...body };
+          delete requestBody.intelligentUI;
+          delete requestBody.devCatalogSurface;
+          const recoupAccessToken = await getAccessToken();
+          check();
+          if (!recoupAccessToken)
+            throw new Error("Please sign in to send this message");
+          return {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${recoupAccessToken}`,
+            },
+            body: {
+              ...requestBody,
+              messages,
+              sessionId: ids.sessionId,
+              chatId: ids.chatId,
+              recoupAccessToken,
+              ...(devCatalogSurface ? { devCatalogSurface } : {}),
+            },
+          };
+        } catch (error) {
+          reject(error);
+          throw error;
+        }
+      },
+      prepareReconnectToStreamRequest: async () => {
+        ids ??= getIds();
+        bind?.(ids);
+        const headers = await authHeaders();
+        check();
+        return {
+          api: `${baseUrl}/api/chat/${encodeURIComponent(ids.chatId)}/stream`,
+          headers,
+        };
+      },
+    };
+  };
+  const observeStream = (
+    stream: ReadableStream<UIMessageChunk>,
+    operation: ReturnType<ChatRequestLifecycle["begin"]>,
+  ) => {
+    const reader = stream.getReader();
+    return new ReadableStream<UIMessageChunk>({
+      async pull(controller) {
+        try {
+          const result = await reader.read();
+          if (result.done) {
+            operation.dispose();
+            controller.close();
+          } else controller.enqueue(result.value);
+        } catch (error) {
+          operation.dispose();
+          controller.error(error);
+        }
+      },
+      async cancel(reason) {
+        operation.dispose();
+        await reader.cancel(reason);
+      },
+    });
+  };
 
   class RecoupChatTransport extends WorkflowChatTransport<UI_MESSAGE> {
     override async sendMessages(
       options: Parameters<WorkflowChatTransport<UI_MESSAGE>["sendMessages"]>[0],
     ) {
+      const operation = requestLifecycle.begin();
       const pending = snapshotConsumer?.prepareStream({
         signal: options.abortSignal,
         getMessages,
       });
-      const signal = pending
+      const readerSignal = pending
         ? options.abortSignal
           ? AbortSignal.any([options.abortSignal, pending.signal])
           : pending.signal
         : options.abortSignal;
-      // Per-operation configuration avoids a shared pending-bind callback
-      // accidentally attaching an overlapping request to another scope.
-      const stream = pending
-        ? await new WorkflowChatTransport(
-            transportOptions(pending.bind, signal),
-          ).sendMessages({
-            ...options,
-            abortSignal: signal,
-          })
-        : await super.sendMessages(options);
-      return filterStream(stream, pending?.filter)!;
+      const signal = AbortSignal.any([
+        operation.controller.signal,
+        ...(readerSignal ? [readerSignal] : []),
+      ]);
+      const candidate = options.metadata as
+        | Partial<ChatAdmissionMetadata>
+        | undefined;
+      const metadata =
+        candidate &&
+        typeof candidate.isCurrent === "function" &&
+        typeof candidate.onAccepted === "function" &&
+        typeof candidate.onRejected === "function"
+          ? (candidate as ChatAdmissionMetadata)
+          : undefined;
+      const stream = await new WorkflowChatTransport(
+        transportOptions(operation, pending?.bind, signal, metadata),
+      ).sendMessages({ ...options, abortSignal: signal });
+      return observeStream(filterStream(stream, pending?.filter)!, operation);
     }
 
     /**
@@ -164,27 +271,29 @@ export function createWorkflowChatTransport<UI_MESSAGE extends UIMessage>({
       >[0],
     ) {
       try {
+        const operation = requestLifecycle.begin();
+        operation.settle();
         const pending = snapshotConsumer?.prepareStream({
           signal: options.abortSignal,
           getMessages,
         });
-        const signal = pending
+        const readerSignal = pending
           ? options.abortSignal
             ? AbortSignal.any([options.abortSignal, pending.signal])
             : pending.signal
           : options.abortSignal;
-        const stream = pending
-          ? await new WorkflowChatTransport(
-              transportOptions(pending.bind, signal),
-            ).reconnectToStream({
-              ...options,
-              abortSignal: signal,
-            })
-          : await super.reconnectToStream(options);
+        const signal = AbortSignal.any([
+          operation.controller.signal,
+          ...(readerSignal ? [readerSignal] : []),
+        ]);
+        const stream = await new WorkflowChatTransport(
+          transportOptions(operation, pending?.bind, signal),
+        ).reconnectToStream({ ...options, abortSignal: signal });
         const filtered = filterStream(stream, pending?.filter);
-        return filtered && pending
-          ? await settleSnapshotReconnect(filtered, pending.signal)
-          : filtered;
+        const observed = filtered && observeStream(filtered, operation);
+        return observed && pending
+          ? await settleSnapshotReconnect(observed, pending.signal)
+          : observed;
       } catch (error) {
         if (
           error instanceof Error &&
@@ -197,5 +306,5 @@ export function createWorkflowChatTransport<UI_MESSAGE extends UIMessage>({
     }
   }
 
-  return new RecoupChatTransport(transportOptions());
+  return new RecoupChatTransport();
 }
