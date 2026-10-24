@@ -9,6 +9,7 @@ import {
 } from "@testing-library/react";
 import { Chat } from "@ai-sdk/react";
 import { MessageEditor } from "@/components/VercelChat/message-editor";
+import { ChatInput } from "@/components/VercelChat/ChatInput";
 import {
   createUIMessageStreamResponse,
   type UIMessage,
@@ -21,11 +22,12 @@ import {
   useVercelChatContext,
 } from "@/providers/VercelChatProvider";
 import { createWorkflowChatTransport } from "@/lib/chat/createWorkflowChatTransport";
+import { createChatRequestLifecycle } from "@/lib/chat/createChatRequestLifecycle";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const external = vi.hoisted(() => ({
   getAccessToken: vi.fn(async () => "synthetic-token"),
-  refetchCredits: vi.fn(async () => {}),
+  refetchCredits: vi.fn<(scope?: string) => Promise<void>>(async () => {}),
   persistModel: vi.fn(async () => {}),
   deleteTrailing: vi.fn(async () => {}),
   updateChatState: vi.fn(),
@@ -33,6 +35,7 @@ const external = vi.hoisted(() => ({
   files: [],
   routeChatId: "chat" as string | undefined,
 }));
+const PaymentScopeContext = React.createContext("chat");
 vi.mock("@privy-io/react-auth", () => ({
   usePrivy: () => ({
     authenticated: true,
@@ -56,7 +59,14 @@ vi.mock("@/providers/AccountOverrideProvider", () => ({
   useAccountOverride: () => ({ accountIdOverride: null }),
 }));
 vi.mock("@/providers/PaymentProvider", () => ({
-  usePaymentProvider: () => ({ refetchCredits: external.refetchCredits }),
+  usePaymentProvider: () => {
+    const scope = React.useContext(PaymentScopeContext);
+    const refetchCredits = React.useCallback(
+      () => external.refetchCredits(scope),
+      [scope],
+    );
+    return { refetchCredits };
+  },
 }));
 vi.mock("@/providers/ConversationsProvider", () => ({
   useConversationsProvider: () => ({ addOptimisticConversation: vi.fn() }),
@@ -154,6 +164,7 @@ function fixture(
     method: string;
     body?: { messages: UIMessage[] };
     authorization: string | null;
+    signal?: AbortSignal | null;
   }[] = [];
   vi.stubGlobal(
     "fetch",
@@ -165,6 +176,7 @@ function fixture(
         method,
         body: init.body ? JSON.parse(String(init.body)) : undefined,
         authorization: new Headers(init.headers).get("Authorization"),
+        signal: init.signal,
       });
       if (url.pathname.startsWith("/api/sessions/") && method === "GET")
         return Response.json({ messages: structuredClone(history) });
@@ -190,11 +202,12 @@ async function mount(
   },
   initialMessages?: UIMessage[],
   waitUntilReady = true,
+  renderComposer = false,
 ) {
   let current!: ReturnType<typeof useVercelChatContext>;
   function Consumer() {
     current = useVercelChatContext();
-    return null;
+    return renderComposer ? <ChatInput /> : null;
   }
   const client = new QueryClient({
     defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
@@ -205,15 +218,17 @@ async function mount(
     server = identity,
   ) => (
     <QueryClientProvider client={client}>
-      <VercelChatProvider
-        chatId={chatId}
-        sessionId={server.sessionId}
-        workflowChatId={server.workflowChatId}
-        initialMessages={initialMessages}
-        workspaceStatus={workspace}
-      >
-        <Consumer />
-      </VercelChatProvider>
+      <PaymentScopeContext value={chatId}>
+        <VercelChatProvider
+          chatId={chatId}
+          sessionId={server.sessionId}
+          workflowChatId={server.workflowChatId}
+          initialMessages={initialMessages}
+          workspaceStatus={workspace}
+        >
+          <Consumer />
+        </VercelChatProvider>
+      </PaymentScopeContext>
     </QueryClientProvider>
   );
   const view = render(element());
@@ -1341,4 +1356,468 @@ it("preserves a newer same-chat draft when a retained Send submits its older ren
   expect(h.current().input).toBe("Newer same-chat draft");
   expect(h.current().attachments).toEqual([newerImage]);
   expect(h.current().textAttachments).toEqual([newerText]);
+});
+
+it.each(["denied", "unknown then stopped"] as const)(
+  "quality recovery restores the Send affordance after discarding %s",
+  async (outcome) => {
+    fixture(() => {
+      if (outcome === "unknown then stopped")
+        throw new TypeError("Failed to fetch");
+      return Response.json({ error: "Busy" }, { status: 409 });
+    });
+    const h = await mount(
+      "ready",
+      { sessionId: "session" },
+      undefined,
+      true,
+      true,
+    );
+    act(() => h.current().setInput("Original"));
+    await act(async () => {
+      await h.current().handleSendMessage(event());
+    });
+    act(() => h.current().setInput("Newer ready draft"));
+    if (outcome === "unknown then stopped")
+      await act(async () => {
+        await h.current().stop();
+      });
+    fireEvent.click(h.getByRole("button", { name: "Discard failed message" }));
+    const button = h.getByRole("button", {
+      name: "Send message",
+    }) as HTMLButtonElement;
+    expect(button.disabled).toBe(false);
+    expect(button.querySelector(".lucide-send")).not.toBeNull();
+    expect(button.querySelector(".lucide-x")).toBeNull();
+    expect(h.current().input).toBe("Newer ready draft");
+  },
+);
+
+it("quality recovery keeps original uncertainty visible beside confirmed Stop", async () => {
+  fixture(() => {
+    throw new TypeError("Failed to fetch");
+  });
+  const h = await mount(
+    "ready",
+    { sessionId: "session" },
+    undefined,
+    true,
+    true,
+  );
+  act(() => h.current().setInput("Original"));
+  await act(async () => {
+    await h.current().handleSendMessage(event());
+  });
+  act(() => h.current().setInput("Newer draft"));
+  await act(async () => {
+    await h.current().stop();
+  });
+  const alert = h.getByRole("alert");
+  expect(alert.textContent).toContain("Response stopped.");
+  expect(alert.textContent).toContain(
+    "Couldn’t confirm this message was sent. Please retry.",
+  );
+  expect(alert.textContent).toContain("Original");
+  expect(h.current().hasFailedSubmission).toBe(true);
+  expect(h.getByRole("button", { name: "Retry" })).toBeTruthy();
+  expect(h.current().input).toBe("Newer draft");
+});
+
+it.each([
+  [false, "switch", 200],
+  [false, "unmount", 200],
+  [false, "switch", 409],
+  [false, "unmount", 409],
+  [true, "switch", 200],
+  [true, "unmount", 200],
+  [true, "switch", 409],
+  [true, "unmount", 409],
+] as const)(
+  "operation-owned completion ignores old work (dev=%s, action=%s, status=%i)",
+  async (dev, action, status) => {
+    environment(dev);
+    const admission = pending<Response>();
+    const f = fixture(() => admission.promise);
+    const h = await mount();
+    act(() => h.current().setInput("Old pending"));
+    let send!: Promise<void>;
+    await act(async () => {
+      send = h.current().handleSendMessage(event());
+    });
+    await waitFor(() => expect(f.posts()).toHaveLength(1));
+    external.refetchCredits.mockClear();
+    external.toastError.mockClear();
+    if (action === "switch") {
+      // This check has no current resumed run; a separate control below
+      // explicitly finishes the new view's GET and expects its one refresh.
+      external.routeChatId = undefined;
+      h.switch("new-chat");
+    } else h.unmount();
+    await act(async () => {
+      admission.resolve(
+        status === 200
+          ? response()
+          : Response.json({ error: "Old denial" }, { status }),
+      );
+      await send;
+    });
+    expect(external.refetchCredits).not.toHaveBeenCalled();
+    expect(external.toastError).not.toHaveBeenCalled();
+  },
+);
+
+it.each([false, true])(
+  "operation-owned completion refreshes the current canonical finish exactly once (dev=%s)",
+  async (dev) => {
+    environment(dev);
+    fixture(() =>
+      response([
+        { type: "start", messageId: "canonical-answer" },
+        { type: "text-start", id: "answer" },
+        { type: "text-delta", id: "answer", delta: "Done" },
+        { type: "text-end", id: "answer" },
+        { type: "finish", finishReason: "stop" },
+      ]),
+    );
+    const h = await mount();
+    external.refetchCredits.mockClear();
+    act(() => h.current().setInput("Current"));
+    await act(async () => {
+      await h.current().handleSendMessage(event());
+    });
+    expect(external.refetchCredits).toHaveBeenCalledTimes(1);
+    expect(h.current().status).toBe("ready");
+    expect(external.toastError).not.toHaveBeenCalled();
+  },
+);
+
+it.each([false, true])(
+  "operation-owned completion separates an old POST from the new scope's resumed GET (dev=%s)",
+  async (dev) => {
+    environment(dev);
+    external.routeChatId = undefined;
+    const admission = pending<Response>();
+    let reader!: ReadableStreamDefaultController<UIMessageChunk>;
+    const f = fixture(
+      () => admission.promise,
+      undefined,
+      () =>
+        createUIMessageStreamResponse({
+          stream: new ReadableStream({
+            start(c) {
+              reader = c;
+              c.enqueue({ type: "start", messageId: "saved-answer" });
+            },
+          }),
+          headers: { "x-workflow-run-id": "new-scope-run" },
+        }),
+    );
+    const h = await mount("ready", { sessionId: "session" }, history);
+    act(() => h.current().setInput("Old pending"));
+    let send!: Promise<void>;
+    await act(async () => {
+      send = h.current().handleSendMessage(event());
+    });
+    await waitFor(() => expect(f.posts()).toHaveLength(1));
+    external.refetchCredits.mockClear();
+    external.routeChatId = "new-chat";
+    h.switch("new-chat");
+    await waitFor(() => expect(h.current().status).toBe("streaming"));
+    await act(async () => {
+      admission.resolve(response());
+      await send;
+    });
+    expect(external.refetchCredits).not.toHaveBeenCalled();
+    await act(async () => {
+      reader.enqueue({ type: "finish" });
+      reader.close();
+    });
+    await waitFor(() => expect(h.current().status).toBe("ready"));
+    expect(external.refetchCredits.mock.calls).toEqual([["new-chat"]]);
+    expect(f.posts()).toHaveLength(1);
+    expect(
+      f.calls.filter((call) => call.url.pathname.endsWith("/stream")),
+    ).toHaveLength(1);
+  },
+);
+
+it.each([false, true])(
+  "operation-owned completion refreshes accepted Stop exactly once (dev=%s)",
+  async (dev) => {
+    environment(dev);
+    let reader!: ReadableStreamDefaultController<UIMessageChunk>;
+    const f = fixture(() =>
+      createUIMessageStreamResponse({
+        stream: new ReadableStream({
+          start(c) {
+            reader = c;
+            c.enqueue({ type: "start", messageId: "accepted-answer" });
+          },
+        }),
+        headers: { "x-workflow-run-id": "accepted-run" },
+      }),
+    );
+    const h = await mount();
+    external.refetchCredits.mockClear();
+    act(() => h.current().setInput("Current"));
+    let send!: Promise<void>;
+    await act(async () => {
+      send = h.current().handleSendMessage(event());
+    });
+    await waitFor(() => expect(h.current().status).toBe("streaming"));
+    await act(async () => {
+      await h.current().stop();
+      reader.close();
+      await send;
+    });
+    expect(external.refetchCredits).toHaveBeenCalledTimes(1);
+    expect(f.posts()).toHaveLength(1);
+    expect(f.stops()).toHaveLength(1);
+    expect(h.current().stopState?.status).toBe("stopped");
+  },
+);
+
+it.each([false, true])(
+  "operation-owned completion refreshes a valid resumed finish exactly once (dev=%s)",
+  async (dev) => {
+    environment(dev);
+    let reader!: ReadableStreamDefaultController<UIMessageChunk>;
+    const f = fixture(
+      () => response(),
+      undefined,
+      () =>
+        createUIMessageStreamResponse({
+          stream: new ReadableStream({
+            start(c) {
+              reader = c;
+              c.enqueue({ type: "start", messageId: "saved-answer" });
+            },
+          }),
+          headers: { "x-workflow-run-id": "resumed-run" },
+        }),
+    );
+    const h = await mount("ready", { sessionId: "session" }, undefined, false);
+    await waitFor(() => expect(h.current().status).toBe("streaming"));
+    external.refetchCredits.mockClear();
+    await act(async () => {
+      reader.enqueue({ type: "finish" });
+      reader.close();
+    });
+    await waitFor(() => expect(h.current().status).toBe("ready"));
+    expect(external.refetchCredits).toHaveBeenCalledTimes(1);
+    expect(f.posts()).toHaveLength(0);
+  },
+);
+
+it.each(["throws", "rejects"] as const)(
+  "operation-owned completion stays ready when credit refresh %s",
+  async (failure) => {
+    fixture(() => response());
+    const h = await mount();
+    external.refetchCredits.mockClear();
+    external.refetchCredits.mockImplementationOnce(() => {
+      if (failure === "throws")
+        throw new Error("Synthetic credit refresh error");
+      return Promise.reject(new Error("Synthetic credit refresh error"));
+    });
+    act(() => h.current().setInput("Accepted despite refresh error"));
+    await act(async () => {
+      await h.current().handleSendMessage(event());
+    });
+    expect(external.refetchCredits).toHaveBeenCalledTimes(1);
+    expect(h.current().status).toBe("ready");
+    expect(h.current().hasFailedSubmission).toBe(false);
+    expect(external.toastError).not.toHaveBeenCalled();
+  },
+);
+
+it.each(["throws", "rejects"] as const)(
+  "operation-owned completion releases the transport before credit refresh %s",
+  async (failure) => {
+    fixture(() => response());
+    const lifecycle = createChatRequestLifecycle();
+    const begin = lifecycle.begin;
+    let active = 0;
+    let activeDuringRefresh: number | undefined;
+    lifecycle.begin = () => {
+      active++;
+      const operation = begin();
+      const dispose = operation.dispose;
+      let disposed = false;
+      operation.dispose = () => {
+        if (!disposed) {
+          disposed = true;
+          active--;
+        }
+        dispose();
+      };
+      return operation;
+    };
+    const refresh = vi.fn(() => {
+      activeDuringRefresh = active;
+      if (failure === "throws") throw new Error("Synthetic refresh error");
+      return Promise.reject(new Error("Synthetic refresh error"));
+    });
+    const chat = new Chat({
+      id: "chat",
+      transport: createWorkflowChatTransport({
+        baseUrl: "https://recoup.invalid",
+        getIds: () => ({ chatId: "chat", sessionId: "session" }),
+        getAccessToken: async () => "synthetic-token",
+        requestLifecycle: lifecycle,
+        captureStreamEnd: () => refresh,
+      }),
+    });
+    await chat.sendMessage({ text: "Accepted" });
+    expect(refresh).toHaveBeenCalledTimes(1);
+    expect(activeDuringRefresh).toBe(0);
+    expect(active).toBe(0);
+    expect(chat.status).toBe("ready");
+  },
+);
+
+it.each(["denied", "unknown"] as const)(
+  "operation-owned completion does not refresh an unaccepted %s send",
+  async (outcome) => {
+    external.routeChatId = undefined;
+    fixture(() => {
+      if (outcome === "unknown") throw new TypeError("Failed to fetch");
+      return Response.json({ error: "Busy" }, { status: 409 });
+    });
+    const h = await mount("ready", { sessionId: "session" }, history);
+    act(() => h.current().setInput("Unaccepted"));
+    await act(async () => {
+      await h.current().handleSendMessage(event());
+    });
+    expect(h.current().hasFailedSubmission).toBe(true);
+    expect(external.refetchCredits).not.toHaveBeenCalled();
+  },
+);
+
+it.each([false, true])(
+  "operation-owned completion refreshes confirmed Stop of a resumed run exactly once (dev=%s)",
+  async (dev) => {
+    environment(dev);
+    let reader!: ReadableStreamDefaultController<UIMessageChunk>;
+    let stopCount = 0;
+    const confirmation = pending<Response>();
+    const f = fixture(
+      () => response(),
+      () =>
+        ++stopCount < 3
+          ? Response.json(
+              {
+                status: "error",
+                error: "Workflow is still starting; retry Stop shortly",
+              },
+              { status: stopCount === 1 ? 503 : 502 },
+            )
+          : confirmation.promise,
+      () =>
+        createUIMessageStreamResponse({
+          stream: new ReadableStream({
+            start(c) {
+              reader = c;
+              c.enqueue({ type: "start", messageId: "saved-answer" });
+            },
+          }),
+          headers: { "x-workflow-run-id": "resumed-run" },
+        }),
+    );
+    const h = await mount("ready", { sessionId: "session" }, undefined, false);
+    await waitFor(() => expect(h.current().status).toBe("streaming"));
+    const get = f.calls.find((call) => call.url.pathname.endsWith("/stream"))!;
+    external.refetchCredits.mockClear();
+    for (const status of [503, 502]) {
+      await act(async () => {
+        await h.current().stop();
+      });
+      expect(h.current().stopState?.httpStatus).toBe(status);
+      expect(h.current().status).toBe("streaming");
+      expect(get.signal?.aborted).toBe(false);
+    }
+    let stopping!: Promise<void>;
+    await act(async () => {
+      stopping = h.current().stop();
+    });
+    await waitFor(() => expect(f.stops()).toHaveLength(3));
+    expect(get.signal?.aborted).toBe(false);
+    expect(external.refetchCredits).not.toHaveBeenCalled();
+    await act(async () => {
+      confirmation.resolve(Response.json({ success: true, stopped: true }));
+      await stopping;
+      reader.close();
+    });
+    expect(get.signal?.aborted).toBe(true);
+    expect(external.refetchCredits).toHaveBeenCalledTimes(1);
+    expect(f.posts()).toHaveLength(0);
+    expect(f.stops()).toHaveLength(3);
+    expect(f.stops().every((call) => !call.signal)).toBe(true);
+    expect(h.current().stopState?.status).toBe("stopped");
+  },
+);
+
+it("operation-owned completion ignores a superseded reader and captures the new callback once", async () => {
+  let reader!: ReadableStreamDefaultController<UIMessageChunk>;
+  let postCount = 0;
+  const f = fixture(() =>
+    ++postCount === 1
+      ? createUIMessageStreamResponse({
+          stream: new ReadableStream({
+            start(c) {
+              reader = c;
+              c.enqueue({ type: "start", messageId: "old-answer" });
+            },
+          }),
+          headers: { "x-workflow-run-id": "old-run" },
+        })
+      : response(),
+  );
+  const oldRefresh = vi.fn();
+  const newRefresh = vi.fn();
+  let currentRefresh = oldRefresh;
+  const transport = createWorkflowChatTransport({
+    baseUrl: "https://recoup.invalid",
+    getIds: () => ({ chatId: "chat", sessionId: "session" }),
+    getAccessToken: async () => "synthetic-token",
+    captureStreamEnd: () => currentRefresh,
+  });
+  const oldChat = new Chat({ id: "old-chat", transport });
+  const oldSend = oldChat.sendMessage({ text: "Old" });
+  await waitFor(() => expect(oldChat.status).toBe("streaming"));
+  currentRefresh = newRefresh;
+  const newChat = new Chat({ id: "new-chat", transport });
+  await newChat.sendMessage({ text: "New" });
+  reader.enqueue({ type: "finish" });
+  reader.close();
+  await oldSend;
+  expect(oldRefresh).not.toHaveBeenCalled();
+  expect(newRefresh).toHaveBeenCalledTimes(1);
+  expect(f.posts()).toHaveLength(2);
+});
+
+it("operation-owned completion releases Send while credit refresh is unresolved", async () => {
+  const f = fixture(() => response());
+  const h = await mount();
+  const refresh = pending<void>();
+  external.refetchCredits.mockClear();
+  external.refetchCredits.mockImplementationOnce(() => refresh.promise);
+  act(() => h.current().setInput("First accepted message"));
+  await act(async () => {
+    await h.current().handleSendMessage(event());
+  });
+  expect(h.current().status).toBe("ready");
+  expect(h.current().isGeneratingResponse).toBe(false);
+  expect(h.current().hasFailedSubmission).toBe(false);
+  act(() => h.current().setInput("Next accepted message"));
+  await act(async () => {
+    await h.current().handleSendMessage(event());
+  });
+  expect(h.current().status).toBe("ready");
+  expect(f.posts()).toHaveLength(2);
+  expect(external.refetchCredits).toHaveBeenCalledTimes(2);
+  await act(async () => {
+    refresh.resolve();
+  });
+  expect(external.refetchCredits).toHaveBeenCalledTimes(2);
 });

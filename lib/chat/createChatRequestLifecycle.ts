@@ -4,6 +4,7 @@ export function createChatRequestLifecycle() {
   let unknownAdmission = false;
   function begin() {
     const controller = new AbortController();
+    const readerController = new AbortController();
     let dispatched = false;
     let settled = false;
     let resolveAdmission!: () => void;
@@ -12,6 +13,7 @@ export function createChatRequestLifecycle() {
     });
     const operation = {
       controller,
+      readerController,
       admission,
       markUnknown: () => {
         if (operations.has(operation) && !controller.signal.aborted)
@@ -46,6 +48,8 @@ export function createChatRequestLifecycle() {
     confirmStopped: () => {
       unknownAdmission = false;
     },
+    detachReaders: () =>
+      operations.forEach((operation) => operation.readerController.abort()),
     cancelPreparation: () =>
       operations.forEach((operation) => operation.cancelPreparation()),
     waitForAdmission: () =>

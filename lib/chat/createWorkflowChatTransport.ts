@@ -32,6 +32,8 @@ interface CreateWorkflowChatTransportOptions {
   /** Optional committed host references, never an authorization grant. */
   getDevCatalogSurface?: () => CatalogSurfaceRequest | undefined;
   requestLifecycle?: ChatRequestLifecycle;
+  /** Capture the committed completion effect before this operation starts. */
+  captureStreamEnd?: () => (() => unknown) | undefined;
 }
 
 /**
@@ -62,7 +64,39 @@ export function createWorkflowChatTransport<UI_MESSAGE extends UIMessage>({
   getMessages,
   getDevCatalogSurface,
   requestLifecycle = createChatRequestLifecycle(),
+  captureStreamEnd,
 }: CreateWorkflowChatTransportOptions): WorkflowChatTransport<UI_MESSAGE> {
+  let completionOwner = 0;
+  const captureCompletion = (
+    operation: ReturnType<ChatRequestLifecycle["begin"]>,
+  ) => {
+    const owner = ++completionOwner;
+    const onStreamEnd = captureStreamEnd?.();
+    let accepted = false;
+    let finished = false;
+    return {
+      accept: () => {
+        accepted = true;
+      },
+      finish: () => {
+        if (finished) return;
+        finished = true;
+        operation.dispose();
+        if (
+          !accepted ||
+          operation.controller.signal.aborted ||
+          owner !== completionOwner
+        )
+          return;
+        // Scope disposal aborts our controller; confirmed Stop aborts only the
+        // reader. Credits still refresh for that accepted, stopped run.
+        // Refresh failures must not affect the answer or operation cleanup.
+        try {
+          void Promise.resolve(onStreamEnd?.()).catch(() => {});
+        } catch {}
+      },
+    };
+  };
   const authHeaders = async (): Promise<Record<string, string>> => {
     const token = await getAccessToken();
     if (!token) throw new Error("Please sign in to resume this response");
@@ -91,6 +125,7 @@ export function createWorkflowChatTransport<UI_MESSAGE extends UIMessage>({
     bind?: (ids: { chatId: string; sessionId?: string }) => void,
     signal?: AbortSignal,
     metadata?: ChatAdmissionMetadata,
+    onStreamAccepted?: () => void,
   ): WorkflowChatTransportOptions<UI_MESSAGE> => {
     let ids: ReturnType<typeof getIds> | undefined;
     let admitted = false;
@@ -115,8 +150,12 @@ export function createWorkflowChatTransport<UI_MESSAGE extends UIMessage>({
         url.searchParams.set("streamLifecycle", "explicit-stop-v1");
         try {
           check();
-          if (init?.method === "POST") operation.dispatched();
+          // An active GET is already a reader, rather than pending send
+          // preparation. Stop leaves it attached until the server confirms.
+          operation.dispatched();
           const response = await fetch(url.toString(), init);
+          if (init?.method !== "POST" && response.ok && response.body)
+            onStreamAccepted?.();
           if (
             init?.method === "POST" &&
             response.ok &&
@@ -153,6 +192,7 @@ export function createWorkflowChatTransport<UI_MESSAGE extends UIMessage>({
       },
       onChatSendMessage: () => {
         admitted = true;
+        onStreamAccepted?.();
         operation.settle();
         if (ids) metadata?.onAccepted(ids);
       },
@@ -205,7 +245,7 @@ export function createWorkflowChatTransport<UI_MESSAGE extends UIMessage>({
   };
   const observeStream = (
     stream: ReadableStream<UIMessageChunk>,
-    operation: ReturnType<ChatRequestLifecycle["begin"]>,
+    finish: () => void,
   ) => {
     const reader = stream.getReader();
     return new ReadableStream<UIMessageChunk>({
@@ -213,16 +253,16 @@ export function createWorkflowChatTransport<UI_MESSAGE extends UIMessage>({
         try {
           const result = await reader.read();
           if (result.done) {
-            operation.dispose();
+            finish();
             controller.close();
           } else controller.enqueue(result.value);
         } catch (error) {
-          operation.dispose();
+          finish();
           controller.error(error);
         }
       },
       async cancel(reason) {
-        operation.dispose();
+        finish();
         await reader.cancel(reason);
       },
     });
@@ -233,6 +273,7 @@ export function createWorkflowChatTransport<UI_MESSAGE extends UIMessage>({
       options: Parameters<WorkflowChatTransport<UI_MESSAGE>["sendMessages"]>[0],
     ) {
       const operation = requestLifecycle.begin();
+      const completion = captureCompletion(operation);
       const pending = snapshotConsumer?.prepareStream({
         signal: options.abortSignal,
         getMessages,
@@ -244,6 +285,7 @@ export function createWorkflowChatTransport<UI_MESSAGE extends UIMessage>({
         : options.abortSignal;
       const signal = AbortSignal.any([
         operation.controller.signal,
+        operation.readerController.signal,
         ...(readerSignal ? [readerSignal] : []),
       ]);
       const candidate = options.metadata as
@@ -257,9 +299,18 @@ export function createWorkflowChatTransport<UI_MESSAGE extends UIMessage>({
           ? (candidate as ChatAdmissionMetadata)
           : undefined;
       const stream = await new WorkflowChatTransport(
-        transportOptions(operation, pending?.bind, signal, metadata),
+        transportOptions(
+          operation,
+          pending?.bind,
+          signal,
+          metadata,
+          completion.accept,
+        ),
       ).sendMessages({ ...options, abortSignal: signal });
-      return observeStream(filterStream(stream, pending?.filter)!, operation);
+      return observeStream(
+        filterStream(stream, pending?.filter)!,
+        completion.finish,
+      );
     }
 
     /**
@@ -275,6 +326,7 @@ export function createWorkflowChatTransport<UI_MESSAGE extends UIMessage>({
     ) {
       try {
         const operation = requestLifecycle.begin();
+        const completion = captureCompletion(operation);
         operation.settle();
         const pending = snapshotConsumer?.prepareStream({
           signal: options.abortSignal,
@@ -287,13 +339,20 @@ export function createWorkflowChatTransport<UI_MESSAGE extends UIMessage>({
           : options.abortSignal;
         const signal = AbortSignal.any([
           operation.controller.signal,
+          operation.readerController.signal,
           ...(readerSignal ? [readerSignal] : []),
         ]);
         const stream = await new WorkflowChatTransport(
-          transportOptions(operation, pending?.bind, signal),
+          transportOptions(
+            operation,
+            pending?.bind,
+            signal,
+            undefined,
+            completion.accept,
+          ),
         ).reconnectToStream({ ...options, abortSignal: signal });
         const filtered = filterStream(stream, pending?.filter);
-        const observed = filtered && observeStream(filtered, operation);
+        const observed = filtered && observeStream(filtered, completion.finish);
         return observed && pending
           ? await settleSnapshotReconnect(observed, pending.signal)
           : observed;

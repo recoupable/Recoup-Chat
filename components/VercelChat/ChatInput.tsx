@@ -90,6 +90,11 @@ export function ChatInput({
           >
             <span className="min-w-0 basis-full">
               {stopState?.message || sendError}
+              {sendError &&
+                (stopState?.status === "stopped" ||
+                  stopState?.status === "inactive") && (
+                  <span className="block">{sendError}</span>
+                )}
               {sendError && failedDraftPreview && (
                 <span className="block truncate text-muted-foreground">
                   {failedDraftPreview}
@@ -140,9 +145,11 @@ export function ChatInput({
           disabled={isDisabled || hasPendingUploads}
           sendDisabled={isSendDisabled}
           status={
-            isGeneratingResponse && status !== "streaming"
-              ? "submitted"
-              : status
+            isGeneratingResponse
+              ? status === "streaming"
+                ? "streaming"
+                : "submitted"
+              : "ready"
           }
           submitLabel={isGeneratingResponse ? "Stop response" : "Send message"}
           tools={

@@ -26,6 +26,7 @@ interface UseChatTransportOptions {
   devCatalogSurface?: CatalogSurfaceRequest;
   getMessages?: () => UIMessage[];
   requestScope?: string;
+  onStreamEnd?: () => unknown;
 }
 
 /**
@@ -44,6 +45,7 @@ export function useChatTransport({
   devCatalogSurface,
   getMessages,
   requestScope,
+  onStreamEnd,
 }: UseChatTransportOptions) {
   const { getAccessToken } = usePrivy();
   const requestLifecycle = useMemo(() => createChatRequestLifecycle(), []);
@@ -70,6 +72,7 @@ export function useChatTransport({
     devCatalogSurface,
     getMessages,
     getAccessToken,
+    onStreamEnd,
   });
   const snapshotConsumer = useMemo(
     () => createSnapshotConsumer(() => live.current.snapshotScope),
@@ -89,6 +92,7 @@ export function useChatTransport({
       devCatalogSurface,
       getMessages,
       getAccessToken,
+      onStreamEnd,
     };
     snapshotConsumer.syncScope();
   });
@@ -107,6 +111,7 @@ export function useChatTransport({
       createWorkflowChatTransport({
         baseUrl,
         requestLifecycle,
+        captureStreamEnd: () => live.current.onStreamEnd,
         getIds: () => ({
           sessionId: live.current.sessionId,
           chatId: live.current.chatId,

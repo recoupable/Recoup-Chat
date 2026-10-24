@@ -245,6 +245,7 @@ export function useVercelChat({
     sessionId,
     workspaceStatus,
     requestScope,
+    onStreamEnd: refetchCredits,
     snapshotScope,
     devCatalogSurface:
       snapshotScope?.sessionId &&
@@ -503,10 +504,6 @@ export function useVercelChat({
       console.error("An error occurred, please try again!", e);
       toast.error("An error occurred, please try again!");
     },
-    onFinish: async () => {
-      // Update credits after AI response completes
-      await refetchCredits();
-    },
   });
   const setScopedMessages = useCallback(
     (value: UIMessage[] | ((previous: UIMessage[]) => UIMessage[])) => {
@@ -597,6 +594,9 @@ export function useVercelChat({
           throw new Error("Message admission remains unconfirmed after Stop");
         }
         if (result.stopped) requestLifecycle.confirmStopped();
+        // The SDK's resumed GET does not receive its active-response signal.
+        // Detach that captured reader only after the server outcome is known.
+        requestLifecycle.detachReaders();
         snapshotConsumer.cancel();
         await capturedStopChat();
         if (!isCurrent()) return;
