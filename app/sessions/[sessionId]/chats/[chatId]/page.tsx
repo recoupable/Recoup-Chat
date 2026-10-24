@@ -11,13 +11,25 @@ export default async function SessionChatPage({
   searchParams,
 }: SessionChatPageProps) {
   const { sessionId, chatId } = await params;
-  const catalogId = isChatIntelligentUIEnabled()
-    ? (await searchParams)?.catalogId
-    : undefined;
+  const query = isChatIntelligentUIEnabled() ? await searchParams : undefined;
 
   return (
     <div className="flex flex-col size-full items-center">
-      <Chat id={chatId} sessionId={sessionId} catalogId={catalogId} />
+      <Chat
+        id={chatId}
+        sessionId={sessionId}
+        catalogId={query?.catalogId}
+        catalogQuery={
+          query?.catalogId !== undefined
+            ? {
+                since: query.since,
+                days: query.days,
+                page: query.page,
+                limit: query.limit,
+              }
+            : undefined
+        }
+      />
     </div>
   );
 }

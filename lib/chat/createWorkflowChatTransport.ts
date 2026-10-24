@@ -5,7 +5,7 @@ import {
 } from "@workflow/ai";
 import type { createSnapshotConsumer } from "@/lib/intelligent-ui/chat/createSnapshotConsumer";
 import { settleSnapshotReconnect } from "@/lib/intelligent-ui/chat/settleSnapshotReconnect";
-import type { CatalogIntelligentUIContext } from "@/lib/intelligent-ui/chat/getChatCatalogHost";
+import type { CatalogSurfaceRequest } from "@/lib/intelligent-ui/chat/getChatCatalogHost";
 import { isChatIntelligentUIEnabled } from "@/lib/intelligent-ui/chat/isChatIntelligentUIEnabled";
 
 interface CreateWorkflowChatTransportOptions {
@@ -25,7 +25,7 @@ interface CreateWorkflowChatTransportOptions {
   snapshotConsumer?: ReturnType<typeof createSnapshotConsumer>;
   getMessages?: () => UIMessage[];
   /** Optional committed host references, never an authorization grant. */
-  getIntelligentUIContext?: () => CatalogIntelligentUIContext | undefined;
+  getDevCatalogSurface?: () => CatalogSurfaceRequest | undefined;
 }
 
 /**
@@ -54,7 +54,7 @@ export function createWorkflowChatTransport<UI_MESSAGE extends UIMessage>({
   waitForWorkspace,
   snapshotConsumer,
   getMessages,
-  getIntelligentUIContext,
+  getDevCatalogSurface,
 }: CreateWorkflowChatTransportOptions): WorkflowChatTransport<UI_MESSAGE> {
   const authHeaders = async (): Promise<Record<string, string>> => {
     const token = await getAccessToken().catch(() => null);
@@ -90,12 +90,13 @@ export function createWorkflowChatTransport<UI_MESSAGE extends UIMessage>({
       signal?.throwIfAborted();
       const ids = getIds();
       bind?.(ids);
-      const intelligentUI = isChatIntelligentUIEnabled()
-        ? getIntelligentUIContext?.()
+      const devCatalogSurface = isChatIntelligentUIEnabled()
+        ? getDevCatalogSurface?.()
         : undefined;
       // This field belongs to the committed host, not per-message callers.
       const requestBody = { ...body };
       delete requestBody.intelligentUI;
+      delete requestBody.devCatalogSurface;
       const recoupAccessToken = await getAccessToken().catch(() => null);
       const headers = await authHeaders();
       signal?.throwIfAborted();
@@ -107,7 +108,7 @@ export function createWorkflowChatTransport<UI_MESSAGE extends UIMessage>({
           sessionId: ids.sessionId,
           chatId: ids.chatId,
           ...(recoupAccessToken ? { recoupAccessToken } : {}),
-          ...(intelligentUI ? { intelligentUI } : {}),
+          ...(devCatalogSurface ? { devCatalogSurface } : {}),
         },
       };
     },

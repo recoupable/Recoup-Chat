@@ -4,6 +4,8 @@ export interface SnapshotHostScope {
   workspaceId: string;
   /** Optional host namespace; the reusable consumer does not infer its meaning. */
   workspaceKind?: string;
+  /** Opaque normalized host query identity; not source or authorization proof. */
+  queryKey?: string;
   sessionId: string;
   chatId: string;
   subject: { kind: string; id: string };
@@ -20,5 +22,6 @@ export function getSnapshotScopeKey(scope: SnapshotHostScope): string {
     scope.subject.kind,
     scope.subject.id,
     ...(scope.workspaceKind !== undefined ? [scope.workspaceKind] : []),
+    ...(scope.queryKey !== undefined ? [{ queryKey: scope.queryKey }] : []),
   ]);
 }

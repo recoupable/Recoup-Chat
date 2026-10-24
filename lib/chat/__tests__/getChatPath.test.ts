@@ -21,6 +21,16 @@ describe("getChatPath", () => {
     expect(getChatPath("sess-1", "chat-2", ["invalid & ref", "second"])).toBe(
       "/sessions/sess-1/chats/chat-2?catalogId=invalid+%26+ref&catalogId=second",
     );
+    expect(
+      getChatPath("sess-1", "chat-2", "catalog-ref", {
+        since: ["bad & date", "2026-09-01"],
+        days: [],
+        page: "2",
+        limit: "",
+      }),
+    ).toBe(
+      "/sessions/sess-1/chats/chat-2?catalogId=catalog-ref&since=bad+%26+date&since=2026-09-01&days=&page=2&limit=",
+    );
     expect(getChatPath("sess-1", "chat-2", [])).toBe(
       "/sessions/sess-1/chats/chat-2?catalogId=",
     );

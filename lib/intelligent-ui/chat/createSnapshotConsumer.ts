@@ -60,6 +60,9 @@ export function createSnapshotConsumer(
           scope.subject.kind,
           scope.subject.id,
           ...(scope.workspaceKind !== undefined ? [scope.workspaceKind] : []),
+          ...(scope.queryKey !== undefined
+            ? [{ queryKey: scope.queryKey }]
+            : []),
         ])
       : undefined;
 

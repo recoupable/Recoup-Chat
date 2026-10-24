@@ -1,3 +1,4 @@
+import type { CatalogQueryInput } from "@/lib/intelligent-ui/chat/getChatCatalogHost";
 import React, {
   createContext,
   useContext,
@@ -72,6 +73,7 @@ interface VercelChatProviderProps {
   children: ReactNode;
   chatId: string;
   catalogId?: string | string[];
+  catalogQuery?: CatalogQueryInput;
   /**
    * Session id for recoup-api `/api/chat`. Absent only on the
    * new-chat bootstrap path until provisioning resolves; the transport holds
@@ -92,6 +94,7 @@ export function VercelChatProvider({
   children,
   chatId,
   catalogId,
+  catalogQuery,
   sessionId,
   workflowChatId,
   workspaceStatus = "ready",
@@ -144,6 +147,7 @@ export function VercelChatProvider({
   } = useVercelChat({
     id: chatId,
     catalogId,
+    catalogQuery,
     sessionId,
     workflowChatId,
     initialMessages,

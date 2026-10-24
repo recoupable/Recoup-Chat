@@ -210,7 +210,11 @@ it.each(["production", "disabled"])(
       messages: [],
       trigger: "submit-message",
       abortSignal: undefined,
-      body: { ...ordinary, intelligentUI: { forged: true } },
+      body: {
+        ...ordinary,
+        intelligentUI: { forged: true },
+        devCatalogSurface: { forged: true },
+      },
     });
     const reader = stream.getReader();
     while (!(await reader.read()).done) {

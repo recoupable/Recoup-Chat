@@ -8,7 +8,7 @@ import { usePrivy } from "@privy-io/react-auth";
 import { createWorkflowChatTransport } from "@/lib/chat/createWorkflowChatTransport";
 import { waitForWorkspace } from "@/lib/chat/waitForWorkspace";
 import type { WorkspaceStatus } from "@/components/VercelChat/WorkspaceStatusIndicator";
-import type { CatalogIntelligentUIContext } from "@/lib/intelligent-ui/chat/getChatCatalogHost";
+import type { CatalogSurfaceRequest } from "@/lib/intelligent-ui/chat/getChatCatalogHost";
 
 interface UseChatTransportOptions {
   /** Chat row id (also the AI SDK `useChat({ id })` instance id). */
@@ -22,7 +22,7 @@ interface UseChatTransportOptions {
   /** Workspace lifecycle; a request holds until `ready` (app#2052). */
   workspaceStatus?: WorkspaceStatus;
   snapshotScope?: SnapshotHostScope;
-  intelligentUIContext?: CatalogIntelligentUIContext;
+  devCatalogSurface?: CatalogSurfaceRequest;
   getMessages?: () => UIMessage[];
 }
 
@@ -39,7 +39,7 @@ export function useChatTransport({
   sessionId,
   workspaceStatus = "ready",
   snapshotScope,
-  intelligentUIContext,
+  devCatalogSurface,
   getMessages,
 }: UseChatTransportOptions) {
   const { getAccessToken } = usePrivy();
@@ -59,7 +59,7 @@ export function useChatTransport({
     sessionId,
     workspaceStatus,
     snapshotScope,
-    intelligentUIContext,
+    devCatalogSurface,
     getMessages,
     getAccessToken,
   });
@@ -78,7 +78,7 @@ export function useChatTransport({
       sessionId,
       workspaceStatus,
       snapshotScope,
-      intelligentUIContext,
+      devCatalogSurface,
       getMessages,
       getAccessToken,
     };
@@ -109,9 +109,9 @@ export function useChatTransport({
           ? snapshotConsumer
           : undefined,
         getMessages: () => live.current.getMessages?.() ?? [],
-        getIntelligentUIContext: () =>
+        getDevCatalogSurface: () =>
           isChatIntelligentUIEnabled()
-            ? live.current.intelligentUIContext
+            ? live.current.devCatalogSurface
             : undefined,
       }),
     [baseUrl, snapshotConsumer],

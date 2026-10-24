@@ -1,3 +1,4 @@
+import type { CatalogQueryInput } from "@/lib/intelligent-ui/chat/getChatCatalogHost";
 import { createChatSubmissionGuard } from "@/lib/chat/createChatSubmissionGuard";
 import { useChat } from "@ai-sdk/react";
 import { useMessageLoader } from "./useMessageLoader";
@@ -42,6 +43,7 @@ import type { SnapshotHostScope } from "@/lib/intelligent-ui/chat/getSnapshotSco
 interface UseVercelChatProps {
   id: string;
   catalogId?: string | string[];
+  catalogQuery?: CatalogQueryInput;
   /**
    * Session id from `/sessions/[sessionId]/chats/[chatId]` (always
    * present) or the new-chat bootstrap (absent until provisioning
@@ -68,6 +70,7 @@ interface UseVercelChatProps {
 export function useVercelChat({
   id,
   catalogId,
+  catalogQuery,
   sessionId,
   workflowChatId,
   workspaceStatus,
@@ -86,6 +89,7 @@ export function useVercelChat({
   const effectiveAccountId = accountIdOverride ?? userId;
   const catalogHost = getChatCatalogHost({
     catalogId,
+    catalogQuery,
     workspaceInitialized: isInitialized,
     organizationId,
     accountId: effectiveAccountId,
@@ -125,16 +129,20 @@ export function useVercelChat({
     authenticatedUser?.id &&
     userId &&
     effectiveAccountId &&
-    hostWorkspace &&
+    (hostWorkspace || catalogHost.kind === "catalog") &&
     hostSubject
       ? {
           actorId: authenticatedUser.id,
           accountId: effectiveAccountId,
-          workspaceId: hostWorkspace.id,
+          workspaceId: hostWorkspace?.id ?? "",
           ...(catalogHost.kind === "catalog" && {
-            workspaceKind: hostWorkspace.kind,
+            workspaceKind: hostWorkspace?.kind ?? "uninitialized",
+            queryKey: catalogHost.queryKey,
           }),
-          sessionId: sessionId ?? "",
+          sessionId:
+            catalogHost.kind === "catalog" && !catalogHost.query
+              ? ""
+              : (sessionId ?? ""),
           chatId: transportChatId,
           subject: hostSubject,
         }
@@ -145,14 +153,14 @@ export function useVercelChat({
       sessionId,
       workspaceStatus,
       snapshotScope,
-      intelligentUIContext:
+      devCatalogSurface:
         snapshotScope?.sessionId &&
         catalogHost.kind === "catalog" &&
-        catalogHost.workspace
+        catalogHost.workspace &&
+        catalogHost.query
           ? {
-              schemaVersion: 1,
-              workspace: catalogHost.workspace,
-              subject: catalogHost.subject,
+              workspaceId: catalogHost.workspace.id,
+              query: catalogHost.query,
             }
           : undefined,
       getMessages: () => messagesRef.current,
@@ -168,7 +176,9 @@ export function useVercelChat({
         sessionId,
         transportChatId,
         intelligentUI?.scopeKey,
-        ...(catalogHost.kind !== "absent" ? [catalogId, isInitialized] : []),
+        ...(catalogHost.kind !== "absent"
+          ? [catalogId, isInitialized, snapshotScope?.queryKey]
+          : []),
       ])
     : "";
   useLayoutEffect(() => {
@@ -528,9 +538,9 @@ export function useVercelChat({
     window.history.replaceState(
       {},
       "",
-      getChatPath(sessionId, transportChatId, catalogId),
+      getChatPath(sessionId, transportChatId, catalogId, catalogQuery),
     );
-  }, [transportChatId, sessionId, catalogId]);
+  }, [transportChatId, sessionId, catalogId, catalogQuery]);
 
   // On a cold start the ids land about a second after Send (app#2052), so
   // the URL update in handleSendMessage is a no-op then; this catches up.
