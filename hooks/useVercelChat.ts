@@ -103,13 +103,12 @@ export function useVercelChat({
         authenticatedUser?.id &&
         userId &&
         organizationId &&
-        artistId &&
-        sessionId
+        artistId
           ? {
               actorId: authenticatedUser.id,
               accountId: accountIdOverride ?? userId,
               workspaceId: organizationId,
-              sessionId,
+              sessionId: sessionId ?? "",
               chatId: transportChatId,
               subject: { kind: "artist", id: artistId },
             }

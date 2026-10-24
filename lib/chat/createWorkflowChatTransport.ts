@@ -1,6 +1,10 @@
 import type { UIMessage, UIMessageChunk } from "ai";
-import { WorkflowChatTransport } from "@workflow/ai";
+import {
+  WorkflowChatTransport,
+  type WorkflowChatTransportOptions,
+} from "@workflow/ai";
 import type { createSnapshotConsumer } from "@/lib/intelligent-ui/chat/createSnapshotConsumer";
+import { settleSnapshotReconnect } from "@/lib/intelligent-ui/chat/settleSnapshotReconnect";
 
 interface CreateWorkflowChatTransportOptions {
   /** recoup-api origin, e.g. `https://api.recoupable.dev`. */
@@ -69,16 +73,61 @@ export function createWorkflowChatTransport<UI_MESSAGE extends UIMessage>({
         )
       : stream;
 
+  const transportOptions = (
+    bind?: (ids: { chatId: string; sessionId?: string }) => void,
+  ): WorkflowChatTransportOptions<UI_MESSAGE> => ({
+    api: `${baseUrl}/api/chat`,
+    prepareSendMessagesRequest: async ({ messages, body }) => {
+      // The intent token already exists while provisioning; Stop invalidates
+      // it. Bind only once IDs settle, before async auth can change host scope.
+      await waitForWorkspace?.();
+      const ids = getIds();
+      bind?.(ids);
+      const recoupAccessToken = await getAccessToken().catch(() => null);
+      return {
+        headers: await authHeaders(),
+        body: {
+          ...body,
+          messages,
+          sessionId: ids.sessionId,
+          chatId: ids.chatId,
+          ...(recoupAccessToken ? { recoupAccessToken } : {}),
+        },
+      };
+    },
+    // Cursor counting and authenticated recovery remain owned by the SDK. A
+    // send's internal reconnect reuses its already-bound filter and identity.
+    prepareReconnectToStreamRequest: async () => {
+      const ids = getIds();
+      bind?.(ids);
+      return {
+        api: `${baseUrl}/api/chat/${ids.chatId}/stream`,
+        headers: await authHeaders(),
+      };
+    },
+  });
+
   class RecoupChatTransport extends WorkflowChatTransport<UI_MESSAGE> {
     override async sendMessages(
       options: Parameters<WorkflowChatTransport<UI_MESSAGE>["sendMessages"]>[0],
     ) {
-      const filter = snapshotConsumer?.beginStream({
+      const pending = snapshotConsumer?.prepareStream({
         signal: options.abortSignal,
         getMessages,
       });
-      const stream = await super.sendMessages(options);
-      return filterStream(stream, filter)!;
+      // Per-operation configuration avoids a shared pending-bind callback
+      // accidentally attaching an overlapping request to another scope.
+      const stream = pending
+        ? await new WorkflowChatTransport(
+            transportOptions(pending.bind),
+          ).sendMessages({
+            ...options,
+            abortSignal: options.abortSignal
+              ? AbortSignal.any([options.abortSignal, pending.signal])
+              : pending.signal,
+          })
+        : await super.sendMessages(options);
+      return filterStream(stream, pending?.filter)!;
     }
 
     /**
@@ -93,15 +142,24 @@ export function createWorkflowChatTransport<UI_MESSAGE extends UIMessage>({
       >[0],
     ) {
       try {
-        const lastMessage = getMessages?.().at(-1);
-        const filter = snapshotConsumer?.beginStream({
+        const pending = snapshotConsumer?.prepareStream({
           signal: options.abortSignal,
           getMessages,
-          messageId:
-            lastMessage?.role === "assistant" ? lastMessage.id : undefined,
         });
-        const stream = await super.reconnectToStream(options);
-        return filterStream(stream, filter);
+        const stream = pending
+          ? await new WorkflowChatTransport(
+              transportOptions(pending.bind),
+            ).reconnectToStream({
+              ...options,
+              abortSignal: options.abortSignal
+                ? AbortSignal.any([options.abortSignal, pending.signal])
+                : pending.signal,
+            })
+          : await super.reconnectToStream(options);
+        const filtered = filterStream(stream, pending?.filter);
+        return filtered && pending
+          ? await settleSnapshotReconnect(filtered, pending.signal)
+          : filtered;
       } catch (error) {
         if (
           error instanceof Error &&
@@ -114,31 +172,5 @@ export function createWorkflowChatTransport<UI_MESSAGE extends UIMessage>({
     }
   }
 
-  return new RecoupChatTransport({
-    api: `${baseUrl}/api/chat`,
-    prepareSendMessagesRequest: async ({ messages, body }) => {
-      // Stop during the wait aborts the signal useChat hands to fetch, so an
-      // abandoned send never reaches the api.
-      await waitForWorkspace?.();
-      const { sessionId, chatId } = getIds();
-      const recoupAccessToken = await getAccessToken().catch(() => null);
-      return {
-        headers: await authHeaders(),
-        body: {
-          ...body,
-          messages,
-          sessionId,
-          chatId,
-          ...(recoupAccessToken ? { recoupAccessToken } : {}),
-        },
-      };
-    },
-    // The default reconnect path is keyed by workflow run id; ours is keyed by
-    // chat id, and is authenticated like every other endpoint. `startIndex` is
-    // appended by the transport from its own chunk count — never by us.
-    prepareReconnectToStreamRequest: async () => ({
-      api: `${baseUrl}/api/chat/${getIds().chatId}/stream`,
-      headers: await authHeaders(),
-    }),
-  });
+  return new RecoupChatTransport(transportOptions());
 }

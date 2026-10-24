@@ -9,9 +9,11 @@ import EvidenceDialog from "./EvidenceDialog";
 export default function ChatSnapshot({
   surface,
   scopeKey,
+  messageId,
 }: {
   surface: Surface;
   scopeKey: string;
+  messageId: string;
 }) {
   const [evidenceId, setEvidenceId] = useState<string | null>(null);
   const [returnFocus, setReturnFocus] = useState<HTMLElement | null>(null);
@@ -19,7 +21,7 @@ export default function ChatSnapshot({
     <>
       <AnswerRenderer
         surface={surface}
-        stateScope={`${scopeKey}:${surface.id}`}
+        stateScope={JSON.stringify([scopeKey, messageId, surface.id])}
         onInspectEvidence={(id, element) => {
           setReturnFocus(element);
           setEvidenceId(id);

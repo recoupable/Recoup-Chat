@@ -21,6 +21,12 @@ export interface ChatSnapshotBinding {
   scopeKey: string;
 }
 
+interface SnapshotStreamOptions {
+  signal?: AbortSignal;
+  messageId?: string;
+  getMessages?: () => UIMessage[];
+}
+
 /**
  * Owned by the normal chat transport. Only full, validated snapshots reach the
  * SDK's stable-ID replacement. The workflow's upstream cursor still counts every
@@ -31,19 +37,44 @@ export function createSnapshotConsumer(
 ) {
   let boundScope: string | undefined;
   let scopeIdentity: string | undefined;
+  let hostSubjectIdentity: string | undefined;
   let scopeEpoch = 0;
   let generation = 0;
+  let pendingAbort: AbortController | undefined;
   let disposed = false;
   let retainedBytes = 0;
   const accepted = new Map<string, AcceptedSnapshot>();
+  const boundMessageIds = new Set<string>();
+  let hydratedTailId: string | undefined;
   let historicalText = new WeakMap<
     object,
     { messageId: string; surfaceId: string; revision: number; text: string }
   >();
 
+  const subjectIdentity = (scope: SnapshotHostScope | undefined) =>
+    scope
+      ? JSON.stringify([
+          scope.actorId,
+          scope.accountId,
+          scope.workspaceId,
+          scope.subject.kind,
+          scope.subject.id,
+        ])
+      : undefined;
+
+  const invalidate = () => {
+    generation++;
+    pendingAbort?.abort();
+    pendingAbort = undefined;
+  };
+
   const syncScope = () => {
     if (disposed) return { scope: undefined, key: undefined };
     const proposed = isChatIntelligentUIEnabled() ? getScope() : undefined;
+    const proposedSubject = subjectIdentity(proposed);
+    if (hostSubjectIdentity && hostSubjectIdentity !== proposedSubject)
+      invalidate();
+    hostSubjectIdentity = proposedSubject;
     const scope =
       proposed &&
       proposed.actorId &&
@@ -57,14 +88,25 @@ export function createSnapshotConsumer(
         : undefined;
     const identity = scope ? getSnapshotScopeKey(scope) : undefined;
     if (identity !== scopeIdentity) {
+      // Becoming ready may complete a pending first send. Replacing an already
+      // bound session/chat invalidates pending operations as well as live ones.
+      if (scopeIdentity) invalidate();
       scopeIdentity = identity;
       boundScope = identity ? `${identity}:${++scopeEpoch}` : undefined;
-      generation++;
       accepted.clear();
+      boundMessageIds.clear();
+      hydratedTailId = undefined;
       retainedBytes = 0;
       historicalText = new WeakMap();
     }
     return { scope, key: boundScope };
+  };
+
+  const bindMessage = (messageId: string) => {
+    boundMessageIds.delete(messageId);
+    boundMessageIds.add(messageId);
+    if (boundMessageIds.size > MAX_RETAINED_MESSAGES)
+      boundMessageIds.delete(boundMessageIds.values().next().value!);
   };
 
   const parseCandidate = (part: unknown, scope: SnapshotHostScope) => {
@@ -119,6 +161,7 @@ export function createSnapshotConsumer(
     retainedBytes += candidate.bytes - (previous?.bytes ?? 0);
     accepted.delete(messageId);
     accepted.set(messageId, candidate);
+    bindMessage(messageId);
     while (
       accepted.size > MAX_RETAINED_MESSAGES ||
       retainedBytes > SURFACE_STREAM_LIMITS.totalBytes
@@ -131,14 +174,133 @@ export function createSnapshotConsumer(
     return true;
   };
 
+  const prepareStream = ({
+    signal,
+    messageId,
+    getMessages,
+  }: SnapshotStreamOptions = {}) => {
+    const { key: intentScope } = syncScope();
+    const proposed = getScope();
+    // A pending workspace can supply actor/subject identity before its session
+    // exists. Provisioning may fill session/chat IDs, never replace that actor.
+    const intentSubject = subjectIdentity(proposed);
+    invalidate();
+    const abort = new AbortController();
+    pendingAbort = abort;
+    const streamGeneration = generation;
+    let streamScope: string | undefined;
+    let bound = false;
+    let currentMessageId = messageId;
+    let events = 0;
+    let bytes = 0;
+    const active = () => {
+      const state = syncScope();
+      return state.scope &&
+        streamScope &&
+        state.key === streamScope &&
+        generation === streamGeneration &&
+        !signal?.aborted
+        ? state.scope
+        : undefined;
+    };
+    const readFloor = () => {
+      const message = getMessages?.().find(
+        (item) => item.id === currentMessageId,
+      );
+      if (!message) return undefined;
+      for (const part of message.parts) {
+        if (
+          part.type !== SNAPSHOT_TYPE ||
+          !("data" in part) ||
+          !part.data ||
+          typeof part.data !== "object"
+        )
+          continue;
+        const floor = historicalText.get(part.data);
+        if (floor?.messageId === currentMessageId) return floor;
+      }
+      return undefined;
+    };
+    const resolveHistoryTarget = () => {
+      const messages = getMessages?.();
+      const last = messages?.at(-1);
+      if (last)
+        return last.role === "assistant" && boundMessageIds.has(last.id)
+          ? last.id
+          : undefined;
+      // hydrate precedes setMessages, whose React getter can lag until commit.
+      return hydratedTailId && boundMessageIds.has(hydratedTailId)
+        ? hydratedTailId
+        : undefined;
+    };
+    return {
+      signal: abort.signal,
+      /** Called once when the actual request IDs are selected, after provisioning. */
+      bind(ids?: { chatId: string; sessionId?: string }) {
+        if (bound) return;
+        bound = true;
+        const { scope, key } = syncScope();
+        if (
+          !scope ||
+          generation !== streamGeneration ||
+          signal?.aborted ||
+          (intentScope && intentScope !== key) ||
+          (intentSubject && intentSubject !== subjectIdentity(scope)) ||
+          (ids &&
+            (ids.chatId !== scope.chatId || ids.sessionId !== scope.sessionId))
+        )
+          return;
+        streamScope = key;
+      },
+      filter(chunk: UIMessageChunk): UIMessageChunk | undefined {
+        if (chunk.type === "start") {
+          currentMessageId = chunk.messageId ?? currentMessageId;
+          if (currentMessageId && active()) bindMessage(currentMessageId);
+        }
+        if (chunk.type !== SNAPSHOT_TYPE) return chunk;
+        const scope = active();
+        if (!scope) return undefined;
+        currentMessageId ??= resolveHistoryTarget();
+        if (
+          !currentMessageId ||
+          ++events > SURFACE_STREAM_LIMITS.events ||
+          bytes >= SURFACE_STREAM_LIMITS.totalBytes
+        )
+          return undefined;
+        const parsed = parseCandidate(chunk, scope);
+        // Invalid/oversized candidates also consume the stream's bounded budget.
+        bytes += parsed?.bytes ?? SURFACE_STREAM_LIMITS.lineBytes;
+        const candidate = parsed?.candidate;
+        const floor = readFloor();
+        if (
+          bytes > SURFACE_STREAM_LIMITS.totalBytes ||
+          !candidate ||
+          (floor &&
+            (floor.surfaceId !== candidate.surface.id ||
+              floor.revision >= candidate.surface.revision)) ||
+          !accept(currentMessageId, candidate)
+        )
+          return undefined;
+        return {
+          type: SNAPSHOT_TYPE,
+          id: candidate.surface.id,
+          data: candidate.surface,
+        };
+      },
+    };
+  };
+
   return {
     syncScope,
     /** Capture this key with a history request; a late previous-scope load cannot seed UI. */
     hydrate(messages: UIMessage[], scopeKey: string) {
       const { scope, key } = syncScope();
       if (!scope || key !== scopeKey) return messages;
+      const tail = messages.at(-1);
+      hydratedTailId = tail?.role === "assistant" ? tail.id : undefined;
       return messages.map((message) => {
         if (message.role !== "assistant") return message;
+        bindMessage(message.id);
         let messageSurfaceId: string | undefined;
         let latest: AcceptedSnapshot | undefined;
         let snapshotIndex: number | undefined;
@@ -224,90 +386,21 @@ export function createSnapshotConsumer(
     },
     /** Cancellation retains accepted content, but invalidates every in-flight token. */
     cancel() {
-      generation++;
+      invalidate();
     },
     dispose() {
       disposed = true;
-      generation++;
+      invalidate();
     },
     activate() {
       disposed = false;
       syncScope();
     },
-    beginStream({
-      signal,
-      messageId,
-      getMessages,
-    }: {
-      signal?: AbortSignal;
-      messageId?: string;
-      getMessages?: () => UIMessage[];
-    } = {}) {
-      const { key: streamScope } = syncScope();
-      const streamGeneration = ++generation;
-      let currentMessageId = messageId;
-      const readFloor = () => {
-        const message = getMessages?.().find(
-          (item) => item.id === currentMessageId,
-        );
-        if (!message) return undefined;
-        for (const part of message.parts) {
-          if (
-            part.type !== SNAPSHOT_TYPE ||
-            !("data" in part) ||
-            !part.data ||
-            typeof part.data !== "object"
-          )
-            continue;
-          const floor = historicalText.get(part.data);
-          if (floor?.messageId === currentMessageId) return floor;
-        }
-        return undefined;
-      };
-      let floor = readFloor();
-      let events = 0;
-      let bytes = 0;
-      return (chunk: UIMessageChunk): UIMessageChunk | undefined => {
-        if (chunk.type === "start") {
-          currentMessageId = chunk.messageId ?? currentMessageId;
-          floor = readFloor();
-        }
-        if (chunk.type !== SNAPSHOT_TYPE) return chunk;
-        const { scope, key } = syncScope();
-        if (
-          !scope ||
-          !streamScope ||
-          key !== streamScope ||
-          generation !== streamGeneration ||
-          signal?.aborted ||
-          !currentMessageId
-        )
-          return undefined;
-        if (
-          ++events > SURFACE_STREAM_LIMITS.events ||
-          bytes >= SURFACE_STREAM_LIMITS.totalBytes
-        )
-          return undefined;
-        const parsed = parseCandidate(chunk, scope);
-        // Count invalid/oversized candidates too, so repeated malformed input
-        // cannot keep invoking schema validation forever within one stream.
-        bytes += parsed?.bytes ?? SURFACE_STREAM_LIMITS.lineBytes;
-        const candidate = parsed?.candidate;
-        if (
-          bytes > SURFACE_STREAM_LIMITS.totalBytes ||
-          !candidate ||
-          (floor &&
-            (floor.surfaceId !== candidate.surface.id ||
-              floor.revision >= candidate.surface.revision)) ||
-          !accept(currentMessageId, candidate)
-        )
-          return undefined;
-        return {
-          type: SNAPSHOT_TYPE,
-          id: candidate.surface.id,
-          data: candidate.surface,
-        };
-      };
+    prepareStream,
+    beginStream(options: SnapshotStreamOptions = {}) {
+      const stream = prepareStream(options);
+      stream.bind();
+      return stream.filter;
     },
   };
 }

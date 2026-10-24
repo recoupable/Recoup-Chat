@@ -1,6 +1,12 @@
 // @vitest-environment jsdom
 import React from "react";
-import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import {
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+  within,
+} from "@testing-library/react";
 import type { UIMessage } from "ai";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import { MessageParts } from "../MessageParts";
@@ -140,6 +146,31 @@ it("renders an accepted snapshot inline beside ordinary text and preserves retry
   expect(reload).toHaveBeenCalledTimes(1);
 });
 
+it("preserves exactly one Retry on completed text followed by an accepted snapshot", async () => {
+  const { view, message, reload } = fixture(
+    chatSnapshotPart(1, "Accepted trailing response"),
+  );
+  const text = { type: "text" as const, text: "Completed ordinary answer" };
+  const { rerender } = render(view({ ...message, parts: [text] }));
+  expect(screen.getAllByRole("button", { name: "Retry" })).toHaveLength(1);
+  rerender(view({ ...message, parts: [text, message.parts[1]] }));
+  await screen.findByText("Accepted trailing response");
+  expect(screen.getAllByRole("button", { name: "Retry" })).toHaveLength(1);
+  fireEvent.click(screen.getByRole("button", { name: "Retry" }));
+  expect(reload).toHaveBeenCalledTimes(1);
+});
+
+it("preserves Retry for accepted trailing UI when its renderer falls back to text", async () => {
+  const part = chatSnapshotPart(1, "Fallback remains retryable");
+  part.data.title = "Synthetic renderer failure";
+  vi.spyOn(console, "error").mockImplementation(() => {});
+  const { view, message, reload } = fixture(part);
+  render(view({ ...message, parts: message.parts.slice(0, 2) }));
+  await screen.findByText("Fallback remains retryable");
+  fireEvent.click(screen.getByRole("button", { name: "Retry" }));
+  expect(reload).toHaveBeenCalledOnce();
+});
+
 it("does not render unaccepted or unsupported data, and keeps reasoning/files/tools/text routes", () => {
   const { view, message } = fixture();
   const unaccepted: UIMessage = {
@@ -261,6 +292,60 @@ it("resets local controls for changed interval meaning and hides old UI when hos
   rerender(view());
   expect(screen.queryByRole("group", { name: "Explore sections" })).toBeNull();
   expect(screen.getByText("Ordinary text before.")).toBeTruthy();
+});
+
+it("isolates timeline selection between assistant messages reusing the same Surface/component IDs", () => {
+  const { consumer, binding, message } = fixture(timelinePart(1));
+  const view = (messages: UIMessage[]) => (
+    <VercelChatContext.Provider
+      value={
+        {
+          messages,
+          status: "ready",
+          intelligentUI: binding,
+        } as unknown as React.ContextType<typeof VercelChatContext>
+      }
+    >
+      {messages.map((item) => (
+        <MessageParts
+          key={item.id}
+          message={item}
+          mode="view"
+          setMode={() => {}}
+        />
+      ))}
+    </VercelChatContext.Provider>
+  );
+  const { rerender } = render(view([message]));
+  const firstChorus = screen.getByRole("button", {
+    name: "Chorus, 0:28 to 0:40",
+  });
+  fireEvent.click(firstChorus);
+  expect(firstChorus.getAttribute("aria-current")).toBe("true");
+  const part = timelinePart(1);
+  const next = consumer.beginStream({ messageId: "assistant-2" })(part)!;
+  const second: UIMessage = {
+    id: "assistant-2",
+    role: "assistant",
+    parts: [next as UIMessage["parts"][number]],
+  };
+  rerender(view([message, second]));
+  const groups = screen.getAllByRole("group", { name: "Explore sections" });
+  expect(groups).toHaveLength(2);
+  expect(
+    within(groups[0]).getByRole("button", { name: "Chorus, 0:28 to 0:40" }),
+  ).toBe(firstChorus);
+  expect(firstChorus.getAttribute("aria-current")).toBe("true");
+  expect(
+    within(groups[1])
+      .getByRole("button", { name: "Intro, 0:00 to 0:08" })
+      .getAttribute("aria-current"),
+  ).toBe("true");
+  expect(
+    within(groups[1])
+      .getByRole("button", { name: "Chorus, 0:28 to 0:40" })
+      .getAttribute("aria-current"),
+  ).toBeNull();
 });
 
 it("keeps evidence inspection local and returns focus to the source control", async () => {

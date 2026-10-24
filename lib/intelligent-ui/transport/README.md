@@ -45,6 +45,9 @@ subject to the selected artist. Studio/label names in lab fixtures do not prove
 live identifier mapping. Host scope is a lifecycle/cache binding, **not an
 authorization rule**; the reusable consumer compares any explicit host subject
 kind, while this app host currently supplies only `artist`.
+While provisioning, the host can supply stable actor/organization/artist fields
+with an empty session so a selection change still cancels the pending UI intent.
+No UI binding is available until all required fields are complete.
 
 The consumer runs after the workflow transport counts raw chunks and before the
 SDK can replace stable-ID data. It accepts one coherent Surface per assistant
@@ -68,16 +71,29 @@ Stop keeps the last accepted answer; a new stream generation may update it under
 the current host scope. Interrupted connections keep the same filter and the
 workflow's existing authenticated reconnect cursor. Ordinary text, reasoning,
 files, tools, unrelated data and completion events retain their existing routes.
+First-send scope binds when provisioning settles and request IDs are selected,
+before asynchronous authentication or response work. Cancellation while waiting
+cannot be revived by that late binding. A gated reconnect buffers at most one
+filtered chunk before resolving, so history loaded before the bytes arrive can
+seed the SDK's assistant state, including its existing prose. No-start targets
+come only from current scope-bound history/stream state. Stop, unmount and scope
+changes abort a pending read; other errors propagate to ordinary chat handling.
+History that arrives only after actual response bytes remains outside this cold
+resume ordering guarantee. The disabled/default transport path is unchanged.
 
 `MessageParts` lazy-loads the existing answer/timeline/distribution/source views
 only when the gate and accepted binding allow them. Deterministic accepted text
 is the loading, module-error and renderer-error fallback. There is no surrounding
 page chrome. Compatible timelines retain their existing stable control keys and
 focus across unrelated prose/evidence changes; changed interval meaning resets
-them. Chat uses a host-bound local-state key; the lab's state-key semantics remain
+them. Chat uses a host- and message-bound local-state key, so a second answer
+reusing the same Surface/component IDs starts independently; the lab's state-key semantics remain
 unchanged. Local section/source controls make no network request. This slice
 does not resolve audio assets, so notes remain usable without initiating media
 or provider requests.
+Completed ordinary prose retains its existing Retry action when the new UI is
+the trailing content, including loading or renderer fallback. Tools and files
+keep their existing action routing.
 
 The synthetic suites cover real `Chat` + workflow transport, the transport hook's
 scope/StrictMode lifecycle, and `MessageParts` + existing visual renderers. The

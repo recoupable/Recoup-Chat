@@ -95,7 +95,11 @@ export function MessageParts({
                   </p>
                 }
               >
-                <ChatSnapshot surface={surface} scopeKey={binding.scopeKey} />
+                <ChatSnapshot
+                  surface={surface}
+                  scopeKey={binding.scopeKey}
+                  messageId={message.id}
+                />
               </Suspense>
             </SnapshotRenderBoundary>
           ) : fallback ? (
@@ -130,7 +134,13 @@ export function MessageParts({
           const isLastMessage =
             message.role === "assistant" &&
             status !== "streaming" &&
-            partIndex === parts.length - 1;
+            partIndex === lastTextIndex &&
+            parts
+              .slice(partIndex + 1)
+              .every(
+                (remaining) =>
+                  remaining.type === "data-intelligent-ui-snapshot",
+              );
 
           if (mode === "view") {
             return (
