@@ -59,6 +59,7 @@ interface UseVercelChatProps {
    * Used as the transport / message-load / URL target; falls back to `id`.
    */
   workflowChatId?: string;
+  isNewChatBootstrap?: boolean;
   /** Workspace lifecycle; the transport holds a send until `ready`. */
   workspaceStatus?: WorkspaceStatus;
   initialMessages?: UIMessage[];
@@ -90,6 +91,7 @@ export function useVercelChat({
   catalogQuery,
   sessionId,
   workflowChatId,
+  isNewChatBootstrap = false,
   workspaceStatus,
   initialMessages,
   attachments = [],
@@ -136,6 +138,8 @@ export function useVercelChat({
     [updateFailedDraft],
   );
   const [preparing, setPreparing] = useState(false);
+  const [initialAutoSendCancelled, setInitialAutoSendCancelled] =
+    useState(false);
   const [stopState, setStopState] = useState<{
     status: "idle" | "stopping" | "stopped" | "inactive" | "error";
     message?: string;
@@ -198,6 +202,7 @@ export function useVercelChat({
   const requestScope = JSON.stringify([
     authenticated,
     id,
+    isNewChatBootstrap,
     authenticatedUser?.id,
     effectiveAccountId,
     organizationId,
@@ -226,6 +231,7 @@ export function useVercelChat({
     // retain the current draft and server Stop state.
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setPreparing(false);
+    setInitialAutoSendCancelled(false);
     setSendError(undefined);
     setSendErrorStatus(undefined);
     setFailedDraft(undefined);
@@ -526,6 +532,16 @@ export function useVercelChat({
     if (!isActionCurrent()) return Promise.resolve();
     if (stoppingRef.current) return stoppingRef.current;
     const capturedChatId = committedIds.current.workflowChatId ?? id;
+    const dispatched = requestLifecycle.hasDispatchedRequest();
+    const cancelledPreparationIds = dispatched
+      ? undefined
+      : new Set(pendingAdmissionIds.current);
+    const cancelBootstrapPreparation =
+      isNewChatBootstrap &&
+      !committedIds.current.workflowChatId &&
+      !committedIds.current.sessionId &&
+      !dispatched &&
+      !requestLifecycle.hasUnknownAdmission();
     const scope = committedScope.current;
     const generation = scopeGeneration.current;
     const isCurrent = () =>
@@ -535,15 +551,37 @@ export function useVercelChat({
     const capturedStopChat = stopChat;
     const tokenGetter = getAccessToken;
     intentEpoch.current++;
+    setInitialAutoSendCancelled(true);
     stopBlockedRef.current = true;
     cancelPendingResume();
     requestLifecycle.cancelPreparation();
+    if (cancelledPreparationIds?.size) {
+      cancelledPreparationIds.forEach((messageId) =>
+        pendingAdmissionIds.current.delete(messageId),
+      );
+      setMessages((previous) =>
+        previous.filter((message) => !cancelledPreparationIds.has(message.id)),
+      );
+    }
     setPreparing(false);
     setStopState({ status: "stopping", message: "Stopping response…" });
     const operation = (async () => {
       let httpStatus: number | undefined;
       let reason: "auth" | "starting" | "message-unconfirmed" | undefined;
       try {
+        if (cancelBootstrapPreparation) {
+          // No routable chat ID has arrived yet. Cancel local preparation
+          // rather than sending a placeholder or deferring Stop into a later chat.
+          snapshotConsumer.cancel();
+          await capturedStopChat();
+          if (!isCurrent()) return;
+          stopBlockedRef.current = false;
+          setStopState({
+            status: "inactive",
+            message: "Message preparation cancelled. Your draft is still here.",
+          });
+          return;
+        }
         // A legacy server may clear a pending slot before its POST starts the
         // run. Wait for dispatched admission before asking it to cancel.
         await requestLifecycle.waitForAdmission();
@@ -624,11 +662,13 @@ export function useVercelChat({
     return operation;
   }, [
     id,
+    isNewChatBootstrap,
     isActionCurrent,
     cancelPendingResume,
     requestLifecycle,
     snapshotConsumer,
     stopChat,
+    setMessages,
     getAccessToken,
     setPreparing,
     setStopState,
@@ -1003,6 +1043,7 @@ export function useVercelChat({
   // lives entirely in this hook — extend it there, not here (chat#1847).
   useInitialMessageAutoSend({
     initialMessages,
+    autoSendCancelled: initialAutoSendCancelled,
     status,
     messagesLength: messages.length,
     sessionId,

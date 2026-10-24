@@ -192,6 +192,7 @@ export function createWorkflowChatTransport<UI_MESSAGE extends UIMessage>({
       },
       onChatSendMessage: () => {
         admitted = true;
+        operation.admit();
         onStreamAccepted?.();
         operation.settle();
         if (ids) metadata?.onAccepted(ids);

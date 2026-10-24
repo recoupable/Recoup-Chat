@@ -9,6 +9,8 @@ import { shouldAutoSendInitialMessage } from "@/lib/chat/shouldAutoSendInitialMe
 interface UseInitialMessageAutoSendParams {
   /** The ?q= deep-link message from /chat?q=… (AGENTS cards). */
   initialMessages?: UIMessage[];
+  /** Explicit Stop cancels pending deep-link dispatch, while retaining the draft. */
+  autoSendCancelled?: boolean;
   /** useChat transport status — only "ready" may send. */
   status: string;
   messagesLength: number;
@@ -37,6 +39,7 @@ interface UseInitialMessageAutoSendParams {
  */
 export function useInitialMessageAutoSend({
   initialMessages,
+  autoSendCancelled = false,
   status,
   messagesLength,
   sessionId,
@@ -62,6 +65,7 @@ export function useInitialMessageAutoSend({
   }, [initialMessageText, messagesLength, input, setInput]);
 
   useEffect(() => {
+    if (autoSendCancelled) return;
     // The prefill effect runs before this effect in the same render. Wait for
     // its input update before consuming the one-shot auto-send intent.
     if (prefillPendingRef.current) {
@@ -83,6 +87,7 @@ export function useInitialMessageAutoSend({
     send({ id: generateUUID(), role: "user", parts: [{ type: "text", text }] });
   }, [
     initialMessageText,
+    autoSendCancelled,
     status,
     messagesLength,
     userId,

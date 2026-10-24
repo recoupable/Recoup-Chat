@@ -10,6 +10,7 @@ import {
 import { Chat } from "@ai-sdk/react";
 import { MessageEditor } from "@/components/VercelChat/message-editor";
 import { ChatInput } from "@/components/VercelChat/ChatInput";
+import NewChatBootstrap from "@/components/VercelChat/NewChatBootstrap";
 import {
   createUIMessageStreamResponse,
   type UIMessage,
@@ -31,6 +32,7 @@ const external = vi.hoisted(() => ({
   persistModel: vi.fn(async () => {}),
   deleteTrailing: vi.fn(async () => {}),
   updateChatState: vi.fn(),
+  addOptimisticConversation: vi.fn(),
   toastError: vi.fn(),
   files: [],
   routeChatId: "chat" as string | undefined,
@@ -69,7 +71,20 @@ vi.mock("@/providers/PaymentProvider", () => ({
   },
 }));
 vi.mock("@/providers/ConversationsProvider", () => ({
-  useConversationsProvider: () => ({ addOptimisticConversation: vi.fn() }),
+  useConversationsProvider: () => ({
+    addOptimisticConversation: external.addOptimisticConversation,
+  }),
+}));
+// Keep the actual bootstrap, Chat wrapper, composer, provider and hooks. Only
+// unrelated greeting/message presentation is replaced with a context probe.
+vi.mock("@/components/VercelChat/messages", () => ({
+  Messages: () => <BootstrapProbe />,
+}));
+vi.mock("@/components/Chat/ChatGreeting", () => ({
+  default: () => <BootstrapProbe />,
+}));
+vi.mock("@/components/Valuation/ValuationRunStatusChip", () => ({
+  default: () => null,
 }));
 vi.mock("@/hooks/useAvailableModels", () => ({
   default: () => ({ data: [] }),
@@ -115,6 +130,14 @@ const history: UIMessage[] = [
     parts: [{ type: "text", text: "Saved answer" }],
   },
 ];
+let bootstrapCurrent: ReturnType<typeof useVercelChatContext> | undefined;
+function BootstrapProbe() {
+  const context = useVercelChatContext();
+  React.useLayoutEffect(() => {
+    bootstrapCurrent = context;
+  });
+  return null;
+}
 function pending<T>() {
   let resolve!: (value: T) => void;
   const promise = new Promise<T>((done) => {
@@ -145,6 +168,7 @@ beforeEach(() => {
   vi.spyOn(console, "error").mockImplementation(() => {});
   localStorage.clear();
   external.routeChatId = "chat";
+  bootstrapCurrent = undefined;
   environment();
 });
 afterEach(() => {
@@ -158,6 +182,10 @@ function fixture(
   stop: () => Response | Promise<Response> = () =>
     Response.json({ success: true, stopped: true }),
   resume: () => Response = () => response(),
+  bootstrap?: {
+    session: () => Response | Promise<Response>;
+    sandbox: () => Response | Promise<Response>;
+  },
 ) {
   const calls: {
     url: URL;
@@ -185,6 +213,10 @@ function fixture(
       if (url.pathname.endsWith("/stream")) return resume();
       if (url.pathname.endsWith("/stop")) return stop();
       if (url.pathname === "/api/chat" && method === "POST") return post(init);
+      if (url.pathname === "/api/sessions" && method === "POST" && bootstrap)
+        return bootstrap.session();
+      if (url.pathname === "/api/sandbox" && method === "POST" && bootstrap)
+        return bootstrap.sandbox();
       if (method === "DELETE") return new Response(null, { status: 204 });
       throw new Error(`Unexpected synthetic request ${method} ${url}`);
     }),
@@ -206,7 +238,10 @@ async function mount(
 ) {
   let current!: ReturnType<typeof useVercelChatContext>;
   function Consumer() {
-    current = useVercelChatContext();
+    const context = useVercelChatContext();
+    React.useLayoutEffect(() => {
+      current = context;
+    });
     return renderComposer ? <ChatInput /> : null;
   }
   const client = new QueryClient({
@@ -254,6 +289,19 @@ async function draft(h: Awaited<ReturnType<typeof mount>>) {
     h.current().setAttachments([image]);
     h.current().setTextAttachments([textFile]);
   });
+}
+async function mountBootstrap(initialMessages?: UIMessage[]) {
+  external.routeChatId = undefined;
+  const client = new QueryClient({
+    defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
+  });
+  const view = render(
+    <QueryClientProvider client={client}>
+      <NewChatBootstrap initialMessages={initialMessages} />
+    </QueryClientProvider>,
+  );
+  await waitFor(() => expect(bootstrapCurrent).toBeDefined());
+  return { ...view, current: () => bootstrapCurrent! };
 }
 
 it.each([409, 429, 503, 401, "network"])(
@@ -507,6 +555,8 @@ it.each([false, true])(
     expect(f.posts()).toHaveLength(0);
     expect(f.stops()).toHaveLength(1);
     expect(h.current().input).toBe("Retain this draft");
+    expect(h.current().hasFailedSubmission).toBe(false);
+    expect(h.current().sendError).toBeUndefined();
   },
 );
 
@@ -944,6 +994,7 @@ it("does not turn an accepted stream error into a replayable unaccepted draft", 
   expect(h.current().input).toBe("");
   expect(h.current().attachments).toEqual([]);
   expect(h.current().hasFailedSubmission).toBe(false);
+  expect(h.current().sendError).toBeUndefined();
   await act(async () => {
     await h.current().retrySendMessage?.(event());
   });
@@ -1821,3 +1872,453 @@ it("operation-owned completion releases Send while credit refresh is unresolved"
   });
   expect(external.refetchCredits).toHaveBeenCalledTimes(2);
 });
+
+async function bootstrapHarness(
+  stop: () => Response = () =>
+    Response.json({ error: "Chat not found" }, { status: 404 }),
+  initialMessages?: UIMessage[],
+  post: () => Response = () => response(),
+) {
+  const session = pending<Response>();
+  const sandbox = pending<Response>();
+  const f = fixture(post, stop, undefined, {
+    session: () => session.promise,
+    sandbox: () => sandbox.promise,
+  });
+  const h = await mountBootstrap(initialMessages);
+  await waitFor(() =>
+    expect(
+      f.calls.filter((call) => call.url.pathname === "/api/sessions"),
+    ).toHaveLength(1),
+  );
+  return {
+    f,
+    h,
+    mint: async () => {
+      await act(async () => {
+        session.resolve(
+          Response.json({
+            session: {
+              id: "minted-session",
+              cloneUrl: "https://recoup.invalid/synthetic-repo",
+            },
+            chat: { id: "minted-chat" },
+          }),
+        );
+      });
+      await waitFor(() => expect(h.current().sessionId).toBe("minted-session"));
+    },
+    ready: async () => {
+      await act(async () => {
+        sandbox.resolve(
+          Response.json({ mode: "synthetic", createdAt: 0, timeout: null }),
+        );
+      });
+      await waitFor(() => expect(h.current().workspaceStatus).toBe("ready"));
+    },
+  };
+}
+
+it.each([
+  [false, false, false],
+  [false, true, false],
+  [true, false, false],
+  [true, true, false],
+  [false, false, true],
+  [true, false, true],
+] as const)(
+  "review bootstrap cancels undispatched Send locally before IDs and permits explicit Send after ready (dev=%s, newer=%s, deepLink=%s)",
+  async (dev, newer, deepLink) => {
+    environment(dev);
+    const { f, h, mint, ready } = await bootstrapHarness(
+      undefined,
+      deepLink
+        ? [
+            {
+              id: "q",
+              role: "user",
+              parts: [{ type: "text", text: "Original bootstrap draft" }],
+            },
+          ]
+        : undefined,
+    );
+    act(() => {
+      h.current().setInput("Original bootstrap draft");
+      h.current().setAttachments([image]);
+      h.current().setTextAttachments([textFile]);
+    });
+    fireEvent.click(h.getByRole("button", { name: "Send message" }));
+    await waitFor(() => expect(h.current().status).toBe("submitted"));
+    const optimisticId = h.current().messages.at(-1)!.id;
+    const extraImage = { ...image, filename: "newer.png" };
+    const extraText = { ...textFile, filename: "newer.csv" };
+    if (newer)
+      act(() => {
+        h.current().setInput("Newer bootstrap draft");
+        h.current().setAttachments([image, extraImage]);
+        h.current().setTextAttachments([textFile, extraText]);
+      });
+    fireEvent.click(h.getByRole("button", { name: "Stop response" }));
+    await waitFor(() => expect(h.current().isGeneratingResponse).toBe(false));
+    expect(f.stops()).toHaveLength(0);
+    expect(h.current().stopState?.message).toBe(
+      "Message preparation cancelled. Your draft is still here.",
+    );
+    expect(h.current().hasFailedSubmission).toBe(false);
+    await mint();
+    expect(h.current().workspaceStatus).toBe("provisioning");
+    await ready();
+    expect(f.posts()).toHaveLength(0);
+    expect(f.stops()).toHaveLength(0);
+    expect(external.addOptimisticConversation).not.toHaveBeenCalled();
+    expect(h.current().input).toBe(
+      newer ? "Newer bootstrap draft" : "Original bootstrap draft",
+    );
+    expect(h.current().attachments).toEqual(
+      newer ? [image, extraImage] : [image],
+    );
+    expect(h.current().textAttachments).toEqual(
+      newer ? [textFile, extraText] : [textFile],
+    );
+    expect(h.current().sendError).toBeUndefined();
+    fireEvent.click(h.getByRole("button", { name: "Send message" }));
+    await waitFor(() => expect(f.posts()).toHaveLength(1));
+    await waitFor(() => expect(h.current().status).toBe("ready"));
+    expect(f.posts()[0].body).toMatchObject({
+      sessionId: "minted-session",
+      chatId: "minted-chat",
+    });
+    expect(
+      f
+        .posts()[0]
+        .body!.messages.some((message) => message.id === optimisticId),
+    ).toBe(false);
+    expect(h.current().input).toBe("");
+    expect(h.current().attachments).toEqual([]);
+    expect(h.current().textAttachments).toEqual([]);
+    expect(external.addOptimisticConversation).toHaveBeenCalledTimes(1);
+    expect(f.calls.some((call) => call.method === "DELETE")).toBe(false);
+  },
+);
+
+it.each([false, true])(
+  "review bootstrap Stop uses the real minted ID during sandbox preparation (dev=%s)",
+  async (dev) => {
+    environment(dev);
+    const { f, h, mint, ready } = await bootstrapHarness(() =>
+      Response.json({ success: true, stopped: false }),
+    );
+    await mint();
+    act(() => h.current().setInput("Minted pending workspace"));
+    fireEvent.click(h.getByRole("button", { name: "Send message" }));
+    await waitFor(() => expect(h.current().status).toBe("submitted"));
+    fireEvent.click(h.getByRole("button", { name: "Stop response" }));
+    await waitFor(() => expect(h.current().stopState?.status).toBe("inactive"));
+    expect(f.stops()).toHaveLength(1);
+    expect(f.stops()[0].url.pathname).toBe("/api/chat/minted-chat/stop");
+    expect(f.stops()[0].authorization).toBe("Bearer synthetic-token");
+    await ready();
+    expect(f.posts()).toHaveLength(0);
+    expect(h.current().input).toBe("Minted pending workspace");
+    expect(h.current().hasFailedSubmission).toBe(false);
+  },
+);
+
+it.each([false, true])(
+  "review canonical Stop keeps its real client ID without bootstrap provenance (dev=%s)",
+  async (dev) => {
+    environment(dev);
+    external.routeChatId = undefined;
+    const f = fixture(() => response());
+    const h = await mount("provisioning", {});
+    await draft(h);
+    let send!: Promise<void>;
+    await act(async () => {
+      send = h.current().handleSendMessage(event());
+    });
+    await waitFor(() => expect(h.current().status).toBe("submitted"));
+    await act(async () => {
+      await h.current().stop();
+      await send;
+    });
+    expect(f.stops()).toHaveLength(1);
+    expect(f.stops()[0].url.pathname).toBe("/api/chat/chat/stop");
+    expect(f.posts()).toHaveLength(0);
+    expect(h.current().input).toBe("Retain this draft");
+    expect(h.current().hasFailedSubmission).toBe(false);
+  },
+);
+
+it.each([
+  [false, "retry"],
+  [true, "retry"],
+  [false, "discard then Send"],
+  [true, "discard then Send"],
+] as const)(
+  "review later confirmed admission supersedes earlier unknown response after %s recovery (%s)",
+  async (dev, recovery) => {
+    environment(dev);
+    let posts = 0;
+    const f = fixture(
+      () => {
+        if (++posts === 1) throw new TypeError("Lost POST response");
+        return response();
+      },
+      () => Response.json({ success: true, stopped: false }),
+    );
+    const h = await mount();
+    await draft(h);
+    await act(async () => {
+      await h.current().handleSendMessage(event());
+    });
+    act(() => h.current().setInput("Newer draft"));
+    await act(async () => {
+      if (recovery === "retry") await h.current().retrySendMessage?.(event());
+      else {
+        h.current().discardFailedSubmission?.();
+        await h.current().handleSendMessage(event());
+      }
+    });
+    expect(f.posts()).toHaveLength(2);
+    expect(h.current().hasFailedSubmission).toBe(false);
+    await act(async () => {
+      await h.current().stop();
+    });
+    expect(h.current().stopState?.status).toBe("inactive");
+    expect(h.current().stopState?.message).toContain(
+      "No active response was found",
+    );
+    expect(f.posts()).toHaveLength(2);
+    act(() => h.current().setInput("Explicit follow-up"));
+    await act(async () => {
+      await h.current().handleSendMessage(event());
+    });
+    expect(f.posts()).toHaveLength(3);
+    expect(f.calls.some((call) => call.method === "DELETE")).toBe(false);
+  },
+);
+
+it.each([false, true])(
+  "review Discard alone cannot resolve unknown admission or Stopfalse (dev=%s)",
+  async (dev) => {
+    environment(dev);
+    const f = fixture(
+      () => {
+        throw new TypeError("Lost POST response");
+      },
+      () => Response.json({ success: true, stopped: false }),
+    );
+    const h = await mount();
+    await draft(h);
+    await act(async () => {
+      await h.current().handleSendMessage(event());
+    });
+    act(() => {
+      h.current().setInput("Newer draft");
+      h.current().discardFailedSubmission?.();
+    });
+    await act(async () => {
+      await h.current().stop();
+      await h.current().handleSendMessage(event());
+    });
+    expect(h.current().stopState?.status).toBe("error");
+    expect(h.current().stopState?.message).toContain("Retry Stop to confirm");
+    expect(h.current().input).toBe("Newer draft");
+    expect(f.posts()).toHaveLength(1);
+  },
+);
+
+it.each([
+  [false, "denied"],
+  [true, "denied"],
+  [false, "missing header"],
+  [true, "missing header"],
+  [false, "missing body"],
+  [true, "missing body"],
+] as const)(
+  "review pinned Workflow SDK does not admit a rejected response (dev=%s, response=%s)",
+  async (dev, kind) => {
+    environment(dev);
+    external.routeChatId = undefined;
+    const f = fixture(() => {
+      if (kind === "missing body")
+        return new Response(null, {
+          headers: { "x-workflow-run-id": "forged-run" },
+        });
+      const result = response();
+      if (kind === "missing header") result.headers.delete("x-workflow-run-id");
+      return kind === "denied"
+        ? new Response(result.body, { status: 409, headers: result.headers })
+        : result;
+    });
+    const h = await mount("ready", { sessionId: "session" }, []);
+    await draft(h);
+    await act(async () => {
+      await h.current().handleSendMessage(event());
+    });
+    expect(h.current().hasFailedSubmission).toBe(true);
+    expect(h.current().input).toBe("Retain this draft");
+    expect(h.current().attachments).toEqual([image]);
+    expect(h.current().textAttachments).toEqual([textFile]);
+    expect(h.current().messages).toEqual([]);
+    expect(external.addOptimisticConversation).not.toHaveBeenCalled();
+    expect(external.refetchCredits).not.toHaveBeenCalled();
+    expect(f.posts()).toHaveLength(1);
+  },
+);
+
+it.each([false, true])(
+  "review bootstrap local cancellation releases a pre-SDK auth wait without a late POST (dev=%s)",
+  async (dev) => {
+    environment(dev);
+    const { f, h, mint, ready } = await bootstrapHarness();
+    act(() => {
+      h.current().setInput("Held auth draft");
+      h.current().setAttachments([image]);
+      h.current().setTextAttachments([textFile]);
+    });
+    const token = pending<string>();
+    external.getAccessToken.mockReturnValueOnce(token.promise);
+    fireEvent.click(h.getByRole("button", { name: "Send message" }));
+    await waitFor(() => expect(h.current().isGeneratingResponse).toBe(true));
+    fireEvent.click(h.getByRole("button", { name: "Stop response" }));
+    await waitFor(() => expect(h.current().stopState?.status).toBe("inactive"));
+    await mint();
+    await ready();
+    expect(f.posts()).toHaveLength(0);
+    expect(f.stops()).toHaveLength(0);
+    expect(h.current().attachments).toEqual([image]);
+    expect(h.current().textAttachments).toEqual([textFile]);
+    act(() => h.current().setInput("Explicit new draft"));
+    fireEvent.click(h.getByRole("button", { name: "Send message" }));
+    await waitFor(() => expect(f.posts()).toHaveLength(1));
+    await waitFor(() => expect(h.current().status).toBe("ready"));
+    act(() => h.current().setInput("After accepted edit"));
+    await act(async () => {
+      token.resolve("synthetic-token");
+      await token.promise;
+    });
+    expect(h.current().input).toBe("After accepted edit");
+    expect(h.current().hasFailedSubmission).toBe(false);
+    expect(f.posts()).toHaveLength(1);
+    expect(f.stops()).toHaveLength(0);
+  },
+);
+
+it.each([
+  [false, false],
+  [true, false],
+  [false, true],
+  [true, true],
+] as const)(
+  "review retained bootstrap Stop resolves committed IDs at invocation (dev=%s, accepted=%s)",
+  async (dev, accepted) => {
+    environment(dev);
+    let reader!: ReadableStreamDefaultController<UIMessageChunk>;
+    const { f, h, mint, ready } = await bootstrapHarness(
+      () => Response.json({ success: true, stopped: accepted }),
+      undefined,
+      () =>
+        createUIMessageStreamResponse({
+          stream: new ReadableStream({
+            start(c) {
+              reader = c;
+              c.enqueue({ type: "start", messageId: "minted-answer" });
+            },
+          }),
+          headers: { "x-workflow-run-id": "minted-run" },
+        }),
+    );
+    const oldStop = h.current().stop;
+    await mint();
+    if (accepted) await ready();
+    act(() => h.current().setInput("Minted draft"));
+    fireEvent.click(h.getByRole("button", { name: "Send message" }));
+    await waitFor(() =>
+      expect(h.current().status).toBe(accepted ? "streaming" : "submitted"),
+    );
+    await act(async () => {
+      await oldStop();
+      if (accepted) reader.close();
+    });
+    expect(f.stops()).toHaveLength(1);
+    expect(f.stops()[0].url.pathname).toBe("/api/chat/minted-chat/stop");
+    expect(f.stops()[0].authorization).toBe("Bearer synthetic-token");
+    expect(f.posts()).toHaveLength(accepted ? 1 : 0);
+    expect(h.current().stopState?.status).toBe(
+      accepted ? "stopped" : "inactive",
+    );
+    expect(h.current().hasFailedSubmission).toBe(false);
+  },
+);
+
+it.each(["older admission", "older unknown"] as const)(
+  "review admission ordering cannot let %s overwrite a newer outcome",
+  async (order) => {
+    const older = pending<Response>();
+    let posts = 0;
+    fixture(async () => {
+      if (++posts === 1) {
+        await older.promise;
+        if (order === "older unknown")
+          throw new TypeError("Lost older response");
+        return response();
+      }
+      if (order === "older admission")
+        throw new TypeError("Lost newer response");
+      return response();
+    });
+    const lifecycle = createChatRequestLifecycle();
+    const transport = createWorkflowChatTransport({
+      baseUrl: "https://recoup.invalid",
+      getIds: () => ({ chatId: "chat", sessionId: "session" }),
+      getAccessToken: async () => "synthetic-token",
+      requestLifecycle: lifecycle,
+    });
+    const first = new Chat({ id: "first", transport });
+    const firstSend = first.sendMessage({ text: "Older" });
+    await waitFor(() => expect(posts).toBe(1));
+    const second = new Chat({ id: "second", transport });
+    await second.sendMessage({ text: "Newer" });
+    older.resolve(response());
+    await firstSend;
+    expect(lifecycle.hasUnknownAdmission()).toBe(order === "older admission");
+    expect(posts).toBe(2);
+  },
+);
+
+it.each([false, true])(
+  "review Stop invalidates an auth AbortError reaching the outer catch without recovery or replay (dev=%s)",
+  async (dev) => {
+    environment(dev);
+    const f = fixture(() => response());
+    const h = await mount();
+    await draft(h);
+    let rejectToken!: (error: Error) => void;
+    external.getAccessToken.mockReturnValueOnce(
+      new Promise<string>((_, reject) => {
+        rejectToken = reject;
+      }),
+    );
+    let send!: Promise<void>;
+    await act(async () => {
+      send = h.current().handleSendMessage(event());
+    });
+    await waitFor(() => expect(h.current().isGeneratingResponse).toBe(true));
+    await act(async () => {
+      await h.current().stop();
+      rejectToken(new DOMException("Cancelled auth", "AbortError"));
+      await send;
+    });
+    expect(h.current().hasFailedSubmission).toBe(false);
+    expect(h.current().sendError).toBeUndefined();
+    expect(h.current().input).toBe("Retain this draft");
+    expect(h.current().attachments).toEqual([image]);
+    expect(h.current().textAttachments).toEqual([textFile]);
+    await act(async () => {
+      await h.current().retrySendMessage?.(event());
+    });
+    expect(f.posts()).toHaveLength(0);
+    expect(f.stops()).toHaveLength(1);
+  },
+);

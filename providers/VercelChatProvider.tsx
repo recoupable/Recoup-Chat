@@ -96,6 +96,8 @@ interface VercelChatProviderProps {
   sessionId?: string;
   /** Api-minted chat id from bootstrap when `chatId` is a placeholder. */
   workflowChatId?: string;
+  /** Distinguishes a bootstrap placeholder from a routable canonical chatId. */
+  isNewChatBootstrap?: boolean;
   /** Workspace (session + sandbox) lifecycle; gates Send + drives the status dot. */
   workspaceStatus?: WorkspaceStatus;
   initialMessages?: UIMessage[];
@@ -111,6 +113,7 @@ export function VercelChatProvider({
   catalogQuery,
   sessionId,
   workflowChatId,
+  isNewChatBootstrap,
   workspaceStatus = "ready",
   initialMessages,
 }: VercelChatProviderProps) {
@@ -174,6 +177,7 @@ export function VercelChatProvider({
     catalogQuery,
     sessionId,
     workflowChatId,
+    isNewChatBootstrap,
     initialMessages,
     attachments,
     textAttachments,
