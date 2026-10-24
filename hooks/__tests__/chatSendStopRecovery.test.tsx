@@ -124,7 +124,7 @@ function response(chunks: UIMessageChunk[] = [{ type: "finish" }]) {
   });
 }
 function environment(dev = false) {
-  vi.stubEnv("NODE_ENV", "test");
+  vi.stubEnv("NODE_ENV", dev ? "development" : "test");
   vi.stubEnv("VERCEL_ENV", "development");
   vi.stubEnv("NEXT_PUBLIC_VERCEL_ENV", "development");
   vi.stubEnv("NEXT_PUBLIC_RECOUP_INTELLIGENT_UI_CHAT", dev ? "true" : "false");
@@ -327,6 +327,7 @@ it.each([false, true])(
       });
     });
     const h = await mount();
+    expect(!!h.current().intelligentUI).toBe(dev);
     await draft(h);
     let send!: Promise<void>;
     await act(async () => {
@@ -704,9 +705,7 @@ it("keeps unknown admission plus Stopfalse retryable without replaying either dr
     await h.current().stop();
   });
   expect(h.current().stopState?.status).toBe("error");
-  expect(h.current().stopState?.message).toContain(
-    "admission is still unconfirmed",
-  );
+  expect(h.current().stopState?.message).toContain("Retry Stop to confirm");
   await act(async () => {
     await h.current().handleSendMessage(event());
     await h.current().retrySendMessage?.(event());
@@ -861,7 +860,7 @@ it("retains a deep-link auto-send rejection for explicit retry without automatic
   ]);
   await waitFor(() => expect(h.current().hasFailedSubmission).toBe(true));
   expect(h.current().input).toBe("Deep-link draft");
-  expect(h.current().failedDraftPreview).toBe("Deep-link draft");
+  expect(h.current().failedDraftPreview).toBeUndefined();
   expect(f.posts()).toHaveLength(1);
 });
 
@@ -1112,4 +1111,234 @@ it("blocks a same-turn Send from an old callback after Stop rejects before React
   });
   expect(f.posts()).toHaveLength(0);
   expect(h.current().input).toBe("Retain this draft");
+});
+
+it.each(["stop", "send", "append", "reload"] as const)(
+  "ignores retained %s actions invoked after a committed chat switch before any external preparation",
+  async (action) => {
+    const f = fixture(() => response());
+    const h = await mount();
+    await draft(h);
+    const old = h.current();
+    h.switch("next-chat");
+    await waitFor(() => expect(h.current().status).toBe("ready"));
+    act(() => h.current().setInput("Next chat private draft"));
+    const calls = f.calls.length;
+    const tokenCalls = external.getAccessToken.mock.calls.length;
+    await act(async () => {
+      if (action === "stop") await old.stop();
+      else if (action === "send") await old.handleSendMessage(event());
+      else if (action === "reload") await old.reload();
+      else
+        old.append({
+          id: "old-append",
+          role: "user",
+          parts: [{ type: "text", text: "Old appended draft" }],
+        });
+    });
+    expect(f.calls).toHaveLength(calls);
+    expect(external.getAccessToken).toHaveBeenCalledTimes(tokenCalls);
+    expect(h.current().input).toBe("Next chat private draft");
+    expect(h.current().stopState?.status).toBe("idle");
+  },
+);
+
+it.each(["stop", "send"] as const)(
+  "does not revive a retained %s action after switching away and back",
+  async (action) => {
+    const f = fixture(() => response());
+    const h = await mount();
+    await draft(h);
+    const old = h.current();
+    h.switch("other-chat");
+    await waitFor(() => expect(h.current().status).toBe("ready"));
+    h.switch("chat");
+    await waitFor(() => expect(h.current().status).toBe("ready"));
+    act(() => h.current().setInput("New generation draft"));
+    const calls = f.calls.length;
+    await act(async () => {
+      if (action === "stop") await old.stop();
+      else await old.handleSendMessage(event());
+    });
+    expect(f.calls).toHaveLength(calls);
+    expect(h.current().input).toBe("New generation draft");
+    expect(h.current().stopState?.status).toBe("idle");
+  },
+);
+
+it.each(["sessionId", "workflowChatId"] as const)(
+  "rejects retained actions after established %s replacement with the same client id",
+  async (field) => {
+    const f = fixture(() => response());
+    const h = await mount("ready", {
+      sessionId: "session",
+      workflowChatId: "chat",
+    });
+    await draft(h);
+    const old = h.current();
+    h.switchIdentity({
+      sessionId: "session",
+      workflowChatId: "chat",
+      [field]: "replacement",
+    });
+    await waitFor(() => expect(h.current().status).toBe("ready"));
+    act(() => h.current().setInput("Replacement draft"));
+    const calls = f.calls.length;
+    await act(async () => {
+      await old.stop();
+      await old.handleSendMessage(event());
+    });
+    expect(f.calls).toHaveLength(calls);
+    expect(h.current().input).toBe("Replacement draft");
+  },
+);
+
+it("keeps retained retry, discard, edit, input and message setters from mutating a new scope", async () => {
+  const f = fixture(() => Response.json({ error: "Busy" }, { status: 409 }));
+  const h = await mount();
+  await draft(h);
+  const old = h.current();
+  h.switch("next-chat");
+  await waitFor(() => expect(h.current().status).toBe("ready"));
+  act(() => h.current().setInput("New scope rejected draft"));
+  await act(async () => {
+    await h.current().handleSendMessage(event());
+  });
+  const rejected = f.posts().at(-1)!.body!.messages.at(-1)!;
+  const calls = f.calls.length;
+  const messages = h.current().messages;
+  await act(async () => {
+    await old.retrySendMessage?.(event());
+    old.discardFailedSubmission?.();
+    old.editUnacceptedMessage?.(rejected.id, "Old editor content");
+    old.setInput("Old input setter");
+    old.setMessages([
+      {
+        id: "old-setter",
+        role: "user",
+        parts: [{ type: "text", text: "Old history" }],
+      },
+    ]);
+  });
+  expect(f.calls).toHaveLength(calls);
+  expect(h.current().hasFailedSubmission).toBe(true);
+  expect(h.current().input).toBe("New scope rejected draft");
+  expect(h.current().messages).toEqual(messages);
+});
+
+it("allows retained bootstrap actions to bind IDs filled by their own provisioning", async () => {
+  external.routeChatId = undefined;
+  const f = fixture(() => response());
+  const h = await mount("provisioning", {});
+  await draft(h);
+  const old = h.current();
+  h.switchIdentity(
+    { sessionId: "session", workflowChatId: "minted-chat" },
+    "ready",
+  );
+  await act(async () => {
+    await old.handleSendMessage(event());
+    await old.stop();
+  });
+  expect(f.posts()).toHaveLength(1);
+  expect(f.posts()[0].body).toMatchObject({
+    chatId: "minted-chat",
+    sessionId: "session",
+  });
+  expect(f.stops()).toHaveLength(1);
+  expect(f.stops()[0].url.pathname).toBe("/api/chat/minted-chat/stop");
+});
+
+it.each([
+  [409, "Another response is running. Retry when it finishes."],
+  [429, "Please wait a moment, then retry."],
+  [503, "Chat is unavailable. Please retry shortly."],
+  [401, "Please sign in again to send this message."],
+] as const)(
+  "uses actionable send copy for %i and keeps its status out of product text",
+  async (status, message) => {
+    fixture(() =>
+      Response.json({ status: "error", error: "Synthetic denial" }, { status }),
+    );
+    const h = await mount();
+    await draft(h);
+    await act(async () => {
+      await h.current().handleSendMessage(event());
+    });
+    expect(h.current().sendError).toBe(message);
+    expect(h.current().sendError).not.toContain(String(status));
+    expect(h.current().sendErrorStatus).toBe(status);
+    expect(h.current().failedDraftPreview).toBeUndefined();
+  },
+);
+
+it.each([502, 504, 401] as const)(
+  "uses actionable Stop copy for %i without exposing the HTTP code",
+  async (status) => {
+    fixture(
+      () => response(),
+      () =>
+        Response.json(
+          { status: "error", error: "Synthetic failure" },
+          { status },
+        ),
+    );
+    const h = await mount();
+    await act(async () => {
+      await h.current().stop();
+    });
+    expect(h.current().stopState?.message).toBe(
+      status === 401
+        ? "Please sign in again to stop this response."
+        : "Couldn’t confirm Stop. Please retry.",
+    );
+    expect(h.current().stopState?.message).not.toContain(String(status));
+    expect(h.current().stopState?.httpStatus).toBe(status);
+  },
+);
+
+it.each([false, true])(
+  "keeps current guarded setters and history loading stable across draft renders (dev=%s)",
+  async (dev) => {
+    environment(dev);
+    const f = fixture(() => response());
+    const h = await mount();
+    const setInput = h.current().setInput;
+    const setMessages = h.current().setMessages;
+    act(() => h.current().setInput("First edit"));
+    act(() => h.current().setInput("Second edit"));
+    expect(h.current().setInput).toBe(setInput);
+    expect(h.current().setMessages).toBe(setMessages);
+    expect(
+      f.calls.filter(
+        (call) =>
+          call.method === "GET" &&
+          call.url.pathname.startsWith("/api/sessions/"),
+      ),
+    ).toHaveLength(1);
+    expect(h.current().messages).toEqual(history);
+  },
+);
+
+it("preserves a newer same-chat draft when a retained Send submits its older render's input", async () => {
+  const f = fixture(() => response());
+  const h = await mount();
+  await draft(h);
+  const oldSend = h.current().handleSendMessage;
+  const newerImage = { ...image, filename: "newer.png" };
+  const newerText = { ...textFile, filename: "newer.csv" };
+  act(() => {
+    h.current().setInput("Newer same-chat draft");
+    h.current().setAttachments([newerImage]);
+    h.current().setTextAttachments([newerText]);
+  });
+  await act(async () => {
+    await oldSend(event());
+  });
+  expect(JSON.stringify(f.posts()[0].body!.messages.at(-1))).toContain(
+    "Retain this draft",
+  );
+  expect(h.current().input).toBe("Newer same-chat draft");
+  expect(h.current().attachments).toEqual([newerImage]);
+  expect(h.current().textAttachments).toEqual([newerText]);
 });

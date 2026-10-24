@@ -68,5 +68,5 @@ export type ChatRequestLifecycle = ReturnType<
 export interface ChatAdmissionMetadata {
   isCurrent: () => boolean;
   onAccepted: (ids: { chatId: string; sessionId?: string }) => void;
-  onRejected: (error: Error) => void;
+  onRejected: (error: Error & { status?: number }) => void;
 }

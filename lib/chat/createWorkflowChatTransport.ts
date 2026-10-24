@@ -130,10 +130,13 @@ export function createWorkflowChatTransport<UI_MESSAGE extends UIMessage>({
               !response.headers.get("x-workflow-run-id"))
           ) {
             reject(
-              new Error(
-                response.ok
-                  ? "Could not confirm message admission"
-                  : `Message was not accepted (${response.status})`,
+              Object.assign(
+                new Error(
+                  response.ok
+                    ? "Could not confirm message admission"
+                    : "Message was not accepted",
+                ),
+                response.ok ? {} : { status: response.status },
               ),
             );
           }

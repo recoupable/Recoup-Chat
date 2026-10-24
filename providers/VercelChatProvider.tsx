@@ -27,6 +27,7 @@ interface VercelChatContextType {
   isLoading: boolean;
   hasError: boolean;
   sendError?: string;
+  sendErrorStatus?: number;
   failedDraftPreview?: string;
   hasFailedSubmission?: boolean;
   retrySendMessage?: (event: React.FormEvent<HTMLFormElement>) => Promise<void>;
@@ -34,6 +35,7 @@ interface VercelChatContextType {
   stopState?: {
     status: "idle" | "stopping" | "stopped" | "inactive" | "error";
     message?: string;
+    httpStatus?: number;
   };
   editUnacceptedMessage?: (messageId: string, text: string) => boolean;
   isMessagePendingAdmission?: (messageId: string) => boolean;
@@ -144,6 +146,7 @@ export function VercelChatProvider({
     isLoading,
     hasError,
     sendError,
+    sendErrorStatus,
     failedDraftPreview,
     hasFailedSubmission,
     retrySendMessage,
@@ -200,6 +203,7 @@ export function VercelChatProvider({
     isLoading,
     hasError,
     sendError,
+    sendErrorStatus,
     failedDraftPreview,
     hasFailedSubmission,
     retrySendMessage,

@@ -1,3 +1,5 @@
+import { getChatSendErrorMessage } from "@/lib/chat/getChatSendErrorMessage";
+import { getChatStopErrorMessage } from "@/lib/chat/getChatStopErrorMessage";
 import { getClientApiBaseUrl } from "@/lib/api/getClientApiBaseUrl";
 import type { ChatAdmissionMetadata } from "@/lib/chat/createChatRequestLifecycle";
 import type { CatalogQueryInput } from "@/lib/intelligent-ui/chat/getChatCatalogHost";
@@ -119,16 +121,11 @@ export function useVercelChat({
   const supersededHistoryScopeRef = useRef<string | undefined>(undefined);
   const { addOptimisticConversation } = useConversationsProvider();
   const { data: availableModels = [] } = useAvailableModels();
-  const [input, updateInput] = useState("");
+  const [{ value: input, revision: renderInputRevision }, updateInput] =
+    useState({ value: "", revision: 0 });
   const inputRevision = useRef(0);
-  const setInput = useCallback(
-    (value: string) => {
-      inputRevision.current++;
-      updateInput(value);
-    },
-    [updateInput],
-  );
   const [sendError, setSendError] = useState<string>();
+  const [sendErrorStatus, setSendErrorStatus] = useState<number>();
   const [failedDraft, updateFailedDraft] = useState<SubmittedChatDraft>();
   const failedDraftRef = useRef<SubmittedChatDraft | undefined>(undefined);
   const setFailedDraft = useCallback(
@@ -142,11 +139,13 @@ export function useVercelChat({
   const [stopState, setStopState] = useState<{
     status: "idle" | "stopping" | "stopped" | "inactive" | "error";
     message?: string;
+    httpStatus?: number;
   }>({ status: "idle" });
   const intentEpoch = useRef(0);
   const committedScope = useRef("");
   const scopeGeneration = useRef(0);
   const committedIds = useRef({ sessionId, workflowChatId });
+  const actionGenerations = useRef(new Map<object, number>());
   const mounted = useRef(false);
   const attemptRef = useRef<object | undefined>(undefined);
   const stoppingRef = useRef<Promise<void> | undefined>(undefined);
@@ -217,6 +216,7 @@ export function useVercelChat({
     committedScope.current = requestScope;
     intentEpoch.current++;
     scopeGeneration.current++;
+    actionGenerations.current.clear();
     attemptRef.current = undefined;
     unacceptedIds.current.clear();
     pendingAdmissionIds.current.clear();
@@ -227,6 +227,7 @@ export function useVercelChat({
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setPreparing(false);
     setSendError(undefined);
+    setSendErrorStatus(undefined);
     setFailedDraft(undefined);
     setStopState({ status: "idle" });
     return () => {
@@ -268,6 +269,7 @@ export function useVercelChat({
     ) {
       intentEpoch.current++;
       scopeGeneration.current++;
+      actionGenerations.current.clear();
       requestLifecycle.cancelAll();
       attemptRef.current = undefined;
       stoppingRef.current = undefined;
@@ -276,21 +278,43 @@ export function useVercelChat({
       pendingAdmissionIds.current.clear();
       setPreparing(false);
       setSendError(undefined);
+      setSendErrorStatus(undefined);
       setFailedDraft(undefined);
       setStopState({ status: "idle" });
     }
   }, [sessionId, workflowChatId, requestLifecycle, setFailedDraft]);
+  // Each callback closes over a render-owned binding. Only its committed
+  // generation may act; invoking an old closure cannot adopt the current host.
+  const actionBinding = useMemo(
+    () => ({ requestScope, sessionId, workflowChatId }),
+    [requestScope, sessionId, workflowChatId],
+  );
+  useLayoutEffect(() => {
+    actionGenerations.current.set(actionBinding, scopeGeneration.current);
+  }, [actionBinding]);
+  const isActionCurrent = useCallback(
+    () =>
+      mounted.current &&
+      committedScope.current === requestScope &&
+      actionGenerations.current.get(actionBinding) === scopeGeneration.current,
+    [actionBinding, requestScope],
+  );
+  const setInput = useCallback(
+    (value: string) => {
+      if (!isActionCurrent()) return;
+      inputRevision.current++;
+      updateInput({ value, revision: inputRevision.current });
+    },
+    [isActionCurrent, updateInput],
+  );
   const coordinateHistory = isChatIntelligentUIEnabled();
   const captureSendIntent = useCallback(() => {
-    const scope = committedScope.current;
+    if (!isActionCurrent()) return () => false;
     const epoch = intentEpoch.current;
     const snapshotCurrent = snapshotConsumer.captureSendIntent();
     return () =>
-      mounted.current &&
-      scope === committedScope.current &&
-      epoch === intentEpoch.current &&
-      snapshotCurrent();
-  }, [snapshotConsumer]);
+      isActionCurrent() && epoch === intentEpoch.current && snapshotCurrent();
+  }, [snapshotConsumer, isActionCurrent]);
   const historyLoadScope = coordinateHistory
     ? JSON.stringify([
         authenticatedUser?.id,
@@ -484,18 +508,31 @@ export function useVercelChat({
       await refetchCredits();
     },
   });
+  const setScopedMessages = useCallback(
+    (value: UIMessage[] | ((previous: UIMessage[]) => UIMessage[])) => {
+      if (isActionCurrent()) setMessages(value);
+    },
+    [isActionCurrent, setMessages],
+  );
+  const setScopedModel = useCallback(
+    (value: string) => {
+      if (isActionCurrent()) setModel(value);
+    },
+    [isActionCurrent, setModel],
+  );
   useLayoutEffect(() => {
     messagesRef.current = messages;
     if (intelligentUI)
       snapshotConsumer.observeMessages(messages, intelligentUI.scopeKey);
   }, [messages, intelligentUI, snapshotConsumer]);
   const stop = useCallback(() => {
+    if (!isActionCurrent()) return Promise.resolve();
     if (stoppingRef.current) return stoppingRef.current;
-    const capturedChatId = transportChatId;
+    const capturedChatId = committedIds.current.workflowChatId ?? id;
     const scope = committedScope.current;
     const generation = scopeGeneration.current;
     const isCurrent = () =>
-      mounted.current &&
+      isActionCurrent() &&
       committedScope.current === scope &&
       scopeGeneration.current === generation;
     const capturedStopChat = stopChat;
@@ -507,6 +544,8 @@ export function useVercelChat({
     setPreparing(false);
     setStopState({ status: "stopping", message: "Stopping response…" });
     const operation = (async () => {
+      let httpStatus: number | undefined;
+      let reason: "auth" | "starting" | "message-unconfirmed" | undefined;
       try {
         // A legacy server may clear a pending slot before its POST starts the
         // run. Wait for dispatched admission before asking it to cancel.
@@ -514,8 +553,10 @@ export function useVercelChat({
         if (!isCurrent()) return;
         const accessToken = await tokenGetter();
         if (!isCurrent()) return;
-        if (!accessToken)
-          throw new Error("Please sign in to stop this response");
+        if (!accessToken) {
+          reason = "auth";
+          throw new Error("Missing Stop access token");
+        }
         const response = await fetch(
           `${getClientApiBaseUrl()}/api/chat/${encodeURIComponent(capturedChatId)}/stop`,
           {
@@ -523,10 +564,21 @@ export function useVercelChat({
             headers: { Authorization: `Bearer ${accessToken}` },
           },
         );
-        if (!response.ok)
-          throw new Error(
-            `Could not stop the response (${response.status}). Retry Stop.`,
-          );
+        httpStatus = response.status;
+        if (!response.ok) {
+          if (httpStatus === 503) {
+            const body: unknown = await response.json().catch(() => undefined);
+            if (
+              body &&
+              typeof body === "object" &&
+              "error" in body &&
+              typeof body.error === "string" &&
+              /still starting/i.test(body.error)
+            )
+              reason = "starting";
+          }
+          throw new Error(`Stop HTTP request failed (${httpStatus})`);
+        }
         const result: unknown = await response.json().catch(() => {
           throw new Error("Could not confirm Stop. Retry Stop.");
         });
@@ -540,10 +592,10 @@ export function useVercelChat({
         )
           throw new Error("Could not confirm Stop. Retry Stop.");
         if (!isCurrent()) return;
-        if (!result.stopped && requestLifecycle.hasUnknownAdmission())
-          throw new Error(
-            "No active response was found, but message admission is still unconfirmed. Retry Stop.",
-          );
+        if (!result.stopped && requestLifecycle.hasUnknownAdmission()) {
+          reason = "message-unconfirmed";
+          throw new Error("Message admission remains unconfirmed after Stop");
+        }
         if (result.stopped) requestLifecycle.confirmStopped();
         snapshotConsumer.cancel();
         await capturedStopChat();
@@ -557,14 +609,12 @@ export function useVercelChat({
                 message: "No active response was found when Stop was checked.",
               },
         );
-      } catch (error) {
+      } catch {
         if (isCurrent())
           setStopState({
             status: "error",
-            message:
-              error instanceof Error
-                ? error.message
-                : "Could not confirm Stop. Retry Stop.",
+            message: getChatStopErrorMessage({ httpStatus, reason }),
+            httpStatus,
           });
       } finally {
         if (isCurrent()) stoppingRef.current = undefined;
@@ -573,7 +623,8 @@ export function useVercelChat({
     stoppingRef.current = operation;
     return operation;
   }, [
-    transportChatId,
+    id,
+    isActionCurrent,
     cancelPendingResume,
     requestLifecycle,
     snapshotConsumer,
@@ -585,6 +636,7 @@ export function useVercelChat({
   const historyScopeKey = intelligentUI?.scopeKey;
   const setHistoryMessages = useCallback(
     (loaded: UIMessage[]) => {
+      if (!isActionCurrent()) return;
       if (
         coordinateHistory &&
         (historyScopeRef.current !== historyLoadScope ||
@@ -601,6 +653,7 @@ export function useVercelChat({
     },
     [
       coordinateHistory,
+      isActionCurrent,
       historyLoadScope,
       historyScopeKey,
       snapshotConsumer,
@@ -725,10 +778,12 @@ export function useVercelChat({
         if (!canPublish()) return;
         unacceptedIds.current.delete(messageId);
         pendingAdmissionIds.current.delete(messageId);
-        if (inputRevision.current === draft.revision) updateInput("");
+        if (inputRevision.current === draft.revision)
+          updateInput({ value: "", revision: draft.revision });
         draft.onAccepted?.();
         setFailedDraft(undefined);
         setSendError(undefined);
+        setSendErrorStatus(undefined);
         setPreparing(false);
         onDispatch(acceptedIds);
       },
@@ -737,11 +792,8 @@ export function useVercelChat({
         pendingAdmissionIds.current.delete(messageId);
         if (error.name !== "AbortError") {
           setFailedDraft(draft);
-          setSendError(
-            error.message.startsWith("Message was not accepted")
-              ? `${error.message}. Your draft is ready to retry.`
-              : "Couldn’t confirm this message was sent. Your draft is ready to retry.",
-          );
+          setSendError(getChatSendErrorMessage(error));
+          setSendErrorStatus(error.status);
         }
         if (!draft.regenerate)
           setMessages((previous) =>
@@ -864,11 +916,12 @@ export function useVercelChat({
     )
       return false;
     const isCurrent = captureSendIntent();
+    if (!isCurrent()) return false;
     cancelPendingResume(true);
     let didSend = false;
     const submittedDraft = retryDraft ?? {
       input,
-      revision: inputRevision.current,
+      revision: renderInputRevision,
       attachments,
       textAttachments,
       mentionAttachments,
@@ -883,6 +936,7 @@ export function useVercelChat({
       attemptRef.current = attempt;
       setPreparing(true);
       setSendError(undefined);
+      setSendErrorStatus(undefined);
       setStopState({ status: "idle" });
       try {
         if (
@@ -927,9 +981,9 @@ export function useVercelChat({
         if (isCurrent() && attemptRef.current === attempt) {
           setFailedDraft(submittedDraft);
           setSendError(
-            error instanceof Error
-              ? error.message
-              : "Couldn’t confirm this message was sent. Retry when ready.",
+            getChatSendErrorMessage(
+              error instanceof Error ? error : new Error(String(error)),
+            ),
           );
         }
       } finally {
@@ -965,16 +1019,22 @@ export function useVercelChat({
     isLoading,
     hasError,
     sendError,
+    sendErrorStatus,
     failedDraftPreview:
-      failedDraft?.input || (failedDraft ? "Attached files" : undefined),
+      failedDraft && failedDraft.input !== input
+        ? failedDraft.input || "Attached files"
+        : undefined,
     hasFailedSubmission: !!failedDraft,
     retrySendMessage: async (event: React.FormEvent<HTMLFormElement>) => {
+      if (!isActionCurrent()) return;
       if (failedDraftRef.current)
         await handleSendMessage(event, failedDraftRef.current);
     },
     discardFailedSubmission: () => {
+      if (!isActionCurrent()) return;
       setFailedDraft(undefined);
       setSendError(undefined);
+      setSendErrorStatus(undefined);
     },
     stopState,
     isGeneratingResponse,
@@ -985,13 +1045,15 @@ export function useVercelChat({
 
     // Actions
     isMessagePendingAdmission: (messageId: string) =>
-      pendingAdmissionIds.current.has(messageId),
+      !isActionCurrent() || pendingAdmissionIds.current.has(messageId),
     editUnacceptedMessage: (messageId: string, text: string) => {
+      if (!isActionCurrent()) return true;
       if (!unacceptedIds.current.has(messageId)) return false;
       if (pendingAdmissionIds.current.has(messageId)) return true;
       setInput(text);
       setFailedDraft(undefined);
       setSendError(undefined);
+      setSendErrorStatus(undefined);
       setMessages((previous) =>
         previous.filter((message) => message.id !== messageId),
       );
@@ -999,8 +1061,8 @@ export function useVercelChat({
     },
     handleSendMessage,
     setInput,
-    setMessages,
-    setModel,
+    setMessages: setScopedMessages,
+    setModel: setScopedModel,
     availableModels,
     stop,
     reload: handleReload,
