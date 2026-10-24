@@ -437,26 +437,24 @@ it("rejects oversized and multibyte candidates and bounds repeated invalid bytes
   const multibyte = { ...chatSnapshotPart(100), extra: "🎵".repeat(70000) };
   vi.stubGlobal(
     "fetch",
-    vi
-      .fn()
-      .mockResolvedValueOnce(
-        workflowResponse([
-          { type: "start", messageId: "assistant-1" },
-          chatSnapshotPart(1),
-          ...Array.from({ length: 8 }, (_, index) =>
-            index % 2 ? oversized : multibyte,
-          ),
-          chatSnapshotPart(2),
-          { type: "text-start", id: "tail" },
-          {
-            type: "text-delta",
-            id: "tail",
-            delta: "Readable after byte limit",
-          },
-          { type: "text-end", id: "tail" },
-          { type: "finish" },
-        ]),
-      ),
+    vi.fn().mockResolvedValueOnce(
+      workflowResponse([
+        { type: "start", messageId: "assistant-1" },
+        chatSnapshotPart(1),
+        ...Array.from({ length: 8 }, (_, index) =>
+          index % 2 ? oversized : multibyte,
+        ),
+        chatSnapshotPart(2),
+        { type: "text-start", id: "tail" },
+        {
+          type: "text-delta",
+          id: "tail",
+          delta: "Readable after byte limit",
+        },
+        { type: "text-end", id: "tail" },
+        { type: "finish" },
+      ]),
+    ),
   );
   const { chat, received } = fixture();
   await chat.sendMessage({ text: "Synthetic question" });
