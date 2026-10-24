@@ -71,6 +71,7 @@ export const VercelChatContext = createContext<
 interface VercelChatProviderProps {
   children: ReactNode;
   chatId: string;
+  catalogId?: string | string[];
   /**
    * Session id for recoup-api `/api/chat`. Absent only on the
    * new-chat bootstrap path until provisioning resolves; the transport holds
@@ -90,6 +91,7 @@ interface VercelChatProviderProps {
 export function VercelChatProvider({
   children,
   chatId,
+  catalogId,
   sessionId,
   workflowChatId,
   workspaceStatus = "ready",
@@ -141,6 +143,7 @@ export function VercelChatProvider({
     intelligentUI,
   } = useVercelChat({
     id: chatId,
+    catalogId,
     sessionId,
     workflowChatId,
     initialMessages,

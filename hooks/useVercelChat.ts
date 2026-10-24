@@ -36,9 +36,12 @@ import { usePersistSelectedModel } from "./usePersistSelectedModel";
 import shouldResumeStream from "@/lib/chat/shouldResumeStream";
 import type { WorkspaceStatus } from "@/components/VercelChat/WorkspaceStatusIndicator";
 import { isChatIntelligentUIEnabled } from "@/lib/intelligent-ui/chat/isChatIntelligentUIEnabled";
+import { getChatCatalogHost } from "@/lib/intelligent-ui/chat/getChatCatalogHost";
+import type { SnapshotHostScope } from "@/lib/intelligent-ui/chat/getSnapshotScopeKey";
 
 interface UseVercelChatProps {
   id: string;
+  catalogId?: string | string[];
   /**
    * Session id from `/sessions/[sessionId]/chats/[chatId]` (always
    * present) or the new-chat bootstrap (absent until provisioning
@@ -64,6 +67,7 @@ interface UseVercelChatProps {
  */
 export function useVercelChat({
   id,
+  catalogId,
   sessionId,
   workflowChatId,
   workspaceStatus,
@@ -74,12 +78,21 @@ export function useVercelChat({
   const submitOnce = useMemo(() => createChatSubmissionGuard(), []);
   const { userData } = useUserProvider();
   const { selectedArtist } = useArtistProvider();
-  const { selectedOrgId: organizationId } = useOrganization();
+  const { selectedOrgId: organizationId, isInitialized } = useOrganization();
   const { chatId } = useParams<{ chatId?: string }>();
 
   const userId = userData?.account_id || userData?.id; // Use account_id if available, fallback to id
-  const artistId = selectedArtist?.account_id;
   const { accountIdOverride } = useAccountOverride();
+  const effectiveAccountId = accountIdOverride ?? userId;
+  const catalogHost = getChatCatalogHost({
+    catalogId,
+    workspaceInitialized: isInitialized,
+    organizationId,
+    accountId: effectiveAccountId,
+  });
+  // An explicit malformed catalog must not silently become artist context.
+  const artistId =
+    catalogHost.kind === "absent" ? selectedArtist?.account_id : undefined;
   const { authenticated, getAccessToken, user: authenticatedUser } = usePrivy();
   const messagesRef = useRef<UIMessage[]>([]);
   const historyScopeRef = useRef("");
@@ -95,24 +108,51 @@ export function useVercelChat({
   // client placeholder. Drives the transport, message load, and URL so
   // sends/persistence target the row recoup-api actually created.
   const transportChatId = workflowChatId ?? id;
+  const hostWorkspace =
+    catalogHost.kind === "catalog"
+      ? catalogHost.workspace
+      : catalogHost.kind === "absent" && organizationId
+        ? { kind: "organization" as const, id: organizationId }
+        : undefined;
+  const hostSubject =
+    catalogHost.kind === "catalog"
+      ? catalogHost.subject
+      : artistId
+        ? { kind: "artist", id: artistId }
+        : undefined;
+  const snapshotScope: SnapshotHostScope | undefined =
+    authenticated &&
+    authenticatedUser?.id &&
+    userId &&
+    effectiveAccountId &&
+    hostWorkspace &&
+    hostSubject
+      ? {
+          actorId: authenticatedUser.id,
+          accountId: effectiveAccountId,
+          workspaceId: hostWorkspace.id,
+          ...(catalogHost.kind === "catalog" && {
+            workspaceKind: hostWorkspace.kind,
+          }),
+          sessionId: sessionId ?? "",
+          chatId: transportChatId,
+          subject: hostSubject,
+        }
+      : undefined;
   const { transport, getHeaders, intelligentUI, snapshotConsumer } =
     useChatTransport({
       chatId: transportChatId,
       sessionId,
       workspaceStatus,
-      snapshotScope:
-        authenticated &&
-        authenticatedUser?.id &&
-        userId &&
-        organizationId &&
-        artistId
+      snapshotScope,
+      intelligentUIContext:
+        snapshotScope?.sessionId &&
+        catalogHost.kind === "catalog" &&
+        catalogHost.workspace
           ? {
-              actorId: authenticatedUser.id,
-              accountId: accountIdOverride ?? userId,
-              workspaceId: organizationId,
-              sessionId: sessionId ?? "",
-              chatId: transportChatId,
-              subject: { kind: "artist", id: artistId },
+              schemaVersion: 1,
+              workspace: catalogHost.workspace,
+              subject: catalogHost.subject,
             }
           : undefined,
       getMessages: () => messagesRef.current,
@@ -128,6 +168,7 @@ export function useVercelChat({
         sessionId,
         transportChatId,
         intelligentUI?.scopeKey,
+        ...(catalogHost.kind !== "absent" ? [catalogId, isInitialized] : []),
       ])
     : "";
   useLayoutEffect(() => {
@@ -487,9 +528,9 @@ export function useVercelChat({
     window.history.replaceState(
       {},
       "",
-      getChatPath(sessionId, transportChatId),
+      getChatPath(sessionId, transportChatId, catalogId),
     );
-  }, [transportChatId, sessionId]);
+  }, [transportChatId, sessionId, catalogId]);
 
   // On a cold start the ids land about a second after Send (app#2052), so
   // the URL update in handleSendMessage is a no-op then; this catches up.

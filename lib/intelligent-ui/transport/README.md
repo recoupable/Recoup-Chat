@@ -39,13 +39,55 @@ production builds with the flag set. Production deployment markers also block
 the consumer. No endpoint, producer, account operation or provider action is added.
 
 `useVercelChat` supplies the authenticated actor, effective account (including an
-account override), organization, session/chat and selected artist. Every field is
-required. This first host maps Surface workspace to selected organization and
-subject to the selected artist. Studio/label names in lab fixtures do not prove
-live identifier mapping. Host scope is a lifecycle/cache binding, **not an
-authorization rule**; the reusable consumer compares any explicit host subject
-kind, while this app host currently supplies only `artist`.
-While provisioning, the host can supply stable actor/organization/artist fields
+account override), workspace, session/chat and explicit subject. Ordinary artist
+chat keeps its selected organization and artist mapping. Behind the same local
+development-only gate, the canonical session/chat route accepts `?catalogId=UUID`
+and carries that input through `Chat`, `VercelChatProvider` and `useVercelChat`.
+Zod validates a branded catalog UUID; malformed or repeated/array parameters are
+explicit invalid inputs and cannot fall back to an artist. A catalog needs no
+selected artist, and changing the selected artist does not repoint it.
+
+The catalog workspace comes from initialized `OrganizationProvider` selection.
+An organization uses its selected UUID; initialized Personal uses the effective
+account UUID with workspace kind `account`. An uninitialized null selection is
+not Personal. Both workspace ID and kind participate in catalog lifecycle scope.
+Studio/label names in lab fixtures do not prove live identifier mapping. Host
+scope is a lifecycle/cache binding, **not an authorization rule**; the reusable
+consumer still compares any explicit host subject kind.
+
+For a complete catalog host only, the existing `POST /api/chat` boundary captures
+the committed context alongside request IDs, before asynchronous authentication:
+
+```json
+{
+  "intelligentUI": {
+    "schemaVersion": 1,
+    "workspace": { "kind": "organization", "id": "selected-workspace-uuid" },
+    "subject": { "kind": "catalog", "id": "explicit-catalog-uuid" }
+  }
+}
+```
+
+The field carries browser references, never credentials or an authorization
+grant. The existing bearer token, account override and ordinary routing fields
+remain in their existing paths; explicit catalog hosts omit `artistId`. No new
+field is sent for default/artist, incomplete, gate-off or production hosts. The
+transport strips per-message `intelligentUI` on every path, including disabled
+and production paths; only the gated committed host can supply it. Other ordinary
+body fields keep their existing routing. Scope cancellation while provisioning
+or authentication prevents a stale request from reaching fetch.
+Development catalog URL updates preserve the explicit query reference, including
+invalid/repeated input so reload cannot silently change it to artist context.
+Default and production URLs remain unchanged.
+
+This request shape is pending alignment with the MCP-owned API producer. App
+does not synthesize source fingerprints, retained observations, query/window
+policy or catalog access rules. Qualified source-to-screen acceptance must use
+the producer's complete schema-v1 snapshots with catalog workspace/subject,
+matching answer/data revision, deterministic text and evidence. Historical
+answers remain historical; the App does not refetch or label their evidence
+current, persist selection/business state or activate production.
+While provisioning, the host can supply stable actor/workspace/subject fields
 with an empty session so a selection change still cancels the pending UI intent.
 No UI binding is available until all required fields are complete.
 

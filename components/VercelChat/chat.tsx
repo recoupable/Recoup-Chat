@@ -24,6 +24,8 @@ import type { WorkspaceStatus } from "./WorkspaceStatusIndicator";
 
 interface ChatProps {
   id: string;
+  /** Explicit development-only catalog reference; validated by the owning hook. */
+  catalogId?: string | string[];
   /**
    * Session id. Always present from the canonical session-scoped route;
    * absent on the new-chat bootstrap path until provisioning resolves
@@ -49,6 +51,7 @@ interface ChatProps {
 
 export function Chat({
   id,
+  catalogId,
   sessionId,
   workflowChatId,
   workspaceStatus,
@@ -62,6 +65,7 @@ export function Chat({
     <VercelChatProvider
       key={providerKey}
       chatId={id}
+      catalogId={catalogId}
       sessionId={sessionId}
       workflowChatId={workflowChatId}
       workspaceStatus={workspaceStatus}
