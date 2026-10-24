@@ -96,7 +96,9 @@ it("does not load the visual module when gated off; pending and failed loading r
   vi.stubEnv("NEXT_PUBLIC_RECOUP_INTELLIGENT_UI_CHAT", "true");
   rerender(view());
   expect(screen.getByText("The accepted deterministic answer.")).toBeTruthy();
-  fireEvent.click(screen.getByRole("button", { name: "Copy response" }));
+  await act(async () => {
+    fireEvent.click(screen.getByRole("button", { name: "Copy response" }));
+  });
   await vi.waitFor(() =>
     expect(writeText).toHaveBeenLastCalledWith(
       "Ordinary prose remains.\n\nThe accepted deterministic answer.",
@@ -109,7 +111,9 @@ it("does not load the visual module when gated off; pending and failed loading r
   });
   expect(screen.getByText("The accepted deterministic answer.")).toBeTruthy();
   expect(screen.getByText("Ordinary prose remains.")).toBeTruthy();
-  fireEvent.click(screen.getByRole("button", { name: "Copy response" }));
+  await act(async () => {
+    fireEvent.click(screen.getByRole("button", { name: "Copy response" }));
+  });
   await vi.waitFor(() => expect(writeText).toHaveBeenCalledTimes(2));
   expect(writeText).toHaveBeenLastCalledWith(
     "Ordinary prose remains.\n\nThe accepted deterministic answer.",
