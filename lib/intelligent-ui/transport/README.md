@@ -118,6 +118,18 @@ Completed ordinary prose retains its existing Retry action when the new UI is
 the trailing content, including loading or renderer fallback. Tools and files
 keep their existing action routing.
 
+For a gated assistant answer with an accepted snapshot or validated historical
+text fallback, `MessageParts` provides one existing Copy response action. It
+copies ordinary prose and deterministic accepted answer text in their displayed
+order, including complete representation values and composed source citations.
+Snapshot-only answers also have that action. Copy resolves the same accepted
+revision as rendering; rejected raw parts cannot replace its payload. Loading or
+renderer failure does not remove it, and a scope change removes the old UI text
+from both display and copy. The payload describes the complete answer, including
+all timeline sections, rather than the locally selected section or seek
+position. Ordinary, disabled and production paths keep their per-text-part copy
+behavior. Clipboard handling and feedback remain owned by `CopyButton`/`useCopy`.
+
 The synthetic suites cover real `Chat` + workflow transport, the transport hook's
 scope/StrictMode lifecycle, and `MessageParts` + existing visual renderers. The
 history-readiness suite also runs the actual owning hook, message loader and HTTP

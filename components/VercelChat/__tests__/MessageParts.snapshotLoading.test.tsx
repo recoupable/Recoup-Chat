@@ -1,6 +1,12 @@
 // @vitest-environment jsdom
 import React from "react";
-import { act, cleanup, render, screen } from "@testing-library/react";
+import {
+  act,
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+} from "@testing-library/react";
 import { afterEach, expect, it, vi } from "vitest";
 import { MessageParts } from "../MessageParts";
 import { VercelChatContext } from "@/providers/VercelChatProvider";
@@ -17,6 +23,10 @@ const moduleLoad = vi.hoisted(() => {
   });
   return { reject, promise, attempts: 0 };
 });
+const clipboardDescriptor = Object.getOwnPropertyDescriptor(
+  navigator,
+  "clipboard",
+);
 vi.mock("@/components/IntelligentUI/ChatSnapshot", async () => {
   moduleLoad.attempts++;
   return moduleLoad.promise;
@@ -42,6 +52,9 @@ afterEach(() => {
   cleanup();
   vi.unstubAllEnvs();
   vi.restoreAllMocks();
+  if (clipboardDescriptor)
+    Object.defineProperty(navigator, "clipboard", clipboardDescriptor);
+  else Reflect.deleteProperty(navigator, "clipboard");
 });
 
 it("does not load the visual module when gated off; pending and failed loading retain safe text beside ordinary prose", async () => {
@@ -49,6 +62,11 @@ it("does not load the visual module when gated off; pending and failed loading r
   vi.stubEnv("VERCEL_ENV", "development");
   vi.stubEnv("NEXT_PUBLIC_VERCEL_ENV", "development");
   vi.stubEnv("NEXT_PUBLIC_RECOUP_INTELLIGENT_UI_CHAT", "true");
+  const writeText = vi.fn().mockResolvedValue(undefined);
+  Object.defineProperty(navigator, "clipboard", {
+    configurable: true,
+    value: { writeText },
+  });
   const consumer = createSnapshotConsumer(() => hostScope);
   const binding = { consumer, scopeKey: consumer.syncScope().key! };
   const part = chatSnapshotPart(1, "The accepted deterministic answer.");
@@ -78,6 +96,12 @@ it("does not load the visual module when gated off; pending and failed loading r
   vi.stubEnv("NEXT_PUBLIC_RECOUP_INTELLIGENT_UI_CHAT", "true");
   rerender(view());
   expect(screen.getByText("The accepted deterministic answer.")).toBeTruthy();
+  fireEvent.click(screen.getByRole("button", { name: "Copy response" }));
+  await vi.waitFor(() =>
+    expect(writeText).toHaveBeenLastCalledWith(
+      "Ordinary prose remains.\n\nThe accepted deterministic answer.",
+    ),
+  );
   await vi.waitFor(() => expect(moduleLoad.attempts).toBe(1));
   vi.spyOn(console, "error").mockImplementation(() => {});
   await act(async () => {
@@ -85,4 +109,9 @@ it("does not load the visual module when gated off; pending and failed loading r
   });
   expect(screen.getByText("The accepted deterministic answer.")).toBeTruthy();
   expect(screen.getByText("Ordinary prose remains.")).toBeTruthy();
+  fireEvent.click(screen.getByRole("button", { name: "Copy response" }));
+  await vi.waitFor(() => expect(writeText).toHaveBeenCalledTimes(2));
+  expect(writeText).toHaveBeenLastCalledWith(
+    "Ordinary prose remains.\n\nThe accepted deterministic answer.",
+  );
 });

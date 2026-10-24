@@ -139,7 +139,7 @@ it("renders an accepted snapshot inline beside ordinary text and preserves retry
   expect(screen.getByText("Ordinary text after.")).toBeTruthy();
   expect(screen.getByText("A useful inline explanation.")).toBeTruthy();
   expect(screen.getAllByRole("button", { name: "Copy response" })).toHaveLength(
-    2,
+    1,
   );
   expect(screen.getByText("Astra")).toBeTruthy();
   fireEvent.click(screen.getByRole("button", { name: "Retry" }));
