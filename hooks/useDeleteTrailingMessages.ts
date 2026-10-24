@@ -9,6 +9,7 @@ interface UseDeleteTrailingMessagesInput {
 interface DeleteTrailingMessagesMutationInput {
   chatId: string;
   fromMessageId: string;
+  isCurrent?: () => boolean;
 }
 
 /**
@@ -21,8 +22,14 @@ export function useDeleteTrailingMessages({
   const { getAccessToken } = usePrivy();
 
   const mutation = useMutation({
-    mutationFn: async ({ chatId, fromMessageId }: DeleteTrailingMessagesMutationInput) => {
+    mutationFn: async ({
+      chatId,
+      fromMessageId,
+      isCurrent,
+    }: DeleteTrailingMessagesMutationInput) => {
+      if (isCurrent?.() === false) return;
       const accessToken = await getAccessToken();
+      if (isCurrent?.() === false) return;
       if (!accessToken) {
         throw new Error("Missing access token");
       }
@@ -33,7 +40,9 @@ export function useDeleteTrailingMessages({
         accessToken,
       });
     },
-    onSuccess,
+    onSuccess: (_data, input) => {
+      if (input.isCurrent?.() !== false) onSuccess?.();
+    },
   });
 
   return {

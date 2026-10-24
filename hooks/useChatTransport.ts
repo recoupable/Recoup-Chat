@@ -8,6 +8,7 @@ import { usePrivy } from "@privy-io/react-auth";
 import { createWorkflowChatTransport } from "@/lib/chat/createWorkflowChatTransport";
 import { waitForWorkspace } from "@/lib/chat/waitForWorkspace";
 import type { WorkspaceStatus } from "@/components/VercelChat/WorkspaceStatusIndicator";
+import type { CatalogSurfaceRequest } from "@/lib/intelligent-ui/chat/getChatCatalogHost";
 
 interface UseChatTransportOptions {
   /** Chat row id (also the AI SDK `useChat({ id })` instance id). */
@@ -21,6 +22,7 @@ interface UseChatTransportOptions {
   /** Workspace lifecycle; a request holds until `ready` (app#2052). */
   workspaceStatus?: WorkspaceStatus;
   snapshotScope?: SnapshotHostScope;
+  devCatalogSurface?: CatalogSurfaceRequest;
   getMessages?: () => UIMessage[];
 }
 
@@ -37,6 +39,7 @@ export function useChatTransport({
   sessionId,
   workspaceStatus = "ready",
   snapshotScope,
+  devCatalogSurface,
   getMessages,
 }: UseChatTransportOptions) {
   const { getAccessToken } = usePrivy();
@@ -56,6 +59,7 @@ export function useChatTransport({
     sessionId,
     workspaceStatus,
     snapshotScope,
+    devCatalogSurface,
     getMessages,
     getAccessToken,
   });
@@ -74,6 +78,7 @@ export function useChatTransport({
       sessionId,
       workspaceStatus,
       snapshotScope,
+      devCatalogSurface,
       getMessages,
       getAccessToken,
     };
@@ -104,6 +109,10 @@ export function useChatTransport({
           ? snapshotConsumer
           : undefined,
         getMessages: () => live.current.getMessages?.() ?? [],
+        getDevCatalogSurface: () =>
+          isChatIntelligentUIEnabled()
+            ? live.current.devCatalogSurface
+            : undefined,
       }),
     [baseUrl, snapshotConsumer],
   );

@@ -561,3 +561,51 @@ it("keeps the accepted answer after the actual Chat is stopped and ignores a del
   expect(chat.error).toBeUndefined();
   expect(chat.status).toBe("ready");
 });
+
+it.each([
+  "actorId",
+  "accountId",
+  "workspaceId",
+  "sessionId",
+  "chatId",
+  "queryKey",
+  "subject",
+] as const)(
+  "expires captured preparation across committed %s changes even after returning",
+  (field) => {
+    const { consumer, setScope } = fixture();
+    const isCurrent = consumer.captureSendIntent();
+    const changed = structuredClone(hostScope);
+    if (field === "subject")
+      changed.subject = { kind: "catalog", id: "another-subject" };
+    else changed[field] = "another-committed-value";
+    setScope(changed);
+    setScope(structuredClone(hostScope));
+    expect(isCurrent()).toBe(false);
+  },
+);
+
+it("keeps preparation current across own stream start and prospective-only reads, but never revives Stop/dispose", () => {
+  const { consumer } = fixture();
+  const isCurrent = consumer.captureSendIntent();
+  consumer.getBindingKey({ ...hostScope, queryKey: "uncommitted-query" });
+  expect(isCurrent()).toBe(true);
+  consumer.beginStream();
+  expect(isCurrent()).toBe(true);
+  consumer.cancel();
+  expect(isCurrent()).toBe(false);
+  const next = consumer.captureSendIntent();
+  consumer.dispose();
+  consumer.activate();
+  expect(next()).toBe(false);
+});
+
+it("allows stable-identity first-send provisioning to complete before dispatch", () => {
+  let scope = { ...hostScope, sessionId: "", chatId: "client-placeholder" };
+  const consumer = createSnapshotConsumer(() => scope);
+  consumer.syncScope();
+  const isCurrent = consumer.captureSendIntent();
+  scope = { ...hostScope };
+  consumer.syncScope();
+  expect(isCurrent()).toBe(true);
+});

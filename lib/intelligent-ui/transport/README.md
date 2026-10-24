@@ -39,14 +39,101 @@ production builds with the flag set. Production deployment markers also block
 the consumer. No endpoint, producer, account operation or provider action is added.
 
 `useVercelChat` supplies the authenticated actor, effective account (including an
-account override), organization, session/chat and selected artist. Every field is
-required. This first host maps Surface workspace to selected organization and
-subject to the selected artist. Studio/label names in lab fixtures do not prove
-live identifier mapping. Host scope is a lifecycle/cache binding, **not an
-authorization rule**; the reusable consumer compares any explicit host subject
-kind, while this app host currently supplies only `artist`.
-While provisioning, the host can supply stable actor/organization/artist fields
-with an empty session so a selection change still cancels the pending UI intent.
+account override), workspace, session/chat and explicit subject. Ordinary artist
+chat keeps its selected organization and artist mapping. Behind the same local
+development-only gate, the canonical session/chat route accepts `?catalogId=UUID`
+and carries that input through `Chat`, `VercelChatProvider` and `useVercelChat`.
+Zod validates a branded catalog UUID; malformed or repeated/array parameters are
+explicit invalid inputs and cannot fall back to an artist. A catalog needs no
+selected artist, and changing the selected artist does not repoint it.
+
+The catalog workspace comes from initialized `OrganizationProvider` selection.
+An organization uses its selected UUID; initialized Personal uses the effective
+account UUID with workspace kind `account`. An uninitialized null selection is
+not Personal. Both workspace ID and kind participate in catalog lifecycle scope.
+Studio/label names in lab fixtures do not prove live identifier mapping. Host
+scope is a lifecycle/cache binding, **not an authorization rule**; the reusable
+consumer still compares any explicit host subject kind.
+
+The explicit development route also accepts raw `since`, `days`, `page` and
+`limit` query parameters, carried as `catalogQuery` through the same owning path.
+`since` must be a real UTC `YYYY-MM-DD` date and `days` an explicit integer from
+1 through 366. No date or reporting window is invented. Only absent `page` and
+`limit` use the API's existing defaults, 1 and 25. Page is bounded to 1–1,000,000
+and limit to 1–25. Malformed, repeated, empty-array, empty-string or out-of-bounds
+fields cannot bind a catalog surface. A valid catalog with an incomplete query
+remains ordinary text with no artist fallback. Query-only route input without
+`catalogId` keeps the ordinary artist path.
+
+For a complete catalog host only, the existing `POST /api/chat` boundary captures
+the committed request alongside request IDs, before asynchronous authentication.
+It matches the API-owned strict `devCatalogSurface` request:
+
+```json
+{
+  "devCatalogSurface": {
+    "workspaceId": "selected-workspace-uuid",
+    "query": {
+      "catalog_id": "explicit-catalog-uuid",
+      "since": "2026-09-01",
+      "days": 28,
+      "page": 1,
+      "limit": 25
+    }
+  }
+}
+```
+
+The request selects one bounded page, not the entire catalog. Reporting bounds,
+page and coverage must remain disclosed by the qualified producer's answer and
+sources. Workspace kind remains in local scope; the payload contains neither an
+actor nor a credential. Browser references never grant authorization. Existing
+bearer token, account override and ordinary routing fields keep their existing
+paths; explicit catalog hosts omit `artistId`. No new producer field is sent for
+default/artist, incomplete, gate-off or production hosts. The transport strips
+per-message `devCatalogSurface` and the obsolete `intelligentUI` field on every
+path, including disabled and production paths; only the gated committed host can
+supply the producer request. Other ordinary body fields keep their routing.
+
+Normalized catalog/query/window/page/limit participate in committed cache and
+pending-operation identity. Equivalent numeric input retains that identity;
+changing the query invalidates previous accepted surfaces, late callbacks and
+pending history. A valid catalog with an incomplete query has partial local
+scope with no UI binding, so completing/changing its query cannot upgrade a
+pending ordinary-text operation into a catalog request. Scope cancellation while
+provisioning or authentication prevents a stale request from reaching fetch.
+The owning hook captures the committed send intent before its first preparation
+await, including composer, append, Retry/Edit and initial-message sends. The
+consumer's preparation epoch changes on committed host/query/session changes,
+Stop and disposal, so leaving and returning to the same key cannot revive an
+obsolete send. Its own SDK stream start does not expire still-current completion
+cleanup. Equivalent normalized inputs, stable first-send provisioning and
+suspended/discarded renders preserve the current intent. After each auth/model
+or trailing-deletion wait, obsolete operations cannot dispatch SDK work, replace
+current history/input or clear the current draft's attachments. The existing
+submission lock can admit a current operation while an obsolete wait settles;
+that old operation cannot release the newer lock. Existing client model/deletion
+hooks guard their own auth and success callbacks with the same intent. Already
+issued HTTP mutations are not undone; cancellation suppresses subsequent stale
+client work. Disabled/production preparation keeps its existing behavior.
+Suspended or discarded query renders leave the committed answer and stream
+intact. Canonical development URL updates retain explicit raw query values,
+including invalid/repeated/empty-array intent; default and production URLs stay
+unchanged. This route is an explicit local fixture input, not a product query
+picker or saved selection UI.
+
+App does not synthesize source fingerprints, retained observations, query/window
+policy or catalog access rules. Qualified source-to-screen acceptance still
+requires the MCP-owned producer and independent Records validation. Schema-v1
+Surface context contains workspace ID and typed subject, without proof of
+workspace namespace or reporting query. The local query key guards committed
+callbacks; it does not establish server history/query authority, authenticate a
+persisted answer's reporting inputs, or repair a producer mismatch. Historical
+answers stay historical; App does not refetch or relabel their evidence current,
+persist selected/business state or activate production. Complete snapshots must
+continue to carry matching answer/data revision, deterministic text and evidence.
+While provisioning, the host can supply stable actor/workspace/subject/query
+fields with an empty session so a change still cancels the pending UI intent.
 No UI binding is available until all required fields are complete.
 
 React rendering only projects the prospective binding key and reads accepted

@@ -1,5 +1,7 @@
 "use client";
 
+import type { CatalogQueryInput } from "@/lib/intelligent-ui/chat/getChatCatalogHost";
+
 import ChatContextGuard from "./ChatContextGuard";
 import cn from "classnames";
 import { Messages } from "./messages";
@@ -24,6 +26,9 @@ import type { WorkspaceStatus } from "./WorkspaceStatusIndicator";
 
 interface ChatProps {
   id: string;
+  /** Explicit development-only catalog reference; validated by the owning hook. */
+  catalogId?: string | string[];
+  catalogQuery?: CatalogQueryInput;
   /**
    * Session id. Always present from the canonical session-scoped route;
    * absent on the new-chat bootstrap path until provisioning resolves
@@ -49,6 +54,8 @@ interface ChatProps {
 
 export function Chat({
   id,
+  catalogId,
+  catalogQuery,
   sessionId,
   workflowChatId,
   workspaceStatus,
@@ -62,6 +69,8 @@ export function Chat({
     <VercelChatProvider
       key={providerKey}
       chatId={id}
+      catalogId={catalogId}
+      catalogQuery={catalogQuery}
       sessionId={sessionId}
       workflowChatId={workflowChatId}
       workspaceStatus={workspaceStatus}

@@ -1,3 +1,4 @@
+import type { CatalogQueryInput } from "@/lib/intelligent-ui/chat/getChatCatalogHost";
 import React, {
   createContext,
   useContext,
@@ -58,6 +59,7 @@ interface VercelChatContextType {
   /** Workspace (session + sandbox) lifecycle; gates Send + drives the status dot. */
   workspaceStatus: WorkspaceStatus;
   intelligentUI?: ChatSnapshotBinding;
+  captureSendIntent?: () => () => boolean;
 }
 
 // Create the context. Exported so presentational components (e.g. Message /
@@ -71,6 +73,8 @@ export const VercelChatContext = createContext<
 interface VercelChatProviderProps {
   children: ReactNode;
   chatId: string;
+  catalogId?: string | string[];
+  catalogQuery?: CatalogQueryInput;
   /**
    * Session id for recoup-api `/api/chat`. Absent only on the
    * new-chat bootstrap path until provisioning resolves; the transport holds
@@ -90,6 +94,8 @@ interface VercelChatProviderProps {
 export function VercelChatProvider({
   children,
   chatId,
+  catalogId,
+  catalogQuery,
   sessionId,
   workflowChatId,
   workspaceStatus = "ready",
@@ -139,8 +145,11 @@ export function VercelChatProvider({
     setModel,
     availableModels,
     intelligentUI,
+    captureSendIntent,
   } = useVercelChat({
     id: chatId,
+    catalogId,
+    catalogQuery,
     sessionId,
     workflowChatId,
     initialMessages,
@@ -157,10 +166,10 @@ export function VercelChatProvider({
   const handleSendMessageWithClear = async (
     event: React.FormEvent<HTMLFormElement>,
   ) => {
-    await handleSendMessage(event);
+    const didSend = await handleSendMessage(event);
 
     // Clear attachments after sending
-    clearAttachments();
+    if (didSend !== false) clearAttachments();
   };
 
   // Create the context value object
@@ -195,6 +204,7 @@ export function VercelChatProvider({
     removeTextAttachment,
     workspaceStatus,
     intelligentUI,
+    captureSendIntent,
   };
 
   // Send chat status and messages to ArtistProvider

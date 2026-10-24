@@ -1,3 +1,4 @@
+import type { CatalogQueryInput } from "@/lib/intelligent-ui/chat/getChatCatalogHost";
 import { createChatSubmissionGuard } from "@/lib/chat/createChatSubmissionGuard";
 import { useChat } from "@ai-sdk/react";
 import { useMessageLoader } from "./useMessageLoader";
@@ -36,9 +37,13 @@ import { usePersistSelectedModel } from "./usePersistSelectedModel";
 import shouldResumeStream from "@/lib/chat/shouldResumeStream";
 import type { WorkspaceStatus } from "@/components/VercelChat/WorkspaceStatusIndicator";
 import { isChatIntelligentUIEnabled } from "@/lib/intelligent-ui/chat/isChatIntelligentUIEnabled";
+import { getChatCatalogHost } from "@/lib/intelligent-ui/chat/getChatCatalogHost";
+import type { SnapshotHostScope } from "@/lib/intelligent-ui/chat/getSnapshotScopeKey";
 
 interface UseVercelChatProps {
   id: string;
+  catalogId?: string | string[];
+  catalogQuery?: CatalogQueryInput;
   /**
    * Session id from `/sessions/[sessionId]/chats/[chatId]` (always
    * present) or the new-chat bootstrap (absent until provisioning
@@ -64,6 +69,8 @@ interface UseVercelChatProps {
  */
 export function useVercelChat({
   id,
+  catalogId,
+  catalogQuery,
   sessionId,
   workflowChatId,
   workspaceStatus,
@@ -74,12 +81,22 @@ export function useVercelChat({
   const submitOnce = useMemo(() => createChatSubmissionGuard(), []);
   const { userData } = useUserProvider();
   const { selectedArtist } = useArtistProvider();
-  const { selectedOrgId: organizationId } = useOrganization();
+  const { selectedOrgId: organizationId, isInitialized } = useOrganization();
   const { chatId } = useParams<{ chatId?: string }>();
 
   const userId = userData?.account_id || userData?.id; // Use account_id if available, fallback to id
-  const artistId = selectedArtist?.account_id;
   const { accountIdOverride } = useAccountOverride();
+  const effectiveAccountId = accountIdOverride ?? userId;
+  const catalogHost = getChatCatalogHost({
+    catalogId,
+    catalogQuery,
+    workspaceInitialized: isInitialized,
+    organizationId,
+    accountId: effectiveAccountId,
+  });
+  // An explicit malformed catalog must not silently become artist context.
+  const artistId =
+    catalogHost.kind === "absent" ? selectedArtist?.account_id : undefined;
   const { authenticated, getAccessToken, user: authenticatedUser } = usePrivy();
   const messagesRef = useRef<UIMessage[]>([]);
   const historyScopeRef = useRef("");
@@ -95,29 +112,64 @@ export function useVercelChat({
   // client placeholder. Drives the transport, message load, and URL so
   // sends/persistence target the row recoup-api actually created.
   const transportChatId = workflowChatId ?? id;
+  const hostWorkspace =
+    catalogHost.kind === "catalog"
+      ? catalogHost.workspace
+      : catalogHost.kind === "absent" && organizationId
+        ? { kind: "organization" as const, id: organizationId }
+        : undefined;
+  const hostSubject =
+    catalogHost.kind === "catalog"
+      ? catalogHost.subject
+      : artistId
+        ? { kind: "artist", id: artistId }
+        : undefined;
+  const snapshotScope: SnapshotHostScope | undefined =
+    authenticated &&
+    authenticatedUser?.id &&
+    userId &&
+    effectiveAccountId &&
+    (hostWorkspace || catalogHost.kind === "catalog") &&
+    hostSubject
+      ? {
+          actorId: authenticatedUser.id,
+          accountId: effectiveAccountId,
+          workspaceId: hostWorkspace?.id ?? "",
+          ...(catalogHost.kind === "catalog" && {
+            workspaceKind: hostWorkspace?.kind ?? "uninitialized",
+            queryKey: catalogHost.queryKey,
+          }),
+          sessionId:
+            catalogHost.kind === "catalog" && !catalogHost.query
+              ? ""
+              : (sessionId ?? ""),
+          chatId: transportChatId,
+          subject: hostSubject,
+        }
+      : undefined;
   const { transport, getHeaders, intelligentUI, snapshotConsumer } =
     useChatTransport({
       chatId: transportChatId,
       sessionId,
       workspaceStatus,
-      snapshotScope:
-        authenticated &&
-        authenticatedUser?.id &&
-        userId &&
-        organizationId &&
-        artistId
+      snapshotScope,
+      devCatalogSurface:
+        snapshotScope?.sessionId &&
+        catalogHost.kind === "catalog" &&
+        catalogHost.workspace &&
+        catalogHost.query
           ? {
-              actorId: authenticatedUser.id,
-              accountId: accountIdOverride ?? userId,
-              workspaceId: organizationId,
-              sessionId: sessionId ?? "",
-              chatId: transportChatId,
-              subject: { kind: "artist", id: artistId },
+              workspaceId: catalogHost.workspace.id,
+              query: catalogHost.query,
             }
           : undefined,
       getMessages: () => messagesRef.current,
     });
   const coordinateHistory = isChatIntelligentUIEnabled();
+  const captureSendIntent = useCallback(
+    () => snapshotConsumer.captureSendIntent(),
+    [snapshotConsumer],
+  );
   const historyLoadScope = coordinateHistory
     ? JSON.stringify([
         authenticatedUser?.id,
@@ -128,6 +180,9 @@ export function useVercelChat({
         sessionId,
         transportChatId,
         intelligentUI?.scopeKey,
+        ...(catalogHost.kind !== "absent"
+          ? [catalogId, isInitialized, snapshotScope?.queryKey]
+          : []),
       ])
     : "";
   useLayoutEffect(() => {
@@ -383,11 +438,16 @@ export function useVercelChat({
     },
   });
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (
+    e: React.FormEvent<HTMLFormElement>,
+    isCurrent: () => boolean,
+    onDispatch: () => void,
+  ) => {
     e.preventDefault();
     cancelPendingResume(true);
 
     const headers = await getHeaders();
+    if (!isCurrent()) return false;
 
     // Combine all attachments
     const combined: FileUIPart[] = [];
@@ -430,31 +490,43 @@ export function useVercelChat({
     };
 
     // Land the selected model in chats.model_id before the send fires.
-    await persistSelectedModel();
+    await persistSelectedModel(isCurrent);
+    if (!isCurrent()) return false;
 
     const response = sendMessage(payload, { body: chatRequestBody, headers });
+    // Preparation can be cancelled. Publish the new chat only after the
+    // guarded SDK handoff, while its response is still streaming.
+    onDispatch();
     setInput("");
     await response;
+    return isCurrent();
   };
 
   const append = async (message: UIMessage) => {
+    const isCurrent = captureSendIntent();
     cancelPendingResume(true);
     const headers = await getHeaders();
+    if (!isCurrent()) return;
     // Retry/Edit and programmatic sends bypass handleSubmit, so persist the
     // selected model here too before the workflow reads chats.model_id.
-    await persistSelectedModel();
+    await persistSelectedModel(isCurrent);
+    if (!isCurrent()) return;
     sendMessage(message, { body: chatRequestBody, headers });
   };
 
   const handleReload = useCallback(async () => {
+    const isCurrent = captureSendIntent();
     cancelPendingResume(true);
     const headers = await getHeaders();
+    if (!isCurrent()) return;
     // Retry/Edit (MessageParts + message-editor) call reload() → regenerate,
     // bypassing handleSubmit; persist the selected model first so the
     // regenerated turn bills it, not the previous/default model.
-    await persistSelectedModel();
+    await persistSelectedModel(isCurrent);
+    if (!isCurrent()) return;
     await regenerate({ body: chatRequestBody, headers });
   }, [
+    captureSendIntent,
     cancelPendingResume,
     getHeaders,
     regenerate,
@@ -487,9 +559,9 @@ export function useVercelChat({
     window.history.replaceState(
       {},
       "",
-      getChatPath(sessionId, transportChatId),
+      getChatPath(sessionId, transportChatId, catalogId, catalogQuery),
     );
-  }, [transportChatId, sessionId]);
+  }, [transportChatId, sessionId, catalogId, catalogQuery]);
 
   // On a cold start the ids land about a second after Send (app#2052), so
   // the URL update in handleSendMessage is a no-op then; this catches up.
@@ -499,41 +571,51 @@ export function useVercelChat({
 
   const handleSendMessage = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (isGeneratingResponse) return;
+    if (isGeneratingResponse) return false;
+    const isCurrent = captureSendIntent();
+    cancelPendingResume(true);
+    let didSend = false;
 
     await submitOnce(async () => {
+      if (!isCurrent()) return;
       if (earliestFailedUserMessageId) {
         await deleteTrailingMessages({
           chatId: id,
           fromMessageId: earliestFailedUserMessageId,
+          isCurrent,
         });
       }
+      if (!isCurrent()) return;
 
       const messageContent = input;
-      const submission = handleSubmit(event);
-
-      if (!chatId) {
-        addOptimisticConversation(
-          "New Chat",
-          transportChatId,
-          sessionId,
-          messageContent,
-        );
-        silentlyUpdateUrl();
-      }
-      await submission;
-    });
+      didSend = await handleSubmit(event, isCurrent, () => {
+        if (!chatId) {
+          addOptimisticConversation(
+            "New Chat",
+            transportChatId,
+            sessionId,
+            messageContent,
+          );
+          silentlyUpdateUrl();
+        }
+      });
+    }, isCurrent);
+    return didSend;
   };
 
   const handleSendQueryMessages = useCallback(
     async (initialMessage: UIMessage) => {
+      const isCurrent = captureSendIntent();
       cancelPendingResume(true);
       silentlyUpdateUrl();
       const headers = await getHeaders();
-      await persistSelectedModel();
+      if (!isCurrent()) return;
+      await persistSelectedModel(isCurrent);
+      if (!isCurrent()) return;
       await sendMessage(initialMessage, { body: chatRequestBody, headers });
     },
     [
+      captureSendIntent,
       silentlyUpdateUrl,
       sendMessage,
       chatRequestBody,
@@ -566,6 +648,7 @@ export function useVercelChat({
     model,
     isLoadingSignedUrls,
     intelligentUI,
+    captureSendIntent,
 
     // Actions
     handleSendMessage,
