@@ -73,13 +73,27 @@ workflow's existing authenticated reconnect cursor. Ordinary text, reasoning,
 files, tools, unrelated data and completion events retain their existing routes.
 First-send scope binds when provisioning settles and request IDs are selected,
 before asynchronous authentication or response work. Cancellation while waiting
-cannot be revived by that late binding. A gated reconnect buffers at most one
-filtered chunk before resolving, so history loaded before the bytes arrive can
-seed the SDK's assistant state, including its existing prose. No-start targets
-come only from current scope-bound history/stream state. Stop, unmount and scope
-changes abort a pending read; other errors propagate to ordinary chat handling.
-History that arrives only after actual response bytes remains outside this cold
-resume ordering guarantee. The disabled/default transport path is unchanged.
+cannot be revived by that late binding.
+
+The gated ordinary-chat hook waits for a successful current-scope history load
+before enabling initial auto-resume. It installs canonical messages and publishes
+the transport's live getter synchronously, including successful empty history.
+This prevents available text-first response bytes from creating a temporary SDK
+assistant while its saved owner is still unresolved. Missing tokens, HTTP errors,
+failed loads and late results from a previous scope cannot enable resume. Stop
+still allows saved history to display, without resuming. An intentional Send,
+Retry or append supersedes that pending history so it cannot erase the new turn;
+unmount prevents the pending installation altogether.
+
+The transport factory itself requires callers to install canonical history
+before letting a no-start stream reach the SDK. It cannot safely retarget an SDK
+assistant already created by ordinary text. Its gated reconnect buffers at most
+one filtered chunk, allowing history installed before those bytes to seed the
+SDK's assistant state and existing prose; this is not a substitute for the owning
+hook's readiness guard. No-start targets come only from current scope-bound
+history/stream state. Stop, unmount and scope changes abort a pending read; other
+errors propagate to ordinary chat handling. The disabled/default path retains
+its existing eager auto-resume and history-loading behavior.
 
 `MessageParts` lazy-loads the existing answer/timeline/distribution/source views
 only when the gate and accepted binding allow them. Deterministic accepted text
@@ -97,8 +111,13 @@ keep their existing action routing.
 
 The synthetic suites cover real `Chat` + workflow transport, the transport hook's
 scope/StrictMode lifecycle, and `MessageParts` + existing visual renderers. The
-ordinary-chat adapters in rendered tests are synthetic; existing tool-routing
-regression suites separately exercise their normal implementations. Native
+history-readiness suite also runs the actual owning hook, message loader and HTTP
+history utility with real SDK/transport/rendering and synthetic external
+providers/fetch. It exercises text-first bytes, a nonempty stale getter, canonical
+saved prose plus newer UI, empty success, failure, cancellation, superseded loads
+and gate-off behavior. Other ordinary-chat adapters in rendered tests are
+synthetic; existing tool-routing regression suites separately exercise their
+normal implementations. Native
 acceptance uses a local-only synthetic harness, not a production feature route.
 
 ## Remaining integration

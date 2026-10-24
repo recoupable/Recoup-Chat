@@ -35,6 +35,7 @@ import { useInitialMessageAutoSend } from "./useInitialMessageAutoSend";
 import { usePersistSelectedModel } from "./usePersistSelectedModel";
 import shouldResumeStream from "@/lib/chat/shouldResumeStream";
 import type { WorkspaceStatus } from "@/components/VercelChat/WorkspaceStatusIndicator";
+import { isChatIntelligentUIEnabled } from "@/lib/intelligent-ui/chat/isChatIntelligentUIEnabled";
 
 interface UseVercelChatProps {
   id: string;
@@ -81,7 +82,8 @@ export function useVercelChat({
   const { accountIdOverride } = useAccountOverride();
   const { authenticated, getAccessToken, user: authenticatedUser } = usePrivy();
   const messagesRef = useRef<UIMessage[]>([]);
-  const messagesLengthRef = useRef<number | undefined>(undefined);
+  const historyScopeRef = useRef("");
+  const supersededHistoryScopeRef = useRef<string | undefined>(undefined);
   const { addOptimisticConversation } = useConversationsProvider();
   const { data: availableModels = [] } = useAvailableModels();
   const [input, setInput] = useState("");
@@ -115,6 +117,35 @@ export function useVercelChat({
           : undefined,
       getMessages: () => messagesRef.current,
     });
+  const coordinateHistory = isChatIntelligentUIEnabled();
+  const historyLoadScope = coordinateHistory
+    ? JSON.stringify([
+        authenticatedUser?.id,
+        userId,
+        accountIdOverride,
+        organizationId,
+        artistId,
+        sessionId,
+        transportChatId,
+        intelligentUI?.scopeKey,
+      ])
+    : "";
+  historyScopeRef.current = historyLoadScope;
+  const [historyReadiness, setHistoryReadiness] = useState<{
+    scopeKey: string;
+    state: "ready" | "cancelled";
+  }>();
+  const cancelPendingResume = useCallback(
+    (supersedeHistory = false) => {
+      if (!coordinateHistory) return;
+      // Stop may still display saved history. A deliberate new send owns the
+      // SDK state immediately, so its pending history must never replace it.
+      if (supersedeHistory)
+        supersededHistoryScopeRef.current = historyLoadScope;
+      setHistoryReadiness({ scopeKey: historyLoadScope, state: "cancelled" });
+    },
+    [coordinateHistory, historyLoadScope],
+  );
 
   // Persists the picker's selected model to chats.model_id; awaited before
   // send so the workflow bills the selected model (it reads chats.model_id
@@ -261,7 +292,11 @@ export function useVercelChat({
     // authenticated visit to an existing chat — resuming unconditionally
     // 401s/404s on every cold load and surfaces as an error toast
     // (chat#1949 F4a).
-    resume: shouldResumeStream({ authenticated, routeChatId: chatId }),
+    resume:
+      shouldResumeStream({ authenticated, routeChatId: chatId }) &&
+      (!coordinateHistory ||
+        (historyReadiness?.scopeKey === historyLoadScope &&
+          historyReadiness.state === "ready")),
     experimental_throttle: 100,
     generateId: generateUUID,
     onError: (e) => {
@@ -279,20 +314,47 @@ export function useVercelChat({
       snapshotConsumer.observeMessages(messages, intelligentUI.scopeKey);
   }, [messages, intelligentUI, snapshotConsumer]);
   const stop = useCallback(async () => {
+    cancelPendingResume();
     snapshotConsumer.cancel();
     await stopChat();
-  }, [snapshotConsumer, stopChat]);
+  }, [cancelPendingResume, snapshotConsumer, stopChat]);
   const historyScopeKey = intelligentUI?.scopeKey;
   const setHistoryMessages = useCallback(
     (loaded: UIMessage[]) => {
-      setMessages(
-        historyScopeKey
-          ? snapshotConsumer.hydrate(loaded, historyScopeKey)
-          : loaded,
-      );
+      if (
+        coordinateHistory &&
+        (historyScopeRef.current !== historyLoadScope ||
+          supersededHistoryScopeRef.current === historyLoadScope)
+      )
+        return;
+      const canonical = historyScopeKey
+        ? snapshotConsumer.hydrate(loaded, historyScopeKey)
+        : loaded;
+      // Publish the canonical SDK state to the transport in this same turn;
+      // the render/layout getter must not expose a preceding temporary message.
+      if (coordinateHistory) messagesRef.current = canonical;
+      setMessages(canonical);
     },
-    [historyScopeKey, snapshotConsumer, setMessages],
+    [
+      coordinateHistory,
+      historyLoadScope,
+      historyScopeKey,
+      snapshotConsumer,
+      setMessages,
+    ],
   );
+  const onHistoryLoaded = useCallback(() => {
+    if (
+      historyScopeRef.current !== historyLoadScope ||
+      supersededHistoryScopeRef.current === historyLoadScope
+    )
+      return;
+    setHistoryReadiness((previous) =>
+      previous?.scopeKey === historyLoadScope && previous.state === "cancelled"
+        ? previous
+        : { scopeKey: historyLoadScope, state: "ready" },
+    );
+  }, [historyLoadScope]);
 
   // Reconnection through a dropped stream is the transport's job now — see
   // `createWorkflowChatTransport`. A long turn's stream ends at the ~120s
@@ -321,6 +383,7 @@ export function useVercelChat({
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    cancelPendingResume(true);
 
     const headers = await getHeaders();
 
@@ -373,6 +436,7 @@ export function useVercelChat({
   };
 
   const append = async (message: UIMessage) => {
+    cancelPendingResume(true);
     const headers = await getHeaders();
     // Retry/Edit and programmatic sends bypass handleSubmit, so persist the
     // selected model here too before the workflow reads chats.model_id.
@@ -381,16 +445,20 @@ export function useVercelChat({
   };
 
   const handleReload = useCallback(async () => {
+    cancelPendingResume(true);
     const headers = await getHeaders();
     // Retry/Edit (MessageParts + message-editor) call reload() → regenerate,
     // bypassing handleSubmit; persist the selected model first so the
     // regenerated turn bills it, not the previous/default model.
     await persistSelectedModel();
     await regenerate({ body: chatRequestBody, headers });
-  }, [getHeaders, regenerate, chatRequestBody, persistSelectedModel]);
-
-  // Keep messagesRef in sync with messages
-  messagesLengthRef.current = messages.length;
+  }, [
+    cancelPendingResume,
+    getHeaders,
+    regenerate,
+    chatRequestBody,
+    persistSelectedModel,
+  ]);
 
   // Only load persisted history for an existing chat opened from a
   // canonical `/sessions/[sessionId]/chats/[chatId]` URL (route `chatId`
@@ -399,9 +467,12 @@ export function useVercelChat({
   // is already typing into while provisioning resolves.
   const { isLoading: isMessagesLoading, hasError } = useMessageLoader(
     sessionId,
-    messages.length === 0 && chatId ? transportChatId : undefined,
+    chatId && (coordinateHistory || messages.length === 0)
+      ? transportChatId
+      : undefined,
     userId,
     setHistoryMessages,
+    coordinateHistory ? onHistoryLoaded : undefined,
   );
 
   // Only show loading state when fetching persisted history for an existing chat.
@@ -454,6 +525,7 @@ export function useVercelChat({
 
   const handleSendQueryMessages = useCallback(
     async (initialMessage: UIMessage) => {
+      cancelPendingResume(true);
       silentlyUpdateUrl();
       const headers = await getHeaders();
       await persistSelectedModel();
@@ -465,6 +537,7 @@ export function useVercelChat({
       chatRequestBody,
       getHeaders,
       persistSelectedModel,
+      cancelPendingResume,
     ],
   );
 
