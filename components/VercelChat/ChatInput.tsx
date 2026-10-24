@@ -7,6 +7,9 @@ import PureAttachmentsButton from "./PureAttachmentsButton";
 import ChatComposer from "./ChatComposer";
 import WorkspaceStatusIndicator from "./WorkspaceStatusIndicator";
 
+const recoveryActionClassName =
+  "inline-flex min-h-11 min-w-11 items-center justify-center rounded-md px-2 underline underline-offset-4 hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring";
+
 export function ChatInput({
   onRetryWorkspace,
 }: { onRetryWorkspace?: () => void } = {}) {
@@ -104,7 +107,7 @@ export function ChatInput({
             {stopState?.status === "error" ? (
               <button
                 type="button"
-                className="underline underline-offset-4"
+                className={recoveryActionClassName}
                 onClick={() => void stop()}
               >
                 Retry Stop
@@ -114,7 +117,7 @@ export function ChatInput({
               !isGeneratingResponse && (
                 <button
                   type="button"
-                  className="underline underline-offset-4"
+                  className={recoveryActionClassName}
                   onClick={() =>
                     void retrySendMessage?.({
                       preventDefault() {},
@@ -130,7 +133,7 @@ export function ChatInput({
               stopState?.status !== "error" && (
                 <button
                   type="button"
-                  className="underline underline-offset-4"
+                  className={recoveryActionClassName}
                   onClick={discardFailedSubmission}
                 >
                   Discard failed message
