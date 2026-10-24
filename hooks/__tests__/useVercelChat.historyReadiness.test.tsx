@@ -1,7 +1,11 @@
 // @vitest-environment jsdom
 import React from "react";
 import { act, cleanup, render, screen, waitFor } from "@testing-library/react";
-import type { UIMessage } from "ai";
+import {
+  createUIMessageStreamResponse,
+  type UIMessage,
+  type UIMessageChunk,
+} from "ai";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import { useVercelChat } from "../useVercelChat";
 import { MessageParts } from "@/components/VercelChat/MessageParts";
@@ -12,6 +16,11 @@ import {
   hostScope,
 } from "@/lib/intelligent-ui/transport/__tests__/chatSnapshotFixture";
 import { workflowResponse } from "@/lib/intelligent-ui/transport/__tests__/workflowResponse";
+
+const prospectiveScope = React.createContext<{
+  organizationId?: string;
+  artistId?: string;
+}>({});
 
 const external = vi.hoisted(() => ({
   organizationId: "synthetic-workspace",
@@ -35,11 +44,18 @@ vi.mock("@/providers/UserProvder", () => ({
 }));
 vi.mock("@/providers/ArtistProvider", () => ({
   useArtistProvider: () => ({
-    selectedArtist: { account_id: "synthetic-artist" },
+    selectedArtist: {
+      account_id:
+        React.useContext(prospectiveScope).artistId ?? "synthetic-artist",
+    },
   }),
 }));
 vi.mock("@/providers/OrganizationProvider", () => ({
-  useOrganization: () => ({ selectedOrgId: external.organizationId }),
+  useOrganization: () => ({
+    selectedOrgId:
+      React.useContext(prospectiveScope).organizationId ??
+      external.organizationId,
+  }),
 }));
 vi.mock("@/providers/AccountOverrideProvider", () => ({
   useAccountOverride: () => ({ accountIdOverride: null }),
@@ -162,6 +178,216 @@ const saved: UIMessage = {
     chatSnapshotPart(1, "Previously accepted response."),
   ],
 };
+
+function concurrentHarness() {
+  let committed!: ReturnType<typeof useVercelChat>;
+  let selectedScope!: React.Dispatch<
+    React.SetStateAction<{ organizationId: string; artistId: string }>
+  >;
+  let suspendedRenders = 0;
+  const pending = new Promise<void>(() => {});
+  function ChatPage() {
+    const scope = React.useContext(prospectiveScope);
+    const chat = useVercelChat({
+      id: hostScope.chatId,
+      sessionId: hostScope.sessionId,
+    });
+    React.useLayoutEffect(() => {
+      committed = chat;
+    });
+    if (
+      scope.organizationId !== hostScope.workspaceId ||
+      scope.artistId !== hostScope.subject.id
+    ) {
+      suspendedRenders++;
+      throw pending;
+    }
+    return (
+      <VercelChatContext.Provider
+        value={
+          { ...chat } as unknown as React.ContextType<typeof VercelChatContext>
+        }
+      >
+        <div data-testid="committed-scope">
+          {scope.organizationId}:{scope.artistId}
+        </div>
+        {chat.messages.map((message) => (
+          <MessageParts
+            key={message.id}
+            message={message}
+            mode="view"
+            setMode={() => {}}
+          />
+        ))}
+      </VercelChatContext.Provider>
+    );
+  }
+  function Harness() {
+    const [scope, setScope] = React.useState({
+      organizationId: hostScope.workspaceId,
+      artistId: hostScope.subject.id,
+    });
+    selectedScope = setScope;
+    return (
+      <React.Suspense fallback={<p>Pending scope</p>}>
+        <prospectiveScope.Provider value={scope}>
+          <ChatPage />
+        </prospectiveScope.Provider>
+      </React.Suspense>
+    );
+  }
+  return {
+    ...render(<Harness />),
+    current: () => committed,
+    transition: (scope: { organizationId: string; artistId: string }) =>
+      React.startTransition(() => selectedScope(scope)),
+    abandon: () =>
+      selectedScope({
+        organizationId: hostScope.workspaceId,
+        artistId: hostScope.subject.id,
+      }),
+    suspendedRenders: () => suspendedRenders,
+  };
+}
+
+it.each(["organizationId", "artistId"] as const)(
+  "preserves the committed stream and accepted answer when a concurrent %s transition suspends and is abandoned",
+  async (field) => {
+    let controller!: ReadableStreamDefaultController<UIMessageChunk>;
+    const source = new ReadableStream<UIMessageChunk>({
+      start(c) {
+        controller = c;
+      },
+    });
+    let streamSignal: AbortSignal | undefined;
+    const fetch = vi.fn().mockImplementation(async (url, init) => {
+      if (url === historyUrl)
+        return Response.json({ messages: [structuredClone(saved)] });
+      if (url === streamUrl) {
+        streamSignal = init.signal;
+        return createUIMessageStreamResponse({
+          stream: source,
+          headers: { "x-workflow-run-id": "synthetic-run" },
+        });
+      }
+      throw new Error(`Unexpected synthetic URL: ${url}`);
+    });
+    vi.stubGlobal("fetch", fetch);
+    const harness = concurrentHarness();
+    await waitFor(() => expect(streamSignal).toBeDefined());
+    await act(async () => {
+      controller.enqueue(
+        chatSnapshotPart(2, "Committed answer before transition."),
+      );
+    });
+    await screen.findByText("Committed answer before transition.");
+    const binding = harness.current().intelligentUI!;
+    await act(async () => {
+      harness.transition({
+        organizationId: hostScope.workspaceId,
+        artistId: hostScope.subject.id,
+        [field]: "speculative-scope",
+      });
+    });
+    expect(harness.suspendedRenders()).toBeGreaterThan(0);
+    expect(screen.getByTestId("committed-scope").textContent).toBe(
+      `${hostScope.workspaceId}:${hostScope.subject.id}`,
+    );
+    expect(screen.queryByText("Pending scope")).toBeNull();
+    expect(streamSignal!.aborted).toBe(false);
+    expect(
+      binding.consumer.getSnapshot(
+        "saved-assistant",
+        "synthetic-summary",
+        binding.scopeKey,
+      )?.revision,
+    ).toBe(2);
+    // Committed callbacks must keep using A while React is still attempting B.
+    await act(async () => {
+      controller.enqueue(
+        chatSnapshotPart(3, "Committed update during suspension."),
+      );
+    });
+    await screen.findByText("Committed update during suspension.");
+    expect(streamSignal!.aborted).toBe(false);
+    await act(async () => {
+      harness.abandon();
+    });
+    expect(
+      screen.getByText("Committed update during suspension."),
+    ).toBeTruthy();
+    await act(async () => {
+      controller.enqueue(
+        chatSnapshotPart(4, "Committed answer keeps streaming."),
+      );
+      controller.enqueue({ type: "finish" });
+      controller.close();
+    });
+    await screen.findByText("Committed answer keeps streaming.");
+    expect(harness.current().messages.map((message) => message.id)).toEqual([
+      "saved-assistant",
+    ]);
+    expect(harness.current().intelligentUI?.scopeKey).toBe(binding.scopeKey);
+    expect(fetch.mock.calls.filter(([url]) => url === historyUrl)).toHaveLength(
+      1,
+    );
+    expect(fetch.mock.calls.filter(([url]) => url === streamUrl)).toHaveLength(
+      1,
+    );
+  },
+);
+
+it("installs committed history and resumes A while an uncommitted B scope is suspended", async () => {
+  const history = pendingResponse();
+  const fetch = vi.fn().mockImplementation(async (url) => {
+    if (url === historyUrl) return history.promise;
+    if (url === streamUrl)
+      return workflowResponse([
+        { type: "text-start", id: "continuation" },
+        {
+          type: "text-delta",
+          id: "continuation",
+          delta: "Committed A continuation.",
+        },
+        { type: "text-end", id: "continuation" },
+        chatSnapshotPart(2, "Committed A history remains available."),
+        { type: "finish" },
+      ]);
+    throw new Error(`Unexpected synthetic URL: ${url}`);
+  });
+  vi.stubGlobal("fetch", fetch);
+  const harness = concurrentHarness();
+  await waitFor(() => expect(fetch).toHaveBeenCalledTimes(1));
+  await act(async () => {
+    harness.transition({
+      organizationId: "speculative-workspace",
+      artistId: hostScope.subject.id,
+    });
+  });
+  expect(harness.suspendedRenders()).toBeGreaterThan(0);
+  await act(async () => {
+    history.resolve(Response.json({ messages: [structuredClone(saved)] }));
+  });
+  await screen.findByText("Committed A history remains available.");
+  expect(screen.getByText("Original canonical explanation.")).toBeTruthy();
+  expect(screen.getByText("Committed A continuation.")).toBeTruthy();
+  expect(harness.current().messages.map((message) => message.id)).toEqual([
+    "saved-assistant",
+  ]);
+  expect(screen.getByTestId("committed-scope").textContent).toBe(
+    `${hostScope.workspaceId}:${hostScope.subject.id}`,
+  );
+  await act(async () => {
+    harness.abandon();
+  });
+  expect(
+    screen.getByText("Committed A history remains available."),
+  ).toBeTruthy();
+  expect(fetch.mock.calls.filter(([url]) => url === historyUrl)).toHaveLength(
+    1,
+  );
+  expect(fetch.mock.calls.filter(([url]) => url === streamUrl)).toHaveLength(1);
+});
 
 it("blocks text-first cold resume until history installs, replacing a stale NONEMPTY getter before one saved assistant receives prose and UI", async () => {
   const history = pendingResponse();

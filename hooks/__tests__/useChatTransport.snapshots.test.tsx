@@ -27,21 +27,33 @@ afterEach(() => {
   vi.unstubAllEnvs();
 });
 
-it("keeps transport stable while immediately invalidating old host scope and late history callbacks", () => {
+it("keeps transport stable while a committed scope switch hides old UI during rendering and invalidates late callbacks", () => {
   const { result, rerender, unmount } = renderHook(
-    ({ scope }) =>
-      useChatTransport({
+    ({ scope }) => {
+      const value = useChatTransport({
         chatId: scope.chatId,
         sessionId: scope.sessionId,
         snapshotScope: scope,
-      }),
+      });
+      return {
+        ...value,
+        renderedSnapshot: value.intelligentUI?.consumer.getSnapshot(
+          "assistant-1",
+          "synthetic-summary",
+          value.intelligentUI.scopeKey,
+        ),
+      };
+    },
     { initialProps: { scope: structuredClone(hostScope) } },
   );
   const initial = result.current;
   const binding = initial.intelligentUI!;
   const oldStream = binding.consumer.beginStream({ messageId: "assistant-1" });
   expect(oldStream(chatSnapshotPart(1))).toBeTruthy();
+  rerender({ scope: structuredClone(hostScope) });
+  expect(result.current.renderedSnapshot?.revision).toBe(1);
   rerender({ scope: { ...hostScope, accountId: "another-account" } });
+  expect(result.current.renderedSnapshot).toBeUndefined();
   expect(result.current.transport).toBe(initial.transport);
   expect(result.current.intelligentUI!.scopeKey).not.toBe(binding.scopeKey);
   expect(oldStream(chatSnapshotPart(2))).toBeUndefined();

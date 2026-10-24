@@ -49,6 +49,15 @@ While provisioning, the host can supply stable actor/organization/artist fields
 with an empty session so a selection change still cancels the pending UI intent.
 No UI binding is available until all required fields are complete.
 
+React rendering only projects the prospective binding key and reads accepted
+content. A prospective scope cannot display the committed scope's UI, but it
+does not abort its stream, advance its epoch or clear its ledger. The transport's
+IDs, scope, message getter and token getter, plus the history callback guard,
+update in layout effects when the host actually commits. A scope switch then
+invalidates old callbacks before paint; a suspended or discarded transition
+leaves the still-visible answer, stream and pending history intact. Snapshot and
+fallback lookups do not mutate the consumer.
+
 The consumer runs after the workflow transport counts raw chunks and before the
 SDK can replace stable-ID data. It accepts one coherent Surface per assistant
 message, with matching data-part ID, workspace/subject and answer/data revision.
@@ -115,7 +124,9 @@ history-readiness suite also runs the actual owning hook, message loader and HTT
 history utility with real SDK/transport/rendering and synthetic external
 providers/fetch. It exercises text-first bytes, a nonempty stale getter, canonical
 saved prose plus newer UI, empty success, failure, cancellation, superseded loads
-and gate-off behavior. Other ordinary-chat adapters in rendered tests are
+and gate-off behavior. Concurrent Suspense cases keep the committed artist and
+workspace response streaming while another scope renders without committing,
+and allow its pending canonical history to finish. Other ordinary-chat adapters in rendered tests are
 synthetic; existing tool-routing regression suites separately exercise their
 normal implementations. Native
 acceptance uses a local-only synthetic harness, not a production feature route.

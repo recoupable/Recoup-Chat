@@ -343,6 +343,48 @@ it("cancels late UI acceptance, retains the accepted snapshot, and allows a new 
   ).toEqual(chatSnapshotPart(7));
 });
 
+it("projects scope keys and reads accepted content without committing a speculative scope", () => {
+  let scope = structuredClone(hostScope);
+  const consumer = createSnapshotConsumer(() => scope);
+  const scopeKey = consumer.syncScope().key!;
+  const saved = consumer.hydrate(
+    [{ id: "assistant-1", role: "assistant", parts: [chatSnapshotPart(1)] }],
+    scopeKey,
+  );
+  const pending = consumer.prepareStream({ messageId: "assistant-1" });
+  pending.bind();
+  expect(pending.filter(chatSnapshotPart(2))).toBeTruthy();
+  scope = { ...hostScope, workspaceId: "prospective-workspace" };
+  const prospectiveKey = consumer.getBindingKey(scope)!;
+  expect(prospectiveKey).not.toBe(scopeKey);
+  expect(
+    consumer.getSnapshot("assistant-1", "synthetic-summary", prospectiveKey),
+  ).toBeUndefined();
+  expect(
+    consumer.getSnapshot("assistant-1", "synthetic-summary", scopeKey),
+  ).toBeUndefined();
+  expect(
+    consumer.getFallback("assistant-1", saved[0].parts[0], scopeKey),
+  ).toBeUndefined();
+  expect(pending.signal.aborted).toBe(false);
+  scope = structuredClone(hostScope);
+  expect(consumer.getBindingKey(scope)).toBe(scopeKey);
+  expect(
+    consumer.getSnapshot("assistant-1", "synthetic-summary", scopeKey)
+      ?.revision,
+  ).toBe(2);
+  expect(consumer.getFallback("assistant-1", saved[0].parts[0], scopeKey)).toBe(
+    "Version 1",
+  );
+  expect(pending.filter(chatSnapshotPart(3))).toBeTruthy();
+  scope = { ...hostScope, workspaceId: "prospective-workspace" };
+  expect(consumer.syncScope().key).toBe(prospectiveKey);
+  expect(pending.signal.aborted).toBe(true);
+  expect(
+    consumer.getSnapshot("assistant-1", "synthetic-summary", prospectiveKey),
+  ).toBeUndefined();
+});
+
 it("ignores already-aborted streams and unavailable host scopes", () => {
   const { consumer, setScope } = fixture();
   const abort = new AbortController();

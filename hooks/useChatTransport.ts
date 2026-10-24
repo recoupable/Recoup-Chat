@@ -1,4 +1,4 @@
-import { useMemo, useCallback, useRef, useEffect } from "react";
+import { useMemo, useCallback, useRef, useLayoutEffect } from "react";
 import type { UIMessage } from "ai";
 import { createSnapshotConsumer } from "@/lib/intelligent-ui/chat/createSnapshotConsumer";
 import type { SnapshotHostScope } from "@/lib/intelligent-ui/chat/getSnapshotScopeKey";
@@ -48,40 +48,46 @@ export function useChatTransport({
   // (sessionId still undefined, chatId a placeholder) would otherwise POST
   // those stale values on first send. Refs keep the transport instance
   // stable while always sending the ids current as of the request.
-  // Keep the request and UI identity in the same live snapshot. Updating the
-  // host scope synchronously also hides old UI in the scope-changing render.
+  // Only committed renders may change the identity seen by active callbacks.
+  // A prospective render can suspend and be discarded while the previous
+  // scope's response remains visible and continues streaming.
   const live = useRef({
     chatId,
     sessionId,
     workspaceStatus,
     snapshotScope,
     getMessages,
+    getAccessToken,
   });
-  live.current = {
-    chatId,
-    sessionId,
-    workspaceStatus,
-    snapshotScope,
-    getMessages,
-  };
   const snapshotConsumer = useMemo(
     () => createSnapshotConsumer(() => live.current.snapshotScope),
     [],
   );
-  const { key: scopeKey } = snapshotConsumer.syncScope();
-  useEffect(() => {
+  const scopeKey = snapshotConsumer.getBindingKey(snapshotScope);
+  useLayoutEffect(() => {
     snapshotConsumer.activate();
     return () => snapshotConsumer.dispose();
   }, [snapshotConsumer]);
+  useLayoutEffect(() => {
+    live.current = {
+      chatId,
+      sessionId,
+      workspaceStatus,
+      snapshotScope,
+      getMessages,
+      getAccessToken,
+    };
+    snapshotConsumer.syncScope();
+  });
   const intelligentUI = useMemo(
     () => (scopeKey ? { consumer: snapshotConsumer, scopeKey } : undefined),
     [scopeKey, snapshotConsumer],
   );
 
   const getHeaders = useCallback(async () => {
-    const accessToken = await getAccessToken();
+    const accessToken = await live.current.getAccessToken();
     return accessToken ? { Authorization: `Bearer ${accessToken}` } : undefined;
-  }, [getAccessToken]);
+  }, []);
 
   const transport = useMemo(
     () =>
@@ -91,7 +97,7 @@ export function useChatTransport({
           sessionId: live.current.sessionId,
           chatId: live.current.chatId,
         }),
-        getAccessToken,
+        getAccessToken: () => live.current.getAccessToken(),
         waitForWorkspace: () =>
           waitForWorkspace(() => live.current.workspaceStatus),
         snapshotConsumer: isChatIntelligentUIEnabled()
@@ -99,7 +105,7 @@ export function useChatTransport({
           : undefined,
         getMessages: () => live.current.getMessages?.() ?? [],
       }),
-    [baseUrl, getAccessToken, snapshotConsumer],
+    [baseUrl, snapshotConsumer],
   );
 
   return { transport, getHeaders, intelligentUI, snapshotConsumer };

@@ -68,6 +68,35 @@ export function createSnapshotConsumer(
     pendingAbort = undefined;
   };
 
+  const completeScope = (proposed: SnapshotHostScope | undefined) =>
+    proposed &&
+    proposed.actorId &&
+    proposed.accountId &&
+    proposed.workspaceId &&
+    proposed.sessionId &&
+    proposed.chatId &&
+    proposed.subject.kind &&
+    proposed.subject.id
+      ? proposed
+      : undefined;
+
+  // Rendering may inspect a prospective scope which React never commits. Its
+  // next key is deterministic, but reading it must not advance the epoch or
+  // abort/clear the currently committed scope.
+  const getBindingKey = (proposed: SnapshotHostScope | undefined) => {
+    const scope = isChatIntelligentUIEnabled()
+      ? completeScope(proposed)
+      : undefined;
+    const identity = scope ? getSnapshotScopeKey(scope) : undefined;
+    return identity
+      ? identity === scopeIdentity
+        ? boundScope
+        : `${identity}:${scopeEpoch + 1}`
+      : undefined;
+  };
+  const isCurrentBinding = (key: string) =>
+    !disposed && boundScope === key && getBindingKey(getScope()) === key;
+
   const syncScope = () => {
     if (disposed) return { scope: undefined, key: undefined };
     const proposed = isChatIntelligentUIEnabled() ? getScope() : undefined;
@@ -75,17 +104,7 @@ export function createSnapshotConsumer(
     if (hostSubjectIdentity && hostSubjectIdentity !== proposedSubject)
       invalidate();
     hostSubjectIdentity = proposedSubject;
-    const scope =
-      proposed &&
-      proposed.actorId &&
-      proposed.accountId &&
-      proposed.workspaceId &&
-      proposed.sessionId &&
-      proposed.chatId &&
-      proposed.subject.kind &&
-      proposed.subject.id
-        ? proposed
-        : undefined;
+    const scope = completeScope(proposed);
     const identity = scope ? getSnapshotScopeKey(scope) : undefined;
     if (identity !== scopeIdentity) {
       // Becoming ready may complete a pending first send. Replacing an already
@@ -291,6 +310,7 @@ export function createSnapshotConsumer(
   };
 
   return {
+    getBindingKey,
     syncScope,
     /** Capture this key with a history request; a late previous-scope load cannot seed UI. */
     hydrate(messages: UIMessage[], scopeKey: string) {
@@ -364,7 +384,7 @@ export function createSnapshotConsumer(
     },
     getFallback(messageId: string, part: unknown, scopeKey: string) {
       if (
-        syncScope().key !== scopeKey ||
+        !isCurrentBinding(scopeKey) ||
         !part ||
         typeof part !== "object" ||
         !("data" in part) ||
@@ -380,7 +400,7 @@ export function createSnapshotConsumer(
         : undefined;
     },
     getSnapshot(messageId: string, surfaceId: string, scopeKey: string) {
-      if (syncScope().key !== scopeKey) return undefined;
+      if (!isCurrentBinding(scopeKey)) return undefined;
       const surface = accepted.get(messageId)?.surface;
       return surface?.id === surfaceId ? surface : undefined;
     },

@@ -130,7 +130,9 @@ export function useVercelChat({
         intelligentUI?.scopeKey,
       ])
     : "";
-  historyScopeRef.current = historyLoadScope;
+  useLayoutEffect(() => {
+    historyScopeRef.current = historyLoadScope;
+  }, [historyLoadScope]);
   const [historyReadiness, setHistoryReadiness] = useState<{
     scopeKey: string;
     state: "ready" | "cancelled";
