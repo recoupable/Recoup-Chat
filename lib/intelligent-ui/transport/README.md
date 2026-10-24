@@ -155,7 +155,66 @@ acceptance. #2209 still owns live evidence/subject-context qualification and ful
 host integration. This first consumer does not complete either issue.
 
 The app versions exercised are `ai@6.0.241`, `@ai-sdk/react@3.0.243` and
-`@workflow/ai@4.2.0`. API SDK-version compatibility, database persistence/concurrency,
-renderer behavior, browser/media behavior and latency/resource budgets remain
-unverified by this suite. Production feature gates and the parent native criteria
-are unchanged.
+`@workflow/ai@4.2.0`. The captured serializer compatibility below qualifies one
+bounded wire fixture. Database persistence/concurrency, actual API workflow
+execution, renderer behavior, browser/media behavior and latency/resource budgets
+remain unverified by this suite. Production feature gates and the parent native
+criteria are unchanged.
+
+## Captured API SDK wire compatibility
+
+`__fixtures__/api-6.0.190/stream.sse` contains the actual bytes emitted by
+`ai@6.0.190`'s `createUIMessageStreamResponse` from the adjacent synthetic
+`input.json`. That is the SDK version declared by API commit
+`2dbf74288d9bc5a205632c1fc52fc4a18855c3ff`. The SDK was already installed; capture
+executes only its pure serializer, after checking the package name, exact version,
+package JSON hash and import-entry hash. It does not execute the API application.
+The manifest records both source references, declared consumer versions, input and
+SSE byte counts/hashes, actual response headers, and SSE record offsets. It has no
+local machine paths or nondeterministic capture timestamp.
+
+The App test reads those committed bytes directly. It does **not** re-encode the
+fixture with App's serializer and needs no sibling API checkout, second SDK
+installation, download or live producer. It checks the installed consumer versions
+before characterizing the real `Chat`, `createWorkflowChatTransport` and snapshot
+consumer. Only `fetch` responses and host identity/authentication are synthetic.
+
+The fixture has **24 raw chunks, 25 complete SSE records and 12,175 bytes**. The
+last SSE record is `[DONE]`, not a cursor chunk. The test covers **26 HTTP body cut
+positions**: the empty prefix and the boundary after each of the 25 records. Cuts
+before the `finish` chunk reconnect with `startIndex` equal to the count of raw
+chunks already received, including rejected snapshots. The two boundaries after
+`finish` complete without reconnecting, including EOF before `[DONE]`. This is
+every event boundary in this fixture, not every possible stream or arbitrary
+mid-record HTTP failure. A separate case delivers all 12,175 bytes one at a time,
+including split multibyte UTF-8.
+
+Every cut preserves Unicode prose, reasoning, an inert file reference/tool
+outcome, unrelated data and normal completion beside one stable assistant/UI
+part. Snapshot revision 2 is followed by an exact duplicate, a conflicting equal
+revision, an older revision, mismatched answer/data revisions, an unknown Surface
+version and an unsupported patch-shaped candidate; only the final valid revision
+12 advances it. Assertions pin literal final values, computed answer text and
+source citation, with accepted callbacks exactly `[2, 12]`. A staged three-body
+case also checks retained revision-2 values before recovery at raw cursor 19.
+Trusted serialized revision-2 history is hydrated before a start-bearing replay;
+only revision 12 produces a new accepted callback. That case does not qualify
+database history, unbound no-start streams or arbitrary prose replay semantics.
+
+To regenerate offline with the already installed, pinned SDK package:
+
+```sh
+node scripts/intelligent-ui/captureWorkflowWireFixture.mjs \
+  --sdk-root /path/to/installed/ai-package \
+  --output /path/to/temporary/capture
+```
+
+Omit `--output` to replace the owning fixture. Format `input.json` **before**
+capture; even whitespace changes require a new input hash. Compare all three
+generated files byte-for-byte before accepting a regeneration. Run
+`pnpm exec vitest run lib/intelligent-ui/transport` using only App dependencies.
+
+This is serializer/decoder/consumer compatibility evidence for one pinned offline
+fixture. It does not establish a live producer contract, actual API routing,
+workflow persistence/replay, authenticated account authorization, database
+concurrency, media/provider execution or full #2205/#2209 acceptance.
