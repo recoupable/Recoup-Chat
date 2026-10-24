@@ -9,10 +9,18 @@ import { useVercelChatContext } from "@/providers/VercelChatProvider";
 import { TextUIPart, UIMessage } from "ai";
 
 export function MessageEditor({ message, setMode }: EditingMessageProps) {
-  const { id, setMessages, reload, captureSendIntent } = useVercelChatContext();
+  const {
+    id,
+    setMessages,
+    reload,
+    captureSendIntent,
+    editUnacceptedMessage,
+    isMessagePendingAdmission,
+  } = useVercelChatContext();
   if (!id) {
     throw new Error("MessageEditor requires an active chat id");
   }
+  const pendingAdmission = isMessagePendingAdmission?.(message.id) ?? false;
   const text = (message.parts[0] as TextUIPart)?.text || "";
   const [draftContent, setDraftContent] = useState<string>(text);
   const { deleteTrailingMessages, isDeletingTrailingMessages } =
@@ -37,18 +45,18 @@ export function MessageEditor({ message, setMode }: EditingMessageProps) {
     });
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
+  function adjustHeight() {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto";
+      textareaRef.current.style.height = `${textareaRef.current.scrollHeight + 2}px`;
+    }
+  }
+
   useEffect(() => {
     if (textareaRef.current) {
       adjustHeight();
     }
   }, []);
-
-  const adjustHeight = () => {
-    if (textareaRef.current) {
-      textareaRef.current.style.height = "auto";
-      textareaRef.current.style.height = `${textareaRef.current.scrollHeight + 2}px`;
-    }
-  };
 
   const handleInput = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setDraftContent(event.target.value);
@@ -80,8 +88,12 @@ export function MessageEditor({ message, setMode }: EditingMessageProps) {
           data-testid="message-editor-send-button"
           variant="default"
           size="sm"
-          disabled={isDeletingTrailingMessages}
+          disabled={isDeletingTrailingMessages || pendingAdmission}
           onClick={() => {
+            if (editUnacceptedMessage?.(message.id, draftContent)) {
+              setMode("view");
+              return;
+            }
             void deleteTrailingMessages({
               chatId: id,
               fromMessageId: message.id,
@@ -90,7 +102,11 @@ export function MessageEditor({ message, setMode }: EditingMessageProps) {
           }}
           className="rounded-xl"
         >
-          {isDeletingTrailingMessages ? "Sending..." : "Send"}
+          {pendingAdmission
+            ? "Confirming send…"
+            : isDeletingTrailingMessages
+              ? "Sending..."
+              : "Send"}
         </Button>
       </div>
     </div>

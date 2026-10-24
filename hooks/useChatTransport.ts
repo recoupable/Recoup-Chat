@@ -1,5 +1,6 @@
 import { useMemo, useCallback, useRef, useLayoutEffect } from "react";
 import type { UIMessage } from "ai";
+import { createChatRequestLifecycle } from "@/lib/chat/createChatRequestLifecycle";
 import { createSnapshotConsumer } from "@/lib/intelligent-ui/chat/createSnapshotConsumer";
 import type { SnapshotHostScope } from "@/lib/intelligent-ui/chat/getSnapshotScopeKey";
 import { isChatIntelligentUIEnabled } from "@/lib/intelligent-ui/chat/isChatIntelligentUIEnabled";
@@ -24,6 +25,8 @@ interface UseChatTransportOptions {
   snapshotScope?: SnapshotHostScope;
   devCatalogSurface?: CatalogSurfaceRequest;
   getMessages?: () => UIMessage[];
+  requestScope?: string;
+  onStreamEnd?: () => unknown;
 }
 
 /**
@@ -41,8 +44,15 @@ export function useChatTransport({
   snapshotScope,
   devCatalogSurface,
   getMessages,
+  requestScope,
+  onStreamEnd,
 }: UseChatTransportOptions) {
   const { getAccessToken } = usePrivy();
+  const requestLifecycle = useMemo(() => createChatRequestLifecycle(), []);
+  useLayoutEffect(
+    () => () => requestLifecycle.cancelAll(),
+    [requestLifecycle, requestScope],
+  );
   const baseUrl = getClientApiBaseUrl();
 
   // Read the latest ids at request time via refs. `useChat` captures the
@@ -62,6 +72,7 @@ export function useChatTransport({
     devCatalogSurface,
     getMessages,
     getAccessToken,
+    onStreamEnd,
   });
   const snapshotConsumer = useMemo(
     () => createSnapshotConsumer(() => live.current.snapshotScope),
@@ -81,6 +92,7 @@ export function useChatTransport({
       devCatalogSurface,
       getMessages,
       getAccessToken,
+      onStreamEnd,
     };
     snapshotConsumer.syncScope();
   });
@@ -98,6 +110,8 @@ export function useChatTransport({
     () =>
       createWorkflowChatTransport({
         baseUrl,
+        requestLifecycle,
+        captureStreamEnd: () => live.current.onStreamEnd,
         getIds: () => ({
           sessionId: live.current.sessionId,
           chatId: live.current.chatId,
@@ -114,8 +128,14 @@ export function useChatTransport({
             ? live.current.devCatalogSurface
             : undefined,
       }),
-    [baseUrl, snapshotConsumer],
+    [baseUrl, snapshotConsumer, requestLifecycle],
   );
 
-  return { transport, getHeaders, intelligentUI, snapshotConsumer };
+  return {
+    transport,
+    getHeaders,
+    intelligentUI,
+    snapshotConsumer,
+    requestLifecycle,
+  };
 }

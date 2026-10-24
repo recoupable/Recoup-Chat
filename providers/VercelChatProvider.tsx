@@ -26,6 +26,19 @@ interface VercelChatContextType {
   status: ChatStatus;
   isLoading: boolean;
   hasError: boolean;
+  sendError?: string;
+  sendErrorStatus?: number;
+  failedDraftPreview?: string;
+  hasFailedSubmission?: boolean;
+  retrySendMessage?: (event: React.FormEvent<HTMLFormElement>) => Promise<void>;
+  discardFailedSubmission?: () => void;
+  stopState?: {
+    status: "idle" | "stopping" | "stopped" | "inactive" | "error";
+    message?: string;
+    httpStatus?: number;
+  };
+  editUnacceptedMessage?: (messageId: string, text: string) => boolean;
+  isMessagePendingAdmission?: (messageId: string) => boolean;
   isGeneratingResponse: boolean;
   isLoadingSignedUrls: boolean;
   handleSendMessage: (event: React.FormEvent<HTMLFormElement>) => Promise<void>;
@@ -83,6 +96,8 @@ interface VercelChatProviderProps {
   sessionId?: string;
   /** Api-minted chat id from bootstrap when `chatId` is a placeholder. */
   workflowChatId?: string;
+  /** Distinguishes a bootstrap placeholder from a routable canonical chatId. */
+  isNewChatBootstrap?: boolean;
   /** Workspace (session + sandbox) lifecycle; gates Send + drives the status dot. */
   workspaceStatus?: WorkspaceStatus;
   initialMessages?: UIMessage[];
@@ -98,6 +113,7 @@ export function VercelChatProvider({
   catalogQuery,
   sessionId,
   workflowChatId,
+  isNewChatBootstrap,
   workspaceStatus = "ready",
   initialMessages,
 }: VercelChatProviderProps) {
@@ -132,6 +148,15 @@ export function VercelChatProvider({
     status,
     isLoading,
     hasError,
+    sendError,
+    sendErrorStatus,
+    failedDraftPreview,
+    hasFailedSubmission,
+    retrySendMessage,
+    discardFailedSubmission,
+    stopState,
+    editUnacceptedMessage,
+    isMessagePendingAdmission,
     isGeneratingResponse,
     isLoadingSignedUrls,
     handleSendMessage,
@@ -152,25 +177,24 @@ export function VercelChatProvider({
     catalogQuery,
     sessionId,
     workflowChatId,
+    isNewChatBootstrap,
     initialMessages,
     attachments,
     textAttachments,
     workspaceStatus,
+    onDraftAccepted: () => {
+      setAttachments((previous) =>
+        previous.filter((part) => !attachments.includes(part)),
+      );
+      setTextAttachments((previous) =>
+        previous.filter((part) => !textAttachments.includes(part)),
+      );
+    },
   });
 
   const reload = useCallback(() => {
     return originalReload();
   }, [originalReload]);
-
-  // When a message is sent successfully, clear the attachments
-  const handleSendMessageWithClear = async (
-    event: React.FormEvent<HTMLFormElement>,
-  ) => {
-    const didSend = await handleSendMessage(event);
-
-    // Clear attachments after sending
-    if (didSend !== false) clearAttachments();
-  };
 
   // Create the context value object
   const contextValue: VercelChatContextType = {
@@ -182,9 +206,20 @@ export function VercelChatProvider({
     status,
     isLoading,
     hasError,
+    sendError,
+    sendErrorStatus,
+    failedDraftPreview,
+    hasFailedSubmission,
+    retrySendMessage,
+    discardFailedSubmission,
+    stopState,
+    editUnacceptedMessage,
+    isMessagePendingAdmission,
     isGeneratingResponse,
     isLoadingSignedUrls,
-    handleSendMessage: handleSendMessageWithClear,
+    handleSendMessage: async (event) => {
+      await handleSendMessage(event);
+    },
     stop,
     setInput,
     input,

@@ -42,6 +42,8 @@ interface ChatProps {
    * resolves; falls back to `id` otherwise.
    */
   workflowChatId?: string;
+  /** `id` is a local placeholder until bootstrap supplies workflowChatId. */
+  isNewChatBootstrap?: boolean;
   /**
    * Workspace (session + sandbox) lifecycle; gates Send and drives the
    * status indicator. Defaults to `ready` for existing chats opened from
@@ -58,6 +60,7 @@ export function Chat({
   catalogQuery,
   sessionId,
   workflowChatId,
+  isNewChatBootstrap,
   workspaceStatus,
   onRetryWorkspace,
   initialMessages,
@@ -73,6 +76,7 @@ export function Chat({
       catalogQuery={catalogQuery}
       sessionId={sessionId}
       workflowChatId={workflowChatId}
+      isNewChatBootstrap={isNewChatBootstrap}
       workspaceStatus={workspaceStatus}
       initialMessages={initialMessages}
     >

@@ -194,8 +194,9 @@ vi.mock("@/components/VercelChat/messages", () => ({
 }));
 
 const historyUrl = `https://recoup.invalid/api/sessions/${ids.session}/chats/${ids.chat}`;
-const streamUrl = `https://recoup.invalid/api/chat/${ids.chat}/stream?startIndex=0`;
-const postUrl = "https://recoup.invalid/api/chat";
+const streamUrl = `https://recoup.invalid/api/chat/${ids.chat}/stream?startIndex=0&streamLifecycle=explicit-stop-v1`;
+const postUrl =
+  "https://recoup.invalid/api/chat?streamLifecycle=explicit-stop-v1";
 const subject = {
   kind: "catalog",
   id: ids.catalog,
@@ -236,6 +237,8 @@ function mockFetch({
       return Response.json({ messages: structuredClone(history) });
     if (url === streamUrl)
       return stream ?? workflowResponse([{ type: "finish" }]);
+    if (url === `https://recoup.invalid/api/chat/${ids.chat}/stop`)
+      return Response.json({ success: true, stopped: true });
     if (url === postUrl && init?.method === "POST")
       return (
         send ??
@@ -1700,7 +1703,7 @@ it.each([
 );
 
 it.each(["catalog", "artist", "production"] as const)(
-  "publishes a valid %s new chat once at dispatch while the assistant stream remains open",
+  "publishes a valid %s new chat once at admission while the assistant stream remains open",
   async (mode) => {
     if (mode === "production") vi.stubEnv("NODE_ENV", "production");
     if (mode !== "catalog") external.artist = ids.artist;
@@ -1762,9 +1765,9 @@ it.each(["catalog", "artist", "production"] as const)(
       intentText,
     );
     expect(current.input).toBe("");
-    expect(current.textAttachments.map((value) => value.filename)).toEqual([
-      "sent.txt",
-    ]);
+    // The HTTP response admitted this exact draft; clear its identities now,
+    // independently of the still-open assistant stream.
+    expect(current.textAttachments).toEqual([]);
     const target = String(replaceState.mock.calls.at(-1)![2]);
     expect(target).toContain(`/sessions/${ids.session}/chats/${ids.chat}`);
     const body = JSON.parse(

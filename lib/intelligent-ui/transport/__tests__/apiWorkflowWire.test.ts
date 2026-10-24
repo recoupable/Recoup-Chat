@@ -137,7 +137,7 @@ function assertFinal({
 }
 
 function assertSendRequest(input: unknown, init: RequestInit | undefined) {
-  expect(input).toBe(`${baseUrl}/api/chat`);
+  expect(input).toBe(`${baseUrl}/api/chat?streamLifecycle=explicit-stop-v1`);
   expect(init?.method).toBe("POST");
   expect(init?.headers).toEqual({
     "Content-Type": "application/json",
@@ -156,7 +156,7 @@ function assertReconnectRequest(
   cursor: number,
 ) {
   expect(input).toBe(
-    `${baseUrl}/api/chat/synthetic-chat/stream?startIndex=${cursor}`,
+    `${baseUrl}/api/chat/synthetic-chat/stream?startIndex=${cursor}&streamLifecycle=explicit-stop-v1`,
   );
   expect(init?.method ?? "GET").toBe("GET");
   expect(init?.body).toBeUndefined();
