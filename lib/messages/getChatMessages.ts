@@ -11,6 +11,7 @@ export async function getChatMessages(
   sessionId: string,
   chatId: string,
   accessToken: string,
+  options?: { requireSuccess?: boolean },
 ): Promise<UIMessage[]> {
   const response = await fetch(
     `${getClientApiBaseUrl()}/api/sessions/${encodeURIComponent(sessionId)}/chats/${encodeURIComponent(chatId)}`,
@@ -19,7 +20,11 @@ export async function getChatMessages(
     },
   );
 
-  if (!response.ok) return [];
+  if (!response.ok) {
+    if (options?.requireSuccess)
+      throw new Error(`Failed to load messages: ${response.status}`);
+    return [];
+  }
 
   const data = (await response.json()) as { messages?: UIMessage[] };
   return data.messages ?? [];

@@ -7,7 +7,7 @@ import {
   UITools,
   ChatStatus,
 } from "ai";
-import { Dispatch, SetStateAction, useContext } from "react";
+import { Dispatch, SetStateAction, useContext, lazy, Suspense } from "react";
 import { cn } from "@/lib/utils";
 import { collapseTodoParts } from "@/lib/chat/collapseTodoParts";
 import ViewingMessage from "./ViewingMessage";
@@ -20,6 +20,13 @@ import { RefreshCcwIcon, Pencil } from "lucide-react";
 import { ModelRoutingStatus } from "./ModelRoutingStatus";
 import CopyButton from "@/components/CopyButton";
 import { VercelChatContext } from "@/providers/VercelChatProvider";
+import SnapshotRenderBoundary from "@/components/IntelligentUI/SnapshotRenderBoundary";
+import { getAnswerText } from "@/lib/intelligent-ui/presentation/getAnswerText";
+import { isChatIntelligentUIEnabled } from "@/lib/intelligent-ui/chat/isChatIntelligentUIEnabled";
+
+const ChatSnapshot = lazy(
+  () => import("@/components/IntelligentUI/ChatSnapshot"),
+);
 
 interface MessagePartsProps {
   message: UIMessage;
@@ -56,6 +63,55 @@ export function MessageParts({
         const { type } = part;
         const key = `message-${message.id}-part-${partIndex}`;
 
+        if (type === "data-intelligent-ui-snapshot") {
+          const binding = isChatIntelligentUIEnabled()
+            ? ctx?.intelligentUI
+            : undefined;
+          if (
+            !binding ||
+            message.role !== "assistant" ||
+            !("id" in part) ||
+            typeof part.id !== "string"
+          )
+            return null;
+          const surface = binding.consumer.getSnapshot(
+            message.id,
+            part.id,
+            binding.scopeKey,
+          );
+          const fallback = surface
+            ? undefined
+            : binding.consumer.getFallback(message.id, part, binding.scopeKey);
+          return surface ? (
+            <SnapshotRenderBoundary
+              key={`${message.id}:${binding.scopeKey}:${surface.id}`}
+              revision={surface.revision}
+              fallback={getAnswerText(surface)}
+            >
+              <Suspense
+                fallback={
+                  <p className="whitespace-pre-wrap text-base leading-7 [overflow-wrap:anywhere]">
+                    {getAnswerText(surface)}
+                  </p>
+                }
+              >
+                <ChatSnapshot
+                  surface={surface}
+                  scopeKey={binding.scopeKey}
+                  messageId={message.id}
+                />
+              </Suspense>
+            </SnapshotRenderBoundary>
+          ) : fallback ? (
+            <p
+              key={`${message.id}:${binding.scopeKey}:${part.id}`}
+              className="whitespace-pre-wrap text-base leading-7 [overflow-wrap:anywhere]"
+            >
+              {fallback}
+            </p>
+          ) : null;
+        }
+
         if (type === "reasoning") {
           return (
             <EnhancedReasoning
@@ -78,7 +134,13 @@ export function MessageParts({
           const isLastMessage =
             message.role === "assistant" &&
             status !== "streaming" &&
-            partIndex === parts.length - 1;
+            partIndex === lastTextIndex &&
+            parts
+              .slice(partIndex + 1)
+              .every(
+                (remaining) =>
+                  remaining.type === "data-intelligent-ui-snapshot",
+              );
 
           if (mode === "view") {
             return (

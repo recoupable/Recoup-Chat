@@ -14,6 +14,7 @@ import { useArtistProvider } from "./ArtistProvider";
 import { GatewayLanguageModelEntry } from "@ai-sdk/gateway";
 import { TextAttachment } from "@/types/textAttachment";
 import type { WorkspaceStatus } from "@/components/VercelChat/WorkspaceStatusIndicator";
+import type { ChatSnapshotBinding } from "@/lib/intelligent-ui/chat/createSnapshotConsumer";
 
 // Interface for the context data
 interface VercelChatContextType {
@@ -56,6 +57,7 @@ interface VercelChatContextType {
   setModel: (model: string) => void;
   /** Workspace (session + sandbox) lifecycle; gates Send + drives the status dot. */
   workspaceStatus: WorkspaceStatus;
+  intelligentUI?: ChatSnapshotBinding;
 }
 
 // Create the context. Exported so presentational components (e.g. Message /
@@ -136,6 +138,7 @@ export function VercelChatProvider({
     model,
     setModel,
     availableModels,
+    intelligentUI,
   } = useVercelChat({
     id: chatId,
     sessionId,
@@ -191,6 +194,7 @@ export function VercelChatProvider({
     addTextAttachment,
     removeTextAttachment,
     workspaceStatus,
+    intelligentUI,
   };
 
   // Send chat status and messages to ArtistProvider
