@@ -166,6 +166,10 @@ export function useVercelChat({
       getMessages: () => messagesRef.current,
     });
   const coordinateHistory = isChatIntelligentUIEnabled();
+  const captureSendIntent = useCallback(
+    () => snapshotConsumer.captureSendIntent(),
+    [snapshotConsumer],
+  );
   const historyLoadScope = coordinateHistory
     ? JSON.stringify([
         authenticatedUser?.id,
@@ -434,11 +438,15 @@ export function useVercelChat({
     },
   });
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (
+    e: React.FormEvent<HTMLFormElement>,
+    isCurrent: () => boolean,
+  ) => {
     e.preventDefault();
     cancelPendingResume(true);
 
     const headers = await getHeaders();
+    if (!isCurrent()) return false;
 
     // Combine all attachments
     const combined: FileUIPart[] = [];
@@ -481,31 +489,40 @@ export function useVercelChat({
     };
 
     // Land the selected model in chats.model_id before the send fires.
-    await persistSelectedModel();
+    await persistSelectedModel(isCurrent);
+    if (!isCurrent()) return false;
 
     const response = sendMessage(payload, { body: chatRequestBody, headers });
     setInput("");
     await response;
+    return isCurrent();
   };
 
   const append = async (message: UIMessage) => {
+    const isCurrent = captureSendIntent();
     cancelPendingResume(true);
     const headers = await getHeaders();
+    if (!isCurrent()) return;
     // Retry/Edit and programmatic sends bypass handleSubmit, so persist the
     // selected model here too before the workflow reads chats.model_id.
-    await persistSelectedModel();
+    await persistSelectedModel(isCurrent);
+    if (!isCurrent()) return;
     sendMessage(message, { body: chatRequestBody, headers });
   };
 
   const handleReload = useCallback(async () => {
+    const isCurrent = captureSendIntent();
     cancelPendingResume(true);
     const headers = await getHeaders();
+    if (!isCurrent()) return;
     // Retry/Edit (MessageParts + message-editor) call reload() → regenerate,
     // bypassing handleSubmit; persist the selected model first so the
     // regenerated turn bills it, not the previous/default model.
-    await persistSelectedModel();
+    await persistSelectedModel(isCurrent);
+    if (!isCurrent()) return;
     await regenerate({ body: chatRequestBody, headers });
   }, [
+    captureSendIntent,
     cancelPendingResume,
     getHeaders,
     regenerate,
@@ -550,18 +567,24 @@ export function useVercelChat({
 
   const handleSendMessage = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (isGeneratingResponse) return;
+    if (isGeneratingResponse) return false;
+    const isCurrent = captureSendIntent();
+    cancelPendingResume(true);
+    let didSend = false;
 
     await submitOnce(async () => {
+      if (!isCurrent()) return;
       if (earliestFailedUserMessageId) {
         await deleteTrailingMessages({
           chatId: id,
           fromMessageId: earliestFailedUserMessageId,
+          isCurrent,
         });
       }
+      if (!isCurrent()) return;
 
       const messageContent = input;
-      const submission = handleSubmit(event);
+      const submission = handleSubmit(event, isCurrent);
 
       if (!chatId) {
         addOptimisticConversation(
@@ -572,19 +595,24 @@ export function useVercelChat({
         );
         silentlyUpdateUrl();
       }
-      await submission;
-    });
+      didSend = await submission;
+    }, isCurrent);
+    return didSend;
   };
 
   const handleSendQueryMessages = useCallback(
     async (initialMessage: UIMessage) => {
+      const isCurrent = captureSendIntent();
       cancelPendingResume(true);
       silentlyUpdateUrl();
       const headers = await getHeaders();
-      await persistSelectedModel();
+      if (!isCurrent()) return;
+      await persistSelectedModel(isCurrent);
+      if (!isCurrent()) return;
       await sendMessage(initialMessage, { body: chatRequestBody, headers });
     },
     [
+      captureSendIntent,
       silentlyUpdateUrl,
       sendMessage,
       chatRequestBody,
@@ -617,6 +645,7 @@ export function useVercelChat({
     model,
     isLoadingSignedUrls,
     intelligentUI,
+    captureSendIntent,
 
     // Actions
     handleSendMessage,

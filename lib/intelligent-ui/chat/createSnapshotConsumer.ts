@@ -40,6 +40,7 @@ export function createSnapshotConsumer(
   let hostSubjectIdentity: string | undefined;
   let scopeEpoch = 0;
   let generation = 0;
+  let intentEpoch = 0;
   let pendingAbort: AbortController | undefined;
   let disposed = false;
   let retainedBytes = 0;
@@ -70,6 +71,10 @@ export function createSnapshotConsumer(
     generation++;
     pendingAbort?.abort();
     pendingAbort = undefined;
+  };
+  const invalidateIntent = () => {
+    intentEpoch++;
+    invalidate();
   };
 
   const completeScope = (proposed: SnapshotHostScope | undefined) =>
@@ -106,14 +111,14 @@ export function createSnapshotConsumer(
     const proposed = isChatIntelligentUIEnabled() ? getScope() : undefined;
     const proposedSubject = subjectIdentity(proposed);
     if (hostSubjectIdentity && hostSubjectIdentity !== proposedSubject)
-      invalidate();
+      invalidateIntent();
     hostSubjectIdentity = proposedSubject;
     const scope = completeScope(proposed);
     const identity = scope ? getSnapshotScopeKey(scope) : undefined;
     if (identity !== scopeIdentity) {
       // Becoming ready may complete a pending first send. Replacing an already
       // bound session/chat invalidates pending operations as well as live ones.
-      if (scopeIdentity) invalidate();
+      if (scopeIdentity) invalidateIntent();
       scopeIdentity = identity;
       boundScope = identity ? `${identity}:${++scopeEpoch}` : undefined;
       accepted.clear();
@@ -316,6 +321,22 @@ export function createSnapshotConsumer(
   return {
     getBindingKey,
     syncScope,
+    /** Capture before hook preparation; an SDK start must not expire its own cleanup. */
+    captureSendIntent() {
+      if (!isChatIntelligentUIEnabled()) return () => true;
+      syncScope();
+      const epoch = intentEpoch;
+      const subject = subjectIdentity(getScope());
+      return () => {
+        syncScope();
+        return (
+          !disposed &&
+          isChatIntelligentUIEnabled() &&
+          epoch === intentEpoch &&
+          subject === subjectIdentity(getScope())
+        );
+      };
+    },
     /** Capture this key with a history request; a late previous-scope load cannot seed UI. */
     hydrate(messages: UIMessage[], scopeKey: string) {
       const { scope, key } = syncScope();
@@ -410,11 +431,11 @@ export function createSnapshotConsumer(
     },
     /** Cancellation retains accepted content, but invalidates every in-flight token. */
     cancel() {
-      invalidate();
+      invalidateIntent();
     },
     dispose() {
       disposed = true;
-      invalidate();
+      invalidateIntent();
     },
     activate() {
       disposed = false;

@@ -59,6 +59,7 @@ interface VercelChatContextType {
   /** Workspace (session + sandbox) lifecycle; gates Send + drives the status dot. */
   workspaceStatus: WorkspaceStatus;
   intelligentUI?: ChatSnapshotBinding;
+  captureSendIntent?: () => () => boolean;
 }
 
 // Create the context. Exported so presentational components (e.g. Message /
@@ -144,6 +145,7 @@ export function VercelChatProvider({
     setModel,
     availableModels,
     intelligentUI,
+    captureSendIntent,
   } = useVercelChat({
     id: chatId,
     catalogId,
@@ -164,10 +166,10 @@ export function VercelChatProvider({
   const handleSendMessageWithClear = async (
     event: React.FormEvent<HTMLFormElement>,
   ) => {
-    await handleSendMessage(event);
+    const didSend = await handleSendMessage(event);
 
     // Clear attachments after sending
-    clearAttachments();
+    if (didSend !== false) clearAttachments();
   };
 
   // Create the context value object
@@ -202,6 +204,7 @@ export function VercelChatProvider({
     removeTextAttachment,
     workspaceStatus,
     intelligentUI,
+    captureSendIntent,
   };
 
   // Send chat status and messages to ArtistProvider

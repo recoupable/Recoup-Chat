@@ -9,7 +9,7 @@ import { useVercelChatContext } from "@/providers/VercelChatProvider";
 import { TextUIPart, UIMessage } from "ai";
 
 export function MessageEditor({ message, setMode }: EditingMessageProps) {
-  const { id, setMessages, reload } = useVercelChatContext();
+  const { id, setMessages, reload, captureSendIntent } = useVercelChatContext();
   if (!id) {
     throw new Error("MessageEditor requires an active chat id");
   }
@@ -85,6 +85,7 @@ export function MessageEditor({ message, setMode }: EditingMessageProps) {
             void deleteTrailingMessages({
               chatId: id,
               fromMessageId: message.id,
+              isCurrent: captureSendIntent?.(),
             });
           }}
           className="rounded-xl"

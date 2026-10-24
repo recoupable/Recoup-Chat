@@ -102,6 +102,20 @@ pending history. A valid catalog with an incomplete query has partial local
 scope with no UI binding, so completing/changing its query cannot upgrade a
 pending ordinary-text operation into a catalog request. Scope cancellation while
 provisioning or authentication prevents a stale request from reaching fetch.
+The owning hook captures the committed send intent before its first preparation
+await, including composer, append, Retry/Edit and initial-message sends. The
+consumer's preparation epoch changes on committed host/query/session changes,
+Stop and disposal, so leaving and returning to the same key cannot revive an
+obsolete send. Its own SDK stream start does not expire still-current completion
+cleanup. Equivalent normalized inputs, stable first-send provisioning and
+suspended/discarded renders preserve the current intent. After each auth/model
+or trailing-deletion wait, obsolete operations cannot dispatch SDK work, replace
+current history/input or clear the current draft's attachments. The existing
+submission lock can admit a current operation while an obsolete wait settles;
+that old operation cannot release the newer lock. Existing client model/deletion
+hooks guard their own auth and success callbacks with the same intent. Already
+issued HTTP mutations are not undone; cancellation suppresses subsequent stale
+client work. Disabled/production preparation keeps its existing behavior.
 Suspended or discarded query renders leave the committed answer and stream
 intact. Canonical development URL updates retain explicit raw query values,
 including invalid/repeated/empty-array intent; default and production URLs stay

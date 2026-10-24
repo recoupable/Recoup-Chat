@@ -1,6 +1,13 @@
 // @vitest-environment jsdom
 import React from "react";
-import { act, cleanup, render, screen, waitFor } from "@testing-library/react";
+import {
+  act,
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from "@testing-library/react";
 import {
   createUIMessageStreamResponse,
   type UIMessage,
@@ -8,6 +15,7 @@ import {
 } from "ai";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import SessionChatPage from "../page";
+import { MessageEditor } from "@/components/VercelChat/message-editor";
 import { Chat } from "@/components/VercelChat/chat";
 import { useVercelChatContext } from "@/providers/VercelChatProvider";
 import { MessageParts } from "@/components/VercelChat/MessageParts";
@@ -45,6 +53,8 @@ const external = vi.hoisted(() => ({
   getAccessToken: vi.fn(async (): Promise<string | null> => "synthetic-token"),
   refetchCredits: vi.fn(async () => {}),
   persistModel: vi.fn(async () => {}),
+  deleteTrailing: vi.fn(async () => {}),
+  editMessage: null as UIMessage | null,
   updateChatState: vi.fn(),
   files: [],
 }));
@@ -92,7 +102,16 @@ vi.mock("@/hooks/usePersistSelectedModel", () => ({
   usePersistSelectedModel: () => external.persistModel,
 }));
 vi.mock("@/hooks/useDeleteTrailingMessages", () => ({
-  useDeleteTrailingMessages: () => ({ deleteTrailingMessages: vi.fn() }),
+  useDeleteTrailingMessages: (options?: { onSuccess?: () => void }) => ({
+    deleteTrailingMessages: async (input: {
+      chatId: string;
+      fromMessageId: string;
+      isCurrent?: () => boolean;
+    }) => {
+      await external.deleteTrailing();
+      if (input.isCurrent?.() !== false) options?.onSuccess?.();
+    },
+  }),
 }));
 vi.mock("@/lib/api/getClientApiBaseUrl", () => ({
   getClientApiBaseUrl: () => "https://recoup.invalid",
@@ -155,6 +174,9 @@ vi.mock("@/components/VercelChat/messages", () => ({
     }
     return (
       <>
+        {external.editMessage && (
+          <MessageEditor message={external.editMessage} setMode={() => {}} />
+        )}
         {value.messages.map((message) => (
           <MessageParts
             key={message.id}
@@ -281,6 +303,9 @@ beforeEach(() => {
     routeChat: true,
   });
   external.getAccessToken.mockReset().mockResolvedValue("synthetic-token");
+  external.persistModel.mockReset().mockResolvedValue(undefined);
+  external.deleteTrailing.mockReset().mockResolvedValue(undefined);
+  external.editMessage = null;
   suspendOnCatalog = undefined;
   suspendedRenders = 0;
   localStorage.clear();
@@ -1194,3 +1219,386 @@ it.each(["catalogId", "since", "days", "page", "limit"] as const)(
     expect(body.artistId).toBeUndefined();
   },
 );
+
+const intentText = "Explain the selected 28-day reporting window.";
+function heldPreparation(stage: "headers" | "model") {
+  let requested = false;
+  let release!: () => void;
+  const promise = new Promise<void>((resolve) => {
+    release = resolve;
+  });
+  if (stage === "headers")
+    external.getAccessToken.mockImplementationOnce(async () => {
+      requested = true;
+      await promise;
+      return "synthetic-token";
+    });
+  else
+    external.persistModel.mockImplementationOnce(async () => {
+      requested = true;
+      await promise;
+    });
+  return { release: () => release(), requested: () => requested };
+}
+const retryHistory: UIMessage[] = [
+  {
+    id: "retained-user",
+    role: "user",
+    parts: [{ type: "text", text: "Retained original user message." }],
+  },
+  {
+    id: "retained-assistant",
+    role: "assistant",
+    parts: [{ type: "text", text: "Retained assistant answer." }],
+  },
+];
+
+it.each([
+  ["send", "headers"],
+  ["send", "model"],
+  ["append", "headers"],
+  ["append", "model"],
+  ["retry", "headers"],
+  ["retry", "model"],
+  ["initial", "headers"],
+  ["initial", "model"],
+] as const)(
+  "cancels %s before SDK dispatch when committed query changes during hook %s wait",
+  async (entry, stage) => {
+    const fetch = mockFetch({ history: retryHistory });
+    let held!: ReturnType<typeof heldPreparation>;
+    let harness: {
+      rerender: (element: React.ReactNode) => void;
+      unmount: () => void;
+    };
+    let pending: Promise<unknown> = Promise.resolve();
+    if (entry === "initial") {
+      external.routeChat = false;
+      vi.spyOn(window.history, "replaceState").mockImplementation(() => {});
+      held = heldPreparation(stage);
+      const initial: UIMessage[] = [
+        {
+          id: "intent-initial-user",
+          role: "user",
+          parts: [{ type: "text", text: intentText }],
+        },
+      ];
+      harness = render(
+        <div className="flex flex-col size-full items-center">
+          <Chat
+            id={ids.chat}
+            catalogId={ids.catalog}
+            catalogQuery={reporting}
+            workspaceStatus="provisioning"
+            initialMessages={initial}
+          />
+        </div>,
+      );
+      await waitFor(() => expect(current.input).toBe(intentText));
+      harness.rerender(
+        <div className="flex flex-col size-full items-center">
+          <Chat
+            id={ids.chat}
+            sessionId={ids.session}
+            catalogId={ids.catalog}
+            catalogQuery={reporting}
+            workspaceStatus="ready"
+            initialMessages={initial}
+          />
+        </div>,
+      );
+    } else {
+      external.routeChat = true;
+      harness = await mount();
+      await waitFor(() => expect(current.status).toBe("ready"));
+      held = heldPreparation(stage);
+      if (entry === "send")
+        await act(async () => {
+          current.setInput(intentText);
+        });
+      await act(async () => {
+        pending = Promise.resolve(
+          entry === "send"
+            ? current.handleSendMessage({
+                preventDefault: () => {},
+              } as React.FormEvent<HTMLFormElement>)
+            : entry === "retry"
+              ? current.reload()
+              : current.append({
+                  id: "intent-append-user",
+                  role: "user",
+                  parts: [{ type: "text", text: intentText }],
+                }),
+        );
+      });
+    }
+    await waitFor(() => expect(held.requested()).toBe(true));
+    harness.rerender(
+      <div className="flex flex-col size-full items-center">
+        <Chat
+          id={ids.chat}
+          sessionId={ids.session}
+          catalogId={ids.catalog}
+          catalogQuery={{ ...reporting, days: "14" }}
+        />
+      </div>,
+    );
+    await waitFor(() =>
+      expect(screen.queryByText("Loading history")).toBeNull(),
+    );
+    await act(async () => {
+      current.setInput("Current 14-day draft.");
+      current.setTextAttachments([
+        {
+          filename: "current14.txt",
+          content: "Current 14-day notes.",
+          lineCount: 1,
+          type: "md",
+        },
+      ]);
+    });
+    await act(async () => {
+      held.release();
+      await pending;
+    });
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    await waitFor(() => expect(current.status).toBe("ready"));
+    expect(
+      fetch.mock.calls.filter(([url]) => url === postUrl),
+      `${entry}/${stage}`,
+    ).toEqual([]);
+    expect(current.input).toBe("Current 14-day draft.");
+    expect(current.textAttachments.map((value) => value.filename)).toEqual([
+      "current14.txt",
+    ]);
+    expect(
+      current.messages.some((message) => message.id === "intent-append-user"),
+    ).toBe(false);
+    harness.unmount();
+  },
+);
+
+it.each(["stop", "unmount", "away-and-back"] as const)(
+  "invalidates pre-SDK append on %s instead of reviving its original key",
+  async (change) => {
+    const fetch = mockFetch();
+    const harness = await mount();
+    await waitFor(() => expect(current.status).toBe("ready"));
+    const initialKey = current.intelligentUI!.scopeKey;
+    const held = heldPreparation("headers");
+    let pending!: Promise<unknown>;
+    await act(async () => {
+      pending = Promise.resolve(
+        current.append({
+          id: "obsolete-intent-user",
+          role: "user",
+          parts: [{ type: "text", text: intentText }],
+        }),
+      );
+    });
+    await waitFor(() => expect(held.requested()).toBe(true));
+    if (change === "stop")
+      await act(async () => {
+        await current.stop();
+      });
+    else if (change === "unmount") harness.unmount();
+    else {
+      harness.switchCatalog(ids.catalog, undefined, {
+        ...reporting,
+        days: "14",
+      });
+      await waitFor(() =>
+        expect(current.intelligentUI?.scopeKey).not.toBe(initialKey),
+      );
+      const awayKey = current.intelligentUI?.scopeKey;
+      harness.switchCatalog(ids.catalog, undefined, reporting);
+      await waitFor(() =>
+        expect(current.intelligentUI?.scopeKey).not.toBe(awayKey),
+      );
+    }
+    await act(async () => {
+      held.release();
+      await pending;
+    });
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(fetch.mock.calls.filter(([url]) => url === postUrl)).toEqual([]);
+  },
+);
+
+it("keeps normalized-equivalent query input valid during pre-SDK authentication", async () => {
+  const fetch = mockFetch();
+  const harness = await mount();
+  await waitFor(() => expect(current.status).toBe("ready"));
+  const held = heldPreparation("headers");
+  let pending!: Promise<unknown>;
+  await act(async () => {
+    pending = Promise.resolve(
+      current.append({
+        id: "current-intent-user",
+        role: "user",
+        parts: [{ type: "text", text: intentText }],
+      }),
+    );
+  });
+  await waitFor(() => expect(held.requested()).toBe(true));
+  harness.switchCatalog(ids.catalog, undefined, {
+    since: "2026-09-01",
+    days: "028",
+    page: "01",
+    limit: "025",
+  });
+  await act(async () => {
+    held.release();
+    await pending;
+  });
+  await waitFor(() =>
+    expect(fetch.mock.calls.filter(([url]) => url === postUrl)).toHaveLength(1),
+  );
+  const body = JSON.parse(
+    fetch.mock.calls.find(([url]) => url === postUrl)![1]!.body as string,
+  );
+  expect(body.devCatalogSurface.query.days).toBe(28);
+  expect(
+    body.messages.some(
+      (message: UIMessage) => message.id === "current-intent-user",
+    ),
+  ).toBe(true);
+});
+
+it("does not apply a stale Edit deletion callback or retry under the new reporting window", async () => {
+  external.editMessage = retryHistory[0];
+  const fetch = mockFetch({ history: retryHistory });
+  const harness = await mount();
+  let requested = false;
+  let release!: () => void;
+  const hold = new Promise<void>((resolve) => {
+    release = resolve;
+  });
+  external.deleteTrailing.mockImplementationOnce(async () => {
+    requested = true;
+    await hold;
+  });
+  fireEvent.change(screen.getByTestId("message-editor"), {
+    target: { value: "Edited 28-day message." },
+  });
+  fireEvent.click(screen.getByTestId("message-editor-send-button"));
+  await waitFor(() => expect(requested).toBe(true));
+  harness.switchCatalog(ids.catalog, undefined, { ...reporting, days: "14" });
+  await waitFor(() => expect(screen.queryByText("Loading history")).toBeNull());
+  await act(async () => {
+    release();
+  });
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  await waitFor(() => expect(current.status).toBe("ready"));
+  expect(fetch.mock.calls.filter(([url]) => url === postUrl)).toEqual([]);
+  expect(current.messages[0].parts).toEqual(retryHistory[0].parts);
+});
+
+it("allows current first-send provisioning to settle during pre-SDK authentication", async () => {
+  external.routeChat = false;
+  vi.spyOn(window.history, "replaceState").mockImplementation(() => {});
+  const fetch = mockFetch();
+  const view = render(
+    <div className="flex flex-col size-full items-center">
+      <Chat
+        id="client-placeholder"
+        catalogId={ids.catalog}
+        catalogQuery={reporting}
+        workspaceStatus="provisioning"
+      />
+    </div>,
+  );
+  const held = heldPreparation("headers");
+  let operation!: Promise<unknown>;
+  await act(async () => {
+    operation = Promise.resolve(
+      current.append({
+        id: "provisioned-intent-user",
+        role: "user",
+        parts: [{ type: "text", text: intentText }],
+      }),
+    );
+  });
+  await waitFor(() => expect(held.requested()).toBe(true));
+  view.rerender(
+    <div className="flex flex-col size-full items-center">
+      <Chat
+        id="client-placeholder"
+        workflowChatId={ids.chat}
+        sessionId={ids.session}
+        catalogId={ids.catalog}
+        catalogQuery={reporting}
+        workspaceStatus="ready"
+      />
+    </div>,
+  );
+  await act(async () => {
+    held.release();
+    await operation;
+  });
+  await waitFor(() =>
+    expect(fetch.mock.calls.filter(([url]) => url === postUrl)).toHaveLength(1),
+  );
+  const body = JSON.parse(
+    fetch.mock.calls.find(([url]) => url === postUrl)![1]!.body as string,
+  );
+  expect(body.sessionId).toBe(ids.session);
+  expect(body.chatId).toBe(ids.chat);
+  expect(body.devCatalogSurface).toEqual(context());
+});
+
+it("does not expire a pending Send for a suspended and abandoned reporting-query render", async () => {
+  const fetch = mockFetch({ history: retryHistory });
+  let select!: React.Dispatch<React.SetStateAction<string>>;
+  function Harness() {
+    const [days, setDays] = React.useState("28");
+    select = setDays;
+    return (
+      <React.Suspense fallback={<p>Suspended preparation</p>}>
+        <prospectiveCatalog.Provider value={days}>
+          <Chat
+            id={ids.chat}
+            sessionId={ids.session}
+            catalogId={ids.catalog}
+            catalogQuery={{ ...reporting, days }}
+          />
+        </prospectiveCatalog.Provider>
+      </React.Suspense>
+    );
+  }
+  suspendOnCatalog = "14";
+  render(<Harness />);
+  await screen.findByText("Retained assistant answer.");
+  await waitFor(() => expect(current.status).toBe("ready"));
+  const held = heldPreparation("headers");
+  let operation!: Promise<unknown>;
+  await act(async () => {
+    operation = Promise.resolve(
+      current.append({
+        id: "suspended-current-user",
+        role: "user",
+        parts: [{ type: "text", text: intentText }],
+      }),
+    );
+  });
+  await waitFor(() => expect(held.requested()).toBe(true));
+  await act(async () => {
+    React.startTransition(() => select("14"));
+  });
+  expect(suspendedRenders).toBeGreaterThan(0);
+  expect(screen.queryByText("Suspended preparation")).toBeNull();
+  await act(async () => {
+    held.release();
+    await operation;
+  });
+  await waitFor(() =>
+    expect(fetch.mock.calls.filter(([url]) => url === postUrl)).toHaveLength(1),
+  );
+  const body = JSON.parse(
+    fetch.mock.calls.find(([url]) => url === postUrl)![1]!.body as string,
+  );
+  expect(body.devCatalogSurface.query.days).toBe(28);
+  await act(async () => {
+    select("28");
+  });
+});
